@@ -12,7 +12,6 @@ import localeSettings from './zh-CN/settings';
 
 export default {
   'menu.dashboard': '仪表盘',
-  'menu.test': 'TEST',
   'menu.collection': '数据采集',
   'menu.system': '系统管理',
   'menu.form': '表单管理',

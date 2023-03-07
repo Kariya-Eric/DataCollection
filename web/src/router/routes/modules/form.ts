@@ -8,7 +8,7 @@ const FORM: AppRouteRecordRaw = {
     meta: {
         locale: 'menu.form',
         requiresAuth: true,
-        icon: 'icon-form',
+        icon: 'icon-layers',
         order: 1,
     },
     children: [
@@ -18,6 +18,7 @@ const FORM: AppRouteRecordRaw = {
             component: () => import('@/views/form/list/index.vue'),
             meta: {
                 locale: 'menu.form.list',
+                icon: 'icon-nav',
                 requiresAuth: true,
                 roles: ['*'],
             },

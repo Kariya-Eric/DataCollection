@@ -8,7 +8,7 @@ const COLLECTION: AppRouteRecordRaw = {
     meta: {
         locale: 'menu.collection',
         requiresAuth: true,
-        icon: 'icon-dashboard',
+        icon: 'icon-folder',
         order: 1,
     },
     children: [
@@ -19,6 +19,7 @@ const COLLECTION: AppRouteRecordRaw = {
             meta: {
                 locale: 'menu.collection.list',
                 requiresAuth: true,
+                icon: 'icon-file',
                 roles: ['*'],
             },
         },

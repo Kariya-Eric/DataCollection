@@ -8,7 +8,7 @@ const SYSTEM: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.system',
     requiresAuth: true,
-    icon: 'icon-system',
+    icon: 'icon-settings',
     order: 2,
   },
   children: [
@@ -19,6 +19,7 @@ const SYSTEM: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.system.user',
         requiresAuth: true,
+        icon: 'icon-user',
         roles: ['*'],
       },
     },
@@ -29,6 +30,7 @@ const SYSTEM: AppRouteRecordRaw = {
         meta: {
           locale: 'menu.system.role',
           requiresAuth: true,
+          icon: 'icon-user-group',
           roles: ['*'],
         },
       },
@@ -39,6 +41,7 @@ const SYSTEM: AppRouteRecordRaw = {
         meta: {
           locale: 'menu.system.menu',
           requiresAuth: true,
+          icon: 'icon-menu',
           roles: ['*'],
         },
       },
