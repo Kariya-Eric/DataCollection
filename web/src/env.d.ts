@@ -6,6 +6,12 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
+
+declare module "vue-ls" {
+  import storage from "vue-ls"
+  export default storage
+}
+
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string;
 }
