@@ -20,4 +20,11 @@ export const DataCollectionMixin = {
             loading: false,
         }
     },
+
+    methods: {
+        // 重置查询条件
+        searchReset() {
+            this.queryParam = {}
+        }
+    }
 }
