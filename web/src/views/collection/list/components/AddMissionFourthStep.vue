@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="modalDiv">
     <a-result status="success" title="任务配置已完成">
       <template #extra>
         <a-space>

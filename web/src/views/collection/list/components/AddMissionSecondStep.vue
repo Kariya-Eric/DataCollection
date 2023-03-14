@@ -1,9 +1,22 @@
 <template>
-  <div>
+  <div class="modalDivSecond">
     <div class="table-page-search-wrapper">
-      <a-button type="primary" @click="showEndTimeModal"
-        >批量配置统计截止时间</a-button
-      >
+      <a-row :gutter="24">
+        <a-col :span="8">
+          <a-space>
+            <span>表单合集：</span>
+            <a-select>
+              <a-option>状态数据表单</a-option>
+              <a-option>其他数据表单</a-option>
+            </a-select>
+          </a-space>
+        </a-col>
+        <a-col :span="4" :offset="12">
+          <a-button type="primary" @click="showEndTimeModal"
+            >批量配置统计截止时间</a-button
+          >
+        </a-col>
+      </a-row>
     </div>
 
     <div>
@@ -102,103 +115,102 @@
 </template>
 
 <script>
-import { randomNumber, randomUUID, randomString } from '@/utils/util';
+  import { randomNumber, randomUUID, randomString } from '@/utils/util';
 
-export default {
-  name: 'AddMissionSecondStep',
-  data() {
-    return {
-      applyReason: '',
-      applyModalVisible: false,
-      endTimeModalVisible: false,
-      singleEndTimeModalVisible: false,
-      singleEndTimeForm: {},
-      endTimeForm: {},
-      rowSelection: {
-        type: 'checkbox',
-        showCheckedAll: true,
-      },
-      selectedKeys: [],
-      columns: [
-        {
-          title: '表单名称',
-          align: 'center',
-          dataIndex: 'formName',
+  export default {
+    name: 'AddMissionSecondStep',
+    data() {
+      return {
+        applyReason: '',
+        applyModalVisible: false,
+        endTimeModalVisible: false,
+        singleEndTimeModalVisible: false,
+        singleEndTimeForm: {},
+        endTimeForm: {},
+        rowSelection: {
+          type: 'checkbox',
+          showCheckedAll: true,
         },
-        {
-          title: '状态',
-          align: 'center',
-          slotName: 'formStatus',
-        },
-        {
-          title: '备注',
-          align: 'center',
-          dataIndex: 'formRemark',
-        },
-        {
-          title: '统计截止时间',
-          align: 'center',
-          sortable: {
-            sortDirections: ['ascend', 'descend'],
+        selectedKeys: [],
+        columns: [
+          {
+            title: '表单名称',
+            align: 'center',
+            dataIndex: 'formName',
           },
-          dataIndex: 'endTime',
-        },
-        {
-          title: '操作',
-          slotName: 'action',
-        },
-      ],
-      dataSource: [],
-    };
-  },
-
-  created() {
-    this.initData();
-  },
-
-  methods: {
-    initData() {
-      for (let i = 0; i < 20; i += 1) {
-        this.dataSource.push({
-          key: randomUUID(),
-          formName: `1-${randomNumber(1, 9)} 表单名-${randomString(5)}`,
-          formStatus: randomNumber(0, 1) === 0,
-          formRemark: randomNumber(0, 1) === 0 ? '不可填报说明文字' : '-',
-          endTime: `${randomNumber(2016, 2024)}-9-30`,
-        });
-      }
+          {
+            title: '状态',
+            align: 'center',
+            slotName: 'formStatus',
+          },
+          {
+            title: '备注',
+            align: 'center',
+            dataIndex: 'formRemark',
+          },
+          {
+            title: '统计截止时间',
+            align: 'center',
+            sortable: {
+              sortDirections: ['ascend', 'descend'],
+            },
+            dataIndex: 'endTime',
+          },
+          {
+            title: '操作',
+            slotName: 'action',
+          },
+        ],
+        dataSource: [],
+      };
     },
 
-    showEndTimeModal() {
-      this.endTimeModalVisible = true;
+    created() {
+      this.initData();
     },
 
-    closeEndTimeModal() {
-      this.$refs.endTimeForm.resetFields();
-      this.endTimeModalVisible = false;
-    },
+    methods: {
+      initData() {
+        for (let i = 0; i < 20; i += 1) {
+          this.dataSource.push({
+            key: randomUUID(),
+            formName: `1-${randomNumber(1, 9)} 表单名-${randomString(5)}`,
+            formStatus: randomNumber(0, 1) === 0,
+            formRemark: randomNumber(0, 1) === 0 ? '不可填报说明文字' : '-',
+            endTime: `${randomNumber(2016, 2024)}-9-30`,
+          });
+        }
+      },
 
-    apply(record) {
-      this.applyReason = '';
-      this.applyModalVisible = true;
-    },
+      showEndTimeModal() {
+        this.endTimeModalVisible = true;
+      },
 
-    cancel(record) {},
+      closeEndTimeModal() {
+        this.$refs.endTimeForm.resetFields();
+        this.endTimeModalVisible = false;
+      },
 
-    closeApplyModal() {
-      this.applyModalVisible = false;
-    },
+      apply(record) {
+        this.applyReason = '';
+        this.applyModalVisible = true;
+      },
 
-    closeSingleEndTimeModal() {
-      this.singleEndTimeModalVisible = false;
-    },
+      cancel(record) {},
 
-    showSingleEndTimeModal(record) {
-      this.singleEndTimeModalVisible = true;
+      closeApplyModal() {
+        this.applyModalVisible = false;
+      },
+
+      closeSingleEndTimeModal() {
+        this.singleEndTimeModalVisible = false;
+      },
+
+      showSingleEndTimeModal(record) {
+        this.singleEndTimeModalVisible = true;
+      },
     },
-  },
-};
+  };
 </script>
 
-<style>
-</style>
+<style></style>
