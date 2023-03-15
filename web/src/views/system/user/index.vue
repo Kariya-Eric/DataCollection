@@ -57,69 +57,72 @@
         </a-table>
       </div>
     </a-card>
+
+    <add-user-modal ref="addUserModal" />
   </div>
 </template>
 
 <script>
-import { AddUserDrawer } from './components/AddUserDrawer.vue';
-import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
+  import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
+  import AddUserModal from './components/AddUserModal.vue';
 
-export default {
-  name: 'SystemUser',
-  components: {
-    AddUserDrawer,
-  },
-  mixins: [DataCollectionMixin],
-  data() {
-    return {
-      columns: [
-        {
-          title: '姓名',
-          align: 'center',
-          dataIndex: 'name',
-        },
-        {
-          title: '帐号',
-          align: 'center',
-          dataIndex: 'account',
-        },
-        {
-          title: '状态',
-          align: 'center',
-          dataIndex: 'name',
-        },
-        {
-          title: '所属部门',
-          align: 'center',
-          dataIndex: 'orgName',
-        },
-        {
-          title: '邮箱地址',
-          align: 'center',
-          dataIndex: 'email',
-        },
-        {
-          title: '手机号',
-          align: 'center',
-          dataIndex: 'mobile',
-        },
-        {
-          title: '操作',
-          align: 'center',
-          slotName: 'action',
-        },
-      ],
-    };
-  },
-  methods: {
-    editUser(record) {
-      console.log(record);
+  export default {
+    name: 'SystemUser',
+    components: {
+        AddUserModal,
     },
+    mixins: [DataCollectionMixin],
+    data() {
+      return {
+        columns: [
+          {
+            title: '姓名',
+            align: 'center',
+            dataIndex: 'name',
+          },
+          {
+            title: '帐号',
+            align: 'center',
+            dataIndex: 'account',
+          },
+          {
+            title: '状态',
+            align: 'center',
+            dataIndex: 'name',
+          },
+          {
+            title: '所属部门',
+            align: 'center',
+            dataIndex: 'orgName',
+          },
+          {
+            title: '邮箱地址',
+            align: 'center',
+            dataIndex: 'email',
+          },
+          {
+            title: '手机号',
+            align: 'center',
+            dataIndex: 'mobile',
+          },
+          {
+            title: '操作',
+            align: 'center',
+            slotName: 'action',
+          },
+        ],
+      };
+    },
+    methods: {
+      editUser(record) {
+        console.log(record);
+      },
 
-    addUser() {},
-  },
-};
+      addUser() {
+        this.$refs.addUserModal.show();
+      },
+    },
+  };
 </script>
 
-<style>
-</style>
+<style></style>

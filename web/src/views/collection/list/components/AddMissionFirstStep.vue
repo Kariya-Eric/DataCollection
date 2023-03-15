@@ -8,7 +8,7 @@
             <a-form-item label="任务类型">
               <a-select
                 placeholder="请选择任务类型"
-                v-model="basicForm.missionType"
+                v-model="basicForm.type"
               >
                 <a-option>全部</a-option>
                 <a-option>教学基本状态数据</a-option>
@@ -20,7 +20,7 @@
             <a-form-item label="任务名称">
               <a-input
                 placeholder="输入任务名称"
-                v-model="basicForm.missionName"
+                v-model="basicForm.name"
               />
             </a-form-item>
           </a-col>
@@ -30,20 +30,20 @@
             <a-form-item label="统计开始时间">
               <a-date-picker
                 style="width: 200px"
-                v-model="basicForm.startTime"
+                v-model="basicForm.statisticsStartTime"
               />
             </a-form-item>
           </a-col>
           <a-col :span="12">
             <a-form-item label="统计截止时间">
-              <a-date-picker style="width: 200px" v-model="basicForm.endTime" />
+              <a-date-picker style="width: 200px" v-model="basicForm.statisticsEndTime" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :span="12">
             <a-form-item label="学年">
-              <a-select placeholder="请选择" v-model="basicForm.studyYear">
+              <a-select placeholder="请选择" v-model="basicForm.schoolYear">
                 <a-option>2019</a-option>
                 <a-option>2020</a-option>
                 <a-option>2021</a-option>
@@ -52,7 +52,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="自然年" v-model="basicForm.naturalYear">
+            <a-form-item label="自然年" v-model="basicForm.year">
               <a-input disabled />
             </a-form-item>
           </a-col>

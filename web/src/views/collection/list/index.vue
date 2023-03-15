@@ -9,7 +9,7 @@
               <a-form-item label="任务类型">
                 <a-select
                   placeholder="请选择任务类型"
-                  v-model="queryParam.missionType"
+                  v-model="queryParam.type"
                 >
                   <a-option>全部</a-option>
                   <a-option>教学基本状态数据</a-option>
@@ -21,7 +21,7 @@
               <a-form-item label="学年">
                 <a-select
                   placeholder="请选择学年"
-                  v-model="queryParam.studyYear"
+                  v-model="queryParam.schoolYear"
                 >
                   <a-option>2021-2022</a-option>
                   <a-option>2020-2021</a-option>
@@ -33,7 +33,7 @@
               <a-form-item label="任务名称">
                 <a-input
                   placeholder="输入任务名称模糊匹配"
-                  v-model="queryParam.missionName"
+                  v-model="queryParam.name"
                 />
               </a-form-item>
             </a-col>
@@ -77,16 +77,16 @@
           <template #enabled="{ record }">
             <a-switch v-model="record.enabled" />
           </template>
-          <template #progress="{ record }">
-            <a-progress :percent="record.progress" />
+          <template #percentage="{ record }">
+            <a-progress :percent="record.percentage" />
           </template>
-          <template #missionStatus="{ record }">
+          <template #status="{ record }">
             <a-tag
               size="large"
               checkable
               color="gray"
               bordered
-              v-if="record.missionStatus === 0"
+              v-if="record.status === 0"
             >
               未启用
             </a-tag>
@@ -95,7 +95,7 @@
               checkable
               color="blue"
               bordered
-              v-if="record.missionStatus === 1"
+              v-if="record.status === 1"
             >
               启用中
             </a-tag>
@@ -104,7 +104,7 @@
               checkable
               color="green"
               bordered
-              v-if="record.missionStatus === 2"
+              v-if="record.status === 2"
             >
               完成
             </a-tag>
@@ -113,7 +113,7 @@
               checkable
               color="orange"
               bordered
-              v-if="record.missionStatus === 3"
+              v-if="record.status === 3"
             >
               停用
             </a-tag>
@@ -145,115 +145,91 @@
 <script lang="ts" setup></script>
 
 <script>
-import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
-import { randomNumber, randomUUID } from '@/utils/util';
-import AddMissionModal from './components/AddMissionModal.vue';
-import MissionDetail from './components/MissionDetail.vue';
+  import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
+  import { randomNumber, randomUUID } from '@/utils/util';
+  import AddMissionModal from './components/AddMissionModal.vue';
+  import MissionDetail from './components/MissionDetail.vue';
 
-export default {
-  name: 'DataCollectionList',
-  components: { AddMissionModal, MissionDetail },
-  mixins: [DataCollectionMixin],
+  export default {
+    name: 'DataCollectionList',
+    components: { AddMissionModal, MissionDetail },
+    mixins: [DataCollectionMixin],
 
-  data() {
-    return {
-      columns: [
-        {
-          title: '任务类型',
-          align: 'center',
-          dataIndex: 'missonType',
-        },
-        {
-          title: '任务名称',
-          align: 'center',
-          dataIndex: 'missionName',
-        },
-        {
-          title: '统计开始时间',
-          align: 'center',
-          dataIndex: 'startTime',
-          sortable: {
-            sortDirections: ['ascend', 'descend'],
+    data() {
+      return {
+        columns: [
+          {
+            title: '任务类型',
+            align: 'center',
+            dataIndex: 'type',
           },
-        },
-        {
-          title: '统计截止时间',
-          align: 'center',
-          dataIndex: 'endTime',
-          sortable: {
-            sortDirections: ['ascend', 'descend'],
+          {
+            title: '任务名称',
+            align: 'center',
+            dataIndex: 'name',
           },
-        },
-        {
-          title: '学年',
-          align: 'center',
-          dataIndex: 'studyYear',
-        },
-        {
-          title: '自然年',
-          align: 'center',
-          dataIndex: 'naturalYear',
-        },
-        {
-          title: '任务状态',
-          align: 'center',
-          slotName: 'missionStatus',
-        },
-        {
-          title: '完成进度',
-          width: '120',
-          slotName: 'progress',
-        },
-        {
-          title: '启用',
-          slotName: 'enabled',
-        },
-        {
-          title: '操作',
-          slotName: 'action',
-        },
-      ],
-    };
-  },
-
-  created() {
-    this.loadData();
-  },
-
-  methods: {
-    loadData() {
-      for (let i = 0; i < 50; i += 1) {
-        this.dataSource.push({
-          key: randomUUID(),
-          missonType: '教学基本状态数据',
-          missionName: `${randomNumber(2016, 2024)}教学基本状态数据`,
-          startTime: `${randomNumber(2016, 2024)}-9-1`,
-          endTime: `${randomNumber(2016, 2024)}-9-30`,
-          studyYear: randomNumber(2016, 2024),
-          naturalYear: `${randomNumber(2016, 2024)}-${randomNumber(
-            2016,
-            2024
-          )}`,
-          missionStatus: randomNumber(0, 3),
-          progress: randomNumber(0, 100) / 100,
-          enabled: randomNumber(0, 1) === 0,
-        });
-      }
+          {
+            title: '统计开始时间',
+            align: 'center',
+            dataIndex: 'statisticsStartTime',
+            sortable: {
+              sortDirections: ['ascend', 'descend'],
+            },
+          },
+          {
+            title: '统计截止时间',
+            align: 'center',
+            dataIndex: 'statisticsEndTime',
+            sortable: {
+              sortDirections: ['ascend', 'descend'],
+            },
+          },
+          {
+            title: '学年',
+            align: 'center',
+            dataIndex: 'schoolYear',
+          },
+          {
+            title: '自然年',
+            align: 'center',
+            dataIndex: 'year',
+          },
+          {
+            title: '任务状态',
+            align: 'center',
+            slotName: 'status',
+          },
+          {
+            title: '完成进度',
+            width: '120',
+            slotName: 'percentage',
+          },
+          {
+            title: '启用',
+            slotName: 'enabled',
+          },
+          {
+            title: '操作',
+            slotName: 'action',
+          },
+        ],
+      };
     },
 
-    addMission() {
-      this.$refs.addMission.show();
-    },
+    methods: {
+      addMission() {
+        this.$refs.addMission.show();
+      },
 
-    search() {
-      console.log('表单数据', this.$refs.searchForm, this.queryParam);
-    },
+      search() {
+        console.log('表单数据', this.$refs.searchForm, this.queryParam);
+      },
 
-    showMissionDetail(record) {
-      this.$refs.missionDetail.show(record);
+      showMissionDetail(record) {
+        this.$refs.missionDetail.show(record);
+      },
     },
-  },
-};
+  };
 </script>
 
 <style lang="less" scoped></style>
