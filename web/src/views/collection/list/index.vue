@@ -119,7 +119,9 @@
             </a-tag>
           </template>
           <template #action="{ record }">
-            <a href="javascript:;">任务概览</a>
+            <a href="javascript:;" @click="showMissionDetail(record)"
+              >任务概览</a
+            >
             <a-divider v-if="record.enabled" direction="vertical" />
             <a v-if="record.enabled" href="javascript:;">任务详情</a>
             <a-divider direction="vertical" />
@@ -136,116 +138,122 @@
     </a-card>
 
     <add-mission-modal ref="addMission" />
+    <mission-detail ref="missionDetail" />
   </div>
 </template>
 
 <script lang="ts" setup></script>
 
 <script>
-  import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
-  import { randomNumber, randomUUID } from '@/utils/util';
-  import AddMissionModal from './components/AddMissionModal.vue';
+import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
+import { randomNumber, randomUUID } from '@/utils/util';
+import AddMissionModal from './components/AddMissionModal.vue';
+import MissionDetail from './components/MissionDetail.vue';
 
-  export default {
-    name: 'DataCollectionList',
-    components: { AddMissionModal },
-    mixins: [DataCollectionMixin],
+export default {
+  name: 'DataCollectionList',
+  components: { AddMissionModal, MissionDetail },
+  mixins: [DataCollectionMixin],
 
-    data() {
-      return {
-        columns: [
-          {
-            title: '任务类型',
-            align: 'center',
-            dataIndex: 'missonType',
+  data() {
+    return {
+      columns: [
+        {
+          title: '任务类型',
+          align: 'center',
+          dataIndex: 'missonType',
+        },
+        {
+          title: '任务名称',
+          align: 'center',
+          dataIndex: 'missionName',
+        },
+        {
+          title: '统计开始时间',
+          align: 'center',
+          dataIndex: 'startTime',
+          sortable: {
+            sortDirections: ['ascend', 'descend'],
           },
-          {
-            title: '任务名称',
-            align: 'center',
-            dataIndex: 'missionName',
+        },
+        {
+          title: '统计截止时间',
+          align: 'center',
+          dataIndex: 'endTime',
+          sortable: {
+            sortDirections: ['ascend', 'descend'],
           },
-          {
-            title: '统计开始时间',
-            align: 'center',
-            dataIndex: 'startTime',
-            sortable: {
-              sortDirections: ['ascend', 'descend'],
-            },
-          },
-          {
-            title: '统计截止时间',
-            align: 'center',
-            dataIndex: 'endTime',
-            sortable: {
-              sortDirections: ['ascend', 'descend'],
-            },
-          },
-          {
-            title: '学年',
-            align: 'center',
-            dataIndex: 'studyYear',
-          },
-          {
-            title: '自然年',
-            align: 'center',
-            dataIndex: 'naturalYear',
-          },
-          {
-            title: '任务状态',
-            align: 'center',
-            slotName: 'missionStatus',
-          },
-          {
-            title: '完成进度',
-            width: '120',
-            slotName: 'progress',
-          },
-          {
-            title: '启用',
-            slotName: 'enabled',
-          },
-          {
-            title: '操作',
-            slotName: 'action',
-          },
-        ],
-      };
+        },
+        {
+          title: '学年',
+          align: 'center',
+          dataIndex: 'studyYear',
+        },
+        {
+          title: '自然年',
+          align: 'center',
+          dataIndex: 'naturalYear',
+        },
+        {
+          title: '任务状态',
+          align: 'center',
+          slotName: 'missionStatus',
+        },
+        {
+          title: '完成进度',
+          width: '120',
+          slotName: 'progress',
+        },
+        {
+          title: '启用',
+          slotName: 'enabled',
+        },
+        {
+          title: '操作',
+          slotName: 'action',
+        },
+      ],
+    };
+  },
+
+  created() {
+    this.loadData();
+  },
+
+  methods: {
+    loadData() {
+      for (let i = 0; i < 50; i += 1) {
+        this.dataSource.push({
+          key: randomUUID(),
+          missonType: '教学基本状态数据',
+          missionName: `${randomNumber(2016, 2024)}教学基本状态数据`,
+          startTime: `${randomNumber(2016, 2024)}-9-1`,
+          endTime: `${randomNumber(2016, 2024)}-9-30`,
+          studyYear: randomNumber(2016, 2024),
+          naturalYear: `${randomNumber(2016, 2024)}-${randomNumber(
+            2016,
+            2024
+          )}`,
+          missionStatus: randomNumber(0, 3),
+          progress: randomNumber(0, 100) / 100,
+          enabled: randomNumber(0, 1) === 0,
+        });
+      }
     },
 
-    created() {
-      this.loadData();
+    addMission() {
+      this.$refs.addMission.show();
     },
 
-    methods: {
-      loadData() {
-        for (let i = 0; i < 50; i += 1) {
-          this.dataSource.push({
-            key: randomUUID(),
-            missonType: '教学基本状态数据',
-            missionName: `${randomNumber(2016, 2024)}教学基本状态数据`,
-            startTime: `${randomNumber(2016, 2024)}-9-1`,
-            endTime: `${randomNumber(2016, 2024)}-9-30`,
-            studyYear: randomNumber(2016, 2024),
-            naturalYear: `${randomNumber(2016, 2024)}-${randomNumber(
-              2016,
-              2024
-            )}`,
-            missionStatus: randomNumber(0, 3),
-            progress: randomNumber(0, 100) / 100,
-            enabled: randomNumber(0, 1) === 0,
-          });
-        }
-      },
-
-      addMission() {
-        this.$refs.addMission.show();
-      },
-
-      search() {
-        console.log('表单数据', this.$refs.searchForm, this.queryParam);
-      },
+    search() {
+      console.log('表单数据', this.$refs.searchForm, this.queryParam);
     },
-  };
+
+    showMissionDetail(record) {
+      this.$refs.missionDetail.show(record);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped></style>
