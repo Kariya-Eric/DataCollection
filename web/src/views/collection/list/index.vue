@@ -76,13 +76,12 @@
         <a-table
           :columns="columns"
           :data="dataSource"
-          :pagination ="ipagination"
+          :pagination="ipagination"
           :loading="loading"
-          @change="handleTableChange"
           :bordered="{ cell: true }"
         >
           <template #enabled="{ record }">
-            <a-switch v-model="record.enabled" />
+            <a-switch :v-model="record.enabled === 0" />
           </template>
           <template #percentage="{ record }">
             <a-progress :percent="record.percentage / 100" />
@@ -148,89 +147,89 @@
 <script lang="ts" setup></script>
 
 <script>
-import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
-import AddMissionModal from './components/AddMissionModal.vue';
-import MissionDetail from './components/MissionDetail.vue';
+  import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
+  import AddMissionModal from './components/AddMissionModal.vue';
+  import MissionDetail from './components/MissionDetail.vue';
 
-export default {
-  name: 'DataCollectionList',
-  components: { AddMissionModal, MissionDetail },
-  mixins: [DataCollectionMixin],
+  export default {
+    name: 'DataCollectionList',
+    components: { AddMissionModal, MissionDetail },
+    mixins: [DataCollectionMixin],
 
-  data() {
-    return {
-      columns: [
-        {
-          title: '任务类型',
-          align: 'center',
-          dataIndex: 'type',
-        },
-        {
-          title: '任务名称',
-          align: 'center',
-          dataIndex: 'name',
-        },
-        {
-          title: '统计开始时间',
-          align: 'center',
-          dataIndex: 'statisticsStartTime',
-          sortable: {
-            sortDirections: ['ascend', 'descend'],
+    data() {
+      return {
+        columns: [
+          {
+            title: '任务类型',
+            align: 'center',
+            dataIndex: 'type',
           },
-        },
-        {
-          title: '统计截止时间',
-          align: 'center',
-          dataIndex: 'statisticsEndTime',
-          sortable: {
-            sortDirections: ['ascend', 'descend'],
+          {
+            title: '任务名称',
+            align: 'center',
+            dataIndex: 'name',
           },
+          {
+            title: '统计开始时间',
+            align: 'center',
+            dataIndex: 'statisticsStartTime',
+            sortable: {
+              sortDirections: ['ascend', 'descend'],
+            },
+          },
+          {
+            title: '统计截止时间',
+            align: 'center',
+            dataIndex: 'statisticsEndTime',
+            sortable: {
+              sortDirections: ['ascend', 'descend'],
+            },
+          },
+          {
+            title: '学年',
+            align: 'center',
+            dataIndex: 'schoolYear',
+          },
+          {
+            title: '自然年',
+            align: 'center',
+            dataIndex: 'year',
+          },
+          {
+            title: '任务状态',
+            align: 'center',
+            slotName: 'status',
+          },
+          {
+            title: '完成进度',
+            width: '120',
+            slotName: 'percentage',
+          },
+          {
+            title: '启用',
+            slotName: 'enabled',
+          },
+          {
+            title: '操作',
+            slotName: 'action',
+          },
+        ],
+        url: {
+          list: '/portal/api/task/list',
         },
-        {
-          title: '学年',
-          align: 'center',
-          dataIndex: 'schoolYear',
-        },
-        {
-          title: '自然年',
-          align: 'center',
-          dataIndex: 'year',
-        },
-        {
-          title: '任务状态',
-          align: 'center',
-          slotName: 'status',
-        },
-        {
-          title: '完成进度',
-          width: '120',
-          slotName: 'percentage',
-        },
-        {
-          title: '启用',
-          slotName: 'enabled',
-        },
-        {
-          title: '操作',
-          slotName: 'action',
-        },
-      ],
-      url: {
-        list: '/portal/api/task/list',
+      };
+    },
+
+    methods: {
+      addMission() {
+        this.$refs.addMission.show();
       },
-    };
-  },
 
-  methods: {
-    addMission() {
-      this.$refs.addMission.show();
+      showMissionDetail(record) {
+        this.$refs.missionDetail.show(record);
+      },
     },
-
-    showMissionDetail(record) {
-      this.$refs.missionDetail.show(record);
-    },
-  },
-};
+  };
 </script>
 
 <style lang="less" scoped></style>
