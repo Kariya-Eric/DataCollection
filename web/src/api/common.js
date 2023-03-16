@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import axios from '@/utils/request';
-import signMd5Utils from '@/utils/encryption/signMd5Utils';
+
+import { axios } from '@/utils/request';
+import signMd5Utils from '@/utils/encryption/signMd5Util';
 
 //post
 export function postAction(url, parameter) {

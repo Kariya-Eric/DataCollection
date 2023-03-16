@@ -3,7 +3,12 @@
     <a-card :bordered="false">
       <!-- 查询区域 -->
       <div class="table-page-search-wrapper">
-        <a-form :layout="inline" ref="searchForm" :model="queryParam">
+        <a-form
+          :layout="inline"
+          ref="searchForm"
+          :model="queryParam"
+          @keyup.enter="searchQuery"
+        >
           <a-row :gutter="24">
             <a-col :span="6">
               <a-form-item label="任务类型">
@@ -39,7 +44,7 @@
             </a-col>
             <a-col :span="6">
               <a-space>
-                <a-button type="primary" @click="search">
+                <a-button type="primary" @click="searchQuery">
                   <icon-search />查询
                 </a-button>
                 <a-button type="primary" @click="searchReset">
@@ -71,19 +76,20 @@
         <a-table
           :columns="columns"
           :data="dataSource"
-          :pagination="ipagination"
+          :pagination ="ipagination"
+          :loading="loading"
+          @change="handleTableChange"
           :bordered="{ cell: true }"
         >
           <template #enabled="{ record }">
             <a-switch v-model="record.enabled" />
           </template>
           <template #percentage="{ record }">
-            <a-progress :percent="record.percentage" />
+            <a-progress :percent="record.percentage / 100" />
           </template>
           <template #status="{ record }">
             <a-tag
               size="large"
-              checkable
               color="gray"
               bordered
               v-if="record.status === 0"
@@ -92,7 +98,6 @@
             </a-tag>
             <a-tag
               size="large"
-              checkable
               color="blue"
               bordered
               v-if="record.status === 1"
@@ -101,7 +106,6 @@
             </a-tag>
             <a-tag
               size="large"
-              checkable
               color="green"
               bordered
               v-if="record.status === 2"
@@ -110,7 +114,6 @@
             </a-tag>
             <a-tag
               size="large"
-              checkable
               color="orange"
               bordered
               v-if="record.status === 3"
@@ -145,91 +148,89 @@
 <script lang="ts" setup></script>
 
 <script>
-  import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
-  import { randomNumber, randomUUID } from '@/utils/util';
-  import AddMissionModal from './components/AddMissionModal.vue';
-  import MissionDetail from './components/MissionDetail.vue';
+import { DataCollectionMixin } from '@/mixins/DataCollectionMixin';
+import AddMissionModal from './components/AddMissionModal.vue';
+import MissionDetail from './components/MissionDetail.vue';
 
-  export default {
-    name: 'DataCollectionList',
-    components: { AddMissionModal, MissionDetail },
-    mixins: [DataCollectionMixin],
+export default {
+  name: 'DataCollectionList',
+  components: { AddMissionModal, MissionDetail },
+  mixins: [DataCollectionMixin],
 
-    data() {
-      return {
-        columns: [
-          {
-            title: '任务类型',
-            align: 'center',
-            dataIndex: 'type',
+  data() {
+    return {
+      columns: [
+        {
+          title: '任务类型',
+          align: 'center',
+          dataIndex: 'type',
+        },
+        {
+          title: '任务名称',
+          align: 'center',
+          dataIndex: 'name',
+        },
+        {
+          title: '统计开始时间',
+          align: 'center',
+          dataIndex: 'statisticsStartTime',
+          sortable: {
+            sortDirections: ['ascend', 'descend'],
           },
-          {
-            title: '任务名称',
-            align: 'center',
-            dataIndex: 'name',
+        },
+        {
+          title: '统计截止时间',
+          align: 'center',
+          dataIndex: 'statisticsEndTime',
+          sortable: {
+            sortDirections: ['ascend', 'descend'],
           },
-          {
-            title: '统计开始时间',
-            align: 'center',
-            dataIndex: 'statisticsStartTime',
-            sortable: {
-              sortDirections: ['ascend', 'descend'],
-            },
-          },
-          {
-            title: '统计截止时间',
-            align: 'center',
-            dataIndex: 'statisticsEndTime',
-            sortable: {
-              sortDirections: ['ascend', 'descend'],
-            },
-          },
-          {
-            title: '学年',
-            align: 'center',
-            dataIndex: 'schoolYear',
-          },
-          {
-            title: '自然年',
-            align: 'center',
-            dataIndex: 'year',
-          },
-          {
-            title: '任务状态',
-            align: 'center',
-            slotName: 'status',
-          },
-          {
-            title: '完成进度',
-            width: '120',
-            slotName: 'percentage',
-          },
-          {
-            title: '启用',
-            slotName: 'enabled',
-          },
-          {
-            title: '操作',
-            slotName: 'action',
-          },
-        ],
-      };
+        },
+        {
+          title: '学年',
+          align: 'center',
+          dataIndex: 'schoolYear',
+        },
+        {
+          title: '自然年',
+          align: 'center',
+          dataIndex: 'year',
+        },
+        {
+          title: '任务状态',
+          align: 'center',
+          slotName: 'status',
+        },
+        {
+          title: '完成进度',
+          width: '120',
+          slotName: 'percentage',
+        },
+        {
+          title: '启用',
+          slotName: 'enabled',
+        },
+        {
+          title: '操作',
+          slotName: 'action',
+        },
+      ],
+      url: {
+        list: '/portal/api/task/list',
+      },
+    };
+  },
+
+  methods: {
+    addMission() {
+      this.$refs.addMission.show();
     },
 
-    methods: {
-      addMission() {
-        this.$refs.addMission.show();
-      },
-
-      search() {
-        console.log('表单数据', this.$refs.searchForm, this.queryParam);
-      },
-
-      showMissionDetail(record) {
-        this.$refs.missionDetail.show(record);
-      },
+    showMissionDetail(record) {
+      this.$refs.missionDetail.show(record);
     },
-  };
+  },
+};
 </script>
 
 <style lang="less" scoped></style>
