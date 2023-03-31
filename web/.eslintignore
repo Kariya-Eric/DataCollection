@@ -1,3 +1,4 @@
-/*.json
-/*.js
-dist
+lib/
+dist/
+node_modules/
+/src
