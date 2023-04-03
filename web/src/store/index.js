@@ -1,28 +1,26 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import app from './modules/app';
+import user from './modules/user';
+import permission from './modules/permission';
 
-import app from './modules/app'
-import user from './modules/user'
-import errorLog from './modules/error-log'
+Vue.use(Vuex);
 
-import getters from './getters'
-
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
-
-  },
-  mutations: {
-
-  },
-  actions: {
-
-  },
+const store = new Vuex.Store({
   modules: {
-    app,
-    user,
-    errorLog
-  },
-  getters
-})
+    user: {
+      namespaced: true,
+      ...user
+    },
+    app: {
+      namespaced: true,
+      ...app
+    },
+    permission: {
+      namespaced: true,
+      ...permission
+    }
+  }
+});
+
+export default store;

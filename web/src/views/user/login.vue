@@ -1,129 +1,186 @@
 <template>
-  <div class="page-login">
-    <user-header />
-    <div :class="['error-tips', { 'is-active': !!message }]">
-      <a-alert
-        v-if="message"
-        :message="message"
-        banner
-        closable
-        @close="onAlertClose"
-        type="error"
-      />
-    </div>
-    <a-form-model ref="form" :model="values">
-      <a-form-model-item>
-        <a-input :size="size" v-model="values.account" placeholder="帐号">
-          <a-icon slot="prefix" type="user" class="C999" />
-        </a-input>
-      </a-form-model-item>
-      <a-form-model-item>
-        <a-input
-          :size="size"
-          v-model="values.pwd"
-          type="password"
-          placeholder="密码"
-        >
-          <a-icon slot="prefix" type="lock" class="C999" />
-        </a-input>
-      </a-form-model-item>
+  <div class="main">
+    <el-form
+      id="formLogin"
+      class="user-layout-login"
+      ref="loginForm"
+      :rules="loginRules"
+      :model="mdl"
+    >
+      <el-tabs v-model="customActiveKey" stretch @tab-click="handleTabClick">
+        <el-tab-pane label="账号密码登录" name="tab1">
+          <el-alert
+            v-if="isLoginError"
+            type="error"
+            show-icon
+            style="margin-bottom: 24px"
+            title="账户或密码错误"
+          />
+          <el-form-item prop="account">
+            <el-input
+              size="large"
+              type="text"
+              placeholder="账户"
+              v-model="mdl.account"
+              name="account"
+              auto-complete="on"
+            >
+              <i class="el-icon-user el-input__icon" slot="prefix"> </i>
+            </el-input>
+          </el-form-item>
 
-      <a-form-model-item prop="auto">
-        <a-checkbox v-model="values.auto">自动登录</a-checkbox>
-      </a-form-model-item>
+          <el-form-item prop="password">
+            <el-input
+              size="large"
+              :type="pwdType"
+              placeholder="密码"
+              v-model="mdl.password"
+              name="password"
+              @keyup.enter.native="handleLogin"
+            >
+              <i class="el-icon-lock el-input__icon" slot="prefix"> </i>
+              <i slot="suffix" @click="showPwd">
+                <svg-icon v-if="pwdType === 'password'" icon-class="eyeclose" />
+                <svg-icon v-if="pwdType === 'text'" icon-class="eye"></svg-icon>
+              </i>
+            </el-input>
+          </el-form-item>
+        </el-tab-pane>
+        <el-tab-pane label="认证登录" name="tab2">
+          <span>开发中</span>
+        </el-tab-pane>
+      </el-tabs>
 
-      <a-form-model-item class="TAC">
-        <a-button
-          :size="size"
-          :loading="loading"
-          @click="onLogin"
+      <el-form-item style="margin-top: 24px">
+        <el-button
+          size="large"
           type="primary"
-          class="W100"
+          class="login-button"
+          :loading="state.loginBtnLoading"
+          :disabled="state.loginBtnLoading"
+          @click="handleLogin"
+          >确定</el-button
         >
-          登录
-        </a-button>
-      </a-form-model-item>
-    </a-form-model>
+      </el-form-item>
+
+      <div class="user-login-other">
+        <!-- <span>其他登录方式</span> -->
+      </div>
+    </el-form>
   </div>
 </template>
 
 <script>
-import Vue from "vue";
-import UserHeader from "./modules/user-header";
-import { ACCESS_TOKEN } from "@/store/mutation-types";
 import { mapActions } from "vuex";
-import { timeFix } from "@/utils/utils";
 
 export default {
-  components: {
-    UserHeader,
-  },
   data() {
     return {
-      // 提交控制
-      loading: false,
-      // 表单尺寸，账户模块的表单都统一使用大号的
-      size: "large",
-      // 表单值
-      values: {
-        account: "",
-        pwd: "",
-        auto: true,
+      customActiveKey: "tab1",
+      loginType: 0,
+      isLoginError: false,
+      state: {
+        time: 60,
+        loginBtnLoading: false,
+        loginType: 0,
+        smsSendBtn: false,
       },
-      // 接口返回的错误提示
-      message: "",
-      // 校验规则
+      mdl: {
+        account: "",
+        password: "",
+      },
+      loginRules: {
+        account: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+          { min: 3, message: "用户名不少3个字符", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+          { min: 3, message: "密码不少3个字符", trigger: "blur" },
+        ],
+      },
+      pwdType: "password",
+      redirect: undefined,
     };
   },
-
-  created() {
-    Vue.ls.remove(ACCESS_TOKEN);
-  },
-
   methods: {
-    ...mapActions(["Login"]),
+    ...mapActions("user", ["Login"]),
+    showPwd() {
+      if (this.pwdType === "password") {
+        this.pwdType = "text";
+      } else {
+        this.pwdType = "password";
+      }
+    },
 
-    onLogin() {
-      this.$refs.form.validate((valid) => {
+    handleTabClick(tab, event) {
+      this.customActiveKey = tab.name;
+    },
+
+    handleLogin() {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true;
-          this.Login(this.values)
+          this.state.loginBtnLoading = true;
+          this.Login(this.mdl)
             .then(() => {
-              const { query } = this.$route;
-              this.$notification.success({
-                message: "欢迎",
-                description: `${timeFix()},欢迎回来!`,
-              });
-              this.loading = false;
-              this.$router.push(query.redirect || "/");
+              this.$router.push({ path: this.redirect || "/" });
+              this.state.loginBtnLoading = false;
             })
-            .catch((e) => {
-              this.message = e.message || "账号或密码错误";
-            })
-            .finally(() => {
-              this.loading = false;
+            .catch((err) => {
+              this.state.loginBtnLoading = false;
+              if (err && !err.isSuccess) {
+                this.isLoginError = true;
+                setTimeout(() => {
+                  this.isLoginError = false;
+                }, 3000);
+              }
             });
         } else {
           return false;
         }
       });
     },
-    onAlertClose() {
-      this.message = "";
-    },
   },
 };
 </script>
-<style lang="less" scoped>
-.page-login {
-  width: 100%;
-  .error-tips {
-    margin: 0 0 10px;
-    height: 37px;
-    opacity: 0;
-    transition: opacity 0.25s ease-in;
-    &.is-active {
-      opacity: 1;
+
+<style lang="scss" scoped>
+.user-layout-login {
+  label {
+    font-size: 14px;
+  }
+
+  .forge-password {
+    font-size: 14px;
+  }
+
+  button.login-button {
+    padding: 0 15px;
+    font-size: 16px;
+    height: 40px;
+    width: 100%;
+  }
+
+  .user-login-other {
+    text-align: left;
+    margin-top: 24px;
+    line-height: 22px;
+
+    .item-icon {
+      font-size: 24px;
+      color: rgba(0, 0, 0, 0.2);
+      margin-left: 16px;
+      vertical-align: middle;
+      cursor: pointer;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #1890ff;
+      }
+    }
+
+    .register {
+      float: right;
     }
   }
 }

@@ -1,6 +1,20 @@
-import { postAction } from "./common";
+import { postAction } from "./api";
+import request from "@/utils/request";
 
-const login = (params) => postAction('/uc/login', params)
-const logout = (params) => postAction('/uc/logout', params)
+const login = (params) => postAction("/uc/login", params);
 
-export { login, logout } 
+export function getUserInfo() {
+  return request.get("/auth/userinfo");
+}
+
+export function getAccountInfo(accountId) {
+  return request.get("/account/info/" + accountId);
+}
+
+export function logout() {
+  // do nothing
+  return Promise.resolve();
+  // return request.post('/user/logout');
+}
+
+export { login };

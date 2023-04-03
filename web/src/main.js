@@ -1,22 +1,44 @@
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+import Vue from "vue";
+import "normalize.css/normalize.css"; // A modern alternative to CSS resets
 
-import Vue from 'vue'
+import ElementUI from "element-ui";
+// import 'element-ui/lib/theme-chalk/index.css';
+import "@/styles/element-variables.scss";
+import locale from "element-ui/lib/locale/lang/zh-CN"; // lang i18n
 
-import './extends/use'
-import './extends/directive'
-import './extends/prototype'
+import "@/styles/index.scss"; // global css
 
-import store from './store'
-import router from './router'
-import App from './app'
-import '@/components/nprogress.less'
-import '@wytxer/style-utils/lib/common.less'
+import App from "./App";
+import router from "./router";
+import store from "./store";
 
+import "@/icons"; // all icons and svg-icon
+import "@/permission"; // permission control
+import waves from "@/directive/waves"; // Waves directive
+import "@/utils/filter"; // global filters
 
-Vue.config.productionTip = false
+import Storage from "vue-ls";
+import config from "@/defaultSettings";
+import "@/views/form/form-generator/icons";
+import Tinymce from "@/views/form/form-generator/components/tinymce/index.vue";
+
+import Plugin from 'v-fit-columns';
+Vue.use(Plugin);
+
+Vue.component("tinymce", Tinymce);
+Vue.use(ElementUI, {
+  locale,
+});
+
+Vue.use(waves);
+
+Vue.use(Storage, config.storageOptions);
+
+Vue.config.productionTip = false;
+
 new Vue({
+  el: "#app",
   router,
   store,
-  render: h => h(App)
-}).$mount('#app')
+  render: (h) => h(App),
+});

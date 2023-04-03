@@ -1,0 +1,15 @@
+@import '~styles/variables.scss';
+
+// 改变选择项字体 radio, checkbox
+.el-radio__input.is-checked + .el-radio__label {
+  color: #606266 !important;
+}
+
+.el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #606266 !important;
+}
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+@import '~element-ui/packages/theme-chalk/src/index';
