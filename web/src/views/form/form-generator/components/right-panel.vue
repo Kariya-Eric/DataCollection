@@ -29,7 +29,7 @@
                 :label="item.__config__.label"
                 :value="item.__config__.tagIcon"
               >
-                <form-svg-icon
+                <svg-icon
                   class="node-icon"
                   :icon-class="item.__config__.tagIcon"
                 />
@@ -872,7 +872,7 @@
           >
             <span slot-scope="{ node, data }">
               <span class="node-label">
-                <form-svg-icon
+                <svg-icon
                   class="node-icon"
                   :icon-class="
                     data.__config__ ? data.__config__.tagIcon : data.tagIcon
@@ -915,6 +915,7 @@
           </div>
         </template>
       </el-form>
+
       <!-- 表单属性 -->
       <el-form v-show="currentTab === 'form'" size="small" label-width="90px">
         <el-form-item label="表单名">
@@ -985,14 +986,10 @@
 <script>
 import draggable from "vuedraggable";
 import { isArray } from "util";
-import TreeNodeDialog from "../views/TreeNodeDialog";
+import TreeNodeDialog from "./treenode-dialog.vue";
 import { isNumberStr } from "../utils/index";
-import IconsDialog from "./IconsDialog";
-import {
-  inputComponents,
-  selectComponents,
-  layoutComponents,
-} from "../components/generator/config";
+import IconsDialog from "./icons-dialog.vue";
+import { inputComponents, selectComponents } from "../generator/config";
 import { saveFormConf } from "../utils/db";
 
 const dateTimeFormat = {
@@ -1010,6 +1007,7 @@ const dateTimeFormat = {
 const needRerenderList = ["tinymce"];
 
 export default {
+  name: "RightPanel",
   components: {
     TreeNodeDialog,
     IconsDialog,

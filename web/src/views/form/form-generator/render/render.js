@@ -1,4 +1,4 @@
-import { deepClone } from '../../utils/index'
+import { deepClone } from '../utils'
 
 const componentChild = {}
 /**

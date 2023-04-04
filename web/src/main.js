@@ -19,13 +19,10 @@ import "@/utils/filter"; // global filters
 
 import Storage from "vue-ls";
 import config from "@/defaultSettings";
-import "@/views/form/form-generator/icons";
-import Tinymce from "@/views/form/form-generator/components/tinymce/index.vue";
 
 import Plugin from 'v-fit-columns';
 Vue.use(Plugin);
 
-Vue.component("tinymce", Tinymce);
 Vue.use(ElementUI, {
   locale,
 });

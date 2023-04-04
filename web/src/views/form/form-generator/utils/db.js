@@ -1,54 +1,71 @@
-const DRAWING_ITEMS = 'drawingItems'
-const DRAWING_ITEMS_VERSION = '1.2'
-const DRAWING_ITEMS_VERSION_KEY = 'DRAWING_ITEMS_VERSION'
-const DRAWING_ID = 'idGlobal'
-const TREE_NODE_ID = 'treeNodeId'
-const FORM_CONF = 'formConf'
+import Vue from 'vue'
+
+const DRAWING_CACHE = {
+    DRAWING_VERSION: '1.0.0',
+}
+
+function getCache() {
+    const cache = Vue.ls.get('DRAWING_CACHE')
+    if (!cache) {
+        Vue.ls.set('DRAWING_CACHE', {})
+        return {}
+    }
+    return cache
+}
 
 export function getDrawingList() {
-  // 加入缓存版本的概念，保证缓存数据与程序匹配
-  const version = localStorage.getItem(DRAWING_ITEMS_VERSION_KEY)
-  if (version !== DRAWING_ITEMS_VERSION) {
-    localStorage.setItem(DRAWING_ITEMS_VERSION_KEY, DRAWING_ITEMS_VERSION)
-    saveDrawingList([])
+    // 加入缓存版本的概念，保证缓存数据与程序匹配
+    const cache = getCache()
+    if (cache.version !== DRAWING_CACHE.DRAWING_VERSION) {
+        cache.version = DRAWING_CACHE.DRAWING_VERSION
+        Vue.ls.set('DRAWING_CACHE', cache)
+        saveDrawingList([])
+        return null
+    }
+    const drawingItems = cache.drawingItems
+    if (drawingItems) return drawingItems
     return null
-  }
-
-  const str = localStorage.getItem(DRAWING_ITEMS)
-  if (str) return JSON.parse(str)
-  return null
 }
 
 export function saveDrawingList(list) {
-  localStorage.setItem(DRAWING_ITEMS, JSON.stringify(list))
+    const cache = getCache()
+    cache.drawingItems = list
+    Vue.ls.set('DRAWING_CACHE', cache)
 }
 
 export function getIdGlobal() {
-  const str = localStorage.getItem(DRAWING_ID)
-  if (str) return parseInt(str, 10)
-  return 100
+    const cache = getCache()
+    if (cache.idGlobal) return parseInt(cache.idGlobal, 10)
+    return 100
 }
 
 export function saveIdGlobal(id) {
-  localStorage.setItem(DRAWING_ID, `${id}`)
+    const cache = getCache()
+    cache.idGlobal = id
+    Vue.ls.set('DRAWING_CACHE', cache)
 }
 
 export function getTreeNodeId() {
-  const str = localStorage.getItem(TREE_NODE_ID)
-  if (str) return parseInt(str, 10)
-  return 100
+    const cache = getCache()
+    if (cache.treeNodeId) return parseInt(cache.treeNodeId, 10)
+    return 100
 }
 
 export function saveTreeNodeId(id) {
-  localStorage.setItem(TREE_NODE_ID, `${id}`)
+    const cache = getCache()
+    cache.treeNodeId = id
+    Vue.ls.set('DRAWING_CACHE', cache)
 }
 
 export function getFormConf() {
-  const str = localStorage.getItem(FORM_CONF)
-  if (str) return JSON.parse(str)
-  return null
+    const cache = getCache()
+    const formConf = cache.formConf
+    if (formConf) return formConf
+    return null
 }
 
 export function saveFormConf(obj) {
-  localStorage.setItem(FORM_CONF, JSON.stringify(obj))
+    const cache = getCache()
+    cache.formConf = obj
+    Vue.ls.set('DRAWING_CACHE', cache)
 }
