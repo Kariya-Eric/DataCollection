@@ -1,5 +1,5 @@
 $selectedColor: #f6f7ff;
-$lighterBlue: #409EFF;
+$lighterBlue: #409eff;
 
 .container {
   position: relative;
@@ -18,14 +18,14 @@ $lighterBlue: #409EFF;
     transition: transform 0ms !important;
   }
 }
-.components-draggable{
+.components-draggable {
   padding-bottom: 20px;
 }
-.components-title{
+.components-title {
   font-size: 14px;
   color: #222;
   margin: 6px 2px;
-  .svg-icon{
+  .svg-icon {
     color: #666;
     font-size: 18px;
   }
@@ -38,7 +38,7 @@ $lighterBlue: #409EFF;
   cursor: move;
   border: 1px dashed $selectedColor;
   border-radius: 3px;
-  .svg-icon{
+  .svg-icon {
     color: #777;
     font-size: 15px;
   }
@@ -58,16 +58,9 @@ $lighterBlue: #409EFF;
   top: 0;
   height: 100vh;
 }
-.left-scrollbar{
+.left-scrollbar {
   height: calc(100vh - 42px);
   overflow: hidden;
-}
-.center-scrollbar {
-  height: calc(100vh - 42px);
-  overflow: hidden;
-  border-left: 1px solid #f1e8e8;
-  border-right: 1px solid #f1e8e8;
-  box-sizing: border-box;
 }
 .center-board {
   height: 100vh;
@@ -75,7 +68,7 @@ $lighterBlue: #409EFF;
   margin: 0 350px 0 260px;
   box-sizing: border-box;
 }
-.empty-info{
+.empty-info {
   position: absolute;
   top: 46%;
   left: 0;
@@ -84,19 +77,6 @@ $lighterBlue: #409EFF;
   font-size: 18px;
   color: #ccb1ea;
   letter-spacing: 4px;
-}
-.action-bar{
-  position: relative;
-  height: 42px;
-  text-align: right;
-  padding: 0 15px;
-  box-sizing: border-box;;
-  border: 1px solid #f1e8e8;
-  border-top: none;
-  border-left: none;
-  .delete-btn{
-    color: #F56C6C;
-  }
 }
 
 .center-board-row {
@@ -108,6 +88,9 @@ $lighterBlue: #409EFF;
   }
 }
 .drawing-board {
+  /deep/ .el-form-item {
+    margin-bottom: 15px;
+  }
   height: 100%;
   position: relative;
   .components-body {
@@ -136,32 +119,32 @@ $lighterBlue: #409EFF;
     background-color: $selectedColor;
   }
   .active-from-item {
-    & > .el-form-item{
+    ::v-deep & > .el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-    & > .drawing-item-copy, & > .drawing-item-delete{
+    ::v-deep & > .drawing-item-copy {
       display: initial;
     }
-    & > .component-name{
+    ::v-deep & > .drawing-item-delete {
+      display: initial;
+    }
+    & > .component-name {
       color: $lighterBlue;
     }
   }
-  .el-form-item{
-    margin-bottom: 15px;
-  }
 }
-.drawing-item{
+.drawing-item {
+  /deep/ .el-form-item {
+    padding: 12px 10px;
+  }
   position: relative;
   cursor: move;
   &.unfocus-bordered:not(.active-from-item) > div:first-child {
     border: 1px dashed #ccc;
   }
-  .el-form-item{
-    padding: 12px 10px;
-  }
 }
-.drawing-row-item{
+.drawing-row-item {
   position: relative;
   cursor: move;
   box-sizing: border-box;
@@ -169,22 +152,22 @@ $lighterBlue: #409EFF;
   border-radius: 3px;
   padding: 0 2px;
   margin-bottom: 15px;
+  .el-form-item {
+    margin-bottom: 0;
+  }
   .drawing-row-item {
     margin-bottom: 2px;
   }
-  .el-col{
+  .el-col {
     margin-top: 22px;
   }
-  .el-form-item{
-    margin-bottom: 0;
-  }
-  .drag-wrapper{
+  .drag-wrapper {
     min-height: 80px;
   }
-  &.active-from-item{
+  &.active-from-item {
     border: 1px dashed $lighterBlue;
   }
-  .component-name{
+  .component-name {
     position: absolute;
     top: 0;
     left: 0;
@@ -194,17 +177,22 @@ $lighterBlue: #409EFF;
     padding: 0 6px;
   }
 }
-.drawing-item, .drawing-row-item{
+.drawing-item,
+.drawing-row-item {
   &:hover {
-    & > .el-form-item{
+    /deep/ & > .el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-    & > .drawing-item-copy, & > .drawing-item-delete{
+    /deep/ & > .drawing-item-copy {
+      display: initial;
+    }
+    /deep/ & > .drawing-item-delete {
       display: initial;
     }
   }
-  & > .drawing-item-copy, & > .drawing-item-delete{
+  /deep/ & > .drawing-item-copy,
+  /deep/ & > .drawing-item-delete {
     display: none;
     position: absolute;
     top: -10px;
@@ -218,23 +206,23 @@ $lighterBlue: #409EFF;
     cursor: pointer;
     z-index: 1;
   }
-  & > .drawing-item-copy{
+  /deep/ & > .drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
     background: #fff;
-    &:hover{
+    &:hover {
       background: $lighterBlue;
       color: #fff;
     }
   }
-  & > .drawing-item-delete{
+  /deep/ & > .drawing-item-delete {
     right: 24px;
-    border-color: #F56C6C;
-    color: #F56C6C;
+    border-color: #f56c6c;
+    color: #f56c6c;
     background: #fff;
-    &:hover{
-      background: #F56C6C;
+    &:hover {
+      background: #f56c6c;
       color: #fff;
     }
   }

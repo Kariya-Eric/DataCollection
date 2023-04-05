@@ -37,7 +37,6 @@
           </div>
         </div>
       </div>
-
       <div class="center-board">
         <el-row class="center-board-row" :gutter="formConf.gutter">
           <el-form
@@ -277,7 +276,6 @@ export default {
         });
       }
     },
-
   },
 };
 </script>
