@@ -46,6 +46,24 @@
           />
         </el-form-item>
         <el-form-item
+          v-if="activeData.__config__.divider !== undefined"
+          label="组件名"
+        >
+          {{ activeData.__config__.customName }}
+        </el-form-item>
+        <template v-if="activeData.__config__.divider !== undefined">
+          <el-divider />
+          <el-form-item
+            v-if="activeData.__config__.customName !== undefined"
+            label="字段名"
+          >
+            <el-input
+              v-model="activeData.__config__.title"
+              placeholder="请输入标题"
+            />
+          </el-form-item>
+        </template>
+        <el-form-item
           v-if="activeData.__config__.componentName !== undefined"
           label="组件名"
         >

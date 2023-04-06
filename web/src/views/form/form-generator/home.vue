@@ -9,7 +9,7 @@
         <div class="components-list">
           <div v-for="(item, listIndex) in leftComponents" :key="listIndex">
             <div class="components-title">
-              <svg-icon icon-class="component_1" />
+              <svg-icon icon-class="grid" />
               {{ item.title }}
             </div>
             <draggable
@@ -175,6 +175,12 @@ export default {
   methods: {
     show() {
       this.visible = true;
+      const config = this.drawingList[0].__config__;
+      if (config.layout === "customItem") {
+        config.customName = config.label;
+        delete config.label;
+        delete config.span;
+      }
     },
     close() {
       this.visible = false;
@@ -212,6 +218,10 @@ export default {
         config.componentName = `row${this.idGlobal}`;
         !Array.isArray(config.children) && (config.children = []);
         delete config.label; // rowFormItem无需配置label属性
+      } else if (config.layout === "customItem") {
+        config.customName = config.label;
+        delete config.label;
+        delete config.span;
       }
       if (Array.isArray(config.children)) {
         config.children = config.children.map((childItem) =>

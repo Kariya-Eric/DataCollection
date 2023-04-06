@@ -141,7 +141,6 @@ const layouts = {
       className += " unfocus-bordered";
     return (
       <el-col
-        span={config.span}
         class={className}
         nativeOnClick={(event) => {
           activeItem(currentItem);

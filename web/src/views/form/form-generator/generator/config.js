@@ -79,7 +79,7 @@ export const inputComponents = [
       showLabel: true,
       changeTag: true,
       tag: "el-input",
-      tagIcon: "mobile",
+      tagIcon: "smartphone",
       defaultValue: undefined,
       required: true,
       layout: "colFormItem",
@@ -115,7 +115,7 @@ export const inputComponents = [
       showLabel: true,
       changeTag: true,
       tag: "el-input",
-      tagIcon: "email",
+      tagIcon: "mail",
       defaultValue: undefined,
       required: true,
       layout: "colFormItem",
@@ -314,11 +314,22 @@ export const layoutComponents = [
 export const otherComponents = [
   {
     __config__: {
-      tag: 'customDivider',
-      tagIcon: "row",
+      tag: "customDivider",
+      tagIcon: "divide",
       label: "分割线",
       layout: "customItem",
       showLabel: false,
-    }
-  }
-]
+      divider: true,
+      title: "标题",
+    },
+  },
+  {
+    __config__: {
+      tag: "customEditTable",
+      tagIcon: "table_1",
+      label: "表格",
+      layout: "customItem",
+      showLabel: false,
+    },
+  },
+];
