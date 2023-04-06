@@ -4,6 +4,7 @@
       <el-tab-pane label="组件属性" name="field" />
       <el-tab-pane label="表单属性" name="form" />
     </el-tabs>
+
     <div class="field-box">
       <!-- 组件属性 -->
       <el-form
@@ -1318,15 +1319,13 @@ export default {
   position: absolute;
   right: 0;
   top: 0;
-  padding-top: 3px;
   .field-box {
     position: relative;
-    height: calc(100vh - 42px);
     box-sizing: border-box;
-    overflow: hidden;
-  }
-  .el-scrollbar {
-    height: 100%;
+    height: calc(100vh - 42px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 12px 0 0;
   }
 }
 .select-item {
@@ -1363,22 +1362,6 @@ export default {
   ::v-deep .el-icon-time {
     display: none;
   }
-}
-.document-link {
-  position: absolute;
-  display: block;
-  width: 26px;
-  height: 26px;
-  top: 0;
-  left: 0;
-  cursor: pointer;
-  background: #409eff;
-  z-index: 1;
-  border-radius: 0 0 6px 0;
-  text-align: center;
-  line-height: 26px;
-  color: #fff;
-  font-size: 18px;
 }
 .node-label {
   font-size: 14px;

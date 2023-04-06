@@ -128,6 +128,39 @@ const layouts = {
       </render>
     );
   },
+
+  customItem(h, currentItem, index, list) {
+    const { activeItem } = this.$listeners;
+    const config = currentItem.__config__;
+    const child = renderChildren.apply(this, arguments);
+    let className =
+      this.activeId === config.formId
+        ? "drawing-other-item active-from-item"
+        : "drawing-other-item";
+    if (this.formConf.unFocusedComponentBorder)
+      className += " unfocus-bordered";
+    return (
+      <el-col
+        span={config.span}
+        class={className}
+        nativeOnClick={(event) => {
+          activeItem(currentItem);
+          event.stopPropagation();
+        }}
+      >
+        <render
+          key={config.renderKey}
+          conf={currentItem}
+          onInput={(event) => {
+            this.$set(config, "defaultValue", event);
+          }}
+        >
+          {child}
+        </render>
+        {components.itemBtns.apply(this, arguments)}
+      </el-col>
+    );
+  },
 };
 
 function renderChildren(h, currentItem, index, list) {
