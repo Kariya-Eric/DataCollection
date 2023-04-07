@@ -330,6 +330,11 @@ export const otherComponents = [
       label: "表格",
       layout: "customItem",
       showLabel: false,
+      table: true,
+      length:3,
+      columns: [
+        { label: "列1", props: 'col1' }, { label: "列2", props: 'col2' }, { label: "列3", props: 'col3' }
+      ]
     },
   },
 ];

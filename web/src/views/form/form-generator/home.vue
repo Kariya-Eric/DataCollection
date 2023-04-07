@@ -38,7 +38,12 @@
       </div>
       <div class="center-board">
         <div class="action-bar">
-          <el-button icon="el-icon-video-play" type="text"> 运行 </el-button>
+          <el-button icon="el-icon-view" type="text" @click="run">
+            预览
+          </el-button>
+          <el-button icon="el-icon-document-checked" type="text">
+            保存
+          </el-button>
           <el-button
             class="delete-btn"
             icon="el-icon-delete"
@@ -89,6 +94,8 @@
         :show-field="!!drawingList.length"
         @tag-change="tagChange"
       />
+
+      <form-drawer ref="formDrawer" size="50%" />
     </div>
   </el-dialog>
 </template>
@@ -108,6 +115,7 @@ import { saveDrawingList, getIdGlobal, saveIdGlobal } from "./utils/db";
 import { deepClone } from "./utils";
 import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
+import FormDrawer from "./components/form-drawer.vue";
 
 let oldActiveId;
 let tempActiveData;
@@ -115,7 +123,7 @@ const idGlobal = getIdGlobal();
 
 export default {
   name: "FormGenerator",
-  components: { draggable, DraggableItem, RightPanel },
+  components: { draggable, DraggableItem, RightPanel, FormDrawer },
   data() {
     return {
       visible: false,
@@ -148,6 +156,9 @@ export default {
       activeData: drawingDefault[0],
       saveDrawingListDebounce: debounce(340, saveDrawingList),
       saveIdGlobalDebounce: debounce(340, saveIdGlobal),
+      drawerVisible: false,
+      generateConf: null,
+      formData: {},
     };
   },
 
@@ -219,7 +230,7 @@ export default {
         !Array.isArray(config.children) && (config.children = []);
         delete config.label; // rowFormItem无需配置label属性
       } else if (config.layout === "customItem") {
-        config.customName = config.label;
+        config.customName = config.label ? config.label : config.customName;
         delete config.label;
         delete config.span;
       }
@@ -300,6 +311,18 @@ export default {
           this.idGlobal = 100;
         }
       );
+    },
+
+    run() {
+      this.assembleFormData();
+      this.$refs.formDrawer.show(this.formData, {});
+    },
+
+    assembleFormData() {
+      this.formData = {
+        fields: deepClone(this.drawingList),
+        ...this.formConf,
+      };
     },
   },
 };

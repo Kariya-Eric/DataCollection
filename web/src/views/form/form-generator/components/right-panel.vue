@@ -12,6 +12,55 @@
         size="small"
         label-width="90px"
       >
+        <!-- 自定义组件start -->
+        <el-form-item
+          v-if="activeData.__config__.customName !== undefined"
+          label="组件名"
+        >
+          {{ activeData.__config__.customName }}
+        </el-form-item>
+        <template v-if="activeData.__config__.divider !== undefined">
+          <el-divider />
+          <el-form-item
+            v-if="activeData.__config__.customName !== undefined"
+            label="字段名"
+          >
+            <el-input
+              v-model="activeData.__config__.title"
+              placeholder="请输入标题"
+            />
+          </el-form-item>
+        </template>
+        <template v-if="activeData.__config__.table !== undefined">
+          <el-divider>列名-属性</el-divider>
+          <div
+            v-for="(item, index) in activeData.__config__.columns"
+            :key="index"
+            class="select-item"
+          >
+            <div class="select-line-icon option-drag">&nbsp;&nbsp;</div>
+            <el-input :value="`第${index + 1}列`" disabled size="small" />
+            <el-input size="small" v-model="item.label" />
+            <el-input size="small" v-model="item.props" />
+            <div
+              class="close-btn select-line-icon"
+              @click="activeData.__config__.columns.splice(index, 1)"
+            >
+              <i class="el-icon-remove-outline" />
+            </div>
+          </div>
+          <div style="margin-left: 20px">
+            <el-button
+              style="padding-bottom: 0"
+              icon="el-icon-circle-plus-outline"
+              type="text"
+              @click="addColumnItem(activeData.__config__.length)"
+            >
+              添加选项
+            </el-button>
+          </div>
+        </template>
+        <!-- 自定义组件end -->
         <el-form-item v-if="activeData.__config__.changeTag" label="组件类型">
           <el-select
             v-model="activeData.__config__.tagIcon"
@@ -45,24 +94,6 @@
             placeholder="请输入字段名（v-model）"
           />
         </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.divider !== undefined"
-          label="组件名"
-        >
-          {{ activeData.__config__.customName }}
-        </el-form-item>
-        <template v-if="activeData.__config__.divider !== undefined">
-          <el-divider />
-          <el-form-item
-            v-if="activeData.__config__.customName !== undefined"
-            label="字段名"
-          >
-            <el-input
-              v-model="activeData.__config__.title"
-              placeholder="请输入标题"
-            />
-          </el-form-item>
-        </template>
         <el-form-item
           v-if="activeData.__config__.componentName !== undefined"
           label="组件名"
@@ -1177,6 +1208,15 @@ export default {
     },
   },
   methods: {
+    // ==============自定义Start==============
+    addColumnItem(length) {
+      this.activeData.__config__.columns.push({
+        label: "列" + (length + 1),
+        props: "col" + (length + 1),
+      });
+      this.activeData.__config__.length++;
+    },
+    // ==============自定义END==============
     addReg() {
       this.activeData.__config__.regList.push({
         pattern: "",
