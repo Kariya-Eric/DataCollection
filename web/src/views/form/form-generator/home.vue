@@ -143,12 +143,12 @@ export default {
           list: selectComponents,
         },
         {
-          title: "布局型组件",
-          list: layoutComponents,
-        },
-        {
           title: "其他组件",
           list: otherComponents,
+        },
+        {
+          title: "布局型组件",
+          list: layoutComponents,
         },
       ],
       drawingList: drawingDefault,

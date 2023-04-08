@@ -1,18 +1,28 @@
 <template>
   <div>
-    <el-button type="primary" icon="el-icon-plus" size="small" @click="addRow"
-      >增加</el-button
-    >
-    <el-button
-      v-if="multipleSelection.length > 0"
-      type="danger"
-      icon="el-icon-delete"
-      size="small"
-      >删除</el-button
-    >
-    <el-button type="primary" icon="el-icon-upload" size="small"
-      >导入</el-button
-    >
+    <div class="tableBtn">
+      <el-button type="primary" icon="el-icon-plus" size="small" @click="addRow"
+        >增加</el-button
+      >
+      <el-popconfirm
+        icon="el-icon-info"
+        icon-color="red"
+        title="确认删除吗？"
+        @confirm="delRow(null)"
+      >
+        <el-button
+          slot="reference"
+          v-show="multipleSelection.length > 0"
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+          >删除</el-button
+        >
+      </el-popconfirm>
+      <el-button type="primary" icon="el-icon-upload" size="small"
+        >导入</el-button
+      >
+    </div>
     <el-table
       :data="tableData"
       border
@@ -45,7 +55,7 @@
             type="text"
             size="small"
             @click="changeEdit(scope.row)"
-            >修改</el-button
+            >编辑</el-button
           >
           <el-button
             v-else
@@ -55,7 +65,16 @@
             >保存</el-button
           >
           <el-divider direction="vertical" />
-          <el-button type="text" size="small">删除</el-button>
+          <el-popconfirm
+            icon="el-icon-info"
+            icon-color="red"
+            title="确认删除吗？"
+            @confirm="delRow(scope.row)"
+          >
+            <el-button type="text" size="small" slot="reference"
+              >删除</el-button
+            >
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -89,16 +108,10 @@ export default {
       let tempData = {};
       this.columns.forEach((item) => {
         const props = item.props;
-        this.tableData.forEach((row) => {
-          if (!row[props]) {
-            row[props] = "";
-          }
-        });
         tempData[props] = "";
         tempData.isEdit = false;
       });
       this.tableData.push(tempData);
-      console.log(this.tableData);
     },
 
     changeEdit(row) {
@@ -107,6 +120,17 @@ export default {
 
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+
+    delRow(row) {
+      if (row) {
+        this.tableData = this.tableData.filter((ele) => row !== ele);
+      } else {
+        this.multipleSelection.forEach(
+          (ele) =>
+            (this.tableData = this.tableData.filter((row) => row !== ele))
+        );
+      }
     },
   },
 };
@@ -123,5 +147,8 @@ export default {
   line-height: 24px;
   padding: 0 9px;
   box-sizing: border-box;
+}
+.tableBtn {
+  margin: 8px 0px;
 }
 </style>

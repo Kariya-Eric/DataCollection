@@ -296,6 +296,34 @@ export const selectComponents = [
   },
 ];
 
+export const otherComponents = [
+  {
+    __config__: {
+      tag: "customDivider",
+      tagIcon: "divide",
+      label: "分割线",
+      layout: "customItem",
+      divider: true,
+      title: "标题",
+    },
+  },
+  {
+    __config__: {
+      tag: "customEditTable",
+      tagIcon: "table_1",
+      label: "表格",
+      layout: "customItem",
+      table: true,
+      length: 3,
+      columns: [
+        { label: "列1", props: "col1" },
+        { label: "列2", props: "col2" },
+        { label: "列3", props: "col3" },
+      ],
+    },
+  },
+];
+
 // 布局型组件 【左面板】
 export const layoutComponents = [
   {
@@ -309,32 +337,14 @@ export const layoutComponents = [
     justify: "start",
     align: "top",
   },
-];
-
-export const otherComponents = [
   {
     __config__: {
-      tag: "customDivider",
-      tagIcon: "divide",
-      label: "分割线",
-      layout: "customItem",
-      showLabel: false,
-      divider: true,
-      title: "标题",
-    },
-  },
-  {
-    __config__: {
-      tag: "customEditTable",
+      tag: "customFloatTable",
       tagIcon: "table_1",
-      label: "表格",
+      label: "自定义表格",
       layout: "customItem",
-      showLabel: false,
-      table: true,
-      length:3,
-      columns: [
-        { label: "列1", props: 'col1' }, { label: "列2", props: 'col2' }, { label: "列3", props: 'col3' }
-      ]
+      row: 1,
+      col: 1,
     },
   },
 ];
