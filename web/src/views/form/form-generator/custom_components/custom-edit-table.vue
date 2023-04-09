@@ -48,7 +48,7 @@
           <span v-else class="text">{{ scope.row[item.props] }}</span>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             v-if="!scope.row.isEdit"

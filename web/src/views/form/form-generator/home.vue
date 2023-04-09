@@ -78,6 +78,8 @@
                   @activeItem="activeFormItem"
                   @copyItem="drawingItemCopy"
                   @deleteItem="drawingItemDelete"
+                  @addRow="addRow"
+                  @addCol="addCol"
                 />
               </draggable>
               <div v-show="!drawingList.length" class="empty-info">
@@ -233,6 +235,10 @@ export default {
         config.customName = config.label ? config.label : config.customName;
         delete config.label;
         delete config.span;
+      } else if (config.layout === "customTable") {
+        config.customName = config.label ? config.label : config.customName;
+        delete config.label;
+        delete config.span;
       }
       if (Array.isArray(config.children)) {
         config.children = config.children.map((childItem) =>
@@ -323,6 +329,39 @@ export default {
         fields: deepClone(this.drawingList),
         ...this.formConf,
       };
+    },
+
+    addRow(item, list) {
+      const tableData = item.__config__.tableData;
+      const rowNumer = tableData.length;
+      const colNumer = tableData[tableData.length - 1].length;
+      const newRow = [];
+      for (let i = 1; i <= colNumer; i++) {
+        let col = {
+          id: rowNumer + 1 + "-" + i,
+          selected: false,
+          rowspan: 1,
+          colspan: 1,
+        };
+        newRow.push(col);
+      }
+      item.__config__.tableData.push(newRow);
+      item.__config__.row++;
+    },
+
+    addCol(item, list) {
+      item.__config__.tableData.forEach((row) => {
+        let lastColId = row[row.length - 1].id;
+        let splits = lastColId.split("-");
+        let col = {
+          id: splits[0] + "-" + (parseInt(splits[1]) + 1),
+          selected: false,
+          rowspan: 1,
+          colspan: 1,
+        };
+        row.push(col);
+      });
+      item.__config__.col++;
     },
   },
 };

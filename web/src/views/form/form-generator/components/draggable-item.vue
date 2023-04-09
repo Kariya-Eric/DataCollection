@@ -28,6 +28,52 @@ const components = {
       </span>,
     ];
   },
+
+  tableBtns(h, currentItem, index, list) {
+    const { copyItem, deleteItem, addRow, addCol } = this.$listeners;
+    return [
+      <span
+        class="drawing-item-copy"
+        title="复制"
+        onClick={(event) => {
+          copyItem(currentItem, list);
+          event.stopPropagation();
+        }}
+      >
+        <i class="el-icon-copy-document" />
+      </span>,
+      <span
+        class="drawing-item-row"
+        title="增加列"
+        onClick={(event) => {
+          addCol(currentItem, list);
+          event.stopPropagation();
+        }}
+      >
+        <i class="el-icon-right" />
+      </span>,
+      <span
+        class="drawing-item-col"
+        title="增加行"
+        onClick={(event) => {
+          addRow(currentItem, list);
+          event.stopPropagation();
+        }}
+      >
+        <i class="el-icon-bottom" />
+      </span>,
+      <span
+        class="drawing-item-delete"
+        title="删除"
+        onClick={(event) => {
+          deleteItem(index, list);
+          event.stopPropagation();
+        }}
+      >
+        <i class="el-icon-delete" />
+      </span>,
+    ];
+  },
 };
 const layouts = {
   colFormItem(h, currentItem, index, list) {
@@ -157,6 +203,38 @@ const layouts = {
           {child}
         </render>
         {components.itemBtns.apply(this, arguments)}
+      </el-col>
+    );
+  },
+
+  customTable(h, currentItem, index, list) {
+    const { activeItem } = this.$listeners;
+    const config = currentItem.__config__;
+    const child = renderChildren.apply(this, arguments);
+    let className =
+      this.activeId === config.formId
+        ? "drawing-other-item active-from-item"
+        : "drawing-other-item";
+    if (this.formConf.unFocusedComponentBorder)
+      className += " unfocus-bordered";
+    return (
+      <el-col
+        class={className}
+        nativeOnClick={(event) => {
+          activeItem(currentItem);
+          event.stopPropagation();
+        }}
+      >
+        <render
+          key={config.renderKey}
+          conf={currentItem}
+          onInput={(event) => {
+            this.$set(config, "defaultValue", event);
+          }}
+        >
+          {child}
+        </render>
+        {components.tableBtns.apply(this, arguments)}
       </el-col>
     );
   },

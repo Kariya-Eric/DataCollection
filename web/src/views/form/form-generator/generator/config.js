@@ -342,9 +342,11 @@ export const layoutComponents = [
       tag: "customFloatTable",
       tagIcon: "table_1",
       label: "自定义表格",
-      layout: "customItem",
+      layout: "customTable",
+      customerTable: true,
       row: 1,
       col: 1,
+      tableData: [[{ id: "1-1", selected: false, rowspan: 1, colspan: 1 }]],
     },
   },
 ];

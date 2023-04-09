@@ -60,6 +60,26 @@
             </el-button>
           </div>
         </template>
+
+        <template v-if="activeData.__config__.customerTable !== undefined">
+          <el-divider>表格布局</el-divider>
+          <el-form-item label="行数">
+            <el-input-number
+              :value="activeData.__config__.row"
+              :min="1"
+              @change="changeRow"
+            />
+          </el-form-item>
+          <el-form-item label="列数">
+            <el-input-number
+              :value="activeData.__config__.col"
+              :min="1"
+              @change="changeCol"
+            />
+          </el-form-item>
+          <el-divider>单元格设置</el-divider>
+        </template>
+
         <!-- 自定义组件end -->
         <el-form-item v-if="activeData.__config__.changeTag" label="组件类型">
           <el-select
@@ -1215,6 +1235,47 @@ export default {
         props: "col" + (length + 1),
       });
       this.activeData.__config__.length++;
+    },
+    
+    addRow(config) {
+      const tableData = config.tableData;
+      const rowNumer = tableData.length;
+      const colNumer = tableData[tableData.length - 1].length;
+      const newRow = [];
+      for (let i = 1; i <= colNumer; i++) {
+        let col = {
+          id: rowNumer + 1 + "-" + i,
+          selected: false,
+          rowspan: 1,
+          colspan: 1,
+        };
+        newRow.push(col);
+      }
+      config.tableData.push(newRow);
+    },
+
+    changeRow(val) {
+      console.log(this.activeData.__config__.row, val);
+      if (val < this.activeData.__config__.row) {
+        const nowRow = this.activeData.__config__.tableData.length;
+        console.log(nowRow, val);
+        for (let i = nowRow; i > val; i--) {
+          this.activeData.__config__.tableData.pop();
+          console.log(this.activeData.__config__.tableData);
+        }
+      } else {
+        const nowRow = this.activeData.__config__.tableData.length;
+        for (let i = nowRow; i < val; i++) {
+          this.addRow(this.activeData.__config__);
+        }
+      }
+      this.activeData.__config__.row = val;
+    },
+    changeCol(val) {
+      if (val < this.activeData.__config__.row) {
+
+      } else {
+      }
     },
     // ==============自定义END==============
     addReg() {
