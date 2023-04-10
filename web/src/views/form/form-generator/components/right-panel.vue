@@ -81,33 +81,6 @@
         </template>
 
         <!-- 自定义组件end -->
-        <el-form-item v-if="activeData.__config__.changeTag" label="组件类型">
-          <el-select
-            v-model="activeData.__config__.tagIcon"
-            placeholder="请选择组件类型"
-            :style="{ width: '100%' }"
-            @change="tagChange"
-          >
-            <el-option-group
-              v-for="group in tagList"
-              :key="group.label"
-              :label="group.label"
-            >
-              <el-option
-                v-for="item in group.options"
-                :key="item.__config__.label"
-                :label="item.__config__.label"
-                :value="item.__config__.tagIcon"
-              >
-                <svg-icon
-                  class="node-icon"
-                  :icon-class="item.__config__.tagIcon"
-                />
-                <span> {{ item.__config__.label }}</span>
-              </el-option>
-            </el-option-group>
-          </el-select>
-        </el-form-item>
         <el-form-item v-if="activeData.__vModel__ !== undefined" label="字段名">
           <el-input
             v-model="activeData.__vModel__"
@@ -289,69 +262,6 @@
           <el-input
             v-model="activeData.__slot__.append"
             placeholder="请输入后缀"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['prefix-icon'] !== undefined"
-          label="前图标"
-        >
-          <el-input
-            v-model="activeData['prefix-icon']"
-            placeholder="请输入前图标名称"
-          >
-            <el-button
-              slot="append"
-              icon="el-icon-thumb"
-              @click="openIconsDialog('prefix-icon')"
-            >
-              选择
-            </el-button>
-          </el-input>
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['suffix-icon'] !== undefined"
-          label="后图标"
-        >
-          <el-input
-            v-model="activeData['suffix-icon']"
-            placeholder="请输入后图标名称"
-          >
-            <el-button
-              slot="append"
-              icon="el-icon-thumb"
-              @click="openIconsDialog('suffix-icon')"
-            >
-              选择
-            </el-button>
-          </el-input>
-        </el-form-item>
-        <el-form-item
-          v-if="
-            activeData['icon'] !== undefined &&
-            activeData.__config__.tag === 'el-button'
-          "
-          label="按钮图标"
-        >
-          <el-input
-            v-model="activeData['icon']"
-            placeholder="请输入按钮图标名称"
-          >
-            <el-button
-              slot="append"
-              icon="el-icon-thumb"
-              @click="openIconsDialog('icon')"
-            >
-              选择
-            </el-button>
-          </el-input>
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.tag === 'el-cascader'"
-          label="选项分隔符"
-        >
-          <el-input
-            v-model="activeData.separator"
-            placeholder="请输入选项分隔符"
           />
         </el-form-item>
         <el-form-item v-if="activeData.autosize !== undefined" label="最小行数">
@@ -1045,11 +955,6 @@
       title="添加选项"
       @commit="addNode"
     />
-    <icons-dialog
-      :visible.sync="iconsVisible"
-      :current="activeData[currentIconModel]"
-      @select="setIcon"
-    />
   </div>
 </template>
 
@@ -1058,7 +963,6 @@ import draggable from "vuedraggable";
 import { isArray } from "util";
 import TreeNodeDialog from "./treenode-dialog.vue";
 import { isNumberStr } from "../utils/index";
-import IconsDialog from "./icons-dialog.vue";
 import { inputComponents, selectComponents } from "../generator/config";
 import { saveFormConf } from "../utils/db";
 
@@ -1080,7 +984,6 @@ export default {
   name: "RightPanel",
   components: {
     TreeNodeDialog,
-    IconsDialog,
     draggable,
   },
   props: ["showField", "activeData", "formConf"],
@@ -1089,8 +992,6 @@ export default {
       currentTab: "field",
       currentNode: null,
       dialogVisible: false,
-      iconsVisible: false,
-      currentIconModel: null,
       dateTypeOptions: [
         {
           label: "日(date)",
@@ -1406,13 +1307,7 @@ export default {
       this.activeData["show-alpha"] = val.indexOf("a") > -1;
       this.activeData.__config__.renderKey = +new Date(); // 更新renderKey,重新渲染该组件
     },
-    openIconsDialog(model) {
-      this.iconsVisible = true;
-      this.currentIconModel = model;
-    },
-    setIcon(val) {
-      this.activeData[this.currentIconModel] = val;
-    },
+
     tagChange(tagIcon) {
       let target = inputComponents.find(
         (item) => item.__config__.tagIcon === tagIcon

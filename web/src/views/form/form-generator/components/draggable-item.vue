@@ -88,7 +88,6 @@ const layouts = {
       className += " unfocus-bordered";
     let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null;
     if (config.showLabel === false) labelWidth = "0";
-    console.log('da',currentItem)
     return (
       <el-col
         span={config.span}

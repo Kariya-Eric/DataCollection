@@ -1,20 +1,19 @@
 <template>
   <el-input
-    prefix-icon="el-icon-mobile"
+    prefix-icon="el-icon-message"
     clearable
-    maxlength="11"
     show-word-limit
     :disabled="config.disabled"
     :readonly="config.readonly"
     :placeholder="config.placeholder"
-    v-model="config.defaultValue"
+    v-model="inputVal"
     @change="changeVal"
   />
 </template>
 
 <script>
 export default {
-  name: "CustomPhone",
+  name: "CustomMail",
   props: {
     conf: {
       // 组件的config 配置
@@ -28,12 +27,13 @@ export default {
   },
   data() {
     return {
+      inputVal: "",
       config: this.conf,
     };
   },
   methods: {
     changeVal(val) {
-      this.config.defaultValue = val;
+      this.inputVal = val;
     },
   },
 };
