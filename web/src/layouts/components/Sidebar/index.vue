@@ -1,15 +1,12 @@
 <template>
   <div>
-    <sidebar-logo />
     <el-scrollbar wrap-class="scrollbar-wrapper" style="height: 100%;">
       <el-menu
         :show-timeout="200"
         :default-active="$route.path"
         :collapse="isCollapse"
         mode="vertical"
-        background-color="#001529"
-        text-color="#BABBBD"
-        active-text-color="#fff"
+        active-text-color="#096dd9"
         unique-opened
       >
         <sidebar-item
@@ -26,10 +23,9 @@
 <script>
 import { mapState } from 'vuex';
 import SidebarItem from './SidebarItem';
-import SidebarLogo from './SidebarLogo.vue';
 
 export default {
-  components: { SidebarItem, SidebarLogo },
+  components: { SidebarItem },
   computed: {
     ...mapState('app', ['sidebar']),
     ...mapState('permission', ['routers']),

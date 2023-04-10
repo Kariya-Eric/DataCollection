@@ -82,8 +82,6 @@ function clearAttrs(dataObject) {
 }
 
 function makeDataObject() {
-  // 深入数据对象：
-  // https://cn.vuejs.org/v2/guide/render-function.html#%E6%B7%B1%E5%85%A5%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1
   return {
     class: {},
     attrs: {},
@@ -121,7 +119,6 @@ export default {
 
     // 将json表单配置转化为vue render可以识别的 “数据对象（dataObject）”
     buildDataObject.call(this, confClone, dataObject);
-
     return h(this.conf.__config__.tag, dataObject, children);
   },
 };

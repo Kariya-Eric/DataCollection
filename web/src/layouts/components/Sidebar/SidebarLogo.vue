@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-logo">
-    <a href="https://gitee.com/gameplugdev/ant-element-ui" target="blank">
+    <a>
       <img src="@/assets/images/logo.png" />
       <h1>数据采集系统</h1>
     </a>
@@ -9,18 +9,19 @@
 
 <script>
 export default {
-  name: 'SidebarLogo'
+  name: "SidebarLogo",
 };
 </script>
 
 <style lang="scss" scoped>
 .sidebar-logo {
-  position: relative;
+  position: fixed;
   height: 64px;
   padding-left: 24px;
   overflow: hidden;
   line-height: 64px;
-  background: #001529;
+  width: 240px;
+  // background: #001529;
   transition: all 0.3s;
 
   img {
@@ -32,7 +33,7 @@ export default {
   h1 {
     display: inline-block;
     margin: 0 0 0 12px;
-    color: #fff;
+    color: black;
     font-weight: 600;
     font-size: 20px;
     font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;

@@ -109,7 +109,7 @@ export const constantRouterMap = [
     alwaysShow: true,
     meta: {
       title: "任务管理",
-      icon: "task",
+      icon: "dashboard",
     },
     children: [
       {

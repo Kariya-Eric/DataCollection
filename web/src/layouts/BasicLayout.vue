@@ -7,8 +7,8 @@
         @click="handleClickOutside"
       />
       <sidebar class="sidebar-container" />
+      <navbar />
       <div class="main-container">
-        <navbar />
         <app-main />
       </div>
     </div>
@@ -16,20 +16,20 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from './components';
-import ResizeMixin from './mixin/ResizeHandler';
-import { mapState, mapActions } from 'vuex';
+import { Navbar, Sidebar, AppMain } from "./components";
+import ResizeMixin from "./mixin/ResizeHandler";
+import { mapState, mapActions } from "vuex";
 
 export default {
-  name: 'BasicLayout',
+  name: "BasicLayout",
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
   },
   mixins: [ResizeMixin],
   computed: {
-    ...mapState('app', ['sidebar', 'device']),
+    ...mapState("app", ["sidebar", "device"]),
     // sidebar() {
     //   return this.$store.state.app.sidebar;
     // },
@@ -41,16 +41,16 @@ export default {
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === 'mobile'
+        mobile: this.device === "mobile",
       };
-    }
+    },
   },
   methods: {
-    ...mapActions('app', ['CloseSideBar']),
+    ...mapActions("app", ["CloseSideBar"]),
     handleClickOutside() {
       this.CloseSideBar({ withoutAnimation: false });
-    }
-  }
+    },
+  },
 };
 </script>
 

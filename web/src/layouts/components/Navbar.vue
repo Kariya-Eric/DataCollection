@@ -1,56 +1,65 @@
 <template>
-  <el-menu class="navbar" mode="horizontal">
-    <hamburger
-      :toggle-click="ToggleSideBar"
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-    />
-    <breadcrumb />
-    <el-dropdown class="avatar-container" trigger="hover" size="medium">
-      <div class="avatar-wrapper">
-        <span class="user-name">{{ userInfo.username }}</span>
-        <img src="@/assets/images/avatar.jpg" class="user-avatar" />
-        <i class="el-icon-caret-bottom" />
-      </div>
-      <el-dropdown-menu slot="dropdown" class="user-dropdown">
-        <router-link class="inlineBlock" to="/accountcenter">
-          <el-dropdown-item>
-            <span style="color: gray; padding-right: 10px">
-              <svg-icon icon-class="settings" />
-            </span>
-            个人中心
+  <div>
+    <sidebar-logo />
+    <el-menu class="navbar" mode="horizontal">
+      <hamburger
+        :toggle-click="ToggleSideBar"
+        :is-active="sidebar.opened"
+        class="hamburger-container"
+      />
+      <breadcrumb />
+
+      <el-dropdown class="avatar-container" trigger="hover" size="medium">
+        <div class="avatar-wrapper">
+          <el-badge :value="12" class="item">
+            <i class="el-icon-bell" />
+          </el-badge>
+          <span class="user-name">{{ userInfo.username }}</span>
+          <img src="@/assets/images/avatar.jpg" class="user-avatar" />
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+          <router-link class="inlineBlock" to="/accountcenter">
+            <el-dropdown-item>
+              <span style="color: gray; padding-right: 10px">
+                <svg-icon icon-class="settings" />
+              </span>
+              个人中心
+            </el-dropdown-item>
+          </router-link>
+          <router-link class="inlineBlock" to="/accountcenter/accountsetting">
+            <el-dropdown-item>
+              <span style="color: gray; padding-right: 10px">
+                <svg-icon icon-class="user" />
+              </span>
+              个人设置
+            </el-dropdown-item>
+          </router-link>
+          <el-dropdown-item divided>
+            <div @click="logout">
+              <span style="color: gray; padding-right: 10px">
+                <svg-icon icon-class="shut-down-line" />
+              </span>
+              退出登录
+            </div>
           </el-dropdown-item>
-        </router-link>
-        <router-link class="inlineBlock" to="/accountcenter/accountsetting">
-          <el-dropdown-item>
-            <span style="color: gray; padding-right: 10px">
-              <svg-icon icon-class="user" />
-            </span>
-            个人设置
-          </el-dropdown-item>
-        </router-link>
-        <el-dropdown-item divided>
-          <div @click="logout">
-            <span style="color: gray; padding-right: 10px">
-              <svg-icon icon-class="shut-down-line" />
-            </span>
-            退出登录
-          </div>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-  </el-menu>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </el-menu>
+  </div>
 </template>
 
 <script>
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
+import SidebarLogo from "./Sidebar/SidebarLogo.vue";
 import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
+    SidebarLogo,
   },
   computed: {
     ...mapState("app", ["sidebar"]),
@@ -70,12 +79,18 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
-  height: 50px;
-  line-height: 50px;
+  height: 64px;
+  margin-left: 240px;
+  line-height: 64px;
   border-radius: 0px !important;
+  // background: #096dd9;
+  .item {
+    margin-top: 10px;
+    margin-right: 40px;
+  }
   .hamburger-container {
-    line-height: 58px;
-    height: 50px;
+    line-height: 75px;
+    height: 64px;
     float: left;
     padding: 0 10px;
   }
@@ -86,7 +101,7 @@ export default {
     color: red;
   }
   .avatar-container {
-    height: 50px;
+    height: 60px;
     display: inline-block;
     position: absolute;
     right: 35px;

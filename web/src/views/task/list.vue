@@ -4,19 +4,32 @@
       <el-card shadow="always" class="app-card">
         <!-- Query Start -->
         <div class="filter-container">
-          <el-form
-            label-width="80px"
-            size="small"
-            @keyup.enter.native="searchQuery"
-          >
-            <el-row>
+          <el-row>
+            <el-form
+              label-width="80px"
+              size="small"
+              @keyup.enter.native="searchQuery"
+            >
               <el-col :span="5">
                 <el-form-item label="任务类型">
-                  <el-input
+                  <el-select
                     v-model="queryParam.type"
-                    placeholder="请选择"
-                    @keyup.enter.native="searchQuery"
-                  />
+                    clearable
+                    placeholder="请选择任务类型"
+                  >
+                    <!-- TODO -->
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="学年">
+                  <el-select
+                    v-model="queryParam.schoolYear"
+                    clearable
+                    placeholder="请选择学年"
+                  >
+                    <!-- TODO -->
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="5">
@@ -28,8 +41,36 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-          </el-form>
+            </el-form>
+            <el-col :span="4">
+              <div class="search-button-wrapper">
+                <el-button type="primary" size="small" icon="el-icon-search"
+                  >搜索</el-button
+                >
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-refresh-right"
+                  >重置</el-button
+                >
+              </div>
+            </el-col>
+            <el-col :span="5">
+              <div class="search-button-admin">
+                <a>下载导入模板</a>
+                <el-button type="primary" size="small" icon="el-icon-upload"
+                  >导入</el-button
+                >
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-plus"
+                  @click="addTask"
+                  >添加任务</el-button
+                >
+              </div>
+            </el-col>
+          </el-row>
         </div>
         <!-- Query End -->
 
@@ -40,8 +81,20 @@
           size="small"
           :border="true"
         >
-          <el-table-column label="任务类型" prop="type" align="center" />
-          <el-table-column label="任务名称" prop="name" align="center" />
+          <el-table-column
+            label="任务类型"
+            prop="type"
+            align="center"
+            fixed
+            width="150"
+          />
+          <el-table-column
+            label="任务名称"
+            prop="name"
+            align="center"
+            fixed
+            width="150"
+          />
           <el-table-column
             label="统计开始时间"
             prop="statisticsStartTime"
@@ -53,8 +106,18 @@
             align="center"
           />
           <el-table-column label="学年" prop="schoolYear" align="center" />
-          <el-table-column label="自然年" prop="year" align="center" />
-          <el-table-column label="任务状态" prop="status" align="center">
+          <el-table-column
+            label="自然年"
+            prop="year"
+            align="center"
+            width="80"
+          />
+          <el-table-column
+            label="任务状态"
+            prop="status"
+            align="center"
+            width="100"
+          >
             <template slot-scope="scope">
               <el-tag v-if="scope.row.status === 0" type="info">未启用</el-tag>
               <el-tag v-if="scope.row.status === 1">启用中</el-tag>
@@ -67,7 +130,12 @@
               <el-progress :percentage="scope.row.percentage" />
             </template>
           </el-table-column>
-          <el-table-column label="启用" prop="enabled" align="center">
+          <el-table-column
+            label="启用"
+            prop="enabled"
+            align="center"
+            width="80"
+          >
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.enabled"
@@ -76,7 +144,12 @@
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column
+            label="操作"
+            align="center"
+            fixed="right"
+            width="500"
+          >
             <template slot-scope="scope">
               <a href="javascript:;">任务概览</a>
               <el-divider direction="vertical" />
@@ -98,6 +171,7 @@
         <pagination :pagination="ipagination" @change="loadData" />
       </el-card>
     </page-header-layout>
+    <add-task-dialog ref="addTaskDialog" />
   </div>
 </template>
 
@@ -105,14 +179,13 @@
 import PageHeaderLayout from "layouts/PageHeaderLayout";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
+import AddTaskDialog from "./components/add-task-dialog";
 export default {
   name: "TaskList",
   mixins: [DataCollectionMixin],
-  components: { PageHeaderLayout, Pagination },
+  components: { PageHeaderLayout, Pagination, AddTaskDialog },
   data() {
     return {
-      // 搜索高级
-      advanced: false,
       url: {
         list: "/portal/api/task/list",
       },
@@ -121,13 +194,25 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    toggleAdvanced() {
-      this.advanced = !this.advanced;
+    addTask() {
+      this.$refs.addTaskDialog.show();
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
-
+.search-button-wrapper {
+  margin: 8px 0 0 16px;
+}
+.search-button-admin {
+  margin-top: 8px;
+  float: right;
+  a {
+    margin-right: 12px;
+  }
+}
+/deep/ .el-form-item {
+  margin-top: 8px;
+}
 </style>

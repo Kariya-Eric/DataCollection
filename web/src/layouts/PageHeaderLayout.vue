@@ -1,11 +1,7 @@
 <template>
   <div>
     <slot name="top" />
-    <page-header :title="title" :logo="logo" :avatar="avatar">
-      <slot slot="action" name="action"></slot>
-      <slot slot="content" name="headerContent"></slot>
-      <slot slot="extra" name="extra"></slot>
-    </page-header>
+    <page-header :title="title"> </page-header>
     <div v-if="$slots.default" class="app-content">
       <slot />
     </div>
@@ -13,26 +9,26 @@
 </template>
 
 <script>
-import PageHeader from './components/PageHeader.vue';
+import PageHeader from "./components/PageHeader.vue";
 export default {
   components: {
-    PageHeader
+    PageHeader,
   },
   props: {
     avatar: {
       type: String,
-      default: null
+      default: null,
     },
     logo: {
       type: String,
-      default: null
+      default: null,
     },
     title: {
       type: [String, Boolean],
-      default: true
-    }
+      default: true,
+    },
   },
-  mounted() {}
+  mounted() {},
 };
 </script>
 

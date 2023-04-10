@@ -1,32 +1,6 @@
 <template>
   <div class="page-header">
-    <div class="page-header-index-wide">
-      <div class="detail">
-        <div class="main">
-          <div class="row">
-            <img v-if="logo" :src="logo" class="logo" />
-            <h1 v-if="title" class="title">{{ title }}</h1>
-            <div class="action">
-              <slot name="action"></slot>
-            </div>
-          </div>
-          <div class="row">
-            <div v-if="avatar" class="avatar">
-              <el-avatar :src="avatar" />
-            </div>
-            <div v-if="this.$slots.content" class="headerContent">
-              <slot name="content"></slot>
-            </div>
-            <div v-if="this.$slots.extra" class="extra">
-              <slot name="extra"></slot>
-            </div>
-          </div>
-          <div>
-            <slot name="pageMenu"></slot>
-          </div>
-        </div>
-      </div>
-    </div>
+    
   </div>
 </template>
 
@@ -54,6 +28,7 @@ export default {
 <style lang="scss" scoped>
 .page-header {
   background: #fff;
+  height: 52px;
   padding: 16px 32px 0px;
   border-bottom: 1px solid #e8e8e8;
 

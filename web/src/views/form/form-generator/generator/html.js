@@ -121,21 +121,6 @@ const layouts = {
 }
 
 const tags = {
-  'el-button': el => {
-    const {
-      tag, disabled
-    } = attrBuilder(el)
-    const type = el.type ? `type="${el.type}"` : ''
-    const icon = el.icon ? `icon="${el.icon}"` : ''
-    const round = el.round ? 'round' : ''
-    const size = el.size ? `size="${el.size}"` : ''
-    const plain = el.plain ? 'plain' : ''
-    const circle = el.circle ? 'circle' : ''
-    let child = buildElButtonChild(el)
-
-    if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${type} ${icon} ${round} ${size} ${plain} ${disabled} ${circle}>${child}</${tag}>`
-  },
   'el-input': el => {
     const {
       tag, disabled, vModel, clearable, placeholder, width
