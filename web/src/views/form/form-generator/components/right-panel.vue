@@ -26,7 +26,7 @@
             label="字段名"
           >
             <el-input
-              v-model="activeData.__config__.title"
+              v-model="activeData.title"
               placeholder="请输入标题"
             />
           </el-form-item>
@@ -61,25 +61,6 @@
           </div>
         </template>
 
-        <template v-if="activeData.__config__.customerTable !== undefined">
-          <el-divider>表格布局</el-divider>
-          <el-form-item label="行数">
-            <el-input-number
-              :value="activeData.__config__.row"
-              :min="1"
-              @change="changeRow"
-            />
-          </el-form-item>
-          <el-form-item label="列数">
-            <el-input-number
-              :value="activeData.__config__.col"
-              :min="1"
-              @change="changeCol"
-            />
-          </el-form-item>
-          <el-divider>单元格设置</el-divider>
-        </template>
-
         <!-- 自定义组件end -->
         <el-form-item v-if="activeData.__vModel__ !== undefined" label="字段名">
           <el-input
@@ -100,7 +81,6 @@
           <el-input
             v-model="activeData.__config__.label"
             placeholder="请输入标题"
-            @input="changeRenderKey"
           />
         </el-form-item>
         <el-form-item
@@ -110,7 +90,6 @@
           <el-input
             v-model="activeData.placeholder"
             placeholder="请输入占位提示"
-            @input="changeRenderKey"
           />
         </el-form-item>
         <el-form-item
@@ -278,21 +257,23 @@
             placeholder="最大行数"
           />
         </el-form-item>
-        <el-form-item v-if="isShowMin" label="最小值">
+        <el-form-item
+          v-if="activeData.__config__.tag === 'el-input-number'"
+          label="最小值"
+        >
           <el-input-number v-model="activeData.min" placeholder="最小值" />
         </el-form-item>
-        <el-form-item v-if="isShowMax" label="最大值">
+        <el-form-item
+          v-if="activeData.__config__.tag === 'el-input-number'"
+          label="最大值"
+        >
           <el-input-number v-model="activeData.max" placeholder="最大值" />
         </el-form-item>
-        <el-form-item v-if="activeData.height !== undefined" label="组件高度">
-          <el-input-number
-            v-model="activeData.height"
-            placeholder="高度"
-            @input="changeRenderKey"
-          />
-        </el-form-item>
-        <el-form-item v-if="isShowStep" label="步长">
-          <el-input-number v-model="activeData.step" placeholder="步数" />
+        <el-form-item
+          v-if="activeData.__config__.tag === 'el-input-number'"
+          label="步长"
+        >
+          <el-input-number v-model="activeData.step" placeholder="步长" />
         </el-form-item>
         <el-form-item
           v-if="activeData.__config__.tag === 'el-input-number'"
@@ -380,101 +361,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="activeData.name !== undefined" label="文件字段名">
-          <el-input
-            v-model="activeData.name"
-            placeholder="请输入上传文件字段名"
-          />
-        </el-form-item>
-        <el-form-item v-if="activeData.accept !== undefined" label="文件类型">
-          <el-select
-            v-model="activeData.accept"
-            placeholder="请选择文件类型"
-            :style="{ width: '100%' }"
-            clearable
-          >
-            <el-option label="图片" value="image/*" />
-            <el-option label="视频" value="video/*" />
-            <el-option label="音频" value="audio/*" />
-            <el-option label="excel" value=".xls,.xlsx" />
-            <el-option label="word" value=".doc,.docx" />
-            <el-option label="pdf" value=".pdf" />
-            <el-option label="txt" value=".txt" />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.fileSize !== undefined"
-          label="文件大小"
-        >
-          <el-input
-            v-model.number="activeData.__config__.fileSize"
-            placeholder="请输入文件大小"
-          >
-            <el-select
-              slot="append"
-              v-model="activeData.__config__.sizeUnit"
-              :style="{ width: '66px' }"
-            >
-              <el-option label="KB" value="KB" />
-              <el-option label="MB" value="MB" />
-              <el-option label="GB" value="GB" />
-            </el-select>
-          </el-input>
-        </el-form-item>
-        <el-form-item v-if="activeData.action !== undefined" label="上传地址">
-          <el-input
-            v-model="activeData.action"
-            placeholder="请输入上传地址"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['list-type'] !== undefined"
-          label="列表类型"
-        >
-          <el-radio-group v-model="activeData['list-type']" size="small">
-            <el-radio-button label="text"> text </el-radio-button>
-            <el-radio-button label="picture"> picture </el-radio-button>
-            <el-radio-button label="picture-card">
-              picture-card
-            </el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item
-          v-if="
-            activeData.type !== undefined &&
-            activeData.__config__.tag === 'el-button'
-          "
-          label="按钮类型"
-        >
-          <el-select v-model="activeData.type" :style="{ width: '100%' }">
-            <el-option label="primary" value="primary" />
-            <el-option label="success" value="success" />
-            <el-option label="warning" value="warning" />
-            <el-option label="danger" value="danger" />
-            <el-option label="info" value="info" />
-            <el-option label="text" value="text" />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.buttonText !== undefined"
-          v-show="'picture-card' !== activeData['list-type']"
-          label="按钮文字"
-        >
-          <el-input
-            v-model="activeData.__config__.buttonText"
-            placeholder="请输入按钮文字"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.tag === 'el-button'"
-          label="按钮文字"
-        >
-          <el-input
-            v-model="activeData.__slot__.default"
-            placeholder="请输入按钮文字"
-          />
-        </el-form-item>
+
         <el-form-item
           v-if="activeData['range-separator'] !== undefined"
           label="分隔符"
@@ -646,15 +533,6 @@
         </template>
 
         <el-form-item
-          v-if="activeData.__config__.optionType !== undefined"
-          label="选项样式"
-        >
-          <el-radio-group v-model="activeData.__config__.optionType">
-            <el-radio-button label="default"> 默认 </el-radio-button>
-            <el-radio-button label="button"> 按钮 </el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item
           v-if="activeData['active-color'] !== undefined"
           label="开启颜色"
         >
@@ -676,86 +554,7 @@
         >
           <el-switch v-model="activeData.__config__.showLabel" />
         </el-form-item>
-        <el-form-item v-if="activeData.branding !== undefined" label="品牌烙印">
-          <el-switch v-model="activeData.branding" @input="changeRenderKey" />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['allow-half'] !== undefined"
-          label="允许半选"
-        >
-          <el-switch v-model="activeData['allow-half']" />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['show-text'] !== undefined"
-          label="辅助文字"
-        >
-          <el-switch
-            v-model="activeData['show-text']"
-            @change="rateTextChange"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['show-score'] !== undefined"
-          label="显示分数"
-        >
-          <el-switch
-            v-model="activeData['show-score']"
-            @change="rateScoreChange"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['show-stops'] !== undefined"
-          label="显示间断点"
-        >
-          <el-switch v-model="activeData['show-stops']" />
-        </el-form-item>
-        <el-form-item v-if="activeData.range !== undefined" label="范围选择">
-          <el-switch v-model="activeData.range" @change="rangeChange" />
-        </el-form-item>
-        <el-form-item
-          v-if="
-            activeData.__config__.border !== undefined &&
-            activeData.__config__.optionType === 'default'
-          "
-          label="是否带边框"
-        >
-          <el-switch v-model="activeData.__config__.border" />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.tag === 'el-color-picker'"
-          label="颜色格式"
-        >
-          <el-select
-            v-model="activeData['color-format']"
-            placeholder="请选择颜色格式"
-            :style="{ width: '100%' }"
-            clearable
-            @change="colorFormatChange"
-          >
-            <el-option
-              v-for="(item, index) in colorFormatOptions"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          v-if="
-            activeData.size !== undefined &&
-            (activeData.__config__.optionType === 'button' ||
-              activeData.__config__.border ||
-              activeData.__config__.tag === 'el-color-picker' ||
-              activeData.__config__.tag === 'el-button')
-          "
-          label="组件尺寸"
-        >
-          <el-radio-group v-model="activeData.size">
-            <el-radio-button label="medium"> 中等 </el-radio-button>
-            <el-radio-button label="small"> 较小 </el-radio-button>
-            <el-radio-button label="mini"> 迷你 </el-radio-button>
-          </el-radio-group>
-        </el-form-item>
+
         <el-form-item
           v-if="activeData['show-word-limit'] !== undefined"
           label="输入统计"
@@ -797,24 +596,6 @@
           label="能否清空"
         >
           <el-switch v-model="activeData.clearable" />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.showTip !== undefined"
-          label="显示提示"
-        >
-          <el-switch v-model="activeData.__config__.showTip" />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.tag === 'el-upload'"
-          label="多选文件"
-        >
-          <el-switch v-model="activeData.multiple" />undefined
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['auto-upload'] !== undefined"
-          label="自动上传"
-        >
-          <el-switch v-model="activeData['auto-upload']" />
         </el-form-item>
         <el-form-item v-if="activeData.readonly !== undefined" label="是否只读">
           <el-switch v-model="activeData.readonly" />
@@ -963,7 +744,6 @@ import draggable from "vuedraggable";
 import { isArray } from "util";
 import TreeNodeDialog from "./treenode-dialog.vue";
 import { isNumberStr } from "../utils/index";
-import { inputComponents, selectComponents } from "../generator/config";
 import { saveFormConf } from "../utils/db";
 
 const dateTimeFormat = {
@@ -977,8 +757,6 @@ const dateTimeFormat = {
   datetimerange: "yyyy-MM-dd HH:mm:ss",
 };
 
-// 使changeRenderKey在目标组件改变时可用
-const needRerenderList = ["tinymce"];
 
 export default {
   name: "RightPanel",
@@ -1028,28 +806,7 @@ export default {
           value: "datetimerange",
         },
       ],
-      colorFormatOptions: [
-        {
-          label: "hex",
-          value: "hex",
-        },
-        {
-          label: "rgb",
-          value: "rgb",
-        },
-        {
-          label: "rgba",
-          value: "rgba",
-        },
-        {
-          label: "hsv",
-          value: "hsv",
-        },
-        {
-          label: "hsl",
-          value: "hsl",
-        },
-      ],
+
       justifyOptions: [
         {
           label: "start",
@@ -1093,32 +850,6 @@ export default {
       }
       return [];
     },
-    tagList() {
-      return [
-        {
-          label: "输入型组件",
-          options: inputComponents,
-        },
-        {
-          label: "选择型组件",
-          options: selectComponents,
-        },
-      ];
-    },
-    activeTag() {
-      return this.activeData.__config__.tag;
-    },
-    isShowMin() {
-      return ["el-input-number", "el-slider"].indexOf(this.activeTag) > -1;
-    },
-    isShowMax() {
-      return (
-        ["el-input-number", "el-slider", "el-rate"].indexOf(this.activeTag) > -1
-      );
-    },
-    isShowStep() {
-      return ["el-input-number", "el-slider"].indexOf(this.activeTag) > -1;
-    },
   },
   watch: {
     formConf: {
@@ -1137,7 +868,7 @@ export default {
       });
       this.activeData.__config__.length++;
     },
-    
+
     addRow(config) {
       const tableData = config.tableData;
       const rowNumer = tableData.length;
@@ -1174,7 +905,6 @@ export default {
     },
     changeCol(val) {
       if (val < this.activeData.__config__.row) {
-
       } else {
       }
     },
@@ -1289,40 +1019,7 @@ export default {
     dateTypeChange(val) {
       this.setTimeValue(dateTimeFormat[val], val);
     },
-    rangeChange(val) {
-      this.$set(
-        this.activeData.__config__,
-        "defaultValue",
-        val ? [this.activeData.min, this.activeData.max] : this.activeData.min
-      );
-    },
-    rateTextChange(val) {
-      if (val) this.activeData["show-score"] = false;
-    },
-    rateScoreChange(val) {
-      if (val) this.activeData["show-text"] = false;
-    },
-    colorFormatChange(val) {
-      this.activeData.__config__.defaultValue = null;
-      this.activeData["show-alpha"] = val.indexOf("a") > -1;
-      this.activeData.__config__.renderKey = +new Date(); // 更新renderKey,重新渲染该组件
-    },
 
-    tagChange(tagIcon) {
-      let target = inputComponents.find(
-        (item) => item.__config__.tagIcon === tagIcon
-      );
-      if (!target)
-        target = selectComponents.find(
-          (item) => item.__config__.tagIcon === tagIcon
-        );
-      this.$emit("tag-change", target);
-    },
-    changeRenderKey() {
-      if (needRerenderList.includes(this.activeData.__config__.tag)) {
-        this.activeData.__config__.renderKey = +new Date();
-      }
-    },
   },
 };
 </script>
@@ -1382,5 +1079,33 @@ export default {
 }
 .node-icon {
   color: #bebfc3;
+}
+.reg-item {
+  padding: 12px 6px;
+  background: #f8f8f8;
+  position: relative;
+  border-radius: 4px;
+  .close-btn {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    z-index: 1;
+    cursor: pointer;
+    font-size: 12px;
+    &:hover {
+      background: rgba(210, 23, 23, 0.5);
+    }
+  }
+  & + .reg-item {
+    margin-top: 18px;
+  }
 }
 </style>

@@ -6,8 +6,8 @@
     :disabled="config.disabled"
     :readonly="config.readonly"
     :placeholder="config.placeholder"
-    v-model="inputVal"
-    @change="changeVal"
+    v-model="config.__config__.defaultValue"
+    @input="changeVal"
   />
 </template>
 
@@ -27,13 +27,13 @@ export default {
   },
   data() {
     return {
-      inputVal: "",
       config: this.conf,
     };
   },
   methods: {
     changeVal(val) {
-      this.inputVal = val;
+      this.config.__config__.defaultValue = val;
+      this.$emit("input", val);
     },
   },
 };

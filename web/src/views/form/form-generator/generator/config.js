@@ -34,6 +34,7 @@ export const inputComponents = [
       prepend: "",
       append: "",
     },
+    style: { width: "100%" },
     // 其余的为可直接写在组件标签上的属性
     placeholder: "请输入",
     clearable: true,
@@ -61,6 +62,7 @@ export const inputComponents = [
       minRows: 4,
       maxRows: 4,
     },
+    style: { width: "100%" },
     maxlength: null,
     "show-word-limit": false,
     readonly: false,
@@ -75,6 +77,7 @@ export const inputComponents = [
       tagIcon: "smartphone",
       required: true,
       layout: "colFormItem",
+      defaultValue: null,
       span: 24,
       // 正则校验规则
       regList: [
@@ -84,6 +87,8 @@ export const inputComponents = [
         },
       ],
     },
+    value:'',
+    style: { width: "100%" },
     placeholder: "请输入",
     readonly: false,
     disabled: false,
@@ -97,6 +102,7 @@ export const inputComponents = [
       tagIcon: "mail",
       required: true,
       layout: "colFormItem",
+      defaultValue: null,
       span: 24,
       // 正则校验规则
       regList: [
@@ -106,9 +112,33 @@ export const inputComponents = [
         },
       ],
     },
+    value:'',
+    style: { width: "100%" },
     placeholder: "请输入",
     readonly: false,
     disabled: false,
+  },
+  {
+    __config__: {
+      label: '计数器',
+      showLabel: true,
+      labelWidth: null,
+      tag: 'el-input-number',
+      tagIcon: 'number',
+      defaultValue: undefined,
+      span: 24,
+      layout: 'colFormItem',
+      required: true,
+      regList: [],
+    },
+    placeholder: '',
+    min: undefined,
+    max: undefined,
+    step: 1,
+    'step-strictly': false,
+    precision: undefined,
+    'controls-position': '',
+    disabled: false
   },
 ];
 
@@ -155,10 +185,8 @@ export const selectComponents = [
       defaultValue: undefined,
       layout: "colFormItem",
       span: 24,
-      optionType: "default",
       regList: [],
       required: true,
-      border: false,
     },
     __slot__: {
       options: [
@@ -172,8 +200,6 @@ export const selectComponents = [
         },
       ],
     },
-    style: {},
-    size: "medium",
     disabled: false,
   },
   {
@@ -186,10 +212,8 @@ export const selectComponents = [
       showLabel: true,
       labelWidth: null,
       layout: "colFormItem",
-      optionType: "default",
       required: true,
       regList: [],
-      border: false,
     },
     __slot__: {
       options: [
@@ -203,11 +227,30 @@ export const selectComponents = [
         },
       ],
     },
-    style: {},
-    size: "medium",
     min: null,
     max: null,
     disabled: false,
+  },
+  {
+    __config__: {
+      label: '开关',
+      tag: 'el-switch',
+      tagIcon: 'switch',
+      defaultValue: false,
+      span: 24,
+      showLabel: true,
+      labelWidth: null,
+      layout: 'colFormItem',
+      required: true,
+      regList: []
+    },
+    disabled: false,
+    'active-text': '',
+    'inactive-text': '',
+    'active-color': null,
+    'inactive-color': null,
+    'active-value': true,
+    'inactive-value': false
   },
   {
     __config__: {
@@ -260,16 +303,6 @@ export const selectComponents = [
 export const otherComponents = [
   {
     __config__: {
-      tag: "customDivider",
-      tagIcon: "divide",
-      label: "分割线",
-      layout: "customItem",
-      divider: true,
-      title: "标题",
-    },
-  },
-  {
-    __config__: {
       tag: "customEditTable",
       tagIcon: "table_1",
       label: "表格",
@@ -289,6 +322,16 @@ export const otherComponents = [
 export const layoutComponents = [
   {
     __config__: {
+      tag: "customDivider",
+      tagIcon: "divide",
+      label: "分割线",
+      layout: "customItem",
+      divider: true,
+    },
+    title: "标题",
+  },
+  {
+    __config__: {
       layout: "rowFormItem",
       tagIcon: "row",
       label: "行容器",
@@ -297,17 +340,5 @@ export const layoutComponents = [
     type: "default",
     justify: "start",
     align: "top",
-  },
-  {
-    __config__: {
-      tag: "customFloatTable",
-      tagIcon: "table_1",
-      label: "自定义表格",
-      layout: "customTable",
-      customerTable: true,
-      row: 1,
-      col: 1,
-      tableData: [[{ id: "1-1", selected: false, rowspan: 1, colspan: 1 }]],
-    },
   },
 ];

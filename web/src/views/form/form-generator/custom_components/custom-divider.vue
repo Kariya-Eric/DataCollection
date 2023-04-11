@@ -10,21 +10,11 @@
 <script>
 export default {
   name: "CustomDivider",
-  props: {
-    conf: {
-      // 组件的config 配置
-      type: Object,
-    },
-  },
+  props: ["title"],
   watch: {
-    conf(val) {
-      this.title = val.__config__.title;
+    title(val) {
+      this.title = val;
     },
-  },
-  data() {
-    return {
-      title: this.conf.__config__.title,
-    };
   },
 };
 </script>

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "set NODE_OPTIONS=--openssl-legacy-provider && webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && node build/build.js",
     "build:report": "npm_config_report=true npm run build",
     "lint": "eslint --ext .js,.vue src --fix",
     "test": "npm run lint",

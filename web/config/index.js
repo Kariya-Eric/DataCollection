@@ -20,7 +20,7 @@ module.exports = {
   pages: {
     preview: {
       entry: 'src/views/form/form-generator/preview/main.js',
-      template: 'public/test/preview.html',
+      template: 'public/preview.html',
       filename: 'preview.html',
       chunks: ['chunk-vendors', 'chunk-common', 'preview'],
       minify

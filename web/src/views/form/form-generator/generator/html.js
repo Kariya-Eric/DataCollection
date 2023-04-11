@@ -114,8 +114,7 @@ const layouts = {
   customItem(scheme) {
     const config = scheme.__config__
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null
-    let str = `<el-row>${tagDom}</el-row>`
-    str = colWrapper(scheme, str)
+    let str = `<el-row><el-col>${tagDom}</el-col></el-row>`
     return str
   }
 }
@@ -128,9 +127,6 @@ const tags = {
     const maxlength = el.maxlength ? `:maxlength="${el.maxlength}"` : ''
     const showWordLimit = el['show-word-limit'] ? 'show-word-limit' : ''
     const readonly = el.readonly ? 'readonly' : ''
-    const prefixIcon = el['prefix-icon'] ? `prefix-icon='${el['prefix-icon']}'` : ''
-    const suffixIcon = el['suffix-icon'] ? `suffix-icon='${el['suffix-icon']}'` : ''
-    const showPassword = el['show-password'] ? 'show-password' : ''
     const type = el.type ? `type="${el.type}"` : ''
     const autosize = el.autosize && el.autosize.minRows
       ? `:autosize="{minRows: ${el.autosize.minRows}, maxRows: ${el.autosize.maxRows}}"`
@@ -138,7 +134,7 @@ const tags = {
     let child = buildElInputChild(el)
 
     if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${prefixIcon} ${suffixIcon} ${showPassword} ${autosize} ${width}>${child}</${tag}>`
+    return `<${tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${autosize} ${width}>${child}</${tag}>`
   },
   'el-input-number': el => {
     const {
@@ -234,11 +230,24 @@ const tags = {
     return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${readonly} ${disabled}></${tag}>`
   },
   // ============自定义组件=============================
-  customDivider: el => {
-    const title = `:title="${el.__config__.title}"`
+  'customDivider': el => {
+    const title = `:title="${el.title}"`
     return `<custom-divider ${title}/>`
-  }
-
+  },
+  'customPhone': el => {
+    const {
+      disabled, vModel, placeholder, width
+    } = attrBuilder(el)
+    const readonly = el.readonly ? 'readonly' : ''
+    return `<custom-phone ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`
+  },
+  'customMail': el => {
+    const {
+      disabled, vModel, placeholder, width
+    } = attrBuilder(el)
+    const readonly = el.readonly ? 'readonly' : ''
+    return `<custom-mail ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`
+  },
   // ============自定义组件=============================
 }
 
