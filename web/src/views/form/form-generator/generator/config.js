@@ -305,7 +305,7 @@ export const otherComponents = [
     __config__: {
       tag: "customEditTable",
       tagIcon: "table_1",
-      label: "表格",
+      label: "固定表格",
       layout: "customItem",
       table: true,
       length: 3,

@@ -58,7 +58,7 @@
             <el-col :span="5">
               <div class="search-button-admin">
                 <a>下载导入模板</a>
-                <el-button type="primary" size="small" icon="el-icon-upload"
+                <el-button type="primary" size="small" icon="el-icon-upload2"
                   >导入</el-button
                 >
                 <el-button

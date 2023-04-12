@@ -4,28 +4,8 @@
 
 const path = require("path");
 
-const minify = process.env.NODE_ENV === 'development' ? false : {
-  collapseWhitespace: true,
-  removeComments: true,
-  removeRedundantAttributes: true,
-  removeScriptTypeAttributes: true,
-  removeStyleLinkTypeAttributes: true,
-  useShortDoctype: true,
-  minifyCSS: true,
-  minifyJS: true
-}
-
 module.exports = {
   lintOnSave: false,
-  pages: {
-    preview: {
-      entry: 'src/views/form/form-generator/preview/main.js',
-      template: 'public/preview.html',
-      filename: 'preview.html',
-      chunks: ['chunk-vendors', 'chunk-common', 'preview'],
-      minify
-    }
-  },
   dev: {
     // Paths
     assetsSubDirectory: "static",

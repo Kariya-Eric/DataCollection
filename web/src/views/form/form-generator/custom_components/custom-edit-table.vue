@@ -31,6 +31,7 @@
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"
       @selection-change="handleSelectionChange"
+      @header-click="headerClick"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column
@@ -40,11 +41,16 @@
         :key="index"
       >
         <template slot-scope="scope">
-          <el-input
+          <!-- <el-input
             class="item"
             v-if="scope.row.isEdit"
             v-model="scope.row[item.props]"
-          />
+          /> -->
+          <el-select class="item" v-if="scope.row.isEdit" v-model="scope.row[item.props]">
+            <el-option :value="1">1</el-option>
+            <el-option :value="2">2</el-option>
+            <el-option :value="3">3</el-option>
+          </el-select>
           <span v-else class="text">{{ scope.row[item.props] }}</span>
         </template>
       </el-table-column>
@@ -132,6 +138,10 @@ export default {
         );
       }
     },
+
+    headerClick(column,event){
+      console.log(column)
+    }
   },
 };
 </script>

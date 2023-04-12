@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <page-header-layout title="表单列表">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>测试表单</span>
@@ -8,14 +8,19 @@
     </el-card>
 
     <form-generator ref="formGenerator" />
-  </div>
+  </page-header-layout>
 </template>
 
 <script>
 import FormGenerator from "./form-generator/home.vue";
+import PageHeaderLayout from "layouts/PageHeaderLayout";
+import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 export default {
+  name: "FormList",
+  mixins: [DataCollectionMixin],
   components: {
     FormGenerator,
+    PageHeaderLayout,
   },
   data() {
     return {};

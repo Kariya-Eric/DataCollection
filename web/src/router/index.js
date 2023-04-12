@@ -124,6 +124,27 @@ export const constantRouterMap = [
     ],
   },
   {
+    path: "/sys",
+    component: BasicLayout,
+    name: "system",
+    alwaysShow: true,
+    meta: {
+      title: "系统管理",
+      icon: "dashboard",
+    },
+    children: [
+      {
+        path: "/sys/user",
+        name: "userList",
+        component: () => import("@/views/system/user/list"),
+        meta: {
+          title: "用户管理",
+          icon: "list",
+        },
+      },
+    ],
+  },
+  {
     path: "/test",
     component: BasicLayout,
     name: "测试",

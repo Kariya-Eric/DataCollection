@@ -3,10 +3,10 @@
     prefix-icon="el-icon-message"
     clearable
     show-word-limit
-    :disabled="config.disabled"
-    :readonly="config.readonly"
-    :placeholder="config.placeholder"
-    v-model="config.__config__.defaultValue"
+    :disabled="disabled"
+    :readonly="readonly"
+    :placeholder="placeholder"
+    v-model="inputVal"
     @input="changeVal"
   />
 </template>
@@ -14,25 +14,29 @@
 <script>
 export default {
   name: "CustomMail",
-  props: {
-    conf: {
-      // 组件的config 配置
-      type: Object,
-    },
-  },
+  props: ["value", "readonly", "disabled", "placeholder"],
   watch: {
-    conf(val) {
-      this.config = val;
+    value(val) {
+      this.inputVal = val;
+    },
+    readonly(val) {
+      this.readonly = val;
+    },
+    disabled(val) {
+      this.disabled = val;
+    },
+    placeholder(val) {
+      this.placeholder = val;
     },
   },
   data() {
     return {
-      config: this.conf,
+      inputVal: this.value,
     };
   },
   methods: {
     changeVal(val) {
-      this.config.__config__.defaultValue = val;
+      this.inputVal = val;
       this.$emit("input", val);
     },
   },

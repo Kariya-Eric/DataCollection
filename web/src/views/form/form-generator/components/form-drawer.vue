@@ -1,14 +1,13 @@
 <template>
   <div>
     <el-drawer
-      append-to-body="true"
-      modal-append-to-body="false"
+      :append-to-body="true"
       v-bind="$attrs"
       v-on="$listeners"
       :visible="visible"
       @close="onClose"
     >
-      <p>123</p>
+      
     </el-drawer>
   </div>
 </template>
@@ -17,6 +16,8 @@
 import { makeUpHtml } from "../generator/html";
 import { makeUpJs } from "../generator/js";
 import { makeUpCss } from "../generator/css";
+import Vue from "vue";
+
 const editorObj = {
   html: null,
   js: null,

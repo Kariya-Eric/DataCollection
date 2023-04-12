@@ -109,6 +109,7 @@ const layouts = {
       ${children.join('\n')}
     </el-row>`
     str = colWrapper(scheme, str)
+    console.log(str)
     return str
   },
   customItem(scheme) {
@@ -231,7 +232,7 @@ const tags = {
   },
   // ============自定义组件=============================
   'customDivider': el => {
-    const title = `:title="${el.title}"`
+    const title = `title="${el.title}"`
     return `<custom-divider ${title}/>`
   },
   'customPhone': el => {
