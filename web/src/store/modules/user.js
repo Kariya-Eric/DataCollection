@@ -9,7 +9,7 @@ import {
   USER_INFO,
 } from "../mutation-types";
 import Storage from "vue-ls";
-import config from "@/defaultSettings";
+import config from "@/views/index/defaultSettings";
 Vue.use(Storage, config.storageOptions);
 
 const user = {

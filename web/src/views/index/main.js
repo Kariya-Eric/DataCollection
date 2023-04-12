@@ -9,21 +9,21 @@ import locale from "element-ui/lib/locale/lang/zh-CN"; // lang i18n
 import "@/styles/index.scss"; // global css
 
 import App from "./App";
-import router from "./router";
-import store from "./store";
+import router from "@/router";
+import store from "@/store";
 
 import "@/icons"; // all icons and svg-icon
-import "@/permission"; // permission control
+import "./permission"; // permission control
 import waves from "@/directive/waves"; // Waves directive
 import "@/utils/filter"; // global filters
 import Storage from "vue-ls";
-import config from "@/defaultSettings";
+import config from "./defaultSettings";
 
 import Plugin from 'v-fit-columns';
 Vue.use(Plugin);
 
 
-import CustomComponent from '@/views/form/form-generator/custom_components'
+import CustomComponent from './form/form-generator/custom_components'
 Vue.use(CustomComponent)
 
 Vue.use(ElementUI, {

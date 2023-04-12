@@ -47,18 +47,18 @@ export const constantRouterMap = [
       {
         path: "login",
         name: "Login",
-        component: () => import("@/views/user/login"),
+        component: () => import("@/views/index/user/login"),
       },
       {
         path: "recover",
         name: "recover",
-        // component: () => import('@/views/user/login'),
+        // component: () => import('@/views/index/user/login'),
       },
     ],
   },
   {
     path: "/404",
-    component: () => import("@/views/exception/404"),
+    component: () => import("@/views/index/exception/404"),
     hidden: true,
   },
   {
@@ -76,7 +76,7 @@ export const constantRouterMap = [
       {
         path: "analysis",
         name: "Analysis",
-        component: () => import("@/views/dashboard/analysis"),
+        component: () => import("@/views/index/dashboard/analysis"),
         meta: {
           title: "分析页",
           // permission: ['analysis']
@@ -85,7 +85,7 @@ export const constantRouterMap = [
       {
         path: "monitor",
         name: "Monitor",
-        component: () => import("@/views/dashboard/monitor"),
+        component: () => import("@/views/index/dashboard/monitor"),
         meta: {
           title: "监控页",
           // permission: ['monitor']
@@ -94,7 +94,7 @@ export const constantRouterMap = [
       {
         path: "workplace",
         name: "WorkPlace",
-        component: () => import("@/views/dashboard/workplace"),
+        component: () => import("@/views/index/dashboard/workplace"),
         meta: {
           title: "工作台",
           // permission: ['workplace']
@@ -115,7 +115,7 @@ export const constantRouterMap = [
       {
         path: "/task/list",
         name: "taskList",
-        component: () => import("@/views/task/list"),
+        component: () => import("@/views/index/task/list"),
         meta: {
           title: "任务列表",
           icon: "list",
@@ -136,7 +136,7 @@ export const constantRouterMap = [
       {
         path: "/sys/user",
         name: "userList",
-        component: () => import("@/views/system/user/list"),
+        component: () => import("@/views/index/system/user/list"),
         meta: {
           title: "用户管理",
           icon: "list",
@@ -158,7 +158,7 @@ export const constantRouterMap = [
       {
         path: "/test/form",
         name: "WorkPlace",
-        component: () => import("@/views/form/list"),
+        component: () => import("@/views/index/form/list"),
         meta: {
           title: "测试表单",
           icon: "test",
@@ -185,7 +185,7 @@ export const asyncRouterMap = [
       {
         path: "analysis",
         name: "Analysis",
-        component: () => import("@/views/dashboard/analysis"),
+        component: () => import("@/views/index/dashboard/analysis"),
         meta: {
           title: "分析页",
           // permission: ['analysis']
@@ -194,7 +194,7 @@ export const asyncRouterMap = [
       {
         path: "monitor",
         name: "Monitor",
-        component: () => import("@/views/dashboard/monitor"),
+        component: () => import("@/views/index/dashboard/monitor"),
         meta: {
           title: "监控页",
           // permission: ['monitor']
@@ -203,7 +203,7 @@ export const asyncRouterMap = [
       {
         path: "workplace",
         name: "WorkPlace",
-        component: () => import("@/views/dashboard/workplace"),
+        component: () => import("@/views/index/dashboard/workplace"),
         meta: {
           title: "工作台",
           // permission: ['workplace']
@@ -227,7 +227,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "basic-form",
   //         name: "BasicForm",
-  //         component: () => import("@/views/form1/basicform"),
+  //         component: () => import("@/views/index/form1/basicform"),
   //         meta: {
   //           title: "基础表单",
   //         },
@@ -235,7 +235,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "step-form",
   //         name: "StepForm",
-  //         component: () => import("@/views/form1/stepform/stepform"),
+  //         component: () => import("@/views/index/form1/stepform/stepform"),
   //         meta: {
   //           title: "分步表单",
   //         },
@@ -243,7 +243,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "advanced-form",
   //         name: "AdvancedForm",
-  //         component: () => import("@/views/form1/advancedform/advancedform"),
+  //         component: () => import("@/views/index/form1/advancedform/advancedform"),
   //         meta: {
   //           title: "高级表单",
   //         },
@@ -274,7 +274,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "basic-list",
   //         name: "BasicList",
-  //         component: () => import("@/views/list/basiclist"),
+  //         component: () => import("@/views/index/list/basiclist"),
   //         meta: {
   //           title: "标准列表",
   //         },
@@ -282,7 +282,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "card-list",
   //         name: "CardList",
-  //         component: () => import("@/views/list/cardlist"),
+  //         component: () => import("@/views/index/list/cardlist"),
   //         meta: {
   //           title: "卡片列表",
   //         },
@@ -305,7 +305,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "basic-detail",
   //         name: "BasicDetail",
-  //         component: () => import("@/views/detail/basicdetail"),
+  //         component: () => import("@/views/index/detail/basicdetail"),
   //         meta: {
   //           title: "基础详情页",
   //         },
@@ -313,7 +313,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "advanced-detail",
   //         name: "AdvancedDetail",
-  //         component: () => import("@/views/detail/advanceddetail"),
+  //         component: () => import("@/views/index/detail/advanceddetail"),
   //         meta: {
   //           title: "高级详情页",
   //         },
@@ -337,7 +337,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "permissionlist",
   //         name: "PermissionList",
-  //         component: () => import("@/views/usermgmt/permissionlist"),
+  //         component: () => import("@/views/index/usermgmt/permissionlist"),
   //         meta: {
   //           title: "权限列表",
   //           permission: ["permission"],
@@ -346,7 +346,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "rolelist",
   //         name: "RoleList",
-  //         component: () => import("@/views/usermgmt/rolelist"),
+  //         component: () => import("@/views/index/usermgmt/rolelist"),
   //         meta: {
   //           title: "角色管理",
   //           permission: ["role"],
@@ -355,7 +355,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "userlist",
   //         name: "UserList",
-  //         component: () => import("@/views/usermgmt/userlist"),
+  //         component: () => import("@/views/index/usermgmt/userlist"),
   //         meta: {
   //           title: "用户列表",
   //           permission: ["user"],
@@ -379,7 +379,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "success",
   //         name: "ResultSuccess",
-  //         component: () => import("@/views/result/success"),
+  //         component: () => import("@/views/index/result/success"),
   //         meta: {
   //           title: "成功页",
   //         },
@@ -387,7 +387,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "fail",
   //         name: "ResultFail",
-  //         component: () => import("@/views/result/fail"),
+  //         component: () => import("@/views/index/result/fail"),
   //         meta: {
   //           title: "失败页",
   //         },
@@ -410,7 +410,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "403",
   //         name: "Exception403",
-  //         component: () => import("@/views/exception/403"),
+  //         component: () => import("@/views/index/exception/403"),
   //         meta: {
   //           title: "403",
   //         },
@@ -418,7 +418,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "404",
   //         name: "Exception404",
-  //         component: () => import("@/views/exception/404"),
+  //         component: () => import("@/views/index/exception/404"),
   //         meta: {
   //           title: "404",
   //         },
@@ -426,7 +426,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "500",
   //         name: "Exception500",
-  //         component: () => import("@/views/exception/500"),
+  //         component: () => import("@/views/index/exception/500"),
   //         meta: {
   //           title: "500",
   //         },
@@ -449,7 +449,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "accountcenter",
   //         name: "AccountCenter",
-  //         component: () => import("@/views/profile/index"),
+  //         component: () => import("@/views/index/profile/index"),
   //         meta: {
   //           title: "个人中心",
   //         },
@@ -457,7 +457,7 @@ export const asyncRouterMap = [
   //       {
   //         path: "accountsetting",
   //         name: "AccountSetting",
-  //         component: () => import("@/views/profile/accountsetting"),
+  //         component: () => import("@/views/index/profile/accountsetting"),
   //         meta: {
   //           title: "个人设置",
   //         },
