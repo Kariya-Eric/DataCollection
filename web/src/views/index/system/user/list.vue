@@ -3,66 +3,58 @@
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
       <div class="filter-container">
-        <el-row>
-          <el-form
-            label-width="80px"
-            size="small"
-            @keyup.enter.native="searchQuery"
+        <el-form
+          label-width="80px"
+          size="small"
+          :inline="true"
+          @keyup.enter.native="searchQuery"
+        >
+          <el-form-item label="部门">
+            <el-select
+              v-model="queryParam.orgId"
+              clearable
+              placeholder="请选择部门"
+            >
+              <!-- TODO -->
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="queryParam.queryWord"
+              placeholder="请输入姓名,帐号,手机"
+              @keyup.enter.native="searchQuery"
+            />
+          </el-form-item>
+          <el-button type="primary" size="small" icon="el-icon-search"
+            >搜索</el-button
           >
-            <el-col :span="5">
-              <el-form-item label="部门">
-                <el-select
-                  v-model="queryParam.orgId"
-                  clearable
-                  placeholder="请选择部门"
-                >
-                  <!-- TODO -->
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="5">
-              <el-form-item>
-                <el-input
-                  v-model="queryParam.queryWord"
-                  placeholder="请输入姓名,帐号,手机"
-                  @keyup.enter.native="searchQuery"
-                />
-              </el-form-item>
-            </el-col>
-          </el-form>
-          <el-col :span="4">
-            <div class="search-button-wrapper">
-              <el-button type="primary" size="small" icon="el-icon-search"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-refresh-right"
-                >重置</el-button
-              >
-            </div>
-          </el-col>
-
-          <el-col :span="10">
-            <div class="search-button-admin">
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-plus"
-                @click="addUser"
-                >添加用户</el-button
-              >
-              <el-button type="primary" size="small" icon="el-icon-download"
-                >导出</el-button
-              >
-              <el-button type="primary" size="small" icon="el-icon-upload2"
-                >导入</el-button
-              >
-              <a>下载导入模板</a>
-            </div>
-          </el-col>
-        </el-row>
+          <el-button type="primary" size="small" icon="el-icon-refresh-right"
+            >重置</el-button
+          >
+        </el-form>
+        <div class="search-button-admin">
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-plus"
+            @click="addUser"
+            >添加用户</el-button
+          >
+          <el-button
+            type="danger"
+            size="small"
+            icon="el-icon-delete"
+            v-if="selectedRowKeys.length > 0"
+            >批量删除</el-button
+          >
+          <el-button type="primary" size="small" icon="el-icon-upload2"
+            >导入</el-button
+          >
+          <el-button type="primary" size="small" icon="el-icon-download"
+            >导出</el-button
+          >
+          <a>下载导入模板</a>
+        </div>
       </div>
       <!-- Query End -->
 
@@ -141,19 +133,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.search-button-wrapper {
-  margin: 8px 0 0 16px;
-}
-.search-button-admin {
-  margin-top: 8px;
-  float: right;
-  a {
-    margin-left: 12px;
-    margin-right: 24px;
-  }
-}
-/deep/ .el-form-item {
-  margin-top: 8px;
-}
-</style>
+<style scoped lang="scss"></style>

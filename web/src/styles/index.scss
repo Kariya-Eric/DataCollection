@@ -1,8 +1,8 @@
-@import './variables.scss';
-@import './mixin.scss';
-@import './transition.scss';
-@import './element-ui.scss';
-@import './sidebar.scss';
+@import "./variables.scss";
+@import "./mixin.scss";
+@import "./transition.scss";
+@import "./element-ui.scss";
+@import "./sidebar.scss";
 
 body {
   height: 100%;
@@ -61,7 +61,7 @@ a:hover {
     visibility: hidden;
     display: block;
     font-size: 0;
-    content: ' ';
+    content: " ";
     clear: both;
     height: 0;
   }
@@ -91,7 +91,29 @@ a:hover {
 }
 
 .filter-container {
-  padding-bottom: 10px;
+  .el-form--inline {
+    margin-left: 0px;
+    margin-top: 12px;
+    .el-form-item__label {
+      font-size: 13.2px;
+      letter-spacing: 0.3ch;
+    }
+    .el-button--small {
+      margin-left: 12px;
+    }
+  }
+}
+.search-button-admin {
+  margin-top: 12px;
+  margin-bottom: 18px;
+  .el-button + .el-button{
+    margin-left: 6px;
+  }
+  a {
+    font-size: 13px;
+    text-decoration: underline;
+    margin-left: 12px;
+  }
 }
 
 .card-header {

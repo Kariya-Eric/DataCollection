@@ -151,6 +151,24 @@ export const constantRouterMap = [
           icon: "list",
         },
       },
+      {
+        path: "/sys/menu",
+        name: "menuList",
+        component: () => import("@/views/index/system/menu/list"),
+        meta: {
+          title: "菜单管理",
+          icon: "list",
+        },
+      },
+      {
+        path: "/sys/depart",
+        name: "departList",
+        component: () => import("@/views/index/system/depart/list"),
+        meta: {
+          title: "组织管理",
+          icon: "list",
+        },
+      },
     ],
   },
   {

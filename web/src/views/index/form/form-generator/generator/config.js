@@ -87,7 +87,6 @@ export const inputComponents = [
         },
       ],
     },
-    value: '',
     style: { width: "100%" },
     placeholder: "请输入",
     readonly: false,

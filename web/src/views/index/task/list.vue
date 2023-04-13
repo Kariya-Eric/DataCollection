@@ -4,73 +4,57 @@
       <el-card shadow="always" class="app-card">
         <!-- Query Start -->
         <div class="filter-container">
-          <el-row>
-            <el-form
-              label-width="80px"
-              size="small"
-              @keyup.enter.native="searchQuery"
+          <el-form
+            label-width="90px"
+            size="small"
+            :inline="true"
+            @keyup.enter.native="searchQuery"
+          >
+            <el-form-item label="任务类型">
+              <el-select
+                v-model="queryParam.type"
+                clearable
+                placeholder="请选择任务类型"
+              >
+                <!-- TODO -->
+              </el-select>
+            </el-form-item>
+            <el-form-item label="学年">
+              <el-select
+                v-model="queryParam.schoolYear"
+                clearable
+                placeholder="请选择学年"
+              >
+                <!-- TODO -->
+              </el-select>
+            </el-form-item>
+            <el-form-item label="任务名称">
+              <el-input
+                v-model="queryParam.name"
+                placeholder="请输入任务名称"
+                @keyup.enter.native="searchQuery"
+              />
+            </el-form-item>
+            <el-button type="primary" size="small" icon="el-icon-search"
+              >搜索</el-button
             >
-              <el-col :span="5">
-                <el-form-item label="任务类型">
-                  <el-select
-                    v-model="queryParam.type"
-                    clearable
-                    placeholder="请选择任务类型"
-                  >
-                    <!-- TODO -->
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="5">
-                <el-form-item label="学年">
-                  <el-select
-                    v-model="queryParam.schoolYear"
-                    clearable
-                    placeholder="请选择学年"
-                  >
-                    <!-- TODO -->
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="5">
-                <el-form-item label="任务名称">
-                  <el-input
-                    v-model="queryParam.name"
-                    placeholder="请输入任务名称"
-                    @keyup.enter.native="searchQuery"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-form>
-            <el-col :span="4">
-              <div class="search-button-wrapper">
-                <el-button type="primary" size="small" icon="el-icon-search"
-                  >搜索</el-button
-                >
-                <el-button
-                  type="primary"
-                  size="small"
-                  icon="el-icon-refresh-right"
-                  >重置</el-button
-                >
-              </div>
-            </el-col>
-            <el-col :span="5">
-              <div class="search-button-admin">
-                <a>下载导入模板</a>
-                <el-button type="primary" size="small" icon="el-icon-upload2"
-                  >导入</el-button
-                >
-                <el-button
-                  type="primary"
-                  size="small"
-                  icon="el-icon-plus"
-                  @click="addTask"
-                  >添加任务</el-button
-                >
-              </div>
-            </el-col>
-          </el-row>
+            <el-button type="primary" size="small" icon="el-icon-refresh-right"
+              >重置</el-button
+            >
+          </el-form>
+          <div class="search-button-admin">
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-plus"
+              @click="addTask"
+              >添加任务</el-button
+            >
+            <el-button type="primary" size="small" icon="el-icon-upload2"
+              >导入</el-button
+            >
+            <a>下载导入模板</a>
+          </div>
         </div>
         <!-- Query End -->
 
@@ -201,18 +185,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.search-button-wrapper {
-  margin: 8px 0 0 16px;
-}
-.search-button-admin {
-  margin-top: 8px;
-  float: right;
-  a {
-    margin-right: 12px;
-  }
-}
-/deep/ .el-form-item {
-  margin-top: 8px;
-}
-</style>
+<style scoped lang="scss"></style>

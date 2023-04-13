@@ -41,7 +41,7 @@
           <el-button icon="el-icon-view" type="text" @click="run">
             预览
           </el-button>
-          <el-button icon="el-icon-document-checked" type="text">
+          <el-button icon="el-icon-document-checked" type="text" @click="save">
             保存
           </el-button>
           <el-button
@@ -323,6 +323,11 @@ export default {
         fields: deepClone(this.drawingList),
         ...this.formConf,
       };
+    },
+
+    save() {
+      this.assembleFormData();
+      console.log("form", this.formData);
     },
   },
 };
