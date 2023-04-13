@@ -233,10 +233,6 @@ export default {
         config.customName = config.label ? config.label : config.customName;
         delete config.label;
         delete config.span;
-      } else if (config.layout === "customTable") {
-        config.customName = config.label ? config.label : config.customName;
-        delete config.label;
-        delete config.span;
       }
       if (Array.isArray(config.children)) {
         config.children = config.children.map((childItem) =>
@@ -328,7 +324,6 @@ export default {
         ...this.formConf,
       };
     },
-
   },
 };
 </script>

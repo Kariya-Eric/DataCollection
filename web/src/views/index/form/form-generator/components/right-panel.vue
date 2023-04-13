@@ -25,16 +25,13 @@
             v-if="activeData.__config__.customName !== undefined"
             label="字段名"
           >
-            <el-input
-              v-model="activeData.title"
-              placeholder="请输入标题"
-            />
+            <el-input v-model="activeData.title" placeholder="请输入标题" />
           </el-form-item>
         </template>
         <template v-if="activeData.__config__.table !== undefined">
           <el-divider>列名-属性</el-divider>
           <div
-            v-for="(item, index) in activeData.__config__.columns"
+            v-for="(item, index) in activeData.columns"
             :key="index"
             class="select-item"
           >
@@ -44,7 +41,7 @@
             <el-input size="small" v-model="item.props" />
             <div
               class="close-btn select-line-icon"
-              @click="activeData.__config__.columns.splice(index, 1)"
+              @click="activeData.columns.splice(index, 1)"
             >
               <i class="el-icon-remove-outline" />
             </div>
@@ -54,7 +51,7 @@
               style="padding-bottom: 0"
               icon="el-icon-circle-plus-outline"
               type="text"
-              @click="addColumnItem(activeData.__config__.length)"
+              @click="addColumnItem(activeData.length)"
             >
               添加选项
             </el-button>
@@ -757,7 +754,6 @@ const dateTimeFormat = {
   datetimerange: "yyyy-MM-dd HH:mm:ss",
 };
 
-
 export default {
   name: "RightPanel",
   components: {
@@ -862,52 +858,13 @@ export default {
   methods: {
     // ==============自定义Start==============
     addColumnItem(length) {
-      this.activeData.__config__.columns.push({
+      this.activeData.columns.push({
         label: "列" + (length + 1),
         props: "col" + (length + 1),
       });
-      this.activeData.__config__.length++;
+      this.activeData.length++;
     },
 
-    addRow(config) {
-      const tableData = config.tableData;
-      const rowNumer = tableData.length;
-      const colNumer = tableData[tableData.length - 1].length;
-      const newRow = [];
-      for (let i = 1; i <= colNumer; i++) {
-        let col = {
-          id: rowNumer + 1 + "-" + i,
-          selected: false,
-          rowspan: 1,
-          colspan: 1,
-        };
-        newRow.push(col);
-      }
-      config.tableData.push(newRow);
-    },
-
-    changeRow(val) {
-      console.log(this.activeData.__config__.row, val);
-      if (val < this.activeData.__config__.row) {
-        const nowRow = this.activeData.__config__.tableData.length;
-        console.log(nowRow, val);
-        for (let i = nowRow; i > val; i--) {
-          this.activeData.__config__.tableData.pop();
-          console.log(this.activeData.__config__.tableData);
-        }
-      } else {
-        const nowRow = this.activeData.__config__.tableData.length;
-        for (let i = nowRow; i < val; i++) {
-          this.addRow(this.activeData.__config__);
-        }
-      }
-      this.activeData.__config__.row = val;
-    },
-    changeCol(val) {
-      if (val < this.activeData.__config__.row) {
-      } else {
-      }
-    },
     // ==============自定义END==============
     addReg() {
       this.activeData.__config__.regList.push({
@@ -1019,7 +976,6 @@ export default {
     dateTypeChange(val) {
       this.setTimeValue(dateTimeFormat[val], val);
     },
-
   },
 };
 </script>

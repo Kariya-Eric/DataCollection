@@ -1,0 +1,85 @@
+<template>
+  <el-dialog
+    :title="addFlag ? '新增角色' : '修改角色'"
+    :visible="visible"
+    @close="close"
+    width="30%"
+  >
+    <div class="formDiv">
+      <el-form
+        ref="roleForm"
+        :model="roleForm"
+        label-width="80px"
+        size="small"
+        :rules="rules"
+      >
+        <el-form-item prop="code" label="角色编码">
+          <el-input v-model="roleForm.code" clearable :disabled="!addFlag" />
+        </el-form-item>
+        <el-form-item prop="name" label="角色名称">
+          <el-input v-model="roleForm.name" clearable />
+        </el-form-item>
+        <el-form-item prop="enabled" label="状态">
+          <el-switch
+            v-model="roleForm.enabled"
+            :active-value="1"
+            :inactive-value="0"
+          />
+        </el-form-item>
+      </el-form>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="small" @click="close">取 消</el-button>
+      <el-button type="primary" size="small" @click="handleSubmit"
+        >确 定</el-button
+      >
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+export default {
+  name: "RoleDialog",
+  data() {
+    return {
+      visible: false,
+      roleForm: {},
+      addFlag: false,
+      rules: {
+        name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+        code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
+      },
+    };
+  },
+
+  methods: {
+    show(addFlag, info) {
+      this.visible = true;
+      if (info) {
+        this.roleForm = JSON.parse(JSON.stringify(info));
+      }
+      this.addFlag = addFlag;
+    },
+
+    close() {
+      this.visible = false;
+      this.$refs.roleForm.resetFields();
+      this.roleForm = {};
+    },
+
+    handleSubmit() {
+      this.$refs.roleForm.validate((valid) => {
+        if (valid) {
+          //TODO
+        }
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.formDiv {
+  margin: 0 24px;
+}
+</style>

@@ -142,6 +142,15 @@ export const constantRouterMap = [
           icon: "list",
         },
       },
+      {
+        path: "/sys/role",
+        name: "roleList",
+        component: () => import("@/views/index/system/role/list"),
+        meta: {
+          title: "角色管理",
+          icon: "list",
+        },
+      },
     ],
   },
   {

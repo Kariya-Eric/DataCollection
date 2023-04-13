@@ -87,7 +87,7 @@ export const inputComponents = [
         },
       ],
     },
-    value:'',
+    value: '',
     style: { width: "100%" },
     placeholder: "请输入",
     readonly: false,
@@ -112,7 +112,7 @@ export const inputComponents = [
         },
       ],
     },
-    value:'',
+    value: '',
     style: { width: "100%" },
     placeholder: "请输入",
     readonly: false,
@@ -308,13 +308,17 @@ export const otherComponents = [
       label: "固定表格",
       layout: "customItem",
       table: true,
-      length: 3,
-      columns: [
-        { label: "列1", props: "col1" },
-        { label: "列2", props: "col2" },
-        { label: "列3", props: "col3" },
-      ],
     },
+    __slot__: {
+      columns: 'default'
+
+    },
+    length: 3,
+    columns: [
+      { label: "列1", props: "col1" },
+      { label: "列2", props: "col2" },
+      { label: "列3", props: "col3" },
+    ],
   },
 ];
 

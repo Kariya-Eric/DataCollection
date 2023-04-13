@@ -1,6 +1,6 @@
 import Vue from "vue";
 import axios from "axios";
-import { Message } from "element-ui";
+import { Notification } from "element-ui";
 import store from "../store";
 import { ACCESS_TOKEN } from "@/store/mutation-types";
 
@@ -29,27 +29,24 @@ const err = (error) => {
     let data = error.response.data
     switch (error.response.status) {
       case 404:
-        Message({
-          message: "系统提示",
-          description: "很抱歉,资源未找到！",
-          type: "error",
+        Notification.error({
+          title: '系统提示',
+          message: '很抱歉,资源未找到！',
           duration: 3000,
         });
         break;
       default:
-        Message({
-          message: "系统提示",
-          description: data.message,
-          type: "error",
+        Notification.error({
+          title: '系统提示',
+          message: data.message,
           duration: 3000,
         });
         break;
     }
   } else if (error.message) {
-    Message({
-      message: "系统提示",
-      description: error.message,
-      type: "error",
+    Notification.error({
+      title: '系统提示',
+      message: error.message,
       duration: 3000,
     });
   }

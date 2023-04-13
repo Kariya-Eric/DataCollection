@@ -31,7 +31,6 @@
       :header-cell-style="{ textAlign: 'center' }"
       :cell-style="{ textAlign: 'center' }"
       @selection-change="handleSelectionChange"
-      @header-click="headerClick"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column
@@ -40,19 +39,13 @@
         :index="item.index"
         :key="index"
       >
-        <template slot-scope="scope">
-          <!-- <el-input
+        <template> <slot></slot> </template>
+        <!-- <el-input
             class="item"
             v-if="scope.row.isEdit"
             v-model="scope.row[item.props]"
-          /> -->
-          <el-select class="item" v-if="scope.row.isEdit" v-model="scope.row[item.props]">
-            <el-option :value="1">1</el-option>
-            <el-option :value="2">2</el-option>
-            <el-option :value="3">3</el-option>
-          </el-select>
-          <span v-else class="text">{{ scope.row[item.props] }}</span>
-        </template>
+          />
+          <span v-else class="text">{{ scope.row[item.props] }}</span> -->
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -90,15 +83,9 @@
 <script>
 export default {
   name: "CustomEditTable",
-  props: {
-    conf: {
-      // 组件的config 配置
-      type: Object,
-    },
-  },
+  props: ["columns"],
   data() {
     return {
-      columns: this.conf.__config__.columns,
       tableData: [],
       loading: false,
       multipleSelection: [],
@@ -106,7 +93,7 @@ export default {
   },
   watch: {
     conf(val) {
-      this.columns = val.__config__.columns;
+      this.columns = val;
     },
   },
   methods: {
@@ -138,10 +125,6 @@ export default {
         );
       }
     },
-
-    headerClick(column,event){
-      console.log(column)
-    }
   },
 };
 </script>

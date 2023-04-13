@@ -74,7 +74,7 @@
         :border="true"
         @selection-change="onSelectChange"
       >
-        <el-table-column type="selection" width="55" />
+        <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="帐号" prop="account" align="center" />
         <el-table-column label="姓名" prop="name" align="center" />
         <el-table-column label="所属部门" prop="orgName" align="center" />
@@ -91,17 +91,18 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <a href="javascript:;">查看</a>
+            <a href="javascript:;" @click="showUser(scope.row)">查看</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;">编辑</a>
+            <a href="javascript:;" @click="updateUser(scope.row)">编辑</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;">重置密码</a>
+            <a href="javascript:;" @click="resetPwd(scope.row)">重置密码</a>
           </template>
         </el-table-column>
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
     <user-drawer ref="userDrawer" />
+    <reset-password-dialog ref="resetPasswordDialog" />
   </page-header-layout>
 </template>
 
@@ -110,10 +111,11 @@ import PageHeaderLayout from "layouts/PageHeaderLayout";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import UserDrawer from "./components/user-drawer";
 import Pagination from "components/Pagination";
+import ResetPasswordDialog from "./components/reset-password-dialog";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
-  components: { PageHeaderLayout, Pagination, UserDrawer },
+  components: { PageHeaderLayout, Pagination, UserDrawer, ResetPasswordDialog },
   data() {
     return {
       url: {
@@ -124,6 +126,16 @@ export default {
   methods: {
     addUser() {
       this.$refs.userDrawer.show(true);
+    },
+    showUser(info) {
+      this.$refs.userDrawer.show(false, false, info);
+    },
+    updateUser(info) {
+      this.$refs.userDrawer.show(false, true, info);
+    },
+
+    resetPwd(info) {
+      this.$refs.resetPasswordDialog.show(info);
     },
   },
 };

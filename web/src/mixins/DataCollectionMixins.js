@@ -66,7 +66,6 @@ export const DataCollectionMixin = {
         .finally(() => {
           //清空选择框
           this.selectedRowKeys = [];
-          //console.log(this.selectedRowKeys, this.rowSelectionBox)
           this.loading = false;
         });
     },
