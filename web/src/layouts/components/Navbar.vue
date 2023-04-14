@@ -8,43 +8,39 @@
         class="hamburger-container"
       />
       <breadcrumb />
-
-      <el-dropdown class="avatar-container" trigger="hover" size="medium">
-        <div class="avatar-wrapper">
-          <el-badge :value="12" class="item">
-            <i class="el-icon-bell" />
-          </el-badge>
-          <span class="user-name">{{ userInfo.username }}</span>
-          <img src="@/assets/images/avatar.jpg" class="user-avatar" />
-          <i class="el-icon-caret-bottom" />
-        </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link class="inlineBlock" to="/accountcenter">
-            <el-dropdown-item>
-              <span style="color: gray; padding-right: 10px">
-                <svg-icon icon-class="settings" />
-              </span>
-              个人中心
-            </el-dropdown-item>
-          </router-link>
-          <router-link class="inlineBlock" to="/accountcenter/accountsetting">
-            <el-dropdown-item>
-              <span style="color: gray; padding-right: 10px">
-                <svg-icon icon-class="user" />
-              </span>
-              个人设置
-            </el-dropdown-item>
-          </router-link>
-          <el-dropdown-item divided>
-            <div @click="logout">
-              <span style="color: gray; padding-right: 10px">
-                <svg-icon icon-class="shut-down-line" />
-              </span>
-              退出登录
-            </div>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+      <div class="user-wrapper">
+        <header-notice class="action"/>
+        <el-dropdown class="avatar-container" trigger="hover" size="medium">
+          <span class="action action-full">
+            <el-avatar class="avatar" src="@/assets/images/avatar.jpg" />
+            <span>欢迎您，{{ userInfo.username }}</span>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <router-link class="inlineBlock" to="/accountcenter">
+              <el-dropdown-item>
+                <span>
+                  <svg-icon icon-class="settings" />
+                </span>
+                个人中心
+              </el-dropdown-item>
+            </router-link>
+            <router-link class="inlineBlock" to="/accountcenter/accountsetting">
+              <el-dropdown-item>
+                <span>
+                  <svg-icon icon-class="user" />
+                </span>
+                个人设置
+              </el-dropdown-item>
+            </router-link>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <span class="action">
+          <a class="logout_title" href="javascript:;" @click="logout">
+            <i class="el-icon-connection" style="font-size: 18px" />
+            <span>&nbsp;退出登录</span>
+          </a>
+        </span>
+      </div>
     </el-menu>
   </div>
 </template>
@@ -54,12 +50,14 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import SidebarLogo from "./Sidebar/SidebarLogo.vue";
 import { mapActions, mapState } from "vuex";
+import HeaderNotice from './HeaderNotice';
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
     SidebarLogo,
+    HeaderNotice,
   },
   computed: {
     ...mapState("app", ["sidebar"]),
@@ -78,6 +76,31 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.logout_title {
+  color: inherit;
+  text-decoration: none;
+}
+.user-wrapper {
+  float: right;
+  height: 100%;
+  .action {
+    cursor: pointer;
+    padding: 0 14px;
+    display: inline-block;
+    transition: all 0.3s;
+    height: 60%;
+    line-height: 64px;
+
+    &.action-full {
+      height: 100%;
+    }
+
+    .avatar {
+      margin: 10px 10px 20px 0;
+      vertical-align: middle;
+    }
+  }
+}
 .navbar {
   height: 64px;
   margin-left: 240px;
@@ -99,33 +122,6 @@ export default {
     right: 90px;
     top: 16px;
     color: red;
-  }
-  .avatar-container {
-    height: 60px;
-    display: inline-block;
-    position: absolute;
-    right: 35px;
-    .avatar-wrapper {
-      cursor: pointer;
-      margin-top: 5px;
-      position: relative;
-      .user-name {
-        float: left;
-        margin-right: 5px;
-      }
-      .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 5px;
-        color: #409eff;
-      }
-      .el-icon-caret-bottom {
-        position: absolute;
-        right: -20px;
-        top: 25px;
-        font-size: 12px;
-      }
-    }
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-form">
     <el-result icon="success">
       <template slot="title"> <h1>任务配置完成</h1> </template>
       <template slot="extra">
@@ -28,5 +28,9 @@ export default {
   p {
     margin: 30px 0;
   }
+}
+.main-form {
+  width: 60%;
+  margin: auto;
 }
 </style>

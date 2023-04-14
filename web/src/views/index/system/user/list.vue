@@ -13,6 +13,7 @@
             <el-select
               v-model="queryParam.orgId"
               clearable
+              style="width: 100%"
               placeholder="请选择部门"
             >
               <!-- TODO -->

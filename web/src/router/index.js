@@ -172,6 +172,27 @@ export const constantRouterMap = [
     ],
   },
   {
+    path: "/analyze",
+    component: BasicLayout,
+    name: "analyze",
+    alwaysShow: true,
+    meta: {
+      title: "分析报告",
+      icon: "dashboard",
+    },
+    children: [
+      {
+        path: "/analyze/list",
+        name: "analyzeList",
+        component: () => import("@/views/index/analyze/list"),
+        meta: {
+          title: "分析报告",
+          icon: "list",
+        },
+      },
+    ],
+  },
+  {
     path: "/test",
     component: BasicLayout,
     name: "测试",

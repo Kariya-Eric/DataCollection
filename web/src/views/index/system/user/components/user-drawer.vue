@@ -49,6 +49,7 @@
             :readonly="!addFlag && !updateFlag"
             v-model="userForm.orgId"
             placeholder="请选择部门"
+            style="width: 100%"
             clearable
           >
           </el-select>
@@ -58,6 +59,7 @@
             v-model="userForm.role"
             placeholder="请选择角色"
             clearable
+            style="width: 100%"
             :readonly="!addFlag && !updateFlag"
           >
           </el-select>

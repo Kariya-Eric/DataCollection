@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-form label-width="100px">
+  <div class="main-form">
+    <el-form label-width="120px">
       <el-row>
         <h2>学校基本信息</h2>
       </el-row>
@@ -10,6 +10,7 @@
             <el-select
               v-model="basicForm.type"
               clearable
+              style="width: 100%"
               placeholder="请选择任务类型"
             >
               <!-- TODO -->
@@ -26,6 +27,7 @@
         <el-col :span="12">
           <el-form-item label="统计开始时间">
             <el-date-picker
+              style="width: 100%"
               type="date"
               v-model="basicForm.statisticsStartTime"
             />
@@ -33,7 +35,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="统计截止时间">
-            <el-date-picker type="date" v-model="basicForm.statisticsEndTime" />
+            <el-date-picker
+              style="width: 100%"
+              type="date"
+              v-model="basicForm.statisticsEndTime"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -42,6 +48,7 @@
           <el-form-item label="学年">
             <el-select
               v-model="basicForm.schoolYear"
+              style="width: 100%"
               clearable
               placeholder="请选择任务类型"
             >
@@ -73,31 +80,31 @@
         </el-col>
         <el-col :span="12"
           ><el-form-item label="医学专业">
-            <el-switch v-model="advancedForm.first" />
+            <el-switch v-model="advancedForm.second" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12"
           ><el-form-item label="工科类">
-            <el-switch v-model="advancedForm.first" />
+            <el-switch v-model="advancedForm.third" />
           </el-form-item>
         </el-col>
         <el-col :span="12"
           ><el-form-item label="人文社科类专业">
-            <el-switch v-model="advancedForm.first" />
+            <el-switch v-model="advancedForm.fourth" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12"
           ><el-form-item label="农学类专业">
-            <el-switch v-model="advancedForm.first" />
+            <el-switch v-model="advancedForm.fifth" />
           </el-form-item>
         </el-col>
         <el-col :span="12"
           ><el-form-item label="理学类专业">
-            <el-switch v-model="advancedForm.first" />
+            <el-switch v-model="advancedForm.sixth" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -119,4 +126,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.main-form {
+  width: 60%;
+  margin: auto;
+}
 </style>

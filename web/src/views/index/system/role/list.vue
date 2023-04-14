@@ -5,7 +5,7 @@
         <el-card shadow="always" class="app-card">
           <!-- Query Start -->
           <div class="filter-container">
-            <el-form label-width="90px" size="small" :inline="true">
+            <el-form label-width="80px" size="small" :inline="true">
               <el-form-item label="角色名称">
                 <el-input
                   v-model="queryParam.name"
@@ -17,6 +17,7 @@
                 <el-select
                   v-model="queryParam.status"
                   clearable
+                  style="width: 100%"
                   placeholder="请选择"
                 >
                   <!-- TODO -->

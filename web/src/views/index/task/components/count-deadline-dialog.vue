@@ -1,0 +1,75 @@
+<template>
+  <el-dialog
+    :title="isBatch ? '批量配置统计截止时间' : '统计截止时间'"
+    :visible="visible"
+    :append-to-body="true"
+    width="30%"
+    @close="close"
+  >
+    <el-form
+      :model="deadlineForm"
+      ref="deadlineForm"
+      size="small"
+      label-width="120px"
+      :rules="rules"
+    >
+      <el-form-item label="表单名称" prop="name">
+        <el-cascader
+          clearable
+          filterable
+          :props="{ multiple: true }"
+          v-model="deadlineForm.name"
+          :disabled="!isBatch"
+          style="width: 100%"
+        />
+      </el-form-item>
+      <el-form-item label="统计截止时间" prop="deadline">
+        <el-date-picker
+          v-model="deadlineForm.deadline"
+          style="width: 100%"
+          placeholder="请选择统计截止时间"
+        ></el-date-picker>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="small" @click="close">取 消</el-button>
+      <el-button type="primary" size="small" @click="handleSubmit"
+        >确 定</el-button
+      >
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+export default {
+  name: "CountDeadlineDialog",
+  data() {
+    return {
+      visible: false,
+      isBatch: false,
+      deadlineForm: {},
+      rules: {},
+    };
+  },
+  methods: {
+    show(isBatch) {
+      this.isBatch = isBatch;
+      this.visible = true;
+    },
+
+    close() {
+      this.visible = false;
+      this.$refs.deadlineForm.resetFields();
+    },
+
+    handleSubmit() {
+      this.$refs.deadlineForm.validate((valid) => {
+        //TODO
+      });
+    },
+  },
+};
+</script>
+
+<style>
+</style>

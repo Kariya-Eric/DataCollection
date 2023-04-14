@@ -13,11 +13,23 @@
         <el-step title="任务配置完成" @click.native="changeStep(3)" />
       </el-steps>
     </div>
-    <div class="main-form">
+    <div>
       <add-task-step-first v-if="currentStep === 0" />
       <add-task-step-second v-if="currentStep === 1" />
       <add-task-step-third v-if="currentStep === 2" />
       <add-task-step-fourth v-if="currentStep === 3" />
+    </div>
+    <div class="footer">
+      <el-button
+        type="primary"
+        icon="el-icon-arrow-left"
+        :disabled="currentStep === 0"
+        @click="backStep"
+        >上一步</el-button
+      >
+      <el-button type="primary" :disabled="currentStep === 3" @click="frontStep"
+        >下一步<i class="el-icon-arrow-right el-icon--right"></i
+      ></el-button>
     </div>
   </el-dialog>
 </template>
@@ -46,24 +58,36 @@ export default {
       this.visible = true;
     },
     close() {
+      this.currentStep = 0;
       this.visible = false;
     },
 
     changeStep(step) {
       this.currentStep = step;
     },
+
+    backStep() {
+      this.currentStep--;
+    },
+
+    frontStep() {
+      this.currentStep++;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.steps{
+.steps {
   width: 80%;
   margin: auto;
   margin-bottom: 36px;
 }
-.main-form {
-  width: 60%;
-  margin: auto;
+.footer {
+  margin-top: 24px;
+  text-align: center;
+  .el-button + .el-button {
+    margin-left: 32px;
+  }
 }
 </style>

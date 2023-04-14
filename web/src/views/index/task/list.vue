@@ -14,6 +14,7 @@
               <el-select
                 v-model="queryParam.type"
                 clearable
+                style="width: 100%"
                 placeholder="请选择任务类型"
               >
                 <!-- TODO -->
@@ -22,6 +23,7 @@
             <el-form-item label="学年">
               <el-select
                 v-model="queryParam.schoolYear"
+                style="width: 100%"
                 clearable
                 placeholder="请选择学年"
               >
@@ -135,7 +137,9 @@
             width="500"
           >
             <template slot-scope="scope">
-              <a href="javascript:;">任务概览</a>
+              <a href="javascript:;" @click="showTaskInfo(scope.row)"
+                >任务概览</a
+              >
               <el-divider direction="vertical" />
               <a href="javascript:;" v-if="scope.row.enabled !== 0">任务详情</a>
               <el-divider direction="vertical" v-if="scope.row.enabled !== 0" />
@@ -156,6 +160,7 @@
       </el-card>
     </page-header-layout>
     <add-task-dialog ref="addTaskDialog" />
+    <task-info-dialog ref="taskInfoDialog" />
   </div>
 </template>
 
@@ -164,10 +169,11 @@ import PageHeaderLayout from "layouts/PageHeaderLayout";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
 import AddTaskDialog from "./components/add-task-dialog";
+import TaskInfoDialog from "./components/task-info-dialog";
 export default {
   name: "TaskList",
   mixins: [DataCollectionMixin],
-  components: { PageHeaderLayout, Pagination, AddTaskDialog },
+  components: { PageHeaderLayout, Pagination, AddTaskDialog, TaskInfoDialog },
   data() {
     return {
       url: {
@@ -175,11 +181,13 @@ export default {
       },
     };
   },
-  created() {},
-  mounted() {},
   methods: {
     addTask() {
       this.$refs.addTaskDialog.show();
+    },
+
+    showTaskInfo(row) {
+      this.$refs.taskInfoDialog.show(row);
     },
   },
 };
