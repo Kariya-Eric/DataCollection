@@ -551,6 +551,15 @@
         </el-form-item>
 
         <template v-if="activeData.__config__.layoutTree">
+          <el-form-item label="组件间隔">
+            <el-slider
+              v-model="activeData.__config__.gutter"
+              :min="0"
+              :max="30"
+              :marks="{ 15: '' }"
+              @change="rowGutterChange"
+            />
+          </el-form-item>
           <el-divider>布局结构树</el-divider>
           <el-tree
             :data="[activeData.__config__]"
@@ -896,6 +905,9 @@ export default {
     },
     gutterChange(val) {
       this.$set(this.formConf, "gutter", val);
+    },
+    rowGutterChange(val) {
+      this.$set(this.activeData.__config__, "gutter", val);
     },
     multipleChange(val) {
       this.$set(this.activeData.__config__, "defaultValue", val ? [] : "");

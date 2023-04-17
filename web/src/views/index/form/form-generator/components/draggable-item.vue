@@ -76,11 +76,10 @@ const layouts = {
         ? "drawing-row-item active-from-item"
         : "drawing-row-item";
     let child = renderChildren.apply(this, arguments);
-    child = <el-row type="flex">{child}</el-row>;
+    child = <el-row gutter={config.gutter} type="flex">{child}</el-row>;
     return (
       <el-col>
         <el-row
-          gutter={config.gutter}
           class={className}
           nativeOnClick={(event) => {
             activeItem(currentItem);

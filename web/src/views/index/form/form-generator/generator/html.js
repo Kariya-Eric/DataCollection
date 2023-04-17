@@ -49,7 +49,7 @@ function buildFormTemplate(scheme, child) {
 function buildFromBtns(scheme) {
   let str = "";
   if (scheme.formBtns) {
-    str = `<el-form-item size="large">
+    str = `<el-form-item size="small">
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>`;
@@ -94,7 +94,7 @@ const layouts = {
   },
   rowFormItem(scheme) {
     const config = scheme.__config__;
-    const gutter = scheme.gutter ? `:gutter="${scheme.gutter}"` : "";
+    const gutter = config.gutter ? `:gutter="${config.gutter}"` : "";
     const children = config.children.map((el) => {
       const str = layouts[el.__config__.layout](el);
       return `<el-col>${str}</el-col>`;
