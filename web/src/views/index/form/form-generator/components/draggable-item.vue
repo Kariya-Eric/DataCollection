@@ -28,7 +28,6 @@ const components = {
       </span>,
     ];
   },
-
 };
 const layouts = {
   colFormItem(h, currentItem, index, list) {
@@ -79,19 +78,9 @@ const layouts = {
         ? "drawing-row-item active-from-item"
         : "drawing-row-item";
     let child = renderChildren.apply(this, arguments);
-    if (currentItem.type === "flex") {
-      child = (
-        <el-row
-          type={currentItem.type}
-          justify={currentItem.justify}
-          align={currentItem.align}
-        >
-          {child}
-        </el-row>
-      );
-    }
+    child = <el-row type="flex">{child}</el-row>;
     return (
-      <el-col span={config.span}>
+      <el-col>
         <el-row
           gutter={config.gutter}
           class={className}
@@ -112,21 +101,6 @@ const layouts = {
           {components.itemBtns.apply(this, arguments)}
         </el-row>
       </el-col>
-    );
-  },
-  raw(h, currentItem, index, list) {
-    const config = currentItem.__config__;
-    const child = renderChildren.apply(this, arguments);
-    return (
-      <render
-        key={config.renderKey}
-        conf={currentItem}
-        onInput={(event) => {
-          this.$set(config, "defaultValue", event);
-        }}
-      >
-        {child}
-      </render>
     );
   },
 
@@ -161,7 +135,6 @@ const layouts = {
       </el-col>
     );
   },
-
 };
 
 function renderChildren(h, currentItem, index, list) {

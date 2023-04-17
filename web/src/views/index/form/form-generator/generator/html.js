@@ -4,15 +4,6 @@ import ruleTrigger from './ruleTrigger'
 let confGlobal
 let someSpanIsNot24
 
-export function dialogWrapper(str) {
-  return `<el-dialog v-bind="$attrs" v-on="$listeners" @open="onOpen" @close="onClose" title="Dialog Titile">
-    ${str}
-    <div slot="footer">
-      <el-button @click="close">取消</el-button>
-      <el-button type="primary" @click="handelConfirm">确定</el-button>
-    </div>
-  </el-dialog>`
-}
 
 export function vueTemplate(str) {
   return `<template>
@@ -34,7 +25,7 @@ export function cssStyle(cssStr) {
   </style>`
 }
 
-function buildFormTemplate(scheme, child, type) {
+function buildFormTemplate(scheme, child) {
   let labelPosition = ''
   if (scheme.labelPosition !== 'right') {
     labelPosition = `label-position="${scheme.labelPosition}"`
@@ -42,7 +33,7 @@ function buildFormTemplate(scheme, child, type) {
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : ''
   let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel}" :rules="${scheme.formRules}" size="${scheme.size}" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
-      ${buildFromBtns(scheme, type)}
+      ${buildFromBtns(scheme)}
     </el-form>`
   if (someSpanIsNot24) {
     str = `<el-row :gutter="${scheme.gutter}">
@@ -52,9 +43,9 @@ function buildFormTemplate(scheme, child, type) {
   return str
 }
 
-function buildFromBtns(scheme, type) {
+function buildFromBtns(scheme) {
   let str = ''
-  if (scheme.formBtns && type === 'file') {
+  if (scheme.formBtns) {
     str = `<el-form-item size="large">
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
@@ -100,16 +91,11 @@ const layouts = {
   },
   rowFormItem(scheme) {
     const config = scheme.__config__
-    const type = scheme.type === 'default' ? '' : `type="${scheme.type}"`
-    const justify = scheme.type === 'default' ? '' : `justify="${scheme.justify}"`
-    const align = scheme.type === 'default' ? '' : `align="${scheme.align}"`
     const gutter = scheme.gutter ? `:gutter="${scheme.gutter}"` : ''
     const children = config.children.map(el => layouts[el.__config__.layout](el))
-    let str = `<el-row ${type} ${justify} ${align} ${gutter}>
+    let str = `<el-col><el-row ${gutter} type="flex">
       ${children.join('\n')}
-    </el-row>`
-    str = colWrapper(scheme, str)
-    console.log(str)
+    </el-row></el-col>`
     return str
   },
   customItem(scheme) {
@@ -338,7 +324,7 @@ function buildElUploadChild(scheme) {
  * @param {Object} formConfig 整个表单配置
  * @param {String} type 生成类型，文件或弹窗等
  */
-export function makeUpHtml(formConfig, type) {
+export function makeUpHtml(formConfig) {
   const htmlList = []
   confGlobal = formConfig
   // 判断布局是否都沾满了24个栅格，以备后续简化代码结构
@@ -349,11 +335,7 @@ export function makeUpHtml(formConfig, type) {
   })
   const htmlStr = htmlList.join('\n')
   // 将组件代码放进form标签
-  let temp = buildFormTemplate(formConfig, htmlStr, type)
-  // dialog标签包裹代码
-  if (type === 'dialog') {
-    temp = dialogWrapper(temp)
-  }
+  let temp = buildFormTemplate(formConfig, htmlStr)
   confGlobal = null
   return temp
 }

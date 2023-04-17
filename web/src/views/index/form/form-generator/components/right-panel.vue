@@ -108,88 +108,22 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="activeData.__config__.span !== undefined"
-          label="表单栅格"
-        >
-          <el-slider
-            v-model="activeData.__config__.span"
-            :max="24"
-            :min="1"
-            :marks="{ 12: '' }"
-            @change="spanChange"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="
-            activeData.__config__.layout === 'rowFormItem' &&
-            activeData.gutter !== undefined
-          "
-          label="栅格间隔"
-        >
-          <el-input-number
-            v-model="activeData.gutter"
-            :min="0"
-            placeholder="栅格间隔"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="
-            activeData.__config__.layout === 'rowFormItem' &&
-            activeData.type !== undefined
-          "
-          label="布局模式"
-        >
-          <el-radio-group v-model="activeData.type">
-            <el-radio-button label="default" />
-            <el-radio-button label="flex" />
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.justify !== undefined && activeData.type === 'flex'"
-          label="水平排列"
-        >
-          <el-select
-            v-model="activeData.justify"
-            placeholder="请选择水平排列"
-            :style="{ width: '100%' }"
-          >
-            <el-option
-              v-for="(item, index) in justifyOptions"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.align !== undefined && activeData.type === 'flex'"
-          label="垂直排列"
-        >
-          <el-radio-group v-model="activeData.align">
-            <el-radio-button label="top" />
-            <el-radio-button label="middle" />
-            <el-radio-button label="bottom" />
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.__config__.labelWidth !== undefined"
-          label="标签宽度"
-        >
-          <el-input
-            v-model.number="activeData.__config__.labelWidth"
-            type="number"
-            placeholder="请输入标签宽度"
-          />
-        </el-form-item>
-        <el-form-item
           v-if="activeData.style && activeData.style.width !== undefined"
           label="组件宽度"
         >
-          <el-input
-            v-model="activeData.style.width"
-            placeholder="请输入组件宽度"
-            clearable
-          />
+          <el-slider
+            v-model="activeData.__config__.span"
+            :min="1"
+            :max="24"
+            :marks="{ 12: '' }"
+            @change="spanChange"
+          ></el-slider>
+        </el-form-item>
+        <el-form-item
+          v-if="activeData.style && activeData.style.width !== undefined"
+          label="输入框宽度"
+        >
+          <el-slider v-model="inputWidth" :marks="{ 50: '' }"></el-slider>
         </el-form-item>
         <el-form-item v-if="activeData.__vModel__ !== undefined" label="默认值">
           <el-input
@@ -543,10 +477,7 @@
         </el-form-item>
 
         <el-form-item
-          v-if="
-            activeData.__config__.showLabel !== undefined &&
-            activeData.__config__.labelWidth !== undefined
-          "
+          v-if="activeData.__config__.showLabel !== undefined"
           label="显示标签"
         >
           <el-switch v-model="activeData.__config__.showLabel" />
@@ -703,17 +634,22 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="标签宽度">
-          <el-input
-            v-model.number="formConf.labelWidth"
-            type="number"
-            placeholder="请输入标签宽度"
-          />
+          <el-slider
+            v-model="formConf.labelWidth"
+            :min="10"
+            :step="10"
+            :max="240"
+            :marks="{ 120: '' }"
+            @change="labelChange"
+          ></el-slider>
         </el-form-item>
-        <el-form-item label="栅格间隔">
-          <el-input-number
+        <el-form-item label="组件间隔">
+          <el-slider
             v-model="formConf.gutter"
             :min="0"
-            placeholder="栅格间隔"
+            :max="30"
+            :marks="{ 15: '' }"
+            @change="gutterChange"
           />
         </el-form-item>
         <el-form-item label="禁用表单">
@@ -721,9 +657,6 @@
         </el-form-item>
         <el-form-item label="表单按钮">
           <el-switch v-model="formConf.formBtns" />
-        </el-form-item>
-        <el-form-item label="显示未选中组件边框">
-          <el-switch v-model="formConf.unFocusedComponentBorder" />
         </el-form-item>
       </el-form>
     </div>
@@ -802,29 +735,6 @@ export default {
           value: "datetimerange",
         },
       ],
-
-      justifyOptions: [
-        {
-          label: "start",
-          value: "start",
-        },
-        {
-          label: "end",
-          value: "end",
-        },
-        {
-          label: "center",
-          value: "center",
-        },
-        {
-          label: "space-around",
-          value: "space-around",
-        },
-        {
-          label: "space-between",
-          value: "space-between",
-        },
-      ],
       layoutTreeProps: {
         label(data, node) {
           const config = data.__config__;
@@ -845,6 +755,17 @@ export default {
         return this.dateRangeTypeOptions;
       }
       return [];
+    },
+    inputWidth: {
+      get() {
+        if (this.activeData.style != undefined) {
+          return parseInt(this.activeData.style.width);
+        }
+        return 0;
+      },
+      set(val) {
+        this.$set(this.activeData, "style", { width: val + "%" });
+      },
     },
   },
   watch: {
@@ -968,7 +889,13 @@ export default {
       this.$set(this.activeData, "format", val);
     },
     spanChange(val) {
-      this.formConf.span = val;
+      this.$set(this.formConf, "span", val);
+    },
+    labelChange(val) {
+      this.$set(this.formConf, "labelWidth", val);
+    },
+    gutterChange(val) {
+      this.$set(this.formConf, "gutter", val);
     },
     multipleChange(val) {
       this.$set(this.activeData.__config__, "defaultValue", val ? [] : "");

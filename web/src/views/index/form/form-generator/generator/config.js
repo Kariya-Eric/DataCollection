@@ -4,7 +4,7 @@ export const formConf = {
   formModel: "formData",
   size: "medium",
   labelPosition: "right",
-  labelWidth: 100,
+  labelWidth: 120,
   formRules: "rules",
   gutter: 15,
   disabled: false,
@@ -18,7 +18,6 @@ export const inputComponents = [
     // 组件的自定义配置
     __config__: {
       label: "单行文本",
-      labelWidth: null,
       showLabel: true,
       tag: "el-input",
       tagIcon: "input",
@@ -46,7 +45,6 @@ export const inputComponents = [
   {
     __config__: {
       label: "多行文本",
-      labelWidth: null,
       showLabel: true,
       tag: "el-input",
       tagIcon: "textarea",
@@ -71,7 +69,6 @@ export const inputComponents = [
   {
     __config__: {
       label: "手机号",
-      labelWidth: null,
       showLabel: true,
       tag: "customPhone",
       tagIcon: "smartphone",
@@ -95,7 +92,6 @@ export const inputComponents = [
   {
     __config__: {
       label: "邮箱",
-      labelWidth: null,
       showLabel: true,
       tag: "customMail",
       tagIcon: "mail",
@@ -121,7 +117,6 @@ export const inputComponents = [
     __config__: {
       label: '计数器',
       showLabel: true,
-      labelWidth: null,
       tag: 'el-input-number',
       tagIcon: 'number',
       defaultValue: undefined,
@@ -147,7 +142,6 @@ export const selectComponents = [
     __config__: {
       label: "下拉选择",
       showLabel: true,
-      labelWidth: null,
       tag: "el-select",
       tagIcon: "select",
       layout: "colFormItem",
@@ -177,7 +171,6 @@ export const selectComponents = [
   {
     __config__: {
       label: "单选框组",
-      labelWidth: null,
       showLabel: true,
       tag: "el-radio-group",
       tagIcon: "radio",
@@ -209,7 +202,6 @@ export const selectComponents = [
       defaultValue: [],
       span: 24,
       showLabel: true,
-      labelWidth: null,
       layout: "colFormItem",
       required: true,
       regList: [],
@@ -238,7 +230,6 @@ export const selectComponents = [
       defaultValue: false,
       span: 24,
       showLabel: true,
-      labelWidth: null,
       layout: 'colFormItem',
       required: true,
       regList: []
@@ -258,7 +249,6 @@ export const selectComponents = [
       tagIcon: "date",
       defaultValue: null,
       showLabel: true,
-      labelWidth: null,
       span: 24,
       layout: "colFormItem",
       required: true,
@@ -281,7 +271,6 @@ export const selectComponents = [
       defaultValue: null,
       span: 24,
       showLabel: true,
-      labelWidth: null,
       required: true,
       layout: "colFormItem",
       regList: [],
@@ -312,11 +301,8 @@ export const otherComponents = [
       columns: 'default'
 
     },
-    length: 3,
+    length: 0,
     columns: [
-      { label: "列1", props: "col1" },
-      { label: "列2", props: "col2" },
-      { label: "列3", props: "col3" },
     ],
   },
 ];
@@ -340,8 +326,5 @@ export const layoutComponents = [
       label: "行容器",
       layoutTree: true,
     },
-    type: "default",
-    justify: "start",
-    align: "top",
   },
 ];

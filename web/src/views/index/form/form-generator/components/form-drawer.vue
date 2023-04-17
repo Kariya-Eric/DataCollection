@@ -6,6 +6,7 @@
       v-on="$listeners"
       :visible="visible"
       @close="onClose"
+      size="80%"
       title="表单预览"
     >
       <el-scrollbar wrap-class="scrollbar-wrapper" style="height: 100%">
@@ -73,7 +74,7 @@ export default {
     },
 
     onOpen() {
-      this.htmlCode = makeUpHtml(this.formData, "file");
+      this.htmlCode = makeUpHtml(this.formData);
       this.jsCode = makeUpJs(this.formData, "file");
       this.cssCode = makeUpCss(this.formData);
       this.editorObj.html = this.htmlCode;
