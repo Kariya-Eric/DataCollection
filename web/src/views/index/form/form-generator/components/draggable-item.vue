@@ -38,8 +38,6 @@ const layouts = {
       this.activeId === config.formId
         ? "drawing-item active-from-item"
         : "drawing-item";
-    if (this.formConf.unFocusedComponentBorder)
-      className += " unfocus-bordered";
     let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null;
     if (config.showLabel === false) labelWidth = "0";
     return (
@@ -112,8 +110,6 @@ const layouts = {
       this.activeId === config.formId
         ? "drawing-other-item active-from-item"
         : "drawing-other-item";
-    if (this.formConf.unFocusedComponentBorder)
-      className += " unfocus-bordered";
     return (
       <el-col
         class={className}

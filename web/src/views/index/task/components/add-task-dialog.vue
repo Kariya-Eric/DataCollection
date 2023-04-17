@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加任务" :visible="visible" fullscreen @close="close">
+  <el-dialog title="添加任务" :visible="visible" fullscreen @close="close" style="overflow: hidden">
     <div class="steps">
       <el-steps
         :active="currentStep"

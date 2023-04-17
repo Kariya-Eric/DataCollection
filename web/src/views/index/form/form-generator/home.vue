@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div class="center-board">
+      <div class="center-board" style="overflow: hidden;">
         <div class="action-bar">
           <el-button icon="el-icon-view" type="text" @click="run">
             预览
@@ -315,7 +315,7 @@ export default {
 
     run() {
       this.assembleFormData();
-      this.$refs.formDrawer.show(this.formData, {});
+      this.$refs.formDrawer.show(this.formData);
     },
 
     assembleFormData() {

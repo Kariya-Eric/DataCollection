@@ -1,62 +1,65 @@
 /* eslint-disable max-len */
-import ruleTrigger from './ruleTrigger'
+import ruleTrigger from "./ruleTrigger";
 
-let confGlobal
-let someSpanIsNot24
-
+let confGlobal;
+let someSpanIsNot24;
 
 export function vueTemplate(str) {
   return `<template>
     <div>
       ${str}
     </div>
-  </template>`
+  </template>`;
 }
 
 export function vueScript(str) {
   return `<script>
     ${str}
-  </script>`
+  </script>`;
 }
 
 export function cssStyle(cssStr) {
   return `<style>
     ${cssStr}
-  </style>`
+  </style>`;
 }
 
 function buildFormTemplate(scheme, child) {
-  let labelPosition = ''
-  if (scheme.labelPosition !== 'right') {
-    labelPosition = `label-position="${scheme.labelPosition}"`
+  let labelPosition = "";
+  if (scheme.labelPosition !== "right") {
+    labelPosition = `label-position="${scheme.labelPosition}"`;
   }
-  const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : ''
-  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel}" :rules="${scheme.formRules}" size="${scheme.size}" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
+  let str = `<el-form ref="${scheme.formRef}" :model="${
+    scheme.formModel
+  }" :rules="${scheme.formRules}" size="${
+    scheme.size
+  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
-    </el-form>`
+    </el-form>`;
   if (someSpanIsNot24) {
     str = `<el-row :gutter="${scheme.gutter}">
         ${str}
-      </el-row>`
+      </el-row>`;
   }
-  return str
+  return str;
 }
 
 function buildFromBtns(scheme) {
-  let str = ''
+  let str = "";
   if (scheme.formBtns) {
     str = `<el-form-item size="large">
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
-        </el-form-item>`
+        </el-form-item>`;
     if (someSpanIsNot24) {
       str = `<el-col :span="24">
           ${str}
-        </el-col>`
+        </el-col>`;
     }
   }
-  return str
+  return str;
 }
 
 // span不为24的用el-col包裹
@@ -64,259 +67,303 @@ function colWrapper(scheme, str) {
   if (someSpanIsNot24 || scheme.__config__.span !== 24) {
     return `<el-col :span="${scheme.__config__.span}">
       ${str}
-    </el-col>`
+    </el-col>`;
   }
-  return str
+  return str;
 }
 
 const layouts = {
   colFormItem(scheme) {
-    const config = scheme.__config__
-    let labelWidth = ''
-    let label = `label="${config.label}"`
+    const config = scheme.__config__;
+    let labelWidth = "";
+    let label = `label="${config.label}"`;
     if (config.labelWidth && config.labelWidth !== confGlobal.labelWidth) {
-      labelWidth = `label-width="${config.labelWidth}px"`
+      labelWidth = `label-width="${config.labelWidth}px"`;
     }
     if (config.showLabel === false) {
-      labelWidth = 'label-width="0"'
-      label = ''
+      labelWidth = 'label-width="0"';
+      label = "";
     }
-    const required = !ruleTrigger[config.tag] && config.required ? 'required' : ''
-    const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null
+    const required =
+      !ruleTrigger[config.tag] && config.required ? "required" : "";
+    const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
     let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${required}>
         ${tagDom}
-      </el-form-item>`
-    str = colWrapper(scheme, str)
-    return str
+      </el-form-item>`;
+    return colWrapper(scheme, str);
   },
   rowFormItem(scheme) {
-    const config = scheme.__config__
-    const gutter = scheme.gutter ? `:gutter="${scheme.gutter}"` : ''
-    const children = config.children.map(el => layouts[el.__config__.layout](el))
+    const config = scheme.__config__;
+    const gutter = scheme.gutter ? `:gutter="${scheme.gutter}"` : "";
+    const children = config.children.map((el) => {
+      const str = layouts[el.__config__.layout](el);
+      return `<el-col>${str}</el-col>`;
+    });
     let str = `<el-col><el-row ${gutter} type="flex">
-      ${children.join('\n')}
-    </el-row></el-col>`
-    return str
+      ${children.join("\n")}
+    </el-row></el-col>`;
+    return str;
   },
   customItem(scheme) {
-    const config = scheme.__config__
-    const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null
-    let str = `<el-row><el-col>${tagDom}</el-col></el-row>`
-    return str
-  }
-}
+    const config = scheme.__config__;
+    const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
+    let str = `<el-row><el-col>${tagDom}</el-col></el-row>`;
+    return str;
+  },
+};
 
 const tags = {
-  'el-input': el => {
-    const {
-      tag, disabled, vModel, clearable, placeholder, width
-    } = attrBuilder(el)
-    const maxlength = el.maxlength ? `:maxlength="${el.maxlength}"` : ''
-    const showWordLimit = el['show-word-limit'] ? 'show-word-limit' : ''
-    const readonly = el.readonly ? 'readonly' : ''
-    const type = el.type ? `type="${el.type}"` : ''
-    const autosize = el.autosize && el.autosize.minRows
-      ? `:autosize="{minRows: ${el.autosize.minRows}, maxRows: ${el.autosize.maxRows}}"`
-      : ''
-    let child = buildElInputChild(el)
+  "el-input": (el) => {
+    const { tag, disabled, vModel, clearable, placeholder, width } =
+      attrBuilder(el);
+    const maxlength = el.maxlength ? `:maxlength="${el.maxlength}"` : "";
+    const showWordLimit = el["show-word-limit"] ? "show-word-limit" : "";
+    const readonly = el.readonly ? "readonly" : "";
+    const type = el.type ? `type="${el.type}"` : "";
+    const autosize =
+      el.autosize && el.autosize.minRows
+        ? `:autosize="{minRows: ${el.autosize.minRows}, maxRows: ${el.autosize.maxRows}}"`
+        : "";
+    let child = buildElInputChild(el);
 
-    if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${autosize} ${width}>${child}</${tag}>`
+    if (child) child = `\n${child}\n`; // 换行
+    return `<${tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${autosize} ${width}>${child}</${tag}>`;
   },
-  'el-input-number': el => {
-    const {
-      tag, disabled, vModel, placeholder
-    } = attrBuilder(el)
-    const controlsPosition = el['controls-position'] ? `controls-position=${el['controls-position']}` : ''
-    const min = el.min ? `:min='${el.min}'` : ''
-    const max = el.max ? `:max='${el.max}'` : ''
-    const step = el.step ? `:step='${el.step}'` : ''
-    const stepStrictly = el['step-strictly'] ? 'step-strictly' : ''
-    const precision = el.precision ? `:precision='${el.precision}'` : ''
+  "el-input-number": (el) => {
+    const { tag, disabled, vModel, placeholder } = attrBuilder(el);
+    const controlsPosition = el["controls-position"]
+      ? `controls-position=${el["controls-position"]}`
+      : "";
+    const min = el.min ? `:min='${el.min}'` : "";
+    const max = el.max ? `:max='${el.max}'` : "";
+    const step = el.step ? `:step='${el.step}'` : "";
+    const stepStrictly = el["step-strictly"] ? "step-strictly" : "";
+    const precision = el.precision ? `:precision='${el.precision}'` : "";
 
-    return `<${tag} ${vModel} ${placeholder} ${step} ${stepStrictly} ${precision} ${controlsPosition} ${min} ${max} ${disabled}></${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${step} ${stepStrictly} ${precision} ${controlsPosition} ${min} ${max} ${disabled}></${tag}>`;
   },
-  'el-select': el => {
-    const {
-      tag, disabled, vModel, clearable, placeholder, width
-    } = attrBuilder(el)
-    const filterable = el.filterable ? 'filterable' : ''
-    const multiple = el.multiple ? 'multiple' : ''
-    let child = buildElSelectChild(el)
+  "el-select": (el) => {
+    const { tag, disabled, vModel, clearable, placeholder, width } =
+      attrBuilder(el);
+    const filterable = el.filterable ? "filterable" : "";
+    const multiple = el.multiple ? "multiple" : "";
+    let child = buildElSelectChild(el);
 
-    if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${placeholder} ${disabled} ${multiple} ${filterable} ${clearable} ${width}>${child}</${tag}>`
+    if (child) child = `\n${child}\n`; // 换行
+    return `<${tag} ${vModel} ${placeholder} ${disabled} ${multiple} ${filterable} ${clearable} ${width}>${child}</${tag}>`;
   },
-  'el-radio-group': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
-    const size = `size="${el.size}"`
-    let child = buildElRadioGroupChild(el)
+  "el-radio-group": (el) => {
+    const { tag, disabled, vModel } = attrBuilder(el);
+    const size = `size="${el.size}"`;
+    let child = buildElRadioGroupChild(el);
 
-    if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${size} ${disabled}>${child}</${tag}>`
+    if (child) child = `\n${child}\n`; // 换行
+    return `<${tag} ${vModel} ${size} ${disabled}>${child}</${tag}>`;
   },
-  'el-checkbox-group': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
-    const size = `size="${el.size}"`
-    const min = el.min ? `:min="${el.min}"` : ''
-    const max = el.max ? `:max="${el.max}"` : ''
-    let child = buildElCheckboxGroupChild(el)
+  "el-checkbox-group": (el) => {
+    const { tag, disabled, vModel } = attrBuilder(el);
+    const size = `size="${el.size}"`;
+    const min = el.min ? `:min="${el.min}"` : "";
+    const max = el.max ? `:max="${el.max}"` : "";
+    let child = buildElCheckboxGroupChild(el);
 
-    if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${tag}>`
+    if (child) child = `\n${child}\n`; // 换行
+    return `<${tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${tag}>`;
   },
-  'el-switch': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
-    const activeText = el['active-text'] ? `active-text="${el['active-text']}"` : ''
-    const inactiveText = el['inactive-text'] ? `inactive-text="${el['inactive-text']}"` : ''
-    const activeColor = el['active-color'] ? `active-color="${el['active-color']}"` : ''
-    const inactiveColor = el['inactive-color'] ? `inactive-color="${el['inactive-color']}"` : ''
-    const activeValue = el['active-value'] !== true ? `:active-value='${JSON.stringify(el['active-value'])}'` : ''
-    const inactiveValue = el['inactive-value'] !== false ? `:inactive-value='${JSON.stringify(el['inactive-value'])}'` : ''
+  "el-switch": (el) => {
+    const { tag, disabled, vModel } = attrBuilder(el);
+    const activeText = el["active-text"]
+      ? `active-text="${el["active-text"]}"`
+      : "";
+    const inactiveText = el["inactive-text"]
+      ? `inactive-text="${el["inactive-text"]}"`
+      : "";
+    const activeColor = el["active-color"]
+      ? `active-color="${el["active-color"]}"`
+      : "";
+    const inactiveColor = el["inactive-color"]
+      ? `inactive-color="${el["inactive-color"]}"`
+      : "";
+    const activeValue =
+      el["active-value"] !== true
+        ? `:active-value='${JSON.stringify(el["active-value"])}'`
+        : "";
+    const inactiveValue =
+      el["inactive-value"] !== false
+        ? `:inactive-value='${JSON.stringify(el["inactive-value"])}'`
+        : "";
 
-    return `<${tag} ${vModel} ${activeText} ${inactiveText} ${activeColor} ${inactiveColor} ${activeValue} ${inactiveValue} ${disabled}></${tag}>`
+    return `<${tag} ${vModel} ${activeText} ${inactiveText} ${activeColor} ${inactiveColor} ${activeValue} ${inactiveValue} ${disabled}></${tag}>`;
   },
-  'el-cascader': el => {
-    const {
-      tag, disabled, vModel, clearable, placeholder, width
-    } = attrBuilder(el)
-    const options = el.options ? `:options="${el.__vModel__}Options"` : ''
-    const props = el.props ? `:props="${el.__vModel__}Props"` : ''
-    const showAllLevels = el['show-all-levels'] ? '' : ':show-all-levels="false"'
-    const filterable = el.filterable ? 'filterable' : ''
-    const separator = el.separator === '/' ? '' : `separator="${el.separator}"`
+  "el-cascader": (el) => {
+    const { tag, disabled, vModel, clearable, placeholder, width } =
+      attrBuilder(el);
+    const options = el.options ? `:options="${el.__vModel__}Options"` : "";
+    const props = el.props ? `:props="${el.__vModel__}Props"` : "";
+    const showAllLevels = el["show-all-levels"]
+      ? ""
+      : ':show-all-levels="false"';
+    const filterable = el.filterable ? "filterable" : "";
+    const separator = el.separator === "/" ? "" : `separator="${el.separator}"`;
 
-    return `<${tag} ${vModel} ${options} ${props} ${width} ${showAllLevels} ${placeholder} ${separator} ${filterable} ${clearable} ${disabled}></${tag}>`
+    return `<${tag} ${vModel} ${options} ${props} ${width} ${showAllLevels} ${placeholder} ${separator} ${filterable} ${clearable} ${disabled}></${tag}>`;
   },
-  'el-time-picker': el => {
-    const {
-      tag, disabled, vModel, clearable, placeholder, width
-    } = attrBuilder(el)
-    const startPlaceholder = el['start-placeholder'] ? `start-placeholder="${el['start-placeholder']}"` : ''
-    const endPlaceholder = el['end-placeholder'] ? `end-placeholder="${el['end-placeholder']}"` : ''
-    const rangeSeparator = el['range-separator'] ? `range-separator="${el['range-separator']}"` : ''
-    const isRange = el['is-range'] ? 'is-range' : ''
-    const format = el.format ? `format="${el.format}"` : ''
-    const valueFormat = el['value-format'] ? `value-format="${el['value-format']}"` : ''
-    const pickerOptions = el['picker-options'] ? `:picker-options='${JSON.stringify(el['picker-options'])}'` : ''
+  "el-time-picker": (el) => {
+    const { tag, disabled, vModel, clearable, placeholder, width } =
+      attrBuilder(el);
+    const startPlaceholder = el["start-placeholder"]
+      ? `start-placeholder="${el["start-placeholder"]}"`
+      : "";
+    const endPlaceholder = el["end-placeholder"]
+      ? `end-placeholder="${el["end-placeholder"]}"`
+      : "";
+    const rangeSeparator = el["range-separator"]
+      ? `range-separator="${el["range-separator"]}"`
+      : "";
+    const isRange = el["is-range"] ? "is-range" : "";
+    const format = el.format ? `format="${el.format}"` : "";
+    const valueFormat = el["value-format"]
+      ? `value-format="${el["value-format"]}"`
+      : "";
+    const pickerOptions = el["picker-options"]
+      ? `:picker-options='${JSON.stringify(el["picker-options"])}'`
+      : "";
 
-    return `<${tag} ${vModel} ${isRange} ${format} ${valueFormat} ${pickerOptions} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${disabled}></${tag}>`
+    return `<${tag} ${vModel} ${isRange} ${format} ${valueFormat} ${pickerOptions} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${disabled}></${tag}>`;
   },
-  'el-date-picker': el => {
-    const {
-      tag, disabled, vModel, clearable, placeholder, width
-    } = attrBuilder(el)
-    const startPlaceholder = el['start-placeholder'] ? `start-placeholder="${el['start-placeholder']}"` : ''
-    const endPlaceholder = el['end-placeholder'] ? `end-placeholder="${el['end-placeholder']}"` : ''
-    const rangeSeparator = el['range-separator'] ? `range-separator="${el['range-separator']}"` : ''
-    const format = el.format ? `format="${el.format}"` : ''
-    const valueFormat = el['value-format'] ? `value-format="${el['value-format']}"` : ''
-    const type = el.type === 'date' ? '' : `type="${el.type}"`
-    const readonly = el.readonly ? 'readonly' : ''
+  "el-date-picker": (el) => {
+    const { tag, disabled, vModel, clearable, placeholder, width } =
+      attrBuilder(el);
+    const startPlaceholder = el["start-placeholder"]
+      ? `start-placeholder="${el["start-placeholder"]}"`
+      : "";
+    const endPlaceholder = el["end-placeholder"]
+      ? `end-placeholder="${el["end-placeholder"]}"`
+      : "";
+    const rangeSeparator = el["range-separator"]
+      ? `range-separator="${el["range-separator"]}"`
+      : "";
+    const format = el.format ? `format="${el.format}"` : "";
+    const valueFormat = el["value-format"]
+      ? `value-format="${el["value-format"]}"`
+      : "";
+    const type = el.type === "date" ? "" : `type="${el.type}"`;
+    const readonly = el.readonly ? "readonly" : "";
 
-    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${readonly} ${disabled}></${tag}>`
+    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${readonly} ${disabled}></${tag}>`;
   },
   // ============自定义组件=============================
-  'customDivider': el => {
-    const title = `title="${el.title}"`
-    return `<custom-divider ${title}/>`
+  customDivider: (el) => {
+    const title = `title="${el.title}"`;
+    return `<custom-divider ${title}/>`;
   },
-  'customPhone': el => {
-    const {
-      disabled, vModel, placeholder, width
-    } = attrBuilder(el)
-    const readonly = el.readonly ? 'readonly' : ''
-    return `<custom-phone ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`
+  customPhone: (el) => {
+    const { disabled, vModel, placeholder, width } = attrBuilder(el);
+    const readonly = el.readonly ? "readonly" : "";
+    return `<custom-phone ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`;
   },
-  'customMail': el => {
-    const {
-      disabled, vModel, placeholder, width
-    } = attrBuilder(el)
-    const readonly = el.readonly ? 'readonly' : ''
-    return `<custom-mail ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`
+  customMail: (el) => {
+    const { disabled, vModel, placeholder, width } = attrBuilder(el);
+    const readonly = el.readonly ? "readonly" : "";
+    return `<custom-mail ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`;
   },
   // ============自定义组件=============================
-}
+};
 
 function attrBuilder(el) {
   return {
     tag: el.__config__.tag,
     vModel: `v-model="${confGlobal.formModel}.${el.__vModel__}"`,
-    clearable: el.clearable ? 'clearable' : '',
-    placeholder: el.placeholder ? `placeholder="${el.placeholder}"` : '',
+    clearable: el.clearable ? "clearable" : "",
+    placeholder: el.placeholder ? `placeholder="${el.placeholder}"` : "",
     // width: el.style && el.style.width ? ':style="{width: \'100%\'}"' : '',
-    width: el.style && el.style.width ? `:style="{width: '${el.style.width}'}"` : '',
-    disabled: el.disabled ? ':disabled=\'true\'' : ''
-  }
+    width:
+      el.style && el.style.width ? `:style="{width: '${el.style.width}'}"` : "",
+    disabled: el.disabled ? ":disabled='true'" : "",
+  };
 }
 
 // el-buttin 子级
 function buildElButtonChild(scheme) {
-  const children = []
-  const slot = scheme.__slot__ || {}
+  const children = [];
+  const slot = scheme.__slot__ || {};
   if (slot.default) {
-    children.push(slot.default)
+    children.push(slot.default);
   }
-  return children.join('\n')
+  return children.join("\n");
 }
 
 // el-input 子级
 function buildElInputChild(scheme) {
-  const children = []
-  const slot = scheme.__slot__
+  const children = [];
+  const slot = scheme.__slot__;
   if (slot && slot.prepend) {
-    children.push(`<template slot="prepend">${slot.prepend}</template>`)
+    children.push(`<template slot="prepend">${slot.prepend}</template>`);
   }
   if (slot && slot.append) {
-    children.push(`<template slot="append">${slot.append}</template>`)
+    children.push(`<template slot="append">${slot.append}</template>`);
   }
-  return children.join('\n')
+  return children.join("\n");
 }
 
 // el-select 子级
 function buildElSelectChild(scheme) {
-  const children = []
-  const slot = scheme.__slot__
+  const children = [];
+  const slot = scheme.__slot__;
   if (slot && slot.options && slot.options.length) {
-    children.push(`<el-option v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>`)
+    children.push(
+      `<el-option v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>`
+    );
   }
-  return children.join('\n')
+  return children.join("\n");
 }
 
 // el-radio-group 子级
 function buildElRadioGroupChild(scheme) {
-  const children = []
-  const slot = scheme.__slot__
-  const config = scheme.__config__
+  const children = [];
+  const slot = scheme.__slot__;
+  const config = scheme.__config__;
   if (slot && slot.options && slot.options.length) {
-    const tag = config.optionType === 'button' ? 'el-radio-button' : 'el-radio'
-    const border = config.border ? 'border' : ''
-    children.push(`<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
+    const tag = config.optionType === "button" ? "el-radio-button" : "el-radio";
+    const border = config.border ? "border" : "";
+    children.push(
+      `<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`
+    );
   }
-  return children.join('\n')
+  return children.join("\n");
 }
 
 // el-checkbox-group 子级
 function buildElCheckboxGroupChild(scheme) {
-  const children = []
-  const slot = scheme.__slot__
-  const config = scheme.__config__
+  const children = [];
+  const slot = scheme.__slot__;
+  const config = scheme.__config__;
   if (slot && slot.options && slot.options.length) {
-    const tag = config.optionType === 'button' ? 'el-checkbox-button' : 'el-checkbox'
-    const border = config.border ? 'border' : ''
-    children.push(`<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
+    const tag =
+      config.optionType === "button" ? "el-checkbox-button" : "el-checkbox";
+    const border = config.border ? "border" : "";
+    children.push(
+      `<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`
+    );
   }
-  return children.join('\n')
+  return children.join("\n");
 }
 
 // el-upload 子级
 function buildElUploadChild(scheme) {
-  const list = []
-  const config = scheme.__config__
-  if (scheme['list-type'] === 'picture-card') list.push('<i class="el-icon-plus"></i>')
-  else list.push(`<el-button size="small" type="primary" icon="el-icon-upload">${config.buttonText}</el-button>`)
-  if (config.showTip) list.push(`<div slot="tip" class="el-upload__tip">只能上传不超过 ${config.fileSize}${config.sizeUnit} 的${scheme.accept}文件</div>`)
-  return list.join('\n')
+  const list = [];
+  const config = scheme.__config__;
+  if (scheme["list-type"] === "picture-card")
+    list.push('<i class="el-icon-plus"></i>');
+  else
+    list.push(
+      `<el-button size="small" type="primary" icon="el-icon-upload">${config.buttonText}</el-button>`
+    );
+  if (config.showTip)
+    list.push(
+      `<div slot="tip" class="el-upload__tip">只能上传不超过 ${config.fileSize}${config.sizeUnit} 的${scheme.accept}文件</div>`
+    );
+  return list.join("\n");
 }
 
 /**
@@ -325,17 +372,19 @@ function buildElUploadChild(scheme) {
  * @param {String} type 生成类型，文件或弹窗等
  */
 export function makeUpHtml(formConfig) {
-  const htmlList = []
-  confGlobal = formConfig
+  const htmlList = [];
+  confGlobal = formConfig;
   // 判断布局是否都沾满了24个栅格，以备后续简化代码结构
-  someSpanIsNot24 = formConfig.fields.some(item => item.__config__.span !== 24)
+  someSpanIsNot24 = formConfig.fields.some(
+    (item) => item.__config__.span !== 24
+  );
   // 遍历渲染每个组件成html
-  formConfig.fields.forEach(el => {
-    htmlList.push(layouts[el.__config__.layout](el))
-  })
-  const htmlStr = htmlList.join('\n')
+  formConfig.fields.forEach((el) => {
+    htmlList.push(layouts[el.__config__.layout](el));
+  });
+  const htmlStr = htmlList.join("\n");
   // 将组件代码放进form标签
-  let temp = buildFormTemplate(formConfig, htmlStr)
-  confGlobal = null
-  return temp
+  let temp = buildFormTemplate(formConfig, htmlStr);
+  confGlobal = null;
+  return temp;
 }
