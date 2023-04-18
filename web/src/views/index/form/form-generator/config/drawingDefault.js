@@ -5,8 +5,11 @@ export default [
       tagIcon: "divide",
       label: "分割线",
       layout: "customItem",
-      divider: true,
     },
     title: "标题",
+    titlePosition: 'left',
+    fontSize: 14,
+    letterSpacing: 0.2,
+    color: '#000'
   },
 ];

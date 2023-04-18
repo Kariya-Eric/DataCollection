@@ -30,11 +30,9 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${
-    scheme.formModel
-  }" :rules="${scheme.formRules}" size="${
-    scheme.size
-  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
+    }" :rules="${scheme.formRules}" size="${scheme.size
+    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -107,7 +105,7 @@ const layouts = {
   customItem(scheme) {
     const config = scheme.__config__;
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-row><el-col>${tagDom}</el-col></el-row>`;
+    let str = `${tagDom}`;
     return str;
   },
 };
@@ -255,7 +253,11 @@ const tags = {
   // ============自定义组件=============================
   customDivider: (el) => {
     const title = `title="${el.title}"`;
-    return `<custom-divider ${title}/>`;
+    const titlePosition = `titlePosition="${el.titlePosition}"`
+    const fontSize=`:fontSize="${el.fontSize}"`
+    const letterSpacing=`:letterSpacing="${el.letterSpacing}"`
+    const color=`color="${el.color}"`
+    return `<custom-divider ${title} ${titlePosition} ${fontSize} ${letterSpacing} ${color} />`;
   },
   customPhone: (el) => {
     const { disabled, vModel, placeholder, width } = attrBuilder(el);

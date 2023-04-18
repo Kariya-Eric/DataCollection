@@ -12,53 +12,6 @@
         size="small"
         label-width="90px"
       >
-        <!-- 自定义组件start -->
-        <el-form-item
-          v-if="activeData.__config__.customName !== undefined"
-          label="组件名"
-        >
-          {{ activeData.__config__.customName }}
-        </el-form-item>
-        <template v-if="activeData.__config__.divider !== undefined">
-          <el-divider />
-          <el-form-item
-            v-if="activeData.__config__.customName !== undefined"
-            label="字段名"
-          >
-            <el-input v-model="activeData.title" placeholder="请输入标题" />
-          </el-form-item>
-        </template>
-        <template v-if="activeData.__config__.table !== undefined">
-          <el-divider>列名-属性</el-divider>
-          <div
-            v-for="(item, index) in activeData.columns"
-            :key="index"
-            class="select-item"
-          >
-            <div class="select-line-icon option-drag">&nbsp;&nbsp;</div>
-            <el-input :value="`第${index + 1}列`" disabled size="small" />
-            <el-input size="small" v-model="item.label" />
-            <el-input size="small" v-model="item.props" />
-            <div
-              class="close-btn select-line-icon"
-              @click="activeData.columns.splice(index, 1)"
-            >
-              <i class="el-icon-remove-outline" />
-            </div>
-          </div>
-          <div style="margin-left: 20px">
-            <el-button
-              style="padding-bottom: 0"
-              icon="el-icon-circle-plus-outline"
-              type="text"
-              @click="addColumnItem(activeData.length)"
-            >
-              添加选项
-            </el-button>
-          </div>
-        </template>
-
-        <!-- 自定义组件end -->
         <el-form-item v-if="activeData.__vModel__ !== undefined" label="字段名">
           <el-input
             v-model="activeData.__vModel__"
@@ -612,6 +565,47 @@
             </el-button>
           </div>
         </template>
+
+        <!-- 自定义组件start -->
+        <template v-if="activeData.__config__.tag === 'customDivider'">
+          <el-divider>分割线设置</el-divider>
+          <el-form-item label="标题">
+            <el-input v-model="activeData.title" />
+          </el-form-item>
+          <el-form-item label="标题位置">
+            <el-radio-group v-model="activeData.titlePosition">
+              <el-radio-button label="left"> 居左 </el-radio-button>
+              <el-radio-button label="center"> 居中 </el-radio-button>
+              <el-radio-button label="right"> 居右 </el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="字体大小">
+            <el-slider
+              v-model="activeData.fontSize"
+              :min="1"
+              :step="1"
+              :max="32"
+              :marks="{ 14: '', 24: '' }"
+            ></el-slider>
+          </el-form-item>
+          <el-form-item label="字体间距">
+            <el-slider
+              v-model="activeData.letterSpacing"
+              :min="0"
+              :step="0.1"
+              :max="1.0"
+              :marks="{ 0.2: '' }"
+            ></el-slider>
+          </el-form-item>
+          <el-form-item
+          label="字体颜色"
+        >
+          <el-color-picker v-model="activeData.color" />
+        </el-form-item>
+        </template>
+
+
+        <!-- 自定义组件end -->
       </el-form>
 
       <!-- 表单属性 -->
@@ -651,15 +645,6 @@
             :marks="{ 120: '' }"
             @change="labelChange"
           ></el-slider>
-        </el-form-item>
-        <el-form-item label="组件间隔">
-          <el-slider
-            v-model="formConf.gutter"
-            :min="0"
-            :max="30"
-            :marks="{ 15: '' }"
-            @change="gutterChange"
-          />
         </el-form-item>
         <el-form-item label="禁用表单">
           <el-switch v-model="formConf.disabled" />
@@ -787,13 +772,7 @@ export default {
   },
   methods: {
     // ==============自定义Start==============
-    addColumnItem(length) {
-      this.activeData.columns.push({
-        label: "列" + (length + 1),
-        props: "col" + (length + 1),
-      });
-      this.activeData.length++;
-    },
+
 
     // ==============自定义END==============
     addReg() {
@@ -902,9 +881,6 @@ export default {
     },
     labelChange(val) {
       this.$set(this.formConf, "labelWidth", val);
-    },
-    gutterChange(val) {
-      this.$set(this.formConf, "gutter", val);
     },
     rowGutterChange(val) {
       this.$set(this.activeData.__config__, "gutter", val);

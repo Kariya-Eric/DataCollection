@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div class="center-board" style="overflow: hidden;">
+      <div class="center-board" style="overflow: hidden">
         <div class="action-bar">
           <el-button icon="el-icon-view" type="text" @click="run">
             预览
@@ -187,8 +187,9 @@ export default {
     show() {
       this.visible = true;
       const config = this.drawingList[0].__config__;
+      const componentName = config.label;
       if (config.layout === "customItem") {
-        config.customName = config.label;
+        config.componentName = componentName;
         delete config.label;
         delete config.span;
       }
@@ -230,7 +231,7 @@ export default {
         !Array.isArray(config.children) && (config.children = []);
         delete config.label; // rowFormItem无需配置label属性
       } else if (config.layout === "customItem") {
-        config.customName = config.label ? config.label : config.customName;
+        config.componentName = config.label;
         delete config.label;
         delete config.span;
       }

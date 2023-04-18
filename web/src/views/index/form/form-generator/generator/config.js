@@ -295,15 +295,7 @@ export const otherComponents = [
       tagIcon: "table_1",
       label: "固定表格",
       layout: "customItem",
-      table: true,
     },
-    __slot__: {
-      columns: 'default'
-
-    },
-    length: 0,
-    columns: [
-    ],
   },
 ];
 
@@ -315,15 +307,19 @@ export const layoutComponents = [
       tagIcon: "divide",
       label: "分割线",
       layout: "customItem",
-      divider: true,
     },
     title: "标题",
+    titlePosition: 'left',
+    fontSize: 14,
+    letterSpacing: 0.2,
+    color: '#000'
   },
   {
     __config__: {
       layout: "rowFormItem",
       tagIcon: "row",
       label: "行容器",
+      gutter: 0,
       layoutTree: true,
     },
   },

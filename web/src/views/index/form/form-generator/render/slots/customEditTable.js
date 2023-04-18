@@ -1,5 +1,5 @@
 export default {
     columns(h, conf, key) {
-        return <el-input placeholder="123" />
+        return <template slot="column">key</template>
     }
 }

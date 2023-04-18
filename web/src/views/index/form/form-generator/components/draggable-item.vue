@@ -76,7 +76,11 @@ const layouts = {
         ? "drawing-row-item active-from-item"
         : "drawing-row-item";
     let child = renderChildren.apply(this, arguments);
-    child = <el-row gutter={config.gutter} type="flex">{child}</el-row>;
+    child = (
+      <el-row gutter={config.gutter} type="flex">
+        {child}
+      </el-row>
+    );
     return (
       <el-col>
         <el-row
@@ -104,30 +108,30 @@ const layouts = {
   customItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners;
     const config = currentItem.__config__;
-    const child = renderChildren.apply(this, arguments);
+    let child = renderChildren.apply(this, arguments);
     let className =
       this.activeId === config.formId
         ? "drawing-other-item active-from-item"
         : "drawing-other-item";
     return (
-      <el-col
-        class={className}
-        nativeOnClick={(event) => {
-          activeItem(currentItem);
-          event.stopPropagation();
-        }}
-      >
-        <render
-          key={config.renderKey}
-          conf={currentItem}
-          onInput={(event) => {
-            this.$set(config, "defaultValue", event);
+        <el-col
+          class={className}
+          nativeOnClick={(event) => {
+            activeItem(currentItem);
+            event.stopPropagation();
           }}
         >
-          {child}
-        </render>
-        {components.itemBtns.apply(this, arguments)}
-      </el-col>
+          <render
+            key={config.renderKey}
+            conf={currentItem}
+            onInput={(event) => {
+              this.$set(config, "defaultValue", event);
+            }}
+          >
+            {child}
+          </render>
+          {components.itemBtns.apply(this, arguments)}
+        </el-col>
     );
   },
 };
@@ -156,7 +160,6 @@ export default {
   props: ["currentItem", "index", "drawingList", "activeId", "formConf"],
   render(h) {
     const layout = layouts[this.currentItem.__config__.layout];
-
     if (layout) {
       return layout.call(
         this,
