@@ -291,10 +291,10 @@ export const selectComponents = [
 export const otherComponents = [
   {
     __config__: {
-      tag: "customEditTable",
       tagIcon: "table_1",
-      label: "固定表格",
       layout: "customItem",
+      label: "固定表格",
+      tag: "customEditTable",
     },
   },
 ];
@@ -322,5 +322,6 @@ export const layoutComponents = [
       gutter: 0,
       layoutTree: true,
     },
+    children: []
   },
 ];

@@ -114,26 +114,27 @@ const layouts = {
         ? "drawing-other-item active-from-item"
         : "drawing-other-item";
     return (
-        <el-col
-          class={className}
-          nativeOnClick={(event) => {
-            activeItem(currentItem);
-            event.stopPropagation();
+      <el-col
+        class={className}
+        nativeOnClick={(event) => {
+          activeItem(currentItem);
+          event.stopPropagation();
+        }}
+      >
+        <render
+          key={config.renderKey}
+          conf={currentItem}
+          onInput={(event) => {
+            this.$set(config, "defaultValue", event);
           }}
         >
-          <render
-            key={config.renderKey}
-            conf={currentItem}
-            onInput={(event) => {
-              this.$set(config, "defaultValue", event);
-            }}
-          >
-            {child}
-          </render>
-          {components.itemBtns.apply(this, arguments)}
-        </el-col>
+          {child}
+        </render>
+        {components.itemBtns.apply(this, arguments)}
+      </el-col>
     );
   },
+
 };
 
 function renderChildren(h, currentItem, index, list) {

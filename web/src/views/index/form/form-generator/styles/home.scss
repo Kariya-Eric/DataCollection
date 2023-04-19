@@ -95,7 +95,7 @@ $lighterBlue: #409eff;
     color: #f56c6c;
   }
 
-  & .el-button + .el-button {
+  & .el-button+.el-button {
     margin-left: 15px;
   }
 
@@ -122,7 +122,7 @@ $lighterBlue: #409eff;
   padding: 12px 12px 15px 12px;
   box-sizing: border-box;
 
-  & > .el-form {
+  &>.el-form {
     // 69 = 12+15+42
     height: calc(100vh - 69px);
   }
@@ -166,26 +166,27 @@ $lighterBlue: #409eff;
   }
 
   .active-from-item {
-    & > .el-form-item {
+    &>.el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-
-    & > .drawing-item-copy {
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
+    &>.drawing-item-delete {
       display: initial;
     }
 
-    & > .component-name {
+    &>.component-name {
       color: $lighterBlue;
     }
-    & > .drawing-item-row {
+
+    &>.drawing-item-row {
       display: initial;
     }
-    & > .drawing-item-col {
+
+    &>.drawing-item-col {
       display: initial;
     }
   }
@@ -199,18 +200,18 @@ $lighterBlue: #409eff;
   position: relative;
   cursor: move;
 
-  &.unfocus-bordered:not(.active-from-item) > div:first-child {
+  &.unfocus-bordered:not(.active-from-item)>div:first-child {
     border: 1px dashed #ccc;
   }
 }
 
 /deep/ .drawing-other-item {
+
   position: relative;
-  cursor: move;
-  box-sizing: border-box;
-  border-radius: 3px;
+  cursor: move;;
   padding: 0 2px;
   margin-bottom: 15px;
+
 
   &.active-from-item {
     background: $selectedColor;
@@ -220,25 +221,30 @@ $lighterBlue: #409eff;
 
 /deep/ .drawing-other-item {
   &:hover {
-    & > .drawing-item-copy {
+    background: $selectedColor;
+    border-radius: 6px;
+
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
+    &>.drawing-item-delete {
       display: initial;
     }
-    & > .drawing-item-row {
+
+    &>.drawing-item-row {
       display: initial;
     }
-    & > .drawing-item-col {
+
+    &>.drawing-item-col {
       display: initial;
     }
   }
 
-  & > .drawing-item-copy,
-  & > .drawing-item-delete,
-  & > .drawing-item-col,
-  & > .drawing-item-row {
+  &>.drawing-item-copy,
+  &>.drawing-item-delete,
+  &>.drawing-item-col,
+  &>.drawing-item-row {
     display: none;
     position: absolute;
     top: -10px;
@@ -253,7 +259,7 @@ $lighterBlue: #409eff;
     z-index: 1;
   }
 
-  & > .drawing-item-copy {
+  &>.drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -265,7 +271,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-row {
+  &>.drawing-item-row {
     right: 88px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -276,7 +282,8 @@ $lighterBlue: #409eff;
       color: #fff;
     }
   }
-  & > .drawing-item-col {
+
+  &>.drawing-item-col {
     right: 120px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -287,7 +294,8 @@ $lighterBlue: #409eff;
       color: #fff;
     }
   }
-  & > .drawing-item-delete {
+
+  &>.drawing-item-delete {
     right: 24px;
     border-color: #f56c6c;
     color: #f56c6c;
@@ -342,22 +350,22 @@ $lighterBlue: #409eff;
 
 /deep/ .drawing-row-item {
   &:hover {
-    & > .el-form-item {
+    &>.el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
 
-    & > .drawing-item-copy {
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
+    &>.drawing-item-delete {
       display: initial;
     }
   }
 
-  & > .drawing-item-copy,
-  & > .drawing-item-delete {
+  &>.drawing-item-copy,
+  &>.drawing-item-delete {
     display: none;
     position: absolute;
     top: -10px;
@@ -372,7 +380,7 @@ $lighterBlue: #409eff;
     z-index: 1;
   }
 
-  & > .drawing-item-copy {
+  &>.drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -384,7 +392,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-delete {
+  &>.drawing-item-delete {
     right: 24px;
     border-color: #f56c6c;
     color: #f56c6c;
@@ -399,31 +407,32 @@ $lighterBlue: #409eff;
 
 /deep/ .drawing-item {
   &:hover {
-    & > .el-form-item {
+    &>.el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
 
-    & > .drawing-item-copy {
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
-      display: initial;
-    }
-    & > .drawing-item-row {
+    &>.drawing-item-delete {
       display: initial;
     }
 
-    & > .drawing-item-col {
+    &>.drawing-item-row {
+      display: initial;
+    }
+
+    &>.drawing-item-col {
       display: initial;
     }
   }
 
-  & > .drawing-item-copy,
-  & > .drawing-item-delete,
-  & > .drawing-item-row,
-  & > .drawing-item-col {
+  &>.drawing-item-copy,
+  &>.drawing-item-delete,
+  &>.drawing-item-row,
+  &>.drawing-item-col {
     display: none;
     position: absolute;
     top: -10px;
@@ -438,7 +447,7 @@ $lighterBlue: #409eff;
     z-index: 1;
   }
 
-  & > .drawing-item-copy {
+  &>.drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -450,7 +459,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-row {
+  &>.drawing-item-row {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -462,7 +471,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-col {
+  &>.drawing-item-col {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -474,7 +483,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-delete {
+  &>.drawing-item-delete {
     right: 24px;
     border-color: #f56c6c;
     color: #f56c6c;

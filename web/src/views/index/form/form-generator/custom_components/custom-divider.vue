@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/.el-divider {
-  margin: 12px 0px;
+.divider {
+  
 }
 </style>
