@@ -125,6 +125,7 @@ const layouts = {
           key={config.renderKey}
           conf={currentItem}
           onInput={(event) => {
+            console.log(event);
             this.$set(config, "defaultValue", event);
           }}
         >
@@ -134,7 +135,6 @@ const layouts = {
       </el-col>
     );
   },
-
 };
 
 function renderChildren(h, currentItem, index, list) {

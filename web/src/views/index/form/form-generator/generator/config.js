@@ -296,6 +296,29 @@ export const otherComponents = [
       label: "固定表格",
       tag: "customEditTable",
     },
+    row: 1,
+    col: 3,
+    selectedCol: -1,
+    on: {
+      selectCol: 'selectCol'
+    },
+    columns: [
+      {
+        index: 1,
+        label: '列1',
+        props: 'col1',
+      },
+      {
+        index: 2,
+        label: '列2',
+        props: 'col2',
+      },
+      {
+        index: 3,
+        label: '列3',
+        props: 'col3',
+      },
+    ]
   },
 ];
 

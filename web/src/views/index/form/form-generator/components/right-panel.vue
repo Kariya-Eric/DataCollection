@@ -597,13 +597,48 @@
               :marks="{ 0.2: '' }"
             ></el-slider>
           </el-form-item>
-          <el-form-item
-          label="字体颜色"
-        >
-          <el-color-picker v-model="activeData.color" />
-        </el-form-item>
+          <el-form-item label="字体颜色">
+            <el-color-picker v-model="activeData.color" />
+          </el-form-item>
         </template>
 
+        <template v-if="activeData.__config__.tag === 'customEditTable'">
+          <el-divider>列名 - 属性</el-divider>
+          <draggable
+            :list="activeData.columns"
+            :animation="340"
+            group="selectItem"
+            handle=".option-drag"
+          >
+            <div
+              v-for="(item, index) in activeData.columns"
+              :key="index"
+              class="select-item"
+            >
+              <div class="select-line-icon option-drag">
+                <i class="el-icon-s-operation" />
+              </div>
+              <el-input size="small" v-model="item.label" />
+              <el-input size="small" v-model="item.props" />
+              <div class="close-btn select-line-icon">
+                <i class="el-icon-remove-outline" @click="delCol(index)" />
+              </div>
+            </div>
+          </draggable>
+          <div style="margin-left: 20px">
+            <el-button
+              style="padding-bottom: 0"
+              icon="el-icon-circle-plus-outline"
+              type="text"
+              @click="addCol"
+            >
+              添加列
+            </el-button>
+          </div>
+          <template v-if="activeData.selectedCol !== -1">
+            <el-divider>已选中 : 第{{ activeData.selectedCol }}列</el-divider>
+          </template>
+        </template>
 
         <!-- 自定义组件end -->
       </el-form>
@@ -772,8 +807,19 @@ export default {
   },
   methods: {
     // ==============自定义Start==============
+    addCol() {
+      this.activeData.columns.push({
+        index: this.activeData.col + 1,
+        label: "列" + (this.activeData.col + 1),
+        props: "col" + (this.activeData.col + 1),
+      });
+      this.activeData.col++;
+    },
 
-
+    delCol(index) {
+      this.activeData.columns.splice(index, 1);
+      this.activeData.col--;
+    },
     // ==============自定义END==============
     addReg() {
       this.activeData.__config__.regList.push({
