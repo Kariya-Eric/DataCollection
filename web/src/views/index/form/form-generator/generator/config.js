@@ -107,7 +107,7 @@ export const inputComponents = [
         },
       ],
     },
-    value: '',
+    value: "",
     style: { width: "100%" },
     placeholder: "请输入",
     readonly: false,
@@ -115,24 +115,24 @@ export const inputComponents = [
   },
   {
     __config__: {
-      label: '计数器',
+      label: "计数器",
       showLabel: true,
-      tag: 'el-input-number',
-      tagIcon: 'number',
+      tag: "el-input-number",
+      tagIcon: "number",
       defaultValue: undefined,
       span: 24,
-      layout: 'colFormItem',
+      layout: "colFormItem",
       required: true,
       regList: [],
     },
-    placeholder: '',
+    placeholder: "",
     min: undefined,
     max: undefined,
     step: 1,
-    'step-strictly': false,
+    "step-strictly": false,
     precision: undefined,
-    'controls-position': '',
-    disabled: false
+    "controls-position": "",
+    disabled: false,
   },
 ];
 
@@ -224,23 +224,23 @@ export const selectComponents = [
   },
   {
     __config__: {
-      label: '开关',
-      tag: 'el-switch',
-      tagIcon: 'switch',
+      label: "开关",
+      tag: "el-switch",
+      tagIcon: "switch",
       defaultValue: false,
       span: 24,
       showLabel: true,
-      layout: 'colFormItem',
+      layout: "colFormItem",
       required: true,
-      regList: []
+      regList: [],
     },
     disabled: false,
-    'active-text': '',
-    'inactive-text': '',
-    'active-color': null,
-    'inactive-color': null,
-    'active-value': true,
-    'inactive-value': false
+    "active-text": "",
+    "inactive-text": "",
+    "active-color": null,
+    "inactive-color": null,
+    "active-value": true,
+    "inactive-value": false,
   },
   {
     __config__: {
@@ -299,26 +299,27 @@ export const otherComponents = [
     row: 1,
     col: 3,
     selectedCol: -1,
+    dataSource: [],
     on: {
-      selectCol: 'selectCol'
+      selectCol: "setSelectCol",
     },
     columns: [
       {
         index: 1,
-        label: '列1',
-        props: 'col1',
+        label: "列1",
+        props: "col1",
       },
       {
         index: 2,
-        label: '列2',
-        props: 'col2',
+        label: "列2",
+        props: "col2",
       },
       {
         index: 3,
-        label: '列3',
-        props: 'col3',
+        label: "列3",
+        props: "col3",
       },
-    ]
+    ],
   },
 ];
 
@@ -332,10 +333,10 @@ export const layoutComponents = [
       layout: "customItem",
     },
     title: "标题",
-    titlePosition: 'left',
+    titlePosition: "left",
     fontSize: 14,
     letterSpacing: 0.2,
-    color: '#000'
+    color: "#000",
   },
   {
     __config__: {
@@ -345,6 +346,6 @@ export const layoutComponents = [
       gutter: 0,
       layoutTree: true,
     },
-    children: []
+    children: [],
   },
 ];

@@ -17,6 +17,10 @@
             @mousedown="handleCellMousedown(col)"
           >
             {{ row }}--{{ col }}
+            <el-input
+              :placeholder="`请输入${columns[colIndex].label}`"
+              size="small"
+            />
           </td>
         </tr>
       </tbody>
@@ -47,7 +51,7 @@ export default {
   },
   methods: {
     handleCellMousedown(col) {
-      this.$emit("input", col);
+      this.$emit("select", col);
       this.selectedCells = [];
       for (let i = 0; i < this.rows; i++) {
         let cellIndex = i * this.cols + col - 1;

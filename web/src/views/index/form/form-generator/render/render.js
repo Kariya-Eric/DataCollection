@@ -14,10 +14,8 @@ keys.forEach((key) => {
   componentChild[tag] = value;
 });
 
-
 function vModel(dataObject, defaultValue) {
   dataObject.props.value = defaultValue;
-
   dataObject.on.input = (val) => {
     this.$emit("input", val);
   };
@@ -38,7 +36,6 @@ function mountSlotFiles(h, confClone, children) {
 function emitEvents(confClone) {
   ["on", "nativeOn"].forEach((attr) => {
     const eventKeyList = Object.keys(confClone[attr] || {});
-    console.log('render',eventKeyList)
     eventKeyList.forEach((key) => {
       const val = confClone[attr][key];
       if (typeof val === "string") {
@@ -48,11 +45,20 @@ function emitEvents(confClone) {
   });
 }
 
+function selectedCol(dataObject, selectedCol) {
+  dataObject.props.selectedCol = selectedCol;
+  dataObject.on.select = (val) => {
+    this.$emit("select", val);
+  };
+}
+
 function buildDataObject(confClone, dataObject) {
   Object.keys(confClone).forEach((key) => {
     const val = confClone[key];
     if (key === "__vModel__") {
       vModel.call(this, dataObject, confClone.__config__.defaultValue);
+    } else if (key === "selectedCol") {
+      selectedCol.call(this, dataObject, confClone.selectedCol);
     } else if (dataObject[key] !== undefined) {
       if (
         dataObject[key] === null ||

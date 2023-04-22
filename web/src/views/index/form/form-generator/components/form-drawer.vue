@@ -74,6 +74,7 @@ export default {
     },
 
     onOpen() {
+      console.log("for", this.formData);
       this.htmlCode = makeUpHtml(this.formData);
       this.jsCode = makeUpJs(this.formData, "file");
       this.cssCode = makeUpCss(this.formData);

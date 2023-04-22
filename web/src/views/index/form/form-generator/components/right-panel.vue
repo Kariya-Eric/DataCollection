@@ -635,7 +635,8 @@
               添加列
             </el-button>
           </div>
-          <template v-if="activeData.selectedCol !== -1">
+
+          <template v-if="activeData.selectedCol !== '-1'">
             <el-divider>已选中 : 第{{ activeData.selectedCol }}列</el-divider>
           </template>
         </template>

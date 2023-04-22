@@ -30,9 +30,11 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
-    }" :rules="${scheme.formRules}" size="${scheme.size
-    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ref="${scheme.formRef}" :model="${
+    scheme.formModel
+  }" :rules="${scheme.formRules}" size="${
+    scheme.size
+  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -253,10 +255,10 @@ const tags = {
   // ============自定义组件=============================
   customDivider: (el) => {
     const title = `title="${el.title}"`;
-    const titlePosition = `titlePosition="${el.titlePosition}"`
-    const fontSize=`:fontSize="${el.fontSize}"`
-    const letterSpacing=`:letterSpacing="${el.letterSpacing}"`
-    const color=`color="${el.color}"`
+    const titlePosition = `titlePosition="${el.titlePosition}"`;
+    const fontSize = `:fontSize="${el.fontSize}"`;
+    const letterSpacing = `:letterSpacing="${el.letterSpacing}"`;
+    const color = `color="${el.color}"`;
     return `<custom-divider ${title} ${titlePosition} ${fontSize} ${letterSpacing} ${color} />`;
   },
   customPhone: (el) => {
@@ -268,6 +270,27 @@ const tags = {
     const { disabled, vModel, placeholder, width } = attrBuilder(el);
     const readonly = el.readonly ? "readonly" : "";
     return `<custom-mail ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`;
+  },
+  customEditTable: (el) => {
+    const columns = el.columns;
+    let str = "";
+    for (let i = 0; i < columns.length; i++) {
+      str += `<el-table-column label="${columns[i].label}" prop="${columns.props}" align="center">
+        <template slot-scope="scope">
+            <el-input size="small"/>
+        </template>
+    </el-table-column>`;
+    }
+    const dataSource = el.dataSource;
+    return `<el-table size="small" :border="true">
+        <el-table-column type="selection" width="55" align="center" />
+            ${str}
+        <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+                
+            </template>
+        </el-table-column>
+    </el-table>`;
   },
   // ============自定义组件=============================
 };
@@ -349,23 +372,6 @@ function buildElCheckboxGroupChild(scheme) {
     );
   }
   return children.join("\n");
-}
-
-// el-upload 子级
-function buildElUploadChild(scheme) {
-  const list = [];
-  const config = scheme.__config__;
-  if (scheme["list-type"] === "picture-card")
-    list.push('<i class="el-icon-plus"></i>');
-  else
-    list.push(
-      `<el-button size="small" type="primary" icon="el-icon-upload">${config.buttonText}</el-button>`
-    );
-  if (config.showTip)
-    list.push(
-      `<div slot="tip" class="el-upload__tip">只能上传不超过 ${config.fileSize}${config.sizeUnit} 的${scheme.accept}文件</div>`
-    );
-  return list.join("\n");
 }
 
 /**
