@@ -16,7 +16,6 @@
             }"
             @mousedown="handleCellMousedown(col)"
           >
-            {{ row }}--{{ col }}
             <el-input
               :placeholder="`请输入${columns[colIndex].label}`"
               size="small"
@@ -33,13 +32,21 @@ import draggable from "vuedraggable";
 export default {
   name: "CustomEditTable",
   components: { draggable },
-  props: ["row", "col", "columns"],
+  props: ["row", "col", "columns", "selectedCol"],
   watch: {
     row(val) {
       this.rows = val;
     },
     col(val) {
       this.cols = val;
+    },
+    columns(val) {},
+    selectedCol(val) { 
+      this.selectedCells = [];
+      for (let i = 0; i < this.rows; i++) {
+        let cellIndex = i * this.cols + val - 1;
+        this.selectedCells.push(cellIndex);
+      }
     },
   },
   data() {

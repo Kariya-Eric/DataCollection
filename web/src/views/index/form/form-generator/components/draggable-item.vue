@@ -69,42 +69,6 @@ const layouts = {
       </el-col>
     );
   },
-  rowFormItem(h, currentItem, index, list) {
-    const { activeItem } = this.$listeners;
-    const config = currentItem.__config__;
-    const className =
-      this.activeId === config.formId
-        ? "drawing-row-item active-from-item"
-        : "drawing-row-item";
-    let child = renderChildren.apply(this, arguments);
-    child = (
-      <el-row gutter={config.gutter} type="flex">
-        {child}
-      </el-row>
-    );
-    return (
-      <el-col>
-        <el-row
-          class={className}
-          nativeOnClick={(event) => {
-            activeItem(currentItem);
-            event.stopPropagation();
-          }}
-        >
-          <span class="component-name">{config.componentName}</span>
-          <draggable
-            list={config.children || []}
-            animation={340}
-            group="componentsGroup"
-            class="drag-wrapper"
-          >
-            {child}
-          </draggable>
-          {components.itemBtns.apply(this, arguments)}
-        </el-row>
-      </el-col>
-    );
-  },
 
   customItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners;

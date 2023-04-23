@@ -226,19 +226,10 @@ export default {
       config.renderKey = `${config.formId}${+new Date()}`; // 改变renderKey后可以实现强制更新组件
       if (config.layout === "colFormItem") {
         item.__vModel__ = `field${this.idGlobal}`;
-      } else if (config.layout === "rowFormItem") {
-        config.componentName = `row${this.idGlobal}`;
-        !Array.isArray(config.children) && (config.children = []);
-        delete config.label; // rowFormItem无需配置label属性
       } else if (config.layout === "customItem") {
         config.componentName = config.label;
         delete config.label;
         delete config.span;
-      }
-      if (Array.isArray(config.children)) {
-        config.children = config.children.map((childItem) =>
-          this.createIdAndKey(childItem)
-        );
       }
       return item;
     },

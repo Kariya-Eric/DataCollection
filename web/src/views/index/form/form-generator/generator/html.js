@@ -92,18 +92,6 @@ const layouts = {
       </el-form-item>`;
     return colWrapper(scheme, str);
   },
-  rowFormItem(scheme) {
-    const config = scheme.__config__;
-    const gutter = config.gutter ? `:gutter="${config.gutter}"` : "";
-    const children = config.children.map((el) => {
-      const str = layouts[el.__config__.layout](el);
-      return `<el-col>${str}</el-col>`;
-    });
-    let str = `<el-col><el-row ${gutter} type="flex">
-      ${children.join("\n")}
-    </el-row></el-col>`;
-    return str;
-  },
   customItem(scheme) {
     const config = scheme.__config__;
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
@@ -124,23 +112,7 @@ const tags = {
       el.autosize && el.autosize.minRows
         ? `:autosize="{minRows: ${el.autosize.minRows}, maxRows: ${el.autosize.maxRows}}"`
         : "";
-    let child = buildElInputChild(el);
-
-    if (child) child = `\n${child}\n`; // 换行
-    return `<${tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${autosize} ${width}>${child}</${tag}>`;
-  },
-  "el-input-number": (el) => {
-    const { tag, disabled, vModel, placeholder } = attrBuilder(el);
-    const controlsPosition = el["controls-position"]
-      ? `controls-position=${el["controls-position"]}`
-      : "";
-    const min = el.min ? `:min='${el.min}'` : "";
-    const max = el.max ? `:max='${el.max}'` : "";
-    const step = el.step ? `:step='${el.step}'` : "";
-    const stepStrictly = el["step-strictly"] ? "step-strictly" : "";
-    const precision = el.precision ? `:precision='${el.precision}'` : "";
-
-    return `<${tag} ${vModel} ${placeholder} ${step} ${stepStrictly} ${precision} ${controlsPosition} ${min} ${max} ${disabled}></${tag}>`;
+    return `<${tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${autosize} ${width}></${tag}>`;
   },
   "el-select": (el) => {
     const { tag, disabled, vModel, clearable, placeholder, width } =
@@ -169,44 +141,6 @@ const tags = {
 
     if (child) child = `\n${child}\n`; // 换行
     return `<${tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${tag}>`;
-  },
-  "el-switch": (el) => {
-    const { tag, disabled, vModel } = attrBuilder(el);
-    const activeText = el["active-text"]
-      ? `active-text="${el["active-text"]}"`
-      : "";
-    const inactiveText = el["inactive-text"]
-      ? `inactive-text="${el["inactive-text"]}"`
-      : "";
-    const activeColor = el["active-color"]
-      ? `active-color="${el["active-color"]}"`
-      : "";
-    const inactiveColor = el["inactive-color"]
-      ? `inactive-color="${el["inactive-color"]}"`
-      : "";
-    const activeValue =
-      el["active-value"] !== true
-        ? `:active-value='${JSON.stringify(el["active-value"])}'`
-        : "";
-    const inactiveValue =
-      el["inactive-value"] !== false
-        ? `:inactive-value='${JSON.stringify(el["inactive-value"])}'`
-        : "";
-
-    return `<${tag} ${vModel} ${activeText} ${inactiveText} ${activeColor} ${inactiveColor} ${activeValue} ${inactiveValue} ${disabled}></${tag}>`;
-  },
-  "el-cascader": (el) => {
-    const { tag, disabled, vModel, clearable, placeholder, width } =
-      attrBuilder(el);
-    const options = el.options ? `:options="${el.__vModel__}Options"` : "";
-    const props = el.props ? `:props="${el.__vModel__}Props"` : "";
-    const showAllLevels = el["show-all-levels"]
-      ? ""
-      : ':show-all-levels="false"';
-    const filterable = el.filterable ? "filterable" : "";
-    const separator = el.separator === "/" ? "" : `separator="${el.separator}"`;
-
-    return `<${tag} ${vModel} ${options} ${props} ${width} ${showAllLevels} ${placeholder} ${separator} ${filterable} ${clearable} ${disabled}></${tag}>`;
   },
   "el-time-picker": (el) => {
     const { tag, disabled, vModel, clearable, placeholder, width } =
@@ -306,29 +240,6 @@ function attrBuilder(el) {
       el.style && el.style.width ? `:style="{width: '${el.style.width}'}"` : "",
     disabled: el.disabled ? ":disabled='true'" : "",
   };
-}
-
-// el-buttin 子级
-function buildElButtonChild(scheme) {
-  const children = [];
-  const slot = scheme.__slot__ || {};
-  if (slot.default) {
-    children.push(slot.default);
-  }
-  return children.join("\n");
-}
-
-// el-input 子级
-function buildElInputChild(scheme) {
-  const children = [];
-  const slot = scheme.__slot__;
-  if (slot && slot.prepend) {
-    children.push(`<template slot="prepend">${slot.prepend}</template>`);
-  }
-  if (slot && slot.append) {
-    children.push(`<template slot="append">${slot.append}</template>`);
-  }
-  return children.join("\n");
 }
 
 // el-select 子级
