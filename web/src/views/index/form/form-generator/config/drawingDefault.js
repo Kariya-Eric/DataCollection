@@ -7,9 +7,6 @@ export default [
       layout: "customItem",
     },
     title: "标题",
-    titlePosition: 'left',
-    fontSize: 14,
-    letterSpacing: 0.2,
-    color: '#000'
+    fontSize: 16,
   },
 ];

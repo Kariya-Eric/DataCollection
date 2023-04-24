@@ -87,6 +87,29 @@
         </el-form-item>
 
         <el-form-item
+          v-if="activeData.__config__.tag === 'customNumber'"
+          label="精度"
+        >
+          <el-input-number
+            v-model="activeData.precision"
+            :min="0"
+            placeholder="精度"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="activeData.__config__.tag === 'customNumber'"
+          label="最小值"
+        >
+          <el-input-number v-model="activeData.min" placeholder="最小值" />
+        </el-form-item>
+        <el-form-item
+          v-if="activeData.__config__.tag === 'customNumber'"
+          label="最大值"
+        >
+          <el-input-number v-model="activeData.max" placeholder="最大值" />
+        </el-form-item>
+
+        <el-form-item
           v-if="activeData.__config__.tag === 'el-checkbox-group'"
           label="至少应选"
         >
@@ -154,24 +177,6 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item
-          v-if="activeData['range-separator'] !== undefined"
-          label="分隔符"
-        >
-          <el-input
-            v-model="activeData['range-separator']"
-            placeholder="请输入分隔符"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData['picker-options'] !== undefined"
-          label="时间段"
-        >
-          <el-input
-            v-model="activeData['picker-options'].selectableRange"
-            placeholder="请输入时间段"
-          />
-        </el-form-item>
         <el-form-item v-if="activeData.format !== undefined" label="时间格式">
           <el-input
             :value="activeData.format"
@@ -271,33 +276,14 @@
           <el-form-item label="标题">
             <el-input v-model="activeData.title" />
           </el-form-item>
-          <el-form-item label="标题位置">
-            <el-radio-group v-model="activeData.titlePosition">
-              <el-radio-button label="left"> 居左 </el-radio-button>
-              <el-radio-button label="center"> 居中 </el-radio-button>
-              <el-radio-button label="right"> 居右 </el-radio-button>
-            </el-radio-group>
-          </el-form-item>
           <el-form-item label="字体大小">
             <el-slider
               v-model="activeData.fontSize"
-              :min="1"
+              :min="12"
               :step="1"
-              :max="32"
-              :marks="{ 14: '', 24: '' }"
+              :max="30"
+              :marks="{ 16: '', 24: '' }"
             ></el-slider>
-          </el-form-item>
-          <el-form-item label="字体间距">
-            <el-slider
-              v-model="activeData.letterSpacing"
-              :min="0"
-              :step="0.1"
-              :max="1.0"
-              :marks="{ 0.2: '' }"
-            ></el-slider>
-          </el-form-item>
-          <el-form-item label="字体颜色">
-            <el-color-picker v-model="activeData.color" />
           </el-form-item>
         </template>
 
@@ -343,10 +329,103 @@
                 v-model="activeData.columns[activeData.selectedCol - 1].type"
               >
                 <el-option label="单行文本" value="input" />
+                <el-option label="多行文本" value="inputarea" />
+                <el-option label="数字" value="inputnumber" />
+                <el-option label="邮箱" value="mail" />
+                <el-option label="电话" value="phone" />
+                <el-option label="地址" value="address" />
                 <el-option label="下拉选择" value="select" />
                 <el-option label="日期选择" value="datepick" />
               </el-select>
             </el-form-item>
+            <el-form-item
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type ===
+                  'input' ||
+                activeData.columns[activeData.selectedCol - 1].type ===
+                  'inputarea'
+              "
+              label="最多输入"
+            >
+              <el-input
+                v-model="
+                  activeData.columns[activeData.selectedCol - 1].maxlength
+                "
+                placeholder="请输入字符长度"
+              >
+                <template slot="append"> 个字符 </template>
+              </el-input>
+            </el-form-item>
+            <el-form-item
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type ===
+                'inputarea'
+              "
+              label="最小行数"
+            >
+              <el-input-number
+                v-model="activeData.columns[activeData.selectedCol - 1].minRows"
+                :min="1"
+                placeholder="最小行数"
+              />
+            </el-form-item>
+            <el-form-item
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type ===
+                'inputarea'
+              "
+              label="最大行数"
+            >
+              <el-input-number
+                v-model="activeData.columns[activeData.selectedCol - 1].maxRows"
+                :min="1"
+                placeholder="最大行数"
+              />
+            </el-form-item>
+
+            <el-form-item
+          v-if="activeData.columns[activeData.selectedCol - 1].type === 'inputnumber'"
+          label="精度"
+        >
+          <el-input-number
+            v-model="activeData.columns[activeData.selectedCol - 1].precision"
+            :min="0"
+            placeholder="精度"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="activeData.columns[activeData.selectedCol - 1].type === 'inputnumber'"
+          label="最小值"
+        >
+          <el-input-number v-model="activeData.columns[activeData.selectedCol - 1].min" placeholder="最小值" />
+        </el-form-item>
+        <el-form-item
+          v-if="activeData.columns[activeData.selectedCol - 1].type === 'inputnumber'"
+          label="最大值"
+        >
+          <el-input-number v-model="activeData.columns[activeData.selectedCol - 1].max" placeholder="最大值" />
+        </el-form-item>
+
+
+            <template
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type ===
+                'datepick'
+              "
+            >
+              <el-form-item
+                v-if="
+                  activeData.columns[activeData.selectedCol - 1].type ===
+                  'datepick'
+                "
+                label="时间格式"
+              >
+                <el-input
+                  :value="activeData.columns[activeData.selectedCol - 1].format"
+                  placeholder="请输入时间格式"
+                />
+              </el-form-item>
+            </template>
             <el-form-item label="是否必填">
               <el-switch
                 v-model="
@@ -385,9 +464,17 @@
                     placeholder="选项值"
                     size="small"
                     :value="item.value"
+                    @input="setTableOptionValue(item, $event)"
                   />
                   <div class="close-btn select-line-icon">
-                    <i class="el-icon-remove-outline" />
+                    <i
+                      class="el-icon-remove-outline"
+                      @click="
+                        activeData.columns[
+                          activeData.selectedCol - 1
+                        ].options.splice(index, 1)
+                      "
+                    />
                   </div>
                 </div>
               </draggable>
@@ -396,17 +483,11 @@
                   style="padding-bottom: 0"
                   icon="el-icon-circle-plus-outline"
                   type="text"
+                  @click="addTableOption"
                 >
                   添加选项
                 </el-button>
               </div>
-            </template>
-            <template
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                'datepick'
-              "
-            >
             </template>
           </template>
         </template>
@@ -574,6 +655,17 @@ export default {
     delCol(index) {
       this.activeData.columns.splice(index, 1);
       this.activeData.col--;
+    },
+
+    addTableOption() {
+      this.activeData.columns[this.activeData.selectedCol - 1].options.push({
+        label: "",
+        value: "",
+      });
+    },
+
+    setTableOptionValue(item, val) {
+      item.value = isNumberStr(val) ? +val : val;
     },
     // ==============自定义END==============
 

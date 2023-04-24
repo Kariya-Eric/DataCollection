@@ -1,44 +1,29 @@
 <template>
-  <div class="divider">
-    <el-divider :content-position="titlePosition">
-      <div :style="dividerStyle">
-        {{ title }}
-      </div>
-    </el-divider>
+  <div>
+    <div :style="titleStyle">{{ title }}</div>
+    <el-divider />
   </div>
 </template>
 
 <script>
 export default {
   name: "CustomDivider",
-  props: ["title", "titlePosition", "fontSize", "letterSpacing", "color"],
-  watch: {
-    title(val) {
-      this.title = val;
-    },
-    titlePosition(val) {
-      this.titlePosition = val;
-    },
-  },
+  props: ["title", "fontSize"],
   computed: {
-    dividerStyle: {
-      get() {
-        return {
-          fontSize: this.fontSize + "px",
-          letterSpacing: this.letterSpacing + "em",
-          color: this.color,
-        };
-      },
-      set(val) {
-        console.log(val);
-      },
+    titleStyle() {
+      return {
+        fontSize: this.fontSize + "px",
+        margin: "12px 0 0 24px",
+        fontWeight: "bold",
+        letterSpacing: "0.15em",
+      };
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.divider {
-  
+/deep/.el-divider {
+  margin: 12px 0;
 }
 </style>

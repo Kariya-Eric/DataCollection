@@ -57,6 +57,23 @@ export const inputComponents = [
   },
   {
     __config__: {
+      label: "数字",
+      showLabel: true,
+      tag: "customNumber",
+      tagIcon: "number",
+      required: true,
+      layout: "colFormItem",
+      defaultValue: null,
+      span: 24,
+    },
+    style: { width: "100%" },
+    disabled: false,
+    precision: 0,
+    min: undefined,
+    max: undefined
+  },
+  {
+    __config__: {
       label: "邮箱",
       showLabel: true,
       tag: "customMail",
@@ -87,6 +104,22 @@ export const inputComponents = [
     readonly: false,
     disabled: false,
   },
+  {
+    __config__: {
+      label: "地址",
+      showLabel: true,
+      tag: "customAddress",
+      tagIcon: "smartphone",
+      required: true,
+      layout: "colFormItem",
+      defaultValue: null,
+      span: 24,
+    },
+    style: { width: "100%" },
+    placeholder: "请输入",
+    readonly: false,
+    disabled: false,
+  }
 ];
 
 // 选择型组件 【左面板】
@@ -191,28 +224,6 @@ export const selectComponents = [
     "value-format": "yyyy-MM-dd",
     readonly: false,
   },
-  {
-    __config__: {
-      label: "日期范围",
-      tag: "el-date-picker",
-      tagIcon: "date-range",
-      defaultValue: null,
-      span: 24,
-      showLabel: true,
-      required: true,
-      layout: "colFormItem",
-    },
-    style: { width: "100%" },
-    type: "daterange",
-    "range-separator": "至",
-    "start-placeholder": "开始日期",
-    "end-placeholder": "结束日期",
-    disabled: false,
-    clearable: true,
-    format: "yyyy-MM-dd",
-    "value-format": "yyyy-MM-dd",
-    readonly: false,
-  },
 ];
 
 export const otherComponents = [
@@ -229,32 +240,74 @@ export const otherComponents = [
     dataSource: [],
     columns: [
       {
-        index: 1,
         label: "列1",
         props: "col1",
         type: 'input',
         required: true,
-        options: [],
+        options: [
+          {
+            label: "选项一",
+            value: 1,
+          },
+          {
+            label: "选项二",
+            value: 2,
+          },
+        ],
+        minRows: 2,
+        maxRows: 4,
+        maxlength: null,
+        precision: 0,
+        min: undefined,
+        max: undefined,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
       },
       {
-        index: 2,
         label: "列2",
         props: "col2",
         type: 'input',
         required: true,
-        options: [],
+        options: [
+          {
+            label: "选项一",
+            value: 1,
+          },
+          {
+            label: "选项二",
+            value: 2,
+          },
+        ],
+        minRows: 2,
+        maxRows: 4,
+        maxlength: null,
+        precision: 0,
+        min: undefined,
+        max: undefined,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
       },
       {
-        index: 3,
         label: "列3",
         props: "col3",
         type: 'input',
         required: true,
-        options: [],
+        options: [
+          {
+            label: "选项一",
+            value: 1,
+          },
+          {
+            label: "选项二",
+            value: 2,
+          },
+        ],
+        minRows: 2,
+        maxRows: 4,
+        maxlength: null,
+        precision: 0,
+        min: undefined,
+        max: undefined,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
       },
@@ -272,9 +325,6 @@ export const layoutComponents = [
       layout: "customItem",
     },
     title: "标题",
-    titlePosition: "left",
-    fontSize: 14,
-    letterSpacing: 0.2,
-    color: "#000",
+    fontSize: 16,
   },
 ];

@@ -1,20 +1,20 @@
 <template>
-  <el-input
-    prefix-icon="el-icon-mobile"
-    clearable
+  <el-input-number
     size="small"
     :disabled="disabled"
-    :readonly="readonly"
-    :placeholder="placeholder"
+    controls-position="right"
     v-model="inputVal"
-    @input="changeVal"
+    @change="changeVal"
+    :precision="precision"
+    :min="min"
+    :max="max"
   />
 </template>
 
 <script>
 export default {
-  name: "CustomPhone",
-  props: ["value", "readonly", "disabled", "placeholder"],
+  name: "CustomNumber",
+  props: ["value", "disabled", "precision", "min", "max"],
   watch: {
     value(val) {
       this.inputVal = val;
@@ -34,4 +34,5 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+</style>

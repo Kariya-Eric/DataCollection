@@ -2,7 +2,7 @@
   <el-input
     prefix-icon="el-icon-message"
     clearable
-    show-word-limit
+    size="small"
     :disabled="disabled"
     :readonly="readonly"
     :placeholder="placeholder"
@@ -18,15 +18,6 @@ export default {
   watch: {
     value(val) {
       this.inputVal = val;
-    },
-    readonly(val) {
-      this.readonly = val;
-    },
-    disabled(val) {
-      this.disabled = val;
-    },
-    placeholder(val) {
-      this.placeholder = val;
     },
   },
   data() {

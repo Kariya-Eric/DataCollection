@@ -58,7 +58,6 @@ const layouts = {
             key={config.renderKey}
             conf={currentItem}
             onInput={(event) => {
-              console.log("event", event);
               this.$set(config, "defaultValue", event);
             }}
           >
