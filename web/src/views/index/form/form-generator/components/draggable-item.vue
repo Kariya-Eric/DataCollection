@@ -33,6 +33,7 @@ const layouts = {
   colFormItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners;
     const config = currentItem.__config__;
+    const isHide = currentItem.isHide ? currentItem.isHide : "1===1";
     const child = renderChildren.apply(this, arguments);
     let className =
       this.activeId === config.formId
@@ -44,6 +45,7 @@ const layouts = {
       <el-col
         span={config.span}
         class={className}
+        v-if={isHide}
         nativeOnClick={(event) => {
           activeItem(currentItem);
           event.stopPropagation();

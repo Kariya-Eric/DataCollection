@@ -70,7 +70,8 @@ export const inputComponents = [
     disabled: false,
     precision: 0,
     min: undefined,
-    max: undefined
+    max: undefined,
+    isHide: undefined
   },
   {
     __config__: {
@@ -87,6 +88,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
+    isHide: undefined
   },
   {
     __config__: {
@@ -103,6 +105,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
+    isHide: undefined
   },
   {
     __config__: {
@@ -176,6 +179,7 @@ export const selectComponents = [
         },
       ],
     },
+    showLogic: false,
     disabled: false,
   },
   {

@@ -239,6 +239,21 @@
         </template>
 
         <el-form-item
+          v-if="activeData.__config__.tag === 'el-radio-group'"
+          label="逻辑设置"
+        >
+          <el-switch
+            v-model="activeData.__config__.showLogic"
+            @change="changeLogic"
+          />
+          <a
+            v-if="activeData.__config__.showLogic"
+            @click="showLogic(activeData)"
+            >&nbsp;&nbsp;&nbsp;设置逻辑</a
+          >
+        </el-form-item>
+
+        <el-form-item
           v-if="activeData.__config__.showLabel !== undefined"
           label="显示标签"
         >
@@ -384,28 +399,44 @@
             </el-form-item>
 
             <el-form-item
-          v-if="activeData.columns[activeData.selectedCol - 1].type === 'inputnumber'"
-          label="精度"
-        >
-          <el-input-number
-            v-model="activeData.columns[activeData.selectedCol - 1].precision"
-            :min="0"
-            placeholder="精度"
-          />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.columns[activeData.selectedCol - 1].type === 'inputnumber'"
-          label="最小值"
-        >
-          <el-input-number v-model="activeData.columns[activeData.selectedCol - 1].min" placeholder="最小值" />
-        </el-form-item>
-        <el-form-item
-          v-if="activeData.columns[activeData.selectedCol - 1].type === 'inputnumber'"
-          label="最大值"
-        >
-          <el-input-number v-model="activeData.columns[activeData.selectedCol - 1].max" placeholder="最大值" />
-        </el-form-item>
-
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type ===
+                'inputnumber'
+              "
+              label="精度"
+            >
+              <el-input-number
+                v-model="
+                  activeData.columns[activeData.selectedCol - 1].precision
+                "
+                :min="0"
+                placeholder="精度"
+              />
+            </el-form-item>
+            <el-form-item
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type ===
+                'inputnumber'
+              "
+              label="最小值"
+            >
+              <el-input-number
+                v-model="activeData.columns[activeData.selectedCol - 1].min"
+                placeholder="最小值"
+              />
+            </el-form-item>
+            <el-form-item
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type ===
+                'inputnumber'
+              "
+              label="最大值"
+            >
+              <el-input-number
+                v-model="activeData.columns[activeData.selectedCol - 1].max"
+                placeholder="最大值"
+              />
+            </el-form-item>
 
             <template
               v-if="
@@ -541,6 +572,7 @@
         </el-form-item>
       </el-form>
     </div>
+    <logic-dialog ref="logicdialog" @setLogic="setLogic" />
   </div>
 </template>
 
@@ -549,7 +581,7 @@ import draggable from "vuedraggable";
 import { isArray } from "util";
 import { isNumberStr } from "../utils/index";
 import { saveFormConf } from "../utils/db";
-
+import LogicDialog from "./logic-dialog";
 const dateTimeFormat = {
   date: "yyyy-MM-dd",
   week: "yyyy 第 WW 周",
@@ -565,6 +597,7 @@ export default {
   name: "RightPanel",
   components: {
     draggable,
+    LogicDialog,
   },
   props: ["showField", "activeData", "formConf"],
   data() {
@@ -666,6 +699,20 @@ export default {
 
     setTableOptionValue(item, val) {
       item.value = isNumberStr(val) ? +val : val;
+    },
+
+    showLogic(activeData) {
+      this.$refs.logicdialog.show(activeData);
+    },
+
+    changeLogic(val) {
+      if (!val) {
+        console.log(val);
+      }
+    },
+
+    setLogic(option, hiddenList) {
+      console.log(option, hiddenList);
     },
     // ==============自定义END==============
 
