@@ -580,7 +580,7 @@
 import draggable from "vuedraggable";
 import { isArray } from "util";
 import { isNumberStr } from "../utils/index";
-import { saveFormConf } from "../utils/db";
+import { saveFormConf, getDrawingList } from "../utils/db";
 import LogicDialog from "./logic-dialog";
 const dateTimeFormat = {
   date: "yyyy-MM-dd",
@@ -712,7 +712,7 @@ export default {
     },
 
     setLogic(option, hiddenList) {
-      console.log(option, hiddenList);
+      
     },
     // ==============自定义END==============
 

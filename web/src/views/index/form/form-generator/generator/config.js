@@ -67,11 +67,12 @@ export const inputComponents = [
       span: 24,
     },
     style: { width: "100%" },
+    placeholder: "请输入",
     disabled: false,
     precision: 0,
     min: undefined,
     max: undefined,
-    isHide: undefined
+    isHide: undefined,
   },
   {
     __config__: {
@@ -88,7 +89,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-    isHide: undefined
+    isHide: undefined,
   },
   {
     __config__: {
@@ -105,7 +106,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-    isHide: undefined
+    isHide: undefined,
   },
   {
     __config__: {
@@ -122,7 +123,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-  }
+  },
 ];
 
 // 选择型组件 【左面板】
@@ -246,7 +247,7 @@ export const otherComponents = [
       {
         label: "列1",
         props: "col1",
-        type: 'input',
+        type: "input",
         required: true,
         options: [
           {
@@ -270,7 +271,7 @@ export const otherComponents = [
       {
         label: "列2",
         props: "col2",
-        type: 'input',
+        type: "input",
         required: true,
         options: [
           {
@@ -294,7 +295,7 @@ export const otherComponents = [
       {
         label: "列3",
         props: "col3",
-        type: 'input',
+        type: "input",
         required: true,
         options: [
           {

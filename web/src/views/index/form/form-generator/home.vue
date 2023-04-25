@@ -95,7 +95,7 @@
         @tag-change="tagChange"
       />
 
-      <form-drawer ref="formDrawer" size="50%" />
+      <form-drawer ref="formDrawer" />
     </div>
   </el-dialog>
 </template>

@@ -4,6 +4,7 @@
     :disabled="disabled"
     controls-position="right"
     v-model="inputVal"
+    :placeholder="placeholder"
     @change="changeVal"
     :precision="precision"
     :min="min"
@@ -14,7 +15,7 @@
 <script>
 export default {
   name: "CustomNumber",
-  props: ["value", "disabled", "precision", "min", "max"],
+  props: ["value", "disabled", "precision", "min", "max", "placeholder"],
   watch: {
     value(val) {
       this.inputVal = val;
@@ -22,7 +23,7 @@ export default {
   },
   data() {
     return {
-      inputVal: this.value,
+      inputVal: undefined,
     };
   },
   methods: {
@@ -34,5 +35,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
