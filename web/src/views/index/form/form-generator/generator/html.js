@@ -30,11 +30,9 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${
-    scheme.formModel
-  }" :rules="${scheme.formRules}" size="${
-    scheme.size
-  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
+    }" :rules="${scheme.formRules}" size="${scheme.size
+    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -98,6 +96,23 @@ const layouts = {
     let str = `${tagDom}`;
     return str;
   },
+  customTable(scheme) {
+    const config = scheme.__config__;
+    let labelWidth = "";
+    let label = `label="${config.label}"`;
+    if (config.labelWidth && config.labelWidth !== confGlobal.labelWidth) {
+      labelWidth = `label-width="${config.labelWidth}px"`;
+    }
+    if (config.showLabel === false) {
+      labelWidth = 'label-width="0"';
+      label = "";
+    }
+    const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
+        ${tagDom}
+      </el-form-item>`;
+    return colWrapper(scheme, str);
+  }
 };
 
 const tags = {
@@ -205,27 +220,20 @@ const tags = {
     const readonly = el.readonly ? "readonly" : "";
     return `<custom-mail ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`;
   },
-  customEditTable: (el) => {
-    const columns = el.columns;
-    let str = "";
-    for (let i = 0; i < columns.length; i++) {
-      str += `<el-table-column label="${columns[i].label}" prop="${columns.props}" align="center">
-        <template slot-scope="scope">
-            <el-input size="small"/>
-        </template>
-    </el-table-column>`;
-    }
-    const dataSource = el.dataSource;
-    return `<el-table size="small" :border="true">
-        <el-table-column type="selection" width="55" align="center" />
-            ${str}
-        <el-table-column label="操作" align="center">
-            <template slot-scope="scope">
-                
-            </template>
-        </el-table-column>
-    </el-table>`;
+  customNumber: (el) => {
+    const { disabled, vModel, placeholder, width } = attrBuilder(el);
+    const precision = `:precision="${el.precision}"`
+    const min = el.min ? `:min="${el.min}"` : ""
+    const max = el.max ? `:max="${el.max}"` : ""
+    return `<custom-number ${vModel} ${placeholder} ${precision} ${max} ${min} ${disabled} ${width}/>`
   },
+  customAddress: (el) => {
+
+  },
+  customEditTable: (el) => {
+    const columns = `:columns='${JSON.stringify(el.columns)}'`
+    return `<render-table ${columns} />`
+  }
   // ============自定义组件=============================
 };
 

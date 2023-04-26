@@ -4,6 +4,7 @@ import CustomPhone from "./custom-phone";
 import CustomMail from "./custom-mail";
 import CustomAddress from './custom-address';
 import CustomNumber from './custom-number';
+import RenderTable from './render-table';
 
 export default {
   install(Vue) {
@@ -13,5 +14,6 @@ export default {
     Vue.component("customMail", CustomMail);
     Vue.component("customNumber", CustomNumber);
     Vue.component("customAddress", CustomAddress);
+    Vue.component("renderTable", RenderTable);
   },
 };

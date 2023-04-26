@@ -61,7 +61,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="activeData.style && activeData.style.width !== undefined"
+          v-if="activeData.__config__.span !== undefined"
           label="组件宽度"
         >
           <el-slider
@@ -78,7 +78,13 @@
         >
           <el-slider v-model="inputWidth" :marks="{ 50: '' }"></el-slider>
         </el-form-item>
-        <el-form-item v-if="activeData.__vModel__ !== undefined" label="默认值">
+        <el-form-item
+          v-if="
+            activeData.__vModel__ !== undefined &&
+            activeData.__config__.layout !== 'customTable'
+          "
+          label="默认值"
+        >
           <el-input
             :value="setDefaultValue(activeData.__config__.defaultValue)"
             placeholder="请输入默认值"
@@ -712,7 +718,7 @@ export default {
     },
 
     setLogic(option, hiddenList) {
-      
+      this.$emit("setHide", this.activeData, option, hiddenList);
     },
     // ==============自定义END==============
 

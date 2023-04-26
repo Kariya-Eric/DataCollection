@@ -217,9 +217,9 @@ export const selectComponents = [
       tagIcon: "date",
       defaultValue: null,
       showLabel: true,
-      span: 24,
       layout: "colFormItem",
       required: true,
+      span: 24,
     },
     placeholder: "请选择",
     style: { width: "100%" },
@@ -235,9 +235,11 @@ export const otherComponents = [
   {
     __config__: {
       tagIcon: "table_1",
-      layout: "customItem",
+      layout: "customTable",
       label: "固定表格",
       tag: "customEditTable",
+      showLabel: true,
+      span: 24
     },
     row: 1,
     col: 3,

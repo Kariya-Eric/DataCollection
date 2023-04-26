@@ -25,11 +25,10 @@ export function makeUpJs(formConfig, type) {
   const optionsList = []
   const propsList = []
   const methodList = mixinMethod(type)
-  const uploadVarList = []
   const created = []
 
   formConfig.fields.forEach(el => {
-    buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created)
+    buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, created)
   })
 
   const script = buildexport(
@@ -38,7 +37,6 @@ export function makeUpJs(formConfig, type) {
     dataList.join('\n'),
     ruleList.join('\n'),
     optionsList.join('\n'),
-    uploadVarList.join('\n'),
     propsList.join('\n'),
     methodList.join('\n'),
     created.join('\n')
@@ -48,7 +46,7 @@ export function makeUpJs(formConfig, type) {
 }
 
 // 构建组件属性
-function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created) {
+function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, propsList, created) {
   const config = scheme.__config__
   const slot = scheme.__slot__
   buildData(scheme, dataList)
@@ -71,23 +69,10 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
     buildProps(scheme, propsList)
   }
 
-  // 处理el-upload的action
-  if (scheme.action && config.tag === 'el-upload') {
-    uploadVarList.push(
-      `${scheme.__vModel__}Action: '${scheme.action}',
-      ${scheme.__vModel__}fileList: [],`
-    )
-    methodList.push(buildBeforeUpload(scheme))
-    // 非自动上传时，生成手动上传的函数
-    if (!scheme['auto-upload']) {
-      methodList.push(buildSubmitUpload(scheme))
-    }
-  }
-
   // 构建子级组件属性
   if (config.children) {
     config.children.forEach(item => {
-      buildAttributes(item, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created)
+      buildAttributes(item, dataList, ruleList, optionsList, methodList, propsList, created)
     })
   }
 }
@@ -186,41 +171,6 @@ function buildOptions(scheme, optionsList) {
 function buildProps(scheme, propsList) {
   const str = `${scheme.__vModel__}Props: ${JSON.stringify(scheme.props.props)},`
   propsList.push(str)
-}
-
-// el-upload的BeforeUpload
-function buildBeforeUpload(scheme) {
-  const config = scheme.__config__
-  const unitNum = units[config.sizeUnit]; let rightSizeCode = ''; let acceptCode = ''; const
-    returnList = []
-  if (config.fileSize) {
-    rightSizeCode = `let isRightSize = file.size / ${unitNum} < ${config.fileSize}
-    if(!isRightSize){
-      this.$message.error('文件大小超过 ${config.fileSize}${config.sizeUnit}')
-    }`
-    returnList.push('isRightSize')
-  }
-  if (scheme.accept) {
-    acceptCode = `let isAccept = new RegExp('${scheme.accept}').test(file.type)
-    if(!isAccept){
-      this.$message.error('应该选择${scheme.accept}类型的文件')
-    }`
-    returnList.push('isAccept')
-  }
-  const str = `${scheme.__vModel__}BeforeUpload(file) {
-    ${rightSizeCode}
-    ${acceptCode}
-    return ${returnList.join('&&')}
-  },`
-  return returnList.length ? str : ''
-}
-
-// el-upload的submit
-function buildSubmitUpload(scheme) {
-  const str = `submitUpload() {
-    this.$refs['${scheme.__vModel__}'].submit()
-  },`
-  return str
 }
 
 function buildOptionMethod(methodName, model, methodList, scheme) {

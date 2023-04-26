@@ -33,8 +33,6 @@ const layouts = {
   colFormItem(h, currentItem, index, list) {
     const { activeItem } = this.$listeners;
     const config = currentItem.__config__;
-    const isHide = currentItem.isHide ? currentItem.isHide : "1===1";
-    console.log("isHIde", isHide);
     const child = renderChildren.apply(this, arguments);
     let className =
       this.activeId === config.formId
@@ -87,15 +85,51 @@ const layouts = {
           event.stopPropagation();
         }}
       >
-        <render
-          key={config.renderKey}
-          conf={currentItem}
-          onSelect={(event) => {
-            this.$set(currentItem, "selectedCol", event);
-          }}
-        >
+        <render key={config.renderKey} conf={currentItem}>
           {child}
         </render>
+        {components.itemBtns.apply(this, arguments)}
+      </el-col>
+    );
+  },
+
+  customTable(h, currentItem, index, list) {
+    const { activeItem } = this.$listeners;
+    const config = currentItem.__config__;
+    const child = renderChildren.apply(this, arguments);
+    let className =
+      this.activeId === config.formId
+        ? "drawing-item active-from-item"
+        : "drawing-item";
+    let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null;
+    if (config.showLabel === false) labelWidth = "0";
+    return (
+      <el-col
+        span={config.span}
+        class={className}
+        nativeOnClick={(event) => {
+          activeItem(currentItem);
+          event.stopPropagation();
+        }}
+      >
+        <el-form-item
+          label-width={labelWidth}
+          label={config.showLabel ? config.label : ""}
+          required={config.required}
+        >
+          <render
+            key={config.renderKey}
+            conf={currentItem}
+            onInput={(event) => {
+              this.$set(config, "defaultValue", event);
+            }}
+            onSelect={(event) => {
+              this.$set(currentItem, "selectedCol", event);
+            }}
+          >
+            {child}
+          </render>
+        </el-form-item>
         {components.itemBtns.apply(this, arguments)}
       </el-col>
     );
