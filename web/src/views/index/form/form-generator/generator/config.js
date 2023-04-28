@@ -72,7 +72,6 @@ export const inputComponents = [
     precision: 0,
     min: undefined,
     max: undefined,
-    isHide: undefined,
   },
   {
     __config__: {
@@ -89,7 +88,6 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-    isHide: undefined,
   },
   {
     __config__: {
@@ -102,11 +100,11 @@ export const inputComponents = [
       defaultValue: null,
       span: 24,
     },
+    isMobile: false,
     style: { width: "100%" },
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-    isHide: undefined,
   },
   {
     __config__: {

@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-import ruleTrigger from "./ruleTrigger";
 
 let confGlobal;
 let someSpanIsNot24;
@@ -82,10 +80,8 @@ const layouts = {
       labelWidth = 'label-width="0"';
       label = "";
     }
-    const required =
-      !ruleTrigger[config.tag] && config.required ? "required" : "";
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${required}>
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" >
         ${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
@@ -157,49 +153,16 @@ const tags = {
     if (child) child = `\n${child}\n`; // 换行
     return `<${tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${tag}>`;
   },
-  "el-time-picker": (el) => {
-    const { tag, disabled, vModel, clearable, placeholder, width } =
-      attrBuilder(el);
-    const startPlaceholder = el["start-placeholder"]
-      ? `start-placeholder="${el["start-placeholder"]}"`
-      : "";
-    const endPlaceholder = el["end-placeholder"]
-      ? `end-placeholder="${el["end-placeholder"]}"`
-      : "";
-    const rangeSeparator = el["range-separator"]
-      ? `range-separator="${el["range-separator"]}"`
-      : "";
-    const isRange = el["is-range"] ? "is-range" : "";
-    const format = el.format ? `format="${el.format}"` : "";
-    const valueFormat = el["value-format"]
-      ? `value-format="${el["value-format"]}"`
-      : "";
-    const pickerOptions = el["picker-options"]
-      ? `:picker-options='${JSON.stringify(el["picker-options"])}'`
-      : "";
-
-    return `<${tag} ${vModel} ${isRange} ${format} ${valueFormat} ${pickerOptions} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${disabled}></${tag}>`;
-  },
   "el-date-picker": (el) => {
     const { tag, disabled, vModel, clearable, placeholder, width } =
       attrBuilder(el);
-    const startPlaceholder = el["start-placeholder"]
-      ? `start-placeholder="${el["start-placeholder"]}"`
-      : "";
-    const endPlaceholder = el["end-placeholder"]
-      ? `end-placeholder="${el["end-placeholder"]}"`
-      : "";
-    const rangeSeparator = el["range-separator"]
-      ? `range-separator="${el["range-separator"]}"`
-      : "";
     const format = el.format ? `format="${el.format}"` : "";
     const valueFormat = el["value-format"]
       ? `value-format="${el["value-format"]}"`
       : "";
-    const type = el.type === "date" ? "" : `type="${el.type}"`;
+    const type = `type="date"`;
     const readonly = el.readonly ? "readonly" : "";
-
-    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${readonly} ${disabled}></${tag}>`;
+    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${clearable} ${readonly} ${disabled}></${tag}>`;
   },
   // ============自定义组件=============================
   customDivider: (el) => {
@@ -213,7 +176,8 @@ const tags = {
   customPhone: (el) => {
     const { disabled, vModel, placeholder, width } = attrBuilder(el);
     const readonly = el.readonly ? "readonly" : "";
-    return `<custom-phone ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`;
+    const isMobile = `:isMobile="${el.isMobile}"`;
+    return `<custom-phone ${vModel} ${placeholder} ${readonly} ${disabled} ${width} ${isMobile} />`;
   },
   customMail: (el) => {
     const { disabled, vModel, placeholder, width } = attrBuilder(el);
@@ -228,11 +192,13 @@ const tags = {
     return `<custom-number ${vModel} ${placeholder} ${precision} ${max} ${min} ${disabled} ${width}/>`
   },
   customAddress: (el) => {
-
+    const { disabled, vModel, placeholder, width } = attrBuilder(el);
+    return `<custom-address ${vModel} ${placeholder} ${disabled} ${width} />`
   },
   customEditTable: (el) => {
     const columns = `:columns='${JSON.stringify(el.columns)}'`
-    return `<render-table ${columns} />`
+    const dataSource = `:dataSource="${confGlobal.formModel}.${el.__vModel__}"`
+    return `<render-table ${columns} ${dataSource} />`
   }
   // ============自定义组件=============================
 };

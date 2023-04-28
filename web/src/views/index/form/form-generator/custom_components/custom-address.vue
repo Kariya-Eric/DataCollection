@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @blur="onBlur">
     <el-cascader
       placeholder="请选择地址"
       :options="options"
@@ -9,6 +9,7 @@
       :disabled="disabled"
       v-model="selectOption"
       @change="changeOption"
+      size="small"
     />
     <el-input
       type="textarea"
@@ -17,6 +18,7 @@
       v-model="textarea"
       :disabled="disabled"
       @input="changeVal"
+      size="small"
     />
   </div>
 </template>
@@ -56,9 +58,12 @@ export default {
         },
       ],
       textarea: this.value ? this.value.split("/").slice(-1) : "",
-      selectOption: this.value ? this.value.split("/").pop() : [],
+      selectOption: this.value
+        ? this.value.split("/")[this.value.split("/").length - 2]
+        : "",
     };
   },
+
   methods: {
     changeOption(val) {
       this.selectOption = val;
@@ -73,6 +78,11 @@ export default {
       this.selectOption.forEach((opt) => (address += opt + "/"));
       address += this.textarea;
       this.$emit("input", address);
+    },
+
+    onBlur() {
+      //失去焦点触发
+      this.$parent.$emit("el.form.blur");
     },
   },
 };

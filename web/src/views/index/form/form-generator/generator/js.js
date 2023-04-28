@@ -2,11 +2,6 @@ import { isArray } from 'util'
 import { exportDefault, titleCase, deepClone } from '../utils/index'
 import ruleTrigger from './ruleTrigger'
 
-const units = {
-  KB: '1024',
-  MB: '1024 / 1024',
-  GB: '1024 / 1024 / 1024'
-}
 let confGlobal
 const inheritAttrs = {
   file: '',
@@ -91,6 +86,7 @@ function mixinMethod(type) {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
           // TODO 提交表单
+          console.log('form',this.${confGlobal.formModel})
         })
       },`,
         resetForm: `resetForm() {
@@ -144,14 +140,15 @@ function buildRules(scheme, ruleList) {
       if (message === undefined) message = `${config.label}不能为空`
       rules.push(`{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]}' }`)
     }
-    if (config.regList && isArray(config.regList)) {
-      config.regList.forEach(item => {
-        if (item.pattern) {
-          rules.push(
-            `{ pattern: ${eval(item.pattern)}, message: '${item.message}', trigger: '${ruleTrigger[config.tag]}' }`
-          )
-        }
-      })
+    if (config.tag === 'customPhone') {
+      if (scheme.isMobile) {
+        rules.push(`{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : 'blur' }`)
+      } else {
+        rules.push(`{ pattern:  /^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/ , message : '请输入正确的手机号' , trigger : 'blur' }`)
+      }
+    }
+    if (config.tag === 'customMail') {
+      rules.push(`{ pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/ , message : '请输入正确的邮箱' , trigger : 'blur' }`)
     }
     ruleList.push(`${scheme.__vModel__}: [${rules.join(',')}],`)
   }
@@ -189,11 +186,9 @@ function buildOptionMethod(methodName, model, methodList, scheme) {
 }
 
 // js整体拼接
-function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods, created) {
+function buildexport(conf, type, data, rules, selectOptions, props, methods, created) {
   const str = `${exportDefault}{
   ${inheritAttrs[type]}
-  components: {},
-  props: [],
   data () {
     return {
       ${conf.formModel}: {
@@ -202,17 +197,13 @@ function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, m
       ${conf.formRules}: {
         ${rules}
       },
-      ${uploadVar}
       ${selectOptions}
       ${props}
     }
   },
-  computed: {},
-  watch: {},
   created () {
     ${created}
   },
-  mounted () {},
   methods: {
     ${methods}
   }

@@ -7,6 +7,8 @@
     :readonly="readonly"
     :placeholder="placeholder"
     v-model="inputVal"
+    :maxlength="!isMobile ? 11 : null"
+    :show-word-limit="!isMobile"
     @input="changeVal"
   />
 </template>
@@ -14,7 +16,7 @@
 <script>
 export default {
   name: "CustomPhone",
-  props: ["value", "readonly", "disabled", "placeholder"],
+  props: ["value", "readonly", "disabled", "placeholder", "isMobile"],
   watch: {
     value(val) {
       this.inputVal = val;

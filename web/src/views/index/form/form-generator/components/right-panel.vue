@@ -260,6 +260,13 @@
         </el-form-item>
 
         <el-form-item
+          v-if="activeData.__config__.tag === 'customPhone'"
+          label="支持固话"
+        >
+          <el-switch v-model="activeData.isMobile" />
+        </el-form-item>
+
+        <el-form-item
           v-if="activeData.__config__.showLabel !== undefined"
           label="显示标签"
         >
@@ -687,6 +694,26 @@ export default {
         index: this.activeData.col + 1,
         label: "列" + (this.activeData.col + 1),
         props: "col" + (this.activeData.col + 1),
+        type: "input",
+        required: true,
+        options: [
+          {
+            label: "选项一",
+            value: 1,
+          },
+          {
+            label: "选项二",
+            value: 2,
+          },
+        ],
+        minRows: 2,
+        maxRows: 4,
+        maxlength: null,
+        precision: 0,
+        min: undefined,
+        max: undefined,
+        format: "yyyy-MM-dd",
+        "value-format": "yyyy-MM-dd",
       });
       this.activeData.col++;
     },

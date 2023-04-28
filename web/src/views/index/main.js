@@ -23,6 +23,7 @@ import Plugin from 'v-fit-columns';
 Vue.use(Plugin);
 
 
+
 import CustomComponent from './form/form-generator/custom_components'
 Vue.use(CustomComponent)
 

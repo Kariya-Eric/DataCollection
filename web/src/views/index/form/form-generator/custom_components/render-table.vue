@@ -4,12 +4,24 @@
       <el-button size="small" type="primary" icon="el-icon-plus" @click="addRow"
         >添加行</el-button
       >
+      <el-button
+        size="small"
+        type="danger"
+        icon="el-icon-delete"
+        v-if="selectedRowKeys.length > 0"
+        >批量删除</el-button
+      >
       <el-button type="primary" size="small" icon="el-icon-upload2"
         >导入</el-button
       >
     </div>
     <el-form ref="tableForm" :model="tableForm">
-      <el-table size="small" :border="true" :data="tableForm.dataSource">
+      <el-table
+        size="small"
+        :border="true"
+        :data="tableForm.dataSource"
+        @selection-change="onSelectChange"
+      >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column
           v-for="(col, index) in columns"
@@ -36,7 +48,7 @@
                 <el-form-item
                   :rules="
                     col.required
-                      ? [{ required: true, message: '不能为空！' }]
+                      ? [{ required: true, message: `${col.label}不能为空` }]
                       : []
                   "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
@@ -54,7 +66,11 @@
               </template>
               <template v-if="col.type === 'inputarea'">
                 <el-form-item
-                  :rules="col.required ? [{ required: true }] : []"
+                  :rules="
+                    col.required
+                      ? [{ required: true, message: `${col.label}不能为空` }]
+                      : []
+                  "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
                   <el-input
@@ -75,7 +91,11 @@
               </template>
               <template v-if="col.type === 'inputnumber'">
                 <el-form-item
-                  :rules="col.required ? [{ required: true }] : []"
+                  :rules="
+                    col.required
+                      ? [{ required: true, message: `${col.label}不能为空` }]
+                      : []
+                  "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
                   <custom-number
@@ -92,7 +112,24 @@
               </template>
               <template v-if="col.type === 'mail'">
                 <el-form-item
-                  :rules="col.required ? [{ required: true }] : []"
+                  :rules="
+                    col.required
+                      ? [
+                          { required: true, message: `${col.label}不能为空` },
+                          {
+                            pattern:
+                              /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/,
+                            message: '请输入正确的邮箱',
+                          },
+                        ]
+                      : [
+                          {
+                            pattern:
+                              /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/,
+                            message: '请输入正确的邮箱',
+                          },
+                        ]
+                  "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
                   <custom-mail
@@ -107,7 +144,11 @@
               </template>
               <template v-if="col.type === 'phone'">
                 <el-form-item
-                  :rules="col.required ? [{ required: true }] : []"
+                  :rules="
+                    col.required
+                      ? [{ required: true, message: `${col.label}不能为空` }]
+                      : []
+                  "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
                   <custom-phone
@@ -122,7 +163,11 @@
               </template>
               <template v-if="col.type === 'address'">
                 <el-form-item
-                  :rules="col.required ? [{ required: true }] : []"
+                  :rules="
+                    col.required
+                      ? [{ required: true, message: `${col.label}不能为空` }]
+                      : []
+                  "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
                   <custom-address
@@ -135,7 +180,11 @@
               </template>
               <template v-if="col.type === 'select'">
                 <el-form-item
-                  :rules="col.required ? [{ required: true }] : []"
+                  :rules="
+                    col.required
+                      ? [{ required: true, message: `请选择${col.label}` }]
+                      : []
+                  "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
                   <el-select
@@ -155,7 +204,11 @@
               </template>
               <template v-if="col.type === 'datepick'">
                 <el-form-item
-                  :rules="col.required ? [{ required: true }] : []"
+                  :rules="
+                    col.required
+                      ? [{ required: true, message: `请选择${col.label}` }]
+                      : []
+                  "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
                   <el-date-picker
@@ -169,7 +222,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="150">
           <template slot-scope="scope">
             <a
               v-if="scope.row.isEdit"
@@ -179,7 +232,7 @@
             >
             <a v-else href="javascript:;" @click="save(scope.row)">保存</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;">删除</a>
+            <a href="javascript:;" @click="del(scope.row)">删除</a>
           </template>
         </el-table-column>
       </el-table>
@@ -192,12 +245,13 @@ import customNumber from "./custom-number.vue";
 export default {
   components: { customNumber },
   name: "renderTable",
-  props: ["columns"],
+  props: ["columns", "dataSource"],
   data() {
     return {
       tableForm: {
-        dataSource: [],
+        dataSource: this.dataSource ? this.dataSource : [],
       },
+      selectedRowKeys: [],
     };
   },
   methods: {
@@ -213,12 +267,29 @@ export default {
       row.isEdit = false;
     },
     save(row) {
-      console.log(row);
-      row.isEdit = true;
+      this.$refs.tableForm.validate((valid) => {
+        if (valid) {
+          row.isEdit = true;
+        }
+      });
+    },
+    del(row) {
+      this.tableForm.dataSource = this.tableForm.dataSource.filter(
+        (data) => data !== row
+      );
+    },
+    onSelectChange(selectedRowKeys, _) {
+      this.selectedRowKeys = selectedRowKeys;
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
+/deep/ .cell {
+  padding-bottom: 0;
+}
+/deep/ .el-form-item__error {
+  padding-top: 0;
+}
 </style>
