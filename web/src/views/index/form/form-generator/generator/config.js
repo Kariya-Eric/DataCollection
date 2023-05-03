@@ -237,12 +237,11 @@ export const otherComponents = [
       label: "固定表格",
       tag: "customEditTable",
       showLabel: true,
-      span: 24
+      span: 24,
     },
     row: 1,
     col: 3,
     selectedCol: -1,
-    dataSource: [],
     columns: [
       {
         label: "列1",
@@ -265,6 +264,7 @@ export const otherComponents = [
         precision: 0,
         min: undefined,
         max: undefined,
+        isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
       },
@@ -289,6 +289,7 @@ export const otherComponents = [
         precision: 0,
         min: undefined,
         max: undefined,
+        isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
       },
@@ -313,6 +314,7 @@ export const otherComponents = [
         precision: 0,
         min: undefined,
         max: undefined,
+        isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
       },

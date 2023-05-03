@@ -368,6 +368,18 @@
             </el-form-item>
             <el-form-item
               v-if="
+                activeData.columns[activeData.selectedCol - 1].type === 'phone'
+              "
+              label="支持固话"
+            >
+              <el-switch
+                v-model="
+                  activeData.columns[activeData.selectedCol - 1].isMobile
+                "
+              />
+            </el-form-item>
+            <el-form-item
+              v-if="
                 activeData.columns[activeData.selectedCol - 1].type ===
                   'input' ||
                 activeData.columns[activeData.selectedCol - 1].type ===

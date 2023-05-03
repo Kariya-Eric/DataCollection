@@ -117,15 +117,13 @@
                       ? [
                           { required: true, message: `${col.label}不能为空` },
                           {
-                            pattern:
-                              /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/,
+                            type: 'email',
                             message: '请输入正确的邮箱',
                           },
                         ]
                       : [
                           {
-                            pattern:
-                              /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/,
+                            type: 'email',
                             message: '请输入正确的邮箱',
                           },
                         ]
@@ -157,6 +155,7 @@
                     :readonly="false"
                     :placeholder="`请输入${col.label}`"
                     size="small"
+                    :isMobile="col.isMobile"
                     style="width: 100%"
                   />
                 </el-form-item>
@@ -245,11 +244,11 @@ import customNumber from "./custom-number.vue";
 export default {
   components: { customNumber },
   name: "renderTable",
-  props: ["columns", "dataSource"],
+  props: ["columns", "value"],
   data() {
     return {
       tableForm: {
-        dataSource: this.dataSource ? this.dataSource : [],
+        dataSource: this.value ? this.value : [],
       },
       selectedRowKeys: [],
     };
@@ -269,6 +268,7 @@ export default {
     save(row) {
       this.$refs.tableForm.validate((valid) => {
         if (valid) {
+          this.$emit("input", this.tableForm.dataSource);
           row.isEdit = true;
         }
       });

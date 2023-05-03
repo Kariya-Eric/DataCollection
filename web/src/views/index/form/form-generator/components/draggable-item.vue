@@ -121,6 +121,7 @@ const layouts = {
             key={config.renderKey}
             conf={currentItem}
             onInput={(event) => {
+              console.log("input", "event");
               this.$set(config, "defaultValue", event);
             }}
             onSelect={(event) => {

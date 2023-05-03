@@ -60,6 +60,7 @@
                 style="width: 100%"
                 :value="datasource"
                 :readonly="false"
+                :isMobile="columns[colIndex].isMobile"
                 :disabled="false"
                 :placeholder="`请输入${columns[colIndex].label}`"
               />

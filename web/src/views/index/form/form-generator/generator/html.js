@@ -1,4 +1,3 @@
-
 let confGlobal;
 let someSpanIsNot24;
 
@@ -28,9 +27,11 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
-    }" :rules="${scheme.formRules}" size="${scheme.size
-    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ref="${scheme.formRef}" :model="${
+    scheme.formModel
+  }" :rules="${scheme.formRules}" size="${
+    scheme.size
+  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -108,7 +109,7 @@ const layouts = {
         ${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
-  }
+  },
 };
 
 const tags = {
@@ -186,20 +187,20 @@ const tags = {
   },
   customNumber: (el) => {
     const { disabled, vModel, placeholder, width } = attrBuilder(el);
-    const precision = `:precision="${el.precision}"`
-    const min = el.min ? `:min="${el.min}"` : ""
-    const max = el.max ? `:max="${el.max}"` : ""
-    return `<custom-number ${vModel} ${placeholder} ${precision} ${max} ${min} ${disabled} ${width}/>`
+    const precision = `:precision="${el.precision}"`;
+    const min = el.min ? `:min="${el.min}"` : "";
+    const max = el.max ? `:max="${el.max}"` : "";
+    return `<custom-number ${vModel} ${placeholder} ${precision} ${max} ${min} ${disabled} ${width}/>`;
   },
   customAddress: (el) => {
     const { disabled, vModel, placeholder, width } = attrBuilder(el);
-    return `<custom-address ${vModel} ${placeholder} ${disabled} ${width} />`
+    return `<custom-address ${vModel} ${placeholder} ${disabled} ${width} />`;
   },
   customEditTable: (el) => {
-    const columns = `:columns='${JSON.stringify(el.columns)}'`
-    const dataSource = `:dataSource="${confGlobal.formModel}.${el.__vModel__}"`
-    return `<render-table ${columns} ${dataSource} />`
-  }
+    const columns = `:columns='${JSON.stringify(el.columns)}'`;
+    const dataSource = `v-model="${confGlobal.formModel}.${el.__vModel__}"`;
+    return `<render-table ${columns} ${dataSource} />`;
+  },
   // ============自定义组件=============================
 };
 
