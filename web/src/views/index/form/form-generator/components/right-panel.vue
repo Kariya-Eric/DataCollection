@@ -747,13 +747,13 @@ export default {
     },
 
     showLogic(activeData) {
+      //获取当前逻辑设置的信息
+      
       this.$refs.logicdialog.show(activeData);
     },
 
     changeLogic(val) {
-      if (!val) {
-        console.log(val);
-      }
+      this.activeData.showLogic = val;
     },
 
     setLogic(option, hiddenList) {

@@ -245,6 +245,13 @@ export default {
   components: { customNumber },
   name: "renderTable",
   props: ["columns", "value"],
+  watch: {
+    value(val) {
+      if (val[0] === undefined) {
+        this.tableForm.dataSource = [];
+      }
+    },
+  },
   data() {
     return {
       tableForm: {

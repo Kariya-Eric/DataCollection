@@ -1,3 +1,5 @@
+
+import { componentsVisible } from "./config";
 let confGlobal;
 let someSpanIsNot24;
 
@@ -27,11 +29,9 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${
-    scheme.formModel
-  }" :rules="${scheme.formRules}" size="${
-    scheme.size
-  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
+    }" :rules="${scheme.formRules}" size="${scheme.size
+    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -82,7 +82,14 @@ const layouts = {
       label = "";
     }
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" >
+    //获取展示逻辑
+    let vIf = "";
+    componentsVisible.forEach(component => {
+      if (component.formId === config.formId) {
+        vIf += `${confGlobal.formModel}.${component}`
+      }
+    })
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
         ${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
@@ -105,7 +112,7 @@ const layouts = {
       label = "";
     }
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__} ">
         ${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
@@ -138,21 +145,17 @@ const tags = {
   },
   "el-radio-group": (el) => {
     const { tag, disabled, vModel } = attrBuilder(el);
-    const size = `size="${el.size}"`;
     let child = buildElRadioGroupChild(el);
-
     if (child) child = `\n${child}\n`; // 换行
-    return `<${tag} ${vModel} ${size} ${disabled}>${child}</${tag}>`;
+    return `<${tag} ${vModel} ${disabled}>${child}</${tag}>`;
   },
   "el-checkbox-group": (el) => {
     const { tag, disabled, vModel } = attrBuilder(el);
-    const size = `size="${el.size}"`;
     const min = el.min ? `:min="${el.min}"` : "";
     const max = el.max ? `:max="${el.max}"` : "";
     let child = buildElCheckboxGroupChild(el);
-
     if (child) child = `\n${child}\n`; // 换行
-    return `<${tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${tag}>`;
+    return `<${tag} ${vModel} ${min} ${max} ${disabled}>${child}</${tag}>`;
   },
   "el-date-picker": (el) => {
     const { tag, disabled, vModel, clearable, placeholder, width } =

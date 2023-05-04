@@ -110,10 +110,11 @@ import {
   selectComponents,
   layoutComponents,
   otherComponents,
+  componentsVisible,
 } from "./generator/config";
 import drawingDefault from "./config/drawingDefault";
 import { saveDrawingList, getIdGlobal, saveIdGlobal } from "./utils/db";
-import { deepClone } from "./utils";
+import { deepClone, isNumberStr } from "./utils";
 import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
 import FormDrawer from "./components/form-drawer.vue";
@@ -158,7 +159,6 @@ export default {
       saveDrawingListDebounce: debounce(340, saveDrawingList),
       saveIdGlobalDebounce: debounce(340, saveIdGlobal),
       drawerVisible: false,
-      generateConf: null,
       formData: {},
     };
   },
@@ -324,7 +324,23 @@ export default {
     },
 
     setHide(radioConfig, optionVal, hiddenList) {
-      console.log("hide", radioConfig, optionVal, hiddenList);
+      //找到radioConfig相关的所有visible并清除
+      let temp = componentsVisible.filter(
+        (component) =>
+          component.showLogic.formId !== radioConfig.__config__.formId
+      );
+      hiddenList.forEach((hidden) => {
+        let componentVisible = {
+          formId: hidden,
+          showLogic: {
+            formId: radioConfig.__config__.formId,
+            optionValue: optionVal,
+          },
+        };
+        temp.push(componentVisible);
+      });
+      componentsVisible.length = 0;
+      temp.forEach((t) => componentsVisible.push(t));
     },
   },
 };

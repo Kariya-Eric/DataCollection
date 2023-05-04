@@ -3,23 +3,19 @@ import { exportDefault, titleCase, deepClone } from "../utils/index";
 import ruleTrigger from "./ruleTrigger";
 
 let confGlobal;
-const inheritAttrs = {
-  file: "",
-  dialog: "inheritAttrs: false,",
-};
 
 /**
  * 组装js 【入口函数】
  * @param {Object} formConfig 整个表单配置
  * @param {String} type 生成类型，文件或弹窗等
  */
-export function makeUpJs(formConfig, type) {
+export function makeUpJs(formConfig) {
   confGlobal = formConfig = deepClone(formConfig);
   const dataList = [];
   const ruleList = [];
   const optionsList = [];
   const propsList = [];
-  const methodList = mixinMethod(type);
+  const methodList = mixinMethod();
   const created = [];
 
   formConfig.fields.forEach((el) => {
@@ -36,7 +32,6 @@ export function makeUpJs(formConfig, type) {
 
   const script = buildexport(
     formConfig,
-    type,
     dataList.join("\n"),
     ruleList.join("\n"),
     optionsList.join("\n"),
@@ -102,41 +97,22 @@ function callInCreated(methodName, created) {
 }
 
 // 混入处理函数
-function mixinMethod(type) {
+function mixinMethod() {
   const list = [];
-  const minxins = {
-    file: confGlobal.formBtns
-      ? {
-          submitForm: `submitForm() {
+  const methods = confGlobal.formBtns
+    ? {
+      submitForm: `submitForm() {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
           // TODO 提交表单
           console.log('form',this.${confGlobal.formModel})
         })
       },`,
-          resetForm: `resetForm() {
+      resetForm: `resetForm() {
         this.$refs['${confGlobal.formRef}'].resetFields()
       },`,
-        }
-      : null,
-    dialog: {
-      onOpen: "onOpen() {},",
-      onClose: `onClose() {
-        this.$refs['${confGlobal.formRef}'].resetFields()
-      },`,
-      close: `close() {
-        this.$emit('update:visible', false)
-      },`,
-      handelConfirm: `handelConfirm() {
-        this.$refs['${confGlobal.formRef}'].validate(valid => {
-          if(!valid) return
-          this.close()
-        })
-      },`,
-    },
-  };
-
-  const methods = minxins[type];
+    }
+    : null;
   if (methods) {
     Object.keys(methods).forEach((key) => {
       list.push(methods[key]);
@@ -167,8 +143,7 @@ function buildRules(scheme, ruleList) {
         : scheme.placeholder;
       if (message === undefined) message = `${config.label}不能为空`;
       rules.push(
-        `{ required: true, ${type} message: '${message}', trigger: '${
-          ruleTrigger[config.tag]
+        `{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]
         }' }`
       );
     }
@@ -230,7 +205,6 @@ function buildOptionMethod(methodName, model, methodList, scheme) {
 // js整体拼接
 function buildexport(
   conf,
-  type,
   data,
   rules,
   selectOptions,
@@ -239,7 +213,6 @@ function buildexport(
   created
 ) {
   const str = `${exportDefault}{
-  ${inheritAttrs[type]}
   data () {
     return {
       ${conf.formModel}: {

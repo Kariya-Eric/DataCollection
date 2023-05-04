@@ -32,6 +32,7 @@ export const inputComponents = [
     maxlength: null,
     readonly: false,
     disabled: false,
+    show: ""
   },
   {
     __config__: {
@@ -54,6 +55,7 @@ export const inputComponents = [
     maxlength: null,
     readonly: false,
     disabled: false,
+    show: ""
   },
   {
     __config__: {
@@ -72,6 +74,7 @@ export const inputComponents = [
     precision: 0,
     min: undefined,
     max: undefined,
+    show: ""
   },
   {
     __config__: {
@@ -88,6 +91,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
+    show: ""
   },
   {
     __config__: {
@@ -105,6 +109,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
+    show: ""
   },
   {
     __config__: {
@@ -121,6 +126,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
+    show: ""
   },
 ];
 
@@ -154,6 +160,7 @@ export const selectComponents = [
     disabled: false,
     filterable: false,
     multiple: false,
+    show: ""
   },
   {
     __config__: {
@@ -180,6 +187,7 @@ export const selectComponents = [
     },
     showLogic: false,
     disabled: false,
+    show: ""
   },
   {
     __config__: {
@@ -226,6 +234,7 @@ export const selectComponents = [
     format: "yyyy-MM-dd",
     "value-format": "yyyy-MM-dd",
     readonly: false,
+    show: ""
   },
 ];
 
@@ -242,6 +251,7 @@ export const otherComponents = [
     row: 1,
     col: 3,
     selectedCol: -1,
+    show: "",
     columns: [
       {
         label: "列1",
@@ -335,3 +345,6 @@ export const layoutComponents = [
     fontSize: 16,
   },
 ];
+
+//用于控制组件是否展示
+export const componentsVisible = []

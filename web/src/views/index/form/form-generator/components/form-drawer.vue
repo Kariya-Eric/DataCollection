@@ -75,7 +75,7 @@ export default {
 
     onOpen() {
       this.htmlCode = makeUpHtml(this.formData);
-      this.jsCode = makeUpJs(this.formData, "file");
+      this.jsCode = makeUpJs(this.formData);
       this.cssCode = makeUpCss(this.formData);
       this.editorObj.html = this.htmlCode;
       this.editorObj.js = this.jsCode;

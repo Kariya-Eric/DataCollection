@@ -27,6 +27,14 @@
 export default {
   name: "CustomAddress",
   props: ["value", "disabled"],
+  watch: {
+    value(val) {
+      if (val === null) {
+        this.selectOption = "";
+        this.textarea = "";
+      }
+    },
+  },
   data() {
     return {
       options: [
