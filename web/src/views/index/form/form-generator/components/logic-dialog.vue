@@ -41,6 +41,7 @@
 
 <script>
 import { getDrawingList } from "../utils/db";
+import { componentsVisible } from "../generator/config";
 export default {
   name: "LogicDialog",
   data() {
@@ -67,6 +68,10 @@ export default {
           item.__config__.formId &&
           item.__config__.formId !== data.__config__.formId
       );
+      //设置当前的selectOption和hiddenList
+      componentsVisible.forEach(component=>{
+        
+      })
     },
 
     handleSubmit() {

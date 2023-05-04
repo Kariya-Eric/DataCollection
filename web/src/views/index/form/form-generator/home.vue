@@ -114,7 +114,7 @@ import {
 } from "./generator/config";
 import drawingDefault from "./config/drawingDefault";
 import { saveDrawingList, getIdGlobal, saveIdGlobal } from "./utils/db";
-import { deepClone, isNumberStr } from "./utils";
+import { deepClone } from "./utils";
 import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
 import FormDrawer from "./components/form-drawer.vue";
@@ -334,6 +334,7 @@ export default {
           formId: hidden,
           showLogic: {
             formId: radioConfig.__config__.formId,
+            formVModel: radioConfig.__vModel__,
             optionValue: optionVal,
           },
         };
