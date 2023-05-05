@@ -13,7 +13,6 @@
       <el-row>
         <el-select
           v-model="termOption"
-          placeholder="请选择字段"
           size="small"
           style="width: 30%"
           clearable
@@ -35,15 +34,66 @@
             label="等于"
             :value="0"
             v-if="
-              termOption.__config__.tag === 'el-input' ||
-              termOption.__config__.tag === 'customMail' ||
-              termOption.__config__.tag === 'customPhone' ||
-              termOption.__config__.tag === 'customAddress'
+              termOption.__config__ &&
+              (termOption.__config__.tag === 'el-input' ||
+                termOption.__config__.tag === 'customMail' ||
+                termOption.__config__.tag === 'customPhone' ||
+                termOption.__config__.tag === 'customAddress' ||
+                termOption.__config__.tag === 'el-date-picker' ||
+                termOption.__config__.tag === 'customNumber')
             "
           />
-          <el-option label="不等于" :value="1" />
-          <el-option label="等于任意一个" :value="2" />
-          <el-option label="不等于任意一个" :value="3" />
+          <el-option
+            label="不等于"
+            :value="1"
+            v-if="
+              termOption.__config__ &&
+              (termOption.__config__.tag === 'el-input' ||
+                termOption.__config__.tag === 'customMail' ||
+                termOption.__config__.tag === 'customPhone' ||
+                termOption.__config__.tag === 'customAddress' ||
+                termOption.__config__.tag === 'el-date-picker' ||
+                termOption.__config__.tag === 'customNumber')
+            "
+          />
+          <el-option
+            label="等于任意一个"
+            :value="2"
+            v-if="
+              termOption.__config__ &&
+              (termOption.__config__.tag === 'el-select' ||
+                termOption.__config__.tag === 'el-radio-group' ||
+                termOption.__config__.tag === 'el-checkbox-group')
+            "
+          />
+          <el-option
+            label="不等于任意一个"
+            :value="3"
+            v-if="
+              termOption.__config__ &&
+              (termOption.__config__.tag === 'el-select' ||
+                termOption.__config__.tag === 'el-radio-group' ||
+                termOption.__config__.tag === 'el-checkbox-group')
+            "
+          />
+          <el-option
+            label="大于"
+            :value="4"
+            v-if="
+              termOption.__config__ &&
+              (termOption.__config__.tag === 'el-date-picker' ||
+                termOption.__config__.tag === 'customNumber')
+            "
+          />
+          <el-option
+            label="小于"
+            :value="5"
+            v-if="
+              termOption.__config__ &&
+              (termOption.__config__.tag === 'el-date-picker' ||
+                termOption.__config__.tag === 'customNumber')
+            "
+          />
         </el-select>
         <el-select
           size="small"
@@ -74,7 +124,7 @@ export default {
   data() {
     return {
       termOptions: [],
-      termOption: "",
+      termOption: {},
       equalTerm: 0,
       selectOption: "",
       visible: false,
@@ -87,7 +137,8 @@ export default {
     show(data) {
       this.visible = true;
       this.termOptions = getDrawingList().filter(
-        (item) => item.__config__.formId
+        (item) =>
+          item.__config__.formId && item.__config__.tag !== "customEditTable"
       );
     },
 
