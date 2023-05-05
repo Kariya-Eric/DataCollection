@@ -1,77 +1,94 @@
 <template>
   <div>
-    <el-dialog :append-to-body="true" :visible="visible" @close="onClose">
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <div>如果选中</div>
-          <div class="borderDiv">
-            <el-radio-group v-model="selectOption">
-              <el-radio
-                v-for="(option, index) in options"
-                :key="index"
-                :label="option.value"
-                >{{ option.label }}</el-radio
-              >
-            </el-radio-group>
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div>不显示以下字段</div>
-          <div class="borderDiv">
-            <el-checkbox-group v-model="hiddenList">
-              <el-checkbox
-                v-for="(drawingItem, index) in drawingList"
-                :key="index"
-                :label="drawingItem.__config__.formId"
-                >{{ drawingItem.__config__.label }}</el-checkbox
-              >
-            </el-checkbox-group>
-          </div>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="onClose">取 消</el-button>
-        <el-button type="primary" size="small" @click="handleSubmit"
-          >确 定</el-button
+    <el-dialog
+      :append-to-body="true"
+      :visible="visible"
+      @close="onClose"
+      title="字段显隐规则"
+    >
+      <el-row> 满足以下条件时 </el-row>
+      <el-button type="primary" size="small" icon="el-icon-plus"
+        >添加条件</el-button
+      >
+      <el-row>
+        <el-select
+          v-model="termOption"
+          placeholder="请选择字段"
+          size="small"
+          style="width: 30%"
+          clearable
         >
-      </div>
+          <el-option
+            v-for="(item, index) in termOptions"
+            :key="index"
+            :label="item.__config__.label"
+            :value="item"
+          />
+        </el-select>
+        <el-select
+          size="small"
+          style="width: 20%"
+          v-model="equalTerm"
+          :disabled="termOptions.length == 0"
+        >
+          <el-option
+            label="等于"
+            :value="0"
+            v-if="
+              termOption.__config__.tag === 'el-input' ||
+              termOption.__config__.tag === 'customMail' ||
+              termOption.__config__.tag === 'customPhone' ||
+              termOption.__config__.tag === 'customAddress'
+            "
+          />
+          <el-option label="不等于" :value="1" />
+          <el-option label="等于任意一个" :value="2" />
+          <el-option label="不等于任意一个" :value="3" />
+        </el-select>
+        <el-select
+          size="small"
+          style="width: 49%"
+          v-model="selectOption"
+          :disabled="termOptions.length == 0"
+        >
+        </el-select>
+      </el-row>
+      <el-row> 显示以下字段 </el-row>
+      <el-row>
+        <el-select
+          v-model="selectOption"
+          placeholder="请先添加条件"
+          size="small"
+          style="width: 100%"
+        >
+        </el-select>
+      </el-row>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { getDrawingList } from "../utils/db";
-import { componentsVisible } from "../generator/config";
 export default {
   name: "LogicDialog",
   data() {
     return {
-      visible: false,
-      options: [],
+      termOptions: [],
+      termOption: "",
+      equalTerm: 0,
       selectOption: "",
-      drawingList: [],
-      hiddenList: [],
+      visible: false,
     };
   },
   methods: {
     onClose() {
       this.visible = false;
-      this.hiddenList = [];
-      this.selectOption = "";
     },
     show(data) {
       this.visible = true;
-      this.options = data.__slot__.options;
-      let cachedDrawingList = getDrawingList();
-      this.drawingList = cachedDrawingList.filter(
-        (item) =>
-          item.__config__.formId &&
-          item.__config__.formId !== data.__config__.formId
+      this.termOptions = getDrawingList().filter(
+        (item) => item.__config__.formId
       );
-      //设置当前的selectOption和hiddenList
-      componentsVisible.forEach(component=>{
-        
-      })
     },
 
     handleSubmit() {

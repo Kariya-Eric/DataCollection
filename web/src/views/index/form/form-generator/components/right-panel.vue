@@ -245,21 +245,6 @@
         </template>
 
         <el-form-item
-          v-if="activeData.__config__.tag === 'el-radio-group'"
-          label="逻辑设置"
-        >
-          <el-switch
-            v-model="activeData.__config__.showLogic"
-            @change="changeLogic"
-          />
-          <a
-            v-if="activeData.__config__.showLogic"
-            @click="showLogic(activeData)"
-            >&nbsp;&nbsp;&nbsp;设置逻辑</a
-          >
-        </el-form-item>
-
-        <el-form-item
           v-if="activeData.__config__.tag === 'customPhone'"
           label="支持固话"
         >
@@ -595,9 +580,28 @@
         <el-form-item label="表单按钮">
           <el-switch v-model="formConf.formBtns" />
         </el-form-item>
+        <el-divider>表单显隐规则</el-divider>
+        <div
+          v-for="(item, index) in componentsVisible"
+          :key="index"
+          class="reg-item"
+        >
+          <span class="close-btn">
+            <i class="el-icon-close" />
+          </span>
+        </div>
+        <div style="margin-left: 20px">
+          <el-button
+            icon="el-icon-circle-plus-outline"
+            type="text"
+            @click="addRule"
+          >
+            添加规则
+          </el-button>
+        </div>
       </el-form>
     </div>
-    <logic-dialog ref="logicdialog" @setLogic="setLogic" />
+    <logic-dialog ref="logicdialog" />
   </div>
 </template>
 
@@ -605,7 +609,8 @@
 import draggable from "vuedraggable";
 import { isArray } from "util";
 import { isNumberStr } from "../utils/index";
-import { saveFormConf, getDrawingList } from "../utils/db";
+import { saveFormConf } from "../utils/db";
+import { componentsVisible } from "../generator/config";
 import LogicDialog from "./logic-dialog";
 const dateTimeFormat = {
   date: "yyyy-MM-dd",
@@ -627,6 +632,7 @@ export default {
   props: ["showField", "activeData", "formConf"],
   data() {
     return {
+      componentsVisible,
       currentTab: "field",
       dateTypeOptions: [
         {
@@ -746,18 +752,8 @@ export default {
       item.value = isNumberStr(val) ? +val : val;
     },
 
-    showLogic(activeData) {
-      //获取当前逻辑设置的信息
-      
-      this.$refs.logicdialog.show(activeData);
-    },
-
-    changeLogic(val) {
-      this.activeData.showLogic = val;
-    },
-
-    setLogic(option, hiddenList) {
-      this.$emit("setHide", this.activeData, option, hiddenList);
+    addRule() {
+      this.$refs.logicdialog.show(componentsVisible);
     },
     // ==============自定义END==============
 
@@ -885,5 +881,33 @@ export default {
 }
 .node-icon {
   color: #bebfc3;
+}
+.reg-item {
+  padding: 12px 6px;
+  background: #f8f8f8;
+  position: relative;
+  border-radius: 4px;
+  .close-btn {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    z-index: 1;
+    cursor: pointer;
+    font-size: 12px;
+    &:hover {
+      background: rgba(210, 23, 23, 0.5);
+    }
+  }
+  & + .reg-item {
+    margin-top: 18px;
+  }
 }
 </style>
