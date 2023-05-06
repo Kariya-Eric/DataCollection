@@ -577,9 +577,6 @@
         <el-form-item label="禁用表单">
           <el-switch v-model="formConf.disabled" />
         </el-form-item>
-        <el-form-item label="表单按钮">
-          <el-switch v-model="formConf.formBtns" />
-        </el-form-item>
         <el-divider>表单显隐规则</el-divider>
         <div
           v-for="(item, index) in componentsVisible"
@@ -587,8 +584,9 @@
           class="reg-item"
         >
           <span class="close-btn">
-            <i class="el-icon-close" />
+            <i class="el-icon-close" @click="delRule(index)" />
           </span>
+          <a @click="editRule(index)">表单显隐藏规则-第{{ index + 1 }}条</a>
         </div>
         <div style="margin-left: 20px">
           <el-button
@@ -753,7 +751,15 @@ export default {
     },
 
     addRule() {
-      this.$refs.logicdialog.show(componentsVisible);
+      this.$refs.logicdialog.show();
+    },
+
+    delRule(index) {
+      componentsVisible.splice(index, 1);
+    },
+
+    editRule(index) {
+      this.$refs.logicdialog.show(index);
     },
     // ==============自定义END==============
 

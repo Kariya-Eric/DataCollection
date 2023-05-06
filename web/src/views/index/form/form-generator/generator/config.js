@@ -336,4 +336,5 @@ export const layoutComponents = [
 ];
 
 //用于控制组件是否展示
-export const componentsVisible = []
+export const componentsVisible = [
+]

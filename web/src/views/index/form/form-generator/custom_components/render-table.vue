@@ -1,20 +1,10 @@
 <template>
   <div>
-    <div class="search-button-admin">
-      <el-button size="small" type="primary" icon="el-icon-plus" @click="addRow"
-        >添加行</el-button
-      >
-      <el-button
-        size="small"
-        type="danger"
-        icon="el-icon-delete"
-        v-if="selectedRowKeys.length > 0"
-        >批量删除</el-button
-      >
-      <el-button type="primary" size="small" icon="el-icon-upload2"
-        >导入</el-button
-      >
-    </div>
+    <el-button type="text" @click="addRow">添加行</el-button>
+    <el-button type="text" v-if="selectedRowKeys.length > 0"
+      ><span style="color: red">批量删除</span></el-button
+    >
+    <el-button type="text">导入</el-button>
     <el-form ref="tableForm" :model="tableForm">
       <el-table
         size="small"

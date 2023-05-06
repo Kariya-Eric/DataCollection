@@ -99,20 +99,31 @@ function callInCreated(methodName, created) {
 // 混入处理函数
 function mixinMethod() {
   const list = [];
-  const methods = confGlobal.formBtns
-    ? {
-      submitForm: `submitForm() {
+  let hasTable = false
+  for (let i = 0; i < confGlobal.fields.length; i++) {
+    if (confGlobal.fields[i].__config__.tag === "customEditTable") {
+      hasTable = true
+      break;
+    }
+  }
+  const methods = {
+    submitForm: hasTable ? `submitForm() {
+      this.$refs['${confGlobal.formRef}'].validate(valid => {
+        if(!valid) return
+        // TODO 提交表单
+        console.log('form',this.${confGlobal.formModel})
+      })
+    },` : `submitForm() {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
           // TODO 提交表单
           console.log('form',this.${confGlobal.formModel})
         })
       },`,
-      resetForm: `resetForm() {
+    resetForm: `resetForm() {
         this.$refs['${confGlobal.formRef}'].resetFields()
       },`,
-    }
-    : null;
+  }
   if (methods) {
     Object.keys(methods).forEach((key) => {
       list.push(methods[key]);

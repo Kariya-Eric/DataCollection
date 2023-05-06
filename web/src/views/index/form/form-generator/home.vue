@@ -93,7 +93,6 @@
         :form-conf="formConf"
         :show-field="!!drawingList.length"
         @tag-change="tagChange"
-        @setHide="setHide"
       />
 
       <form-drawer ref="formDrawer" />
@@ -110,7 +109,6 @@ import {
   selectComponents,
   layoutComponents,
   otherComponents,
-  componentsVisible,
 } from "./generator/config";
 import drawingDefault from "./config/drawingDefault";
 import { saveDrawingList, getIdGlobal, saveIdGlobal } from "./utils/db";
@@ -321,27 +319,6 @@ export default {
     save() {
       this.assembleFormData();
       console.log("form", this.formData);
-    },
-
-    setHide(radioConfig, optionVal, hiddenList) {
-      //找到radioConfig相关的所有visible并清除
-      let temp = componentsVisible.filter(
-        (component) =>
-          component.showLogic.formId !== radioConfig.__config__.formId
-      );
-      hiddenList.forEach((hidden) => {
-        let componentVisible = {
-          formId: hidden,
-          showLogic: {
-            formId: radioConfig.__config__.formId,
-            formVModel: radioConfig.__vModel__,
-            optionValue: optionVal,
-          },
-        };
-        temp.push(componentVisible);
-      });
-      componentsVisible.length = 0;
-      temp.forEach((t) => componentsVisible.push(t));
     },
   },
 };

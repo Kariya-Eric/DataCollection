@@ -1,4 +1,5 @@
-import { componentsVisible } from "./config";
+import { componentsVisible, formConf } from "./config";
+import { getDrawingList } from "../utils/db";
 import { isNumberStr } from "../utils";
 let confGlobal;
 let someSpanIsNot24;
@@ -43,19 +44,11 @@ function buildFormTemplate(scheme, child) {
   return str;
 }
 
-function buildFromBtns(scheme) {
-  let str = "";
-  if (scheme.formBtns) {
-    str = `<el-form-item size="small">
+function buildFromBtns() {
+  let str = `<el-form-item size="small">
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>`;
-    if (someSpanIsNot24) {
-      str = `<el-col :span="24">
-          ${str}
-        </el-col>`;
-    }
-  }
   return str;
 }
 
@@ -67,6 +60,41 @@ function colWrapper(scheme, str) {
     </el-col>`;
   }
   return str;
+}
+
+function vif(scheme) {
+  let vif = ""
+  componentsVisible.forEach(vis => {
+    vis.hiddenList.forEach(hide => {
+      if (hide == scheme.__config__.formId) {
+        vis.termList.forEach(term => {
+          let formId = term.termOption.split(",")[0]
+          getDrawingList().forEach(item => {
+            if (item.__config__.formId == formId) {
+              if (term.equalTerm === 0) {
+                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}==${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}==${term.termValueInput}&&`
+              } else if (term.equalTerm === 1) {
+                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}!=${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}!=${term.termValueInput}&&`
+              } else if (term.equalTerm === 4) {
+                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}>${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}>${term.termValueInput}&&`
+              } else if (term.equalTerm === 5) {
+                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}<${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}<${term.termValueInput}&&`
+              } else if (term.equalTerm === 2) {
+
+              } else if (term.equalTerm === 3) { }
+            }
+          })
+        })
+      }
+    })
+  })
+  let str = ""
+  if (vif !== '') {
+    vif = vif.substring(0, vif.length - 2)
+    str = `v-if="${vif}"`
+  }
+  console.log('vif', str)
+  return str
 }
 
 const layouts = {
@@ -81,8 +109,9 @@ const layouts = {
       labelWidth = 'label-width="0"';
       label = "";
     }
+    const hide = vif(scheme)
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
         ${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
@@ -104,8 +133,9 @@ const layouts = {
       labelWidth = 'label-width="0"';
       label = "";
     }
+    const hide = vif(scheme)
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
         ${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
@@ -276,5 +306,6 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr);
   confGlobal = null;
+  console.log(temp)
   return temp;
 }

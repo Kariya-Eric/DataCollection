@@ -45,18 +45,6 @@ export function saveIdGlobal(id) {
     Vue.ls.set('DRAWING_CACHE', cache)
 }
 
-export function getTreeNodeId() {
-    const cache = getCache()
-    if (cache.treeNodeId) return parseInt(cache.treeNodeId, 10)
-    return 100
-}
-
-export function saveTreeNodeId(id) {
-    const cache = getCache()
-    cache.treeNodeId = id
-    Vue.ls.set('DRAWING_CACHE', cache)
-}
-
 export function getFormConf() {
     const cache = getCache()
     const formConf = cache.formConf
