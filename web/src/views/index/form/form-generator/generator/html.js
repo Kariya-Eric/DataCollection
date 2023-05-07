@@ -30,9 +30,11 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
-    }" :rules="${scheme.formRules}" size="${scheme.size
-    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ref="${scheme.formRef}" :model="${
+    scheme.formModel
+  }" :rules="${scheme.formRules}" size="${
+    scheme.size
+  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -63,38 +65,71 @@ function colWrapper(scheme, str) {
 }
 
 function vif(scheme) {
-  let vif = ""
-  componentsVisible.forEach(vis => {
-    vis.hiddenList.forEach(hide => {
+  let vif = "";
+  componentsVisible.forEach((vis) => {
+    vis.hiddenList.forEach((hide) => {
       if (hide == scheme.__config__.formId) {
-        vis.termList.forEach(term => {
-          let formId = term.termOption.split(",")[0]
-          getDrawingList().forEach(item => {
+        vis.termList.forEach((term) => {
+          let formId = term.termOption.split(",")[0];
+          getDrawingList().forEach((item) => {
             if (item.__config__.formId == formId) {
+              let termValueInput = isNumberStr(term.termValueInput)
+                ? `${term.termValueInput}`
+                : `'${term.termValueInput}'`;
               if (term.equalTerm === 0) {
-                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}==${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}==${term.termValueInput}&&`
+                vif +=
+                  vis.equalTerm === "or"
+                    ? `${formConf.formModel}.${item.__vModel__}==${termValueInput}||`
+                    : `${formConf.formModel}.${item.__vModel__}==${termValueInput}&&`;
               } else if (term.equalTerm === 1) {
-                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}!=${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}!=${term.termValueInput}&&`
+                vif +=
+                  vis.equalTerm === "or"
+                    ? `${formConf.formModel}.${item.__vModel__}!=${termValueInput}||`
+                    : `${formConf.formModel}.${item.__vModel__}!=${termValueInput}&&`;
               } else if (term.equalTerm === 4) {
-                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}>${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}>${term.termValueInput}&&`
+                vif +=
+                  vis.equalTerm === "or"
+                    ? `${formConf.formModel}.${item.__vModel__}>${termValueInput}||`
+                    : `${formConf.formModel}.${item.__vModel__}>${termValueInput}&&`;
               } else if (term.equalTerm === 5) {
-                vif += vis.equalTerm === 'or' ? `${formConf.formModel}.${item.__vModel__}<${term.termValueInput}||` : `${formConf.formModel}.${item.__vModel__}<${term.termValueInput}&&`
+                vif +=
+                  vis.equalTerm === "or"
+                    ? `${formConf.formModel}.${item.__vModel__}<${termValueInput}||`
+                    : `${formConf.formModel}.${item.__vModel__}<${termValueInput}&&`;
               } else if (term.equalTerm === 2) {
-
-              } else if (term.equalTerm === 3) { }
+                term.termValueOption.forEach((val) => {
+                  let termVal = isNumberStr(val) ? `${val}` : `'${val}'`;
+                  vif += `${formConf.formModel}.${item.__vModel__}==${termVal}||`;
+                });
+                if (vis.equalTerm === "or") {
+                  vif = vif.substring(0, vif.length - 2) + "||";
+                } else {
+                  vif = vif.substring(0, vif.length - 2) + "&&";
+                }
+              } else if (term.equalTerm === 3) {
+                term.termValueOption.forEach((val) => {
+                  let termVal = isNumberStr(val) ? `${val}` : `'${val}'`;
+                  vif += `${formConf.formModel}.${item.__vModel__}!=${termVal}&&`;
+                });
+                if (vis.equalTerm === "or") {
+                  vif = vif.substring(0, vif.length - 2) + "||";
+                } else {
+                  vif = vif.substring(0, vif.length - 2) + "&&";
+                }
+              }
             }
-          })
-        })
+          });
+        });
       }
-    })
-  })
-  let str = ""
-  if (vif !== '') {
-    vif = vif.substring(0, vif.length - 2)
-    str = `v-if="${vif}"`
+    });
+  });
+  let str = "";
+  if (vif !== "") {
+    vif = vif.substring(0, vif.length - 2);
+    str = `v-if="${vif}"`;
   }
-  console.log('vif', str)
-  return str
+  console.log("vif", str);
+  return str;
 }
 
 const layouts = {
@@ -109,7 +144,7 @@ const layouts = {
       labelWidth = 'label-width="0"';
       label = "";
     }
-    const hide = vif(scheme)
+    const hide = vif(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
     let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
         ${tagDom}
@@ -133,7 +168,7 @@ const layouts = {
       labelWidth = 'label-width="0"';
       label = "";
     }
-    const hide = vif(scheme)
+    const hide = vif(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
     let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
         ${tagDom}
@@ -306,6 +341,6 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr);
   confGlobal = null;
-  console.log(temp)
+  console.log(temp);
   return temp;
 }

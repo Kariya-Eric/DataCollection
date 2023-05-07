@@ -1,10 +1,12 @@
 <template>
   <div>
-    <el-button type="text" @click="addRow">添加行</el-button>
-    <el-button type="text" v-if="selectedRowKeys.length > 0"
-      ><span style="color: red">批量删除</span></el-button
+    <el-button type="text" @click="addRow"
+      ><span style="font-size: 10px">添加行</span></el-button
     >
-    <el-button type="text">导入</el-button>
+    <el-button type="text" v-if="selectedRowKeys.length > 0"
+      ><span style="color: red; font-size: 10px">批量删除</span></el-button
+    >
+    <el-button type="text"><span style="font-size: 10px">导入</span></el-button>
     <el-form ref="tableForm" :model="tableForm">
       <el-table
         size="small"

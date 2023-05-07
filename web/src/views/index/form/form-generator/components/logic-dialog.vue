@@ -25,11 +25,15 @@
           添加条件
         </el-button>
       </div>
-      <el-row v-for="(termRow, index) in termRows" :key="index">
+      <el-row
+        v-for="(termRow, index) in termRows"
+        :key="index"
+        style="margin-bottom: 12px"
+      >
         <el-select
           v-model="termRow.termOption"
           size="small"
-          style="width: 30%"
+          style="width: 25%"
           clearable
           @change="changeTermOption(index)"
         >
@@ -42,7 +46,7 @@
         </el-select>
         <el-select
           size="small"
-          style="width: 20%"
+          style="width: 15%"
           v-model="termRow.equalTerm"
           :disabled="!termRow.termOption"
         >
@@ -114,7 +118,7 @@
         <el-input
           clearable
           size="small"
-          style="width: 49%"
+          style="width: 55%"
           :disabled="!termRow.termOption"
           v-model="termRow.termValueInput"
           v-if="
@@ -123,6 +127,28 @@
             termRow.termOption.split(',')[1] === 'customPhone' ||
             termRow.termOption.split(',')[1] === 'customMail' ||
             termRow.termOption.split(',')[1] === 'customAddress'
+          "
+        />
+        <el-input-number
+          size="small"
+          style="width: 55%"
+          :disabled="!termRow.termOption"
+          controls-position="right"
+          v-model="termRow.termValueInput"
+          v-if="
+            termRow.termOption !== '' &&
+            termRow.termOption.split(',')[1] === 'customNumber'
+          "
+        />
+        <el-date-picker
+          size="small"
+          style="width: 55%"
+          value-format="yyyy-MM-dd"
+          :disabled="!termRow.termOption"
+          v-model="termRow.termValueInput"
+          v-if="
+            termRow.termOption !== '' &&
+            termRow.termOption.split(',')[1] === 'el-date-picker'
           "
         />
         <el-select
@@ -146,8 +172,13 @@
             :value="item.value"
           />
         </el-select>
+        <i
+          class="el-icon-delete"
+          style="margin-left: 12px"
+          @click="delRule(index)"
+        ></i>
       </el-row>
-      <el-row> 不显示以下字段 </el-row>
+      <el-row style="margin-bottom: 12px"> 显示以下字段 </el-row>
       <el-row>
         <el-select
           clearable
@@ -282,6 +313,7 @@ export default {
         rules.hiddenList = this.showOption;
         rules.termList = this.termRows;
         rules.equalTerm = this.andOr;
+        console.log("rule", rules);
         if (this.updateFlag) {
           componentsVisible[this.updateIndex] = rules;
         } else {
@@ -299,6 +331,10 @@ export default {
         termValueInput: "",
       };
       this.termRows.push(row);
+    },
+
+    delRule(index) {
+      this.termRows.splice(index, 1);
     },
 
     changeTermOption(index) {
