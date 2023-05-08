@@ -3,10 +3,16 @@
     <el-button type="text" @click="addRow"
       ><span style="font-size: 10px">添加行</span></el-button
     >
-    <el-button type="text" v-if="selectedRowKeys.length > 0"
-      ><span style="color: red; font-size: 10px">批量删除</span></el-button
-    >
     <el-button type="text"><span style="font-size: 10px">导入</span></el-button>
+    <el-popconfirm
+      title="确认删除选中行吗？"
+      @confirm="delBatch"
+      v-if="selectedRowKeys.length > 0"
+    >
+      <el-button type="text" slot="reference"
+        ><span style="color: red; font-size: 10px">批量删除</span></el-button
+      >
+    </el-popconfirm>
     <el-form ref="tableForm" :model="tableForm">
       <el-table
         size="small"
@@ -223,7 +229,9 @@
             >
             <a v-else href="javascript:;" @click="save(scope.row)">保存</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;" @click="del(scope.row)">删除</a>
+            <el-popconfirm title="确认删除该行吗？" @confirm="del(scope.row)">
+              <a href="javascript:;" slot="reference">删除</a>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -279,6 +287,10 @@ export default {
     },
     onSelectChange(selectedRowKeys, _) {
       this.selectedRowKeys = selectedRowKeys;
+    },
+
+    delBatch() {
+      console.log(this.selectedRowKeys);
     },
   },
 };
