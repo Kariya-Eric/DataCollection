@@ -148,9 +148,11 @@ export default {
 .table {
   border-collapse: collapse;
   width: 100%;
-
+  overflow-x: scroll;
+  table-layout: fixed;
   .table-body {
     cursor: pointer;
+
     .table-list {
       height: 46px;
       line-height: 46px;

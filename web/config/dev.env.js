@@ -5,5 +5,6 @@ const prodEnv = require('./prod.env');
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   BASE_API: '"http://localhost:8080"',
-  BASE_URL: '"http://localhost:6000"'
+  BASE_URL: '"http://localhost"',
+  BASE_PORT: 9000
 });

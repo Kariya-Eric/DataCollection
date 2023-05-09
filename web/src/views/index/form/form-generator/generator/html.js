@@ -128,7 +128,6 @@ function vif(scheme) {
     vif = vif.substring(0, vif.length - 2);
     str = `v-if="${vif}"`;
   }
-  console.log("vif", str);
   return str;
 }
 
@@ -341,6 +340,5 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr);
   confGlobal = null;
-  console.log(temp);
   return temp;
 }

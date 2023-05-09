@@ -320,7 +320,7 @@
               <el-input size="small" v-model="item.label" />
               <el-input size="small" v-model="item.props" />
               <div class="close-btn select-line-icon">
-                <i class="el-icon-remove-outline" />
+                <i class="el-icon-remove-outline" @click="delCol(index)" />
               </div>
             </div>
           </draggable>

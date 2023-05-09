@@ -18,7 +18,7 @@
                 ref="previewPage"
                 class="result-wrapper"
                 frameborder="0"
-                src="http://localhost:9000/preview.html"
+                :src="previewURL"
                 @load="iframeLoad"
               />
               <div
@@ -57,6 +57,7 @@ export default {
       isIframeLoaded: false,
       isInitcode: false, // 保证open后两个异步只执行一次runcode
       isRefreshCode: false, // 每次打开都需要重新刷新代码
+      previewURL: "",
     };
   },
   methods: {
@@ -74,6 +75,8 @@ export default {
     },
 
     onOpen() {
+      this.previewURL =
+        process.env.BASE_URL + ":" + process.env.BASE_PORT + "/preview.html";
       this.htmlCode = makeUpHtml(this.formData);
       this.jsCode = makeUpJs(this.formData);
       this.cssCode = makeUpCss(this.formData);
