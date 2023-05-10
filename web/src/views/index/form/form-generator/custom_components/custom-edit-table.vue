@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tableDiv">
     <table class="table">
       <tbody class="table-body">
         <tr class="table-list">
@@ -148,18 +148,15 @@ export default {
 .table {
   border-collapse: collapse;
   width: 100%;
-  overflow-x: scroll;
-  table-layout: fixed;
   .table-body {
     cursor: pointer;
-
     .table-list {
       height: 46px;
       line-height: 46px;
       td {
         padding: 0 10px;
         border: 1px solid #dfe6ec;
-
+        min-width: 220px;
         &.selected {
           background: #d4e7f5;
         }
@@ -167,12 +164,15 @@ export default {
       th {
         padding: 0 10px;
         border: 1px solid #dfe6ec;
-
+        min-width: 220px;
         &.selected {
           background: #d4e7f5;
         }
       }
     }
   }
+}
+.tableDiv {
+  overflow-x: auto;
 }
 </style>

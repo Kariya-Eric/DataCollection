@@ -3,7 +3,11 @@
     <el-button type="text" @click="addRow"
       ><span style="font-size: 10px">添加行</span></el-button
     >
-    <el-button type="text"><span style="font-size: 10px">导入</span></el-button>
+    <el-button type="text"
+      ><span style="font-size: 10px" @click="validateTable"
+        >导入</span
+      ></el-button
+    >
     <el-popconfirm
       title="确认删除选中行吗？"
       @confirm="delBatch"
@@ -15,18 +19,27 @@
     </el-popconfirm>
     <el-form ref="tableForm" :model="tableForm">
       <el-table
+        ref="table"
         size="small"
         :border="true"
         :data="tableForm.dataSource"
+        fit
         @selection-change="onSelectChange"
       >
-        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center"
+          fixed="left"
+        />
         <el-table-column
           v-for="(col, index) in columns"
           :key="index"
           :label="col.label"
           :prop="col.props"
           align="center"
+          width="auto"
+          min-width="220"
         >
           <template slot-scope="scope">
             <template v-if="scope.row.isEdit">
@@ -34,7 +47,7 @@
                 {{
                   col.options.filter(
                     (el) => el.value === scope.row[col.props]
-                  )[0].label
+                  )[0].labelindex
                 }}
               </template>
               <template v-else>
@@ -70,6 +83,7 @@
                       : []
                   "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
+                  class="formItem"
                 >
                   <el-input
                     type="textarea"
@@ -219,7 +233,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="150">
+        <el-table-column label="操作" align="center" width="150" fixed="right">
           <template slot-scope="scope">
             <a
               v-if="scope.row.isEdit"
@@ -227,7 +241,7 @@
               @click="edit(scope.row)"
               >编辑</a
             >
-            <a v-else href="javascript:;" @click="save(scope.row)">保存</a>
+            <a v-else href="javascript:;" @click="save(scope)">保存</a>
             <el-divider direction="vertical" />
             <el-popconfirm title="确认删除该行吗？" @confirm="del(scope.row)">
               <a href="javascript:;" slot="reference">删除</a>
@@ -272,13 +286,24 @@ export default {
     edit(row) {
       row.isEdit = false;
     },
-    save(row) {
-      this.$refs.tableForm.validate((valid) => {
-        if (valid) {
-          this.$emit("input", this.tableForm.dataSource);
-          row.isEdit = true;
-        }
+    save(scope) {
+      let rows = Object.keys(scope.row)
+        .filter((key) => key !== "isEdit")
+        .map((key) => `dataSource.${scope.$index}.${key}`);
+      let flag = true;
+      rows.forEach((row) => {
+        this.$refs.tableForm.validateField(row, (valid) => {
+          if (valid && valid.length) {
+            return (flag = false);
+          }
+        });
       });
+      if (flag) {
+        scope.row.isEdit = true;
+        this.$emit("input", this.tableForm.dataSource);
+      } else {
+        this.edit(scope.row);
+      }
     },
     del(row) {
       this.tableForm.dataSource = this.tableForm.dataSource.filter(
@@ -290,17 +315,19 @@ export default {
     },
 
     delBatch() {
-      console.log(this.selectedRowKeys);
+      this.selectedRowKeys.forEach((selected) => {
+        this.tableForm.dataSource.splice(selected, 1);
+      });
+      this.$refs.table.clearSelection();
     },
+
+    validateTable() {},
   },
 };
 </script>
 
 <style scoped lang="scss">
-/deep/ .cell {
-  padding-bottom: 0;
-}
-/deep/ .el-form-item__error {
-  padding-top: 0;
+/deep/.el-form-item {
+  margin-bottom: 16px;
 }
 </style>

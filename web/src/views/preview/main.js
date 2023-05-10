@@ -2,6 +2,7 @@ import Vue from "vue";
 import ElementUI from "element-ui";
 import "@/styles/element-variables.scss";
 import locale from "element-ui/lib/locale/lang/zh-CN"; // lang i18n
+
 Vue.use(ElementUI, {
   locale,
 });
