@@ -26,6 +26,7 @@
     "js-cookie": "2.2.1",
     "md5": "^2.3.0",
     "moment": "^2.24.0",
+    "nanoid": "^4.0.2",
     "node-sass": "^8.0.0",
     "normalize.css": "8.0.1",
     "nprogress": "0.2.0",

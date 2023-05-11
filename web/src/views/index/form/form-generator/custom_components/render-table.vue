@@ -3,11 +3,7 @@
     <el-button type="text" @click="addRow"
       ><span style="font-size: 10px">添加行</span></el-button
     >
-    <el-button type="text"
-      ><span style="font-size: 10px" @click="validateTable"
-        >导入</span
-      ></el-button
-    >
+    <el-button type="text"><span style="font-size: 10px">导入</span></el-button>
     <el-popconfirm
       title="确认删除选中行吗？"
       @confirm="delBatch"
@@ -156,8 +152,36 @@
                 <el-form-item
                   :rules="
                     col.required
-                      ? [{ required: true, message: `${col.label}不能为空` }]
-                      : []
+                      ? col.isMobile
+                        ? [
+                            { required: true, message: `${col.label}不能为空` },
+                            {
+                              pattern: `/^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/`,
+                              message: '请输入正确的电话号码',
+                            },
+                          ]
+                        : [
+                            { required: true, message: `${col.label}不能为空` },
+                            {
+                              pattern:
+                                `/^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/`,
+                              message: '请输入正确的手机号',
+                            },
+                          ]
+                      : col.isMobile
+                      ? [
+                          {
+                            pattern: `/^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/`,
+                            message: '请输入正确的电话号码',
+                          },
+                        ]
+                      : [
+                          {
+                            pattern:
+                              `/^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/`,
+                            message: '请输入正确的手机号',
+                          },
+                        ]
                   "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
@@ -255,16 +279,20 @@
 
 <script>
 import customNumber from "./custom-number.vue";
+import { nanoid } from "nanoid";
 export default {
   components: { customNumber },
   name: "renderTable",
-  props: ["columns", "value"],
+  props: ["columns", "value", "required"],
   watch: {
     value(val) {
       if (val[0] === undefined) {
         this.tableForm.dataSource = [];
       }
     },
+  },
+  computed: {
+    getPhoneRule() {},
   },
   data() {
     return {
@@ -280,12 +308,14 @@ export default {
       this.columns.forEach((col) => {
         newVal[col.props] = undefined;
       });
-      newVal = { ...newVal, isEdit: false };
+      newVal = { id: nanoid(), ...newVal, isEdit: false };
       this.tableForm.dataSource.push(newVal);
     },
+
     edit(row) {
       row.isEdit = false;
     },
+
     save(scope) {
       let rows = Object.keys(scope.row)
         .filter((key) => key !== "isEdit")
@@ -307,21 +337,56 @@ export default {
     },
     del(row) {
       this.tableForm.dataSource = this.tableForm.dataSource.filter(
-        (data) => data !== row
+        (data) => data.id !== row.id
       );
     },
     onSelectChange(selectedRowKeys, _) {
-      this.selectedRowKeys = selectedRowKeys;
+      this.selectedRowKeys = selectedRowKeys.map((rowkey) => rowkey.id);
     },
 
     delBatch() {
-      this.selectedRowKeys.forEach((selected) => {
-        this.tableForm.dataSource.splice(selected, 1);
+      this.selectedRowKeys.forEach((id) => {
+        this.tableForm.dataSource.some((item, i) => {
+          if (item.id === id) {
+            this.tableForm.dataSource.splice(i, 1);
+          }
+        });
       });
       this.$refs.table.clearSelection();
     },
 
-    validateTable() {},
+    validateTable() {
+      if (this.required && this.tableForm.dataSource.length === 0) {
+        return 1;
+      }
+      let keys = this.columns.map((col) => {
+        const { props } = col;
+        return props;
+      });
+      let flag = true;
+      for (let i = 0; i < this.tableForm.dataSource.length; i++) {
+        let rowFlag = true;
+        keys
+          .map((key) => `dataSource.${i}.${key}`)
+          .forEach((key) => {
+            this.$refs.tableForm.validateField(key, (valid) => {
+              if (valid && valid.length) {
+                rowFlag = false;
+                return (flag = false);
+              }
+            });
+          });
+        if (rowFlag) {
+          this.tableForm.dataSource[i].isEdit = true;
+        }
+      }
+      if (!flag) {
+        return 2;
+      } else {
+        this.$emit("input", this.tableForm.dataSource);
+        return 0;
+      }
+    },
   },
 };
 </script>

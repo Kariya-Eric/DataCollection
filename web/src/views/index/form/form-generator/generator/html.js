@@ -30,11 +30,9 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${
-    scheme.formModel
-  }" :rules="${scheme.formRules}" size="${
-    scheme.size
-  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
+    }" :rules="${scheme.formRules}" size="${scheme.size
+    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -257,9 +255,11 @@ const tags = {
     return `<custom-address ${vModel} ${placeholder} ${disabled} ${width} />`;
   },
   customEditTable: (el) => {
+    const ref = `ref='customTable_${el.__config__.formId}'`;
     const columns = `:columns='${JSON.stringify(el.columns)}'`;
     const dataSource = `v-model="${confGlobal.formModel}.${el.__vModel__}"`;
-    return `<render-table ${columns} ${dataSource} />`;
+    const required = `:required="${el.__config__.required}"`;
+    return `<render-table ${ref} ${columns} ${dataSource} ${required}/>`;
   },
   // ============自定义组件=============================
 };

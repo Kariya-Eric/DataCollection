@@ -176,6 +176,18 @@ function buildRules(scheme, ruleList) {
     }
     ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
   }
+  if (config.tag === "customEditTable") {
+    rules.push(`{ validator : (rule,value,callback) => {
+      let result=this.$refs.customTable_${config.formId}.validateTable();
+      if(result===0){
+        callback();
+      }else{
+        let errorMsg=result===1?'${config.label}至少需要一条数据':'${config.label}中存在不合法数据'
+        callback(new Error(errorMsg));
+      }
+    }}`)
+    ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
+  }
 }
 
 // 构建options

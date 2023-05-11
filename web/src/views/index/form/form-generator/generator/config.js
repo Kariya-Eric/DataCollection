@@ -237,6 +237,7 @@ export const otherComponents = [
       tag: "customEditTable",
       showLabel: true,
       span: 24,
+      required: true
     },
     row: 1,
     col: 3,
