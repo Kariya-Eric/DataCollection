@@ -267,6 +267,7 @@ export const otherComponents = [
         isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
+        dateType: 'date'
       },
       {
         label: "列2",
@@ -292,6 +293,7 @@ export const otherComponents = [
         isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
+        dateType: 'date'
       },
       {
         label: "列3",
@@ -317,6 +319,7 @@ export const otherComponents = [
         isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
+        dateType: 'date'
       },
     ],
   },

@@ -7,7 +7,7 @@ Vue.use(ElementUI, {
   locale,
 });
 
-import CustomComponent from "@/views/index/form/form-generator/custom_components";
+import CustomComponent from "@/views/index/test/form-generator/custom_components";
 Vue.use(CustomComponent);
 
 const $previewApp = document.getElementById("previewApp");

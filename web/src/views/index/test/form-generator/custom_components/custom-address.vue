@@ -13,7 +13,7 @@
     />
     <el-input
       type="textarea"
-      :rows="4"
+      :rows="3"
       placeholder="请输入详细地址"
       v-model="textarea"
       :disabled="disabled"
@@ -28,11 +28,19 @@ export default {
   name: "CustomAddress",
   props: ["value", "disabled"],
   watch: {
-    value(val) {
-      if (val === null) {
-        this.selectOption = "";
-        this.textarea = "";
-      }
+    value: {
+      handler(val) {
+        if (!val) {
+          this.selectOption = [];
+          this.textarea = "";
+        } else {
+          let arr = val.split("/");
+          this.textarea = arr[arr.length - 1];
+          arr.pop();
+          this.selectOption = arr;
+        }
+      },
+      immediate: true,
     },
   },
   data() {
@@ -65,10 +73,8 @@ export default {
           ],
         },
       ],
-      textarea: this.value ? this.value.split("/").slice(-1) : "",
-      selectOption: this.value
-        ? this.value.split("/")[this.value.split("/").length - 2]
-        : "",
+      textarea: "",
+      selectOption: [],
     };
   },
 

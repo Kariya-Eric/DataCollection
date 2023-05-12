@@ -17,8 +17,11 @@ export default {
   name: "CustomNumber",
   props: ["value", "disabled", "precision", "min", "max", "placeholder"],
   watch: {
-    value(val) {
-      this.inputVal = val;
+    value: {
+      handler(val) {
+        this.inputVal = val.toFixed(this.precision);
+      },
+      immediate: true,
     },
   },
   data() {
@@ -28,8 +31,8 @@ export default {
   },
   methods: {
     changeVal(val) {
-      this.inputVal = val;
-      this.$emit("input", val);
+      this.inputVal = val.toFixed(this.precision);
+      this.$emit("input", this.inputVal);
     },
   },
 };

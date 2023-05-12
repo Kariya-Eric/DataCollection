@@ -93,6 +93,9 @@
                 v-model="datasource"
                 :placeholder="`请选择${columns[colIndex].label}`"
                 size="small"
+                :type="columns[colIndex].dateType"
+                :format="columns[colIndex].format"
+                :value-format="columns[colIndex]['value-format']"
                 style="width: 100%"
               ></el-date-picker>
             </template>

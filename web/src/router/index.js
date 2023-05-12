@@ -172,6 +172,27 @@ export const constantRouterMap = [
     ],
   },
   {
+    path: "/form",
+    component: BasicLayout,
+    name: "analyze",
+    alwaysShow: true,
+    meta: {
+      title: "表单管理",
+      icon: "dashboard",
+    },
+    children: [
+      {
+        path: "/form/list",
+        name: "formList",
+        component: () => import("@/views/index/form/list"),
+        meta: {
+          title: "表单列表",
+          icon: "list",
+        },
+      },
+    ],
+  },
+  {
     path: "/analyze",
     component: BasicLayout,
     name: "analyze",
@@ -198,17 +219,17 @@ export const constantRouterMap = [
     name: "测试",
     alwaysShow: true,
     meta: {
-      title: "测试",
+      title: "测试表单",
       icon: "dashboard",
       // permission: ['monitorcenter', 'taskcenter']
     },
     children: [
       {
         path: "/test/form",
-        name: "WorkPlace",
-        component: () => import("@/views/index/form/list"),
+        name: "testForm",
+        component: () => import("@/views/index/test/list"),
         meta: {
-          title: "测试表单",
+          title: "自定义表单",
           icon: "test",
         },
       },
@@ -259,281 +280,6 @@ export const asyncRouterMap = [
       },
     ],
   },
-
-  // Form
-  //   {
-  //     path: "/form",
-  //     component: BasicLayout,
-  //     redirect: "/form/basic-form",
-  //     name: "Form",
-  //     alwaysShow: true,
-  //     meta: {
-  //       title: "表单页",
-  //       icon: "edit",
-  //     },
-  //     children: [
-  //       {
-  //         path: "basic-form",
-  //         name: "BasicForm",
-  //         component: () => import("@/views/index/form1/basicform"),
-  //         meta: {
-  //           title: "基础表单",
-  //         },
-  //       },
-  //       {
-  //         path: "step-form",
-  //         name: "StepForm",
-  //         component: () => import("@/views/index/form1/stepform/stepform"),
-  //         meta: {
-  //           title: "分步表单",
-  //         },
-  //       },
-  //       {
-  //         path: "advanced-form",
-  //         name: "AdvancedForm",
-  //         component: () => import("@/views/index/form1/advancedform/advancedform"),
-  //         meta: {
-  //           title: "高级表单",
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  // List
-  //   {
-  //     path: "/list",
-  //     component: BasicLayout,
-  //     redirect: "/list/table-list",
-  //     name: "List",
-  //     alwaysShow: true,
-  //     meta: {
-  //       title: "列表页",
-  //       icon: "list",
-  //     },
-  //     children: [
-  //       {
-  //         path: "table-list",
-  //         name: "TableList",
-  //         redirect: "/usermgmt/userlist",
-  //         meta: {
-  //           title: "查询表格",
-  //         },
-  //       },
-  //       {
-  //         path: "basic-list",
-  //         name: "BasicList",
-  //         component: () => import("@/views/index/list/basiclist"),
-  //         meta: {
-  //           title: "标准列表",
-  //         },
-  //       },
-  //       {
-  //         path: "card-list",
-  //         name: "CardList",
-  //         component: () => import("@/views/index/list/cardlist"),
-  //         meta: {
-  //           title: "卡片列表",
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  //   // Detail
-  //   {
-  //     path: "/detail",
-  //     component: BasicLayout,
-  //     redirect: "/detail/basic-detail",
-  //     name: "Detail",
-  //     alwaysShow: true,
-  //     meta: {
-  //       title: "详情页",
-  //       icon: "detail",
-  //     },
-  //     children: [
-  //       {
-  //         path: "basic-detail",
-  //         name: "BasicDetail",
-  //         component: () => import("@/views/index/detail/basicdetail"),
-  //         meta: {
-  //           title: "基础详情页",
-  //         },
-  //       },
-  //       {
-  //         path: "advanced-detail",
-  //         name: "AdvancedDetail",
-  //         component: () => import("@/views/index/detail/advanceddetail"),
-  //         meta: {
-  //           title: "高级详情页",
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  //   // User Management
-  //   {
-  //     path: "/usermgmt",
-  //     component: BasicLayout,
-  //     redirect: "/usermgmt/userlist",
-  //     name: "UserMgmt",
-  //     alwaysShow: true,
-  //     meta: {
-  //       title: "用户页",
-  //       icon: "user-group",
-  //       permission: ["permission", "role", "user"],
-  //     },
-  //     children: [
-  //       {
-  //         path: "permissionlist",
-  //         name: "PermissionList",
-  //         component: () => import("@/views/index/usermgmt/permissionlist"),
-  //         meta: {
-  //           title: "权限列表",
-  //           permission: ["permission"],
-  //         },
-  //       },
-  //       {
-  //         path: "rolelist",
-  //         name: "RoleList",
-  //         component: () => import("@/views/index/usermgmt/rolelist"),
-  //         meta: {
-  //           title: "角色管理",
-  //           permission: ["role"],
-  //         },
-  //       },
-  //       {
-  //         path: "userlist",
-  //         name: "UserList",
-  //         component: () => import("@/views/index/usermgmt/userlist"),
-  //         meta: {
-  //           title: "用户列表",
-  //           permission: ["user"],
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  //   // Result
-  //   {
-  //     path: "/result",
-  //     component: BasicLayout,
-  //     redirect: "/result/success",
-  //     name: "Result",
-  //     alwaysShow: true,
-  //     meta: {
-  //       title: "结果页",
-  //       icon: "correct-line",
-  //     },
-  //     children: [
-  //       {
-  //         path: "success",
-  //         name: "ResultSuccess",
-  //         component: () => import("@/views/index/result/success"),
-  //         meta: {
-  //           title: "成功页",
-  //         },
-  //       },
-  //       {
-  //         path: "fail",
-  //         name: "ResultFail",
-  //         component: () => import("@/views/index/result/fail"),
-  //         meta: {
-  //           title: "失败页",
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  //   // Exception
-  //   {
-  //     path: "/exception",
-  //     component: BasicLayout,
-  //     redirect: "/exception/404",
-  //     name: "Exception",
-  //     alwaysShow: true,
-  //     meta: {
-  //       title: "异常页",
-  //       icon: "warn",
-  //     },
-  //     children: [
-  //       {
-  //         path: "403",
-  //         name: "Exception403",
-  //         component: () => import("@/views/index/exception/403"),
-  //         meta: {
-  //           title: "403",
-  //         },
-  //       },
-  //       {
-  //         path: "404",
-  //         name: "Exception404",
-  //         component: () => import("@/views/index/exception/404"),
-  //         meta: {
-  //           title: "404",
-  //         },
-  //       },
-  //       {
-  //         path: "500",
-  //         name: "Exception500",
-  //         component: () => import("@/views/index/exception/500"),
-  //         meta: {
-  //           title: "500",
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  //   // Account Center
-  //   {
-  //     path: "/accountcenter",
-  //     component: BasicLayout,
-  //     redirect: "/accountcenter/accountcenter",
-  //     name: "Profile",
-  //     alwaysShow: true,
-  //     meta: {
-  //       title: "个人中心",
-  //       icon: "user",
-  //     },
-  //     children: [
-  //       {
-  //         path: "accountcenter",
-  //         name: "AccountCenter",
-  //         component: () => import("@/views/index/profile/index"),
-  //         meta: {
-  //           title: "个人中心",
-  //         },
-  //       },
-  //       {
-  //         path: "accountsetting",
-  //         name: "AccountSetting",
-  //         component: () => import("@/views/index/profile/accountsetting"),
-  //         meta: {
-  //           title: "个人设置",
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  //   // External Link
-  //   {
-  //     path: "external-link",
-  //     component: BasicLayout,
-  //     children: [
-  //       {
-  //         path: "http://letech.net.cn",
-  //         meta: {
-  //           title: "网站首页",
-  //           icon: "link",
-  //         },
-  //       },
-  //     ],
-  //   },
-
-  //   // Others
-  //   {
-  //     path: "*",
-  //     redirect: "/404",
-  //     hidden: true,
-  //   },
 ];
 
 export default new Router({

@@ -155,33 +155,15 @@
                       ? col.isMobile
                         ? [
                             { required: true, message: `${col.label}不能为空` },
-                            {
-                              pattern: `/^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/`,
-                              message: '请输入正确的电话号码',
-                            },
+                            phoneRule,
                           ]
                         : [
                             { required: true, message: `${col.label}不能为空` },
-                            {
-                              pattern:
-                                `/^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/`,
-                              message: '请输入正确的手机号',
-                            },
+                            mobileRule,
                           ]
                       : col.isMobile
-                      ? [
-                          {
-                            pattern: `/^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/`,
-                            message: '请输入正确的电话号码',
-                          },
-                        ]
-                      : [
-                          {
-                            pattern:
-                              `/^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/`,
-                            message: '请输入正确的手机号',
-                          },
-                        ]
+                      ? [phoneRule]
+                      : [mobileRule]
                   "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
                 >
@@ -249,6 +231,9 @@
                   <el-date-picker
                     :placeholder="`请输入${col.label}`"
                     v-model="scope.row[col.props]"
+                    :type="col.dateType"
+                    :format="col.format"
+                    :value-format="col['value-format']"
                     size="small"
                     style="width: 100%"
                   />
@@ -291,15 +276,22 @@ export default {
       }
     },
   },
-  computed: {
-    getPhoneRule() {},
-  },
   data() {
     return {
       tableForm: {
         dataSource: this.value ? this.value : [],
       },
       selectedRowKeys: [],
+      mobileRule: {
+        pattern: /^(\+\d{2}-)?(\d{2,3}-)?([1][3,4,5,7,8][0-9]\d{8})$/,
+        message: "请输入正确的手机号",
+      },
+      phoneRule: [
+        {
+          pattern: /^(\+\d{2}-)?0\d{2,3}-\d{7,8}$/,
+          message: "请输入正确的电话号码",
+        },
+      ],
     };
   },
   methods: {

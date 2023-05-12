@@ -161,34 +161,16 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item
-          v-if="
-            activeData.type !== undefined &&
-            'el-date-picker' === activeData.__config__.tag
-          "
-          label="时间类型"
-        >
-          <el-select
-            v-model="activeData.type"
-            placeholder="请选择时间类型"
-            :style="{ width: '100%' }"
-            @change="dateTypeChange"
-          >
-            <el-option
-              v-for="(item, index) in dateOptions"
-              :key="index"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-
         <el-form-item v-if="activeData.format !== undefined" label="时间格式">
-          <el-input
-            :value="activeData.format"
-            placeholder="请输入时间格式"
-            @input="setTimeValue($event)"
-          />
+          <el-select
+            v-model="activeData.format"
+            @change="changeTimeFormat"
+            style="width: 100%"
+          >
+            <el-option label="年（yyyy）" value="yyyy" />
+            <el-option label="年月（yyyy-MM）" value="yyyy-MM" />
+            <el-option label="年月日（yyyy-MM-dd）" value="yyyy-MM-dd" />
+          </el-select>
         </el-form-item>
         <template
           v-if="
@@ -340,6 +322,7 @@
             <el-form-item label="类型">
               <el-select
                 v-model="activeData.columns[activeData.selectedCol - 1].type"
+                style="width: 100%"
               >
                 <el-option label="单行文本" value="input" />
                 <el-option label="多行文本" value="inputarea" />
@@ -377,6 +360,7 @@
                   activeData.columns[activeData.selectedCol - 1].maxlength
                 "
                 placeholder="请输入字符长度"
+                style="width: 100%"
               >
                 <template slot="append"> 个字符 </template>
               </el-input>
@@ -461,10 +445,17 @@
                 "
                 label="时间格式"
               >
-                <el-input
-                  :value="activeData.columns[activeData.selectedCol - 1].format"
-                  placeholder="请输入时间格式"
-                />
+                <el-select
+                  style="width: 100%"
+                  v-model="
+                    activeData.columns[activeData.selectedCol - 1].format
+                  "
+                  @change="changeColTimeFormat"
+                >
+                  <el-option label="年（yyyy）" value="yyyy" />
+                  <el-option label="年月（yyyy-MM）" value="yyyy-MM" />
+                  <el-option label="年月日（yyyy-MM-dd）" value="yyyy-MM-dd" />
+                </el-select>
               </el-form-item>
             </template>
             <el-form-item label="是否必填">
@@ -610,16 +601,6 @@ import { isNumberStr } from "../utils/index";
 import { saveFormConf } from "../utils/db";
 import { componentsVisible } from "../generator/config";
 import LogicDialog from "./logic-dialog";
-const dateTimeFormat = {
-  date: "yyyy-MM-dd",
-  week: "yyyy 第 WW 周",
-  month: "yyyy-MM",
-  year: "yyyy",
-  datetime: "yyyy-MM-dd HH:mm:ss",
-  daterange: "yyyy-MM-dd",
-  monthrange: "yyyy-MM",
-  datetimerange: "yyyy-MM-dd HH:mm:ss",
-};
 
 export default {
   name: "RightPanel",
@@ -632,57 +613,9 @@ export default {
     return {
       componentsVisible,
       currentTab: "field",
-      dateTypeOptions: [
-        {
-          label: "日(date)",
-          value: "date",
-        },
-        {
-          label: "周(week)",
-          value: "week",
-        },
-        {
-          label: "月(month)",
-          value: "month",
-        },
-        {
-          label: "年(year)",
-          value: "year",
-        },
-        {
-          label: "日期时间(datetime)",
-          value: "datetime",
-        },
-      ],
-      dateRangeTypeOptions: [
-        {
-          label: "日期范围(daterange)",
-          value: "daterange",
-        },
-        {
-          label: "月范围(monthrange)",
-          value: "monthrange",
-        },
-        {
-          label: "日期时间范围(datetimerange)",
-          value: "datetimerange",
-        },
-      ],
     };
   },
   computed: {
-    dateOptions() {
-      if (
-        this.activeData.type !== undefined &&
-        this.activeData.__config__.tag === "el-date-picker"
-      ) {
-        if (this.activeData["start-placeholder"] === undefined) {
-          return this.dateTypeOptions;
-        }
-        return this.dateRangeTypeOptions;
-      }
-      return [];
-    },
     inputWidth: {
       get() {
         if (this.activeData.style != undefined) {
@@ -762,6 +695,49 @@ export default {
     editRule(index) {
       this.$refs.logicdialog.show(index);
     },
+
+    changeTimeFormat(val) {
+      if (val === "yyyy-MM") {
+        this.$set(this.activeData, "value-format", "yyyy-MM");
+        this.$set(this.activeData, "type", "month");
+      } else if (val === "yyyy-MM-dd") {
+        this.$set(this.activeData, "value-format", "yyyy-MM-dd");
+        this.$set(this.activeData, "type", "date");
+      } else {
+        this.$set(this.activeData, "type", "yyyy");
+        this.$set(this.activeData, "type", "year");
+      }
+    },
+
+    changeColTimeFormat(val) {
+      let selectedCol = this.activeData.selectedCol;
+      if (val === "yyyy-MM") {
+        this.$set(
+          this.activeData.columns[selectedCol - 1],
+          "value-format",
+          "yyyy-MM"
+        );
+        this.$set(
+          this.activeData.columns[selectedCol - 1],
+          "dateType",
+          "month"
+        );
+      } else if (val === "yyyy-MM-dd") {
+        this.$set(
+          this.activeData.columns[selectedCol - 1],
+          "value-format",
+          "yyyy-MM-dd"
+        );
+        this.$set(this.activeData.columns[selectedCol - 1], "dateType", "date");
+      } else {
+        this.$set(
+          this.activeData.columns[selectedCol - 1],
+          "value-format",
+          "yyyy"
+        );
+        this.$set(this.activeData.columns[selectedCol - 1], "dateType", "year");
+      }
+    },
     // ==============自定义END==============
 
     addSelectItem() {
@@ -806,12 +782,6 @@ export default {
       }
     },
 
-    setTimeValue(val, type) {
-      const valueFormat = type === "week" ? dateTimeFormat.date : val;
-      this.$set(this.activeData.__config__, "defaultValue", null);
-      this.$set(this.activeData, "value-format", valueFormat);
-      this.$set(this.activeData, "format", val);
-    },
     spanChange(val) {
       this.$set(this.formConf, "span", val);
     },
@@ -820,9 +790,6 @@ export default {
     },
     multipleChange(val) {
       this.$set(this.activeData.__config__, "defaultValue", val ? [] : "");
-    },
-    dateTypeChange(val) {
-      this.setTimeValue(dateTimeFormat[val], val);
     },
     dragEnd(obj) {
       if (obj.oldIndex + 1 == this.activeData.selectedCol) {

@@ -45,10 +45,10 @@ function buildFormTemplate(scheme, child) {
 }
 
 function buildFromBtns() {
-  let str = `<el-form-item size="small">
+  let str = `<el-col><el-form-item size="small">
           <el-button type="primary" @click="submitForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
-        </el-form-item>`;
+        </el-form-item></el-col>`;
   return str;
 }
 
@@ -150,8 +150,9 @@ const layouts = {
   },
   customItem(scheme) {
     const config = scheme.__config__;
-    const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `${tagDom}`;
+    const hide = vif(scheme);
+    const tagDom = tags[config.tag] ? tags[config.tag](scheme, hide) : null;
+    let str = `<el-col>${tagDom}</el-col>`;
     return str;
   },
   customTable(scheme) {
@@ -219,18 +220,18 @@ const tags = {
     const valueFormat = el["value-format"]
       ? `value-format="${el["value-format"]}"`
       : "";
-    const type = `type="date"`;
+    const type = el.type ? `type=${el.type}` : `type="date"`;
     const readonly = el.readonly ? "readonly" : "";
     return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${clearable} ${readonly} ${disabled}></${tag}>`;
   },
   // ============自定义组件=============================
-  customDivider: (el) => {
+  customDivider: (el, hide) => {
     const title = `title="${el.title}"`;
     const titlePosition = `titlePosition="${el.titlePosition}"`;
     const fontSize = `:fontSize="${el.fontSize}"`;
     const letterSpacing = `:letterSpacing="${el.letterSpacing}"`;
     const color = `color="${el.color}"`;
-    return `<custom-divider ${title} ${titlePosition} ${fontSize} ${letterSpacing} ${color} />`;
+    return `<custom-divider ${title} ${titlePosition} ${fontSize} ${letterSpacing} ${color} ${hide}/>`;
   },
   customPhone: (el) => {
     const { disabled, vModel, placeholder, width } = attrBuilder(el);

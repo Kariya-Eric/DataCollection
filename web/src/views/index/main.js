@@ -24,7 +24,7 @@ Vue.use(Plugin);
 
 
 
-import CustomComponent from './form/form-generator/custom_components'
+import CustomComponent from './test/form-generator/custom_components'
 Vue.use(CustomComponent)
 
 Vue.use(ElementUI, {

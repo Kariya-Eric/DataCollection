@@ -161,7 +161,7 @@
               termRow.termOption.split(',')[1] === 'el-checkbox-group')
           "
           size="small"
-          style="width: 49%"
+          style="width: 55%"
           v-model="termRow.termValueOption"
           :disabled="!termRow.termOption"
         >
@@ -270,12 +270,20 @@ export default {
       if (index !== undefined) {
         this.updateIndex = index;
         let data = componentsVisible[index];
-        console.log("dat", data);
         this.termRows = JSON.parse(JSON.stringify(data.termList));
         this.andOr = JSON.parse(JSON.stringify(data.equalTerm));
         this.showOption = JSON.parse(JSON.stringify(data.hiddenList));
         this.updateFlag = true;
-        let tempShowOptions = getDrawingList();
+        let tempShowOptions = getDrawingList().map((opt) => {
+          if (opt.hasOwnProperty("title")) {
+            this.$set(
+              opt.__config__,
+              "label",
+              opt.title ? opt.title : "分割线"
+            );
+          }
+          return opt;
+        });
         for (let i = 0; i < tempShowOptions.length; i++) {
           for (let j = 0; j < this.termRows.length; j++) {
             if (this.termRows[j].termOption != "") {
@@ -313,7 +321,6 @@ export default {
         rules.hiddenList = this.showOption;
         rules.termList = this.termRows;
         rules.equalTerm = this.andOr;
-        console.log("rule", rules);
         if (this.updateFlag) {
           componentsVisible[this.updateIndex] = rules;
         } else {
@@ -348,9 +355,18 @@ export default {
       if (this.termRows[index].termOption !== "") {
         let tag = this.termRows[index].termOption.split(",")[1];
         let formId = this.termRows[index].termOption.split(",")[0];
-        this.showOptions = this.showOptions.filter(
-          (opt) => opt.__config__.formId != formId
-        );
+        this.showOptions = this.showOptions
+          .filter((opt) => opt.__config__.formId != formId)
+          .map((opt) => {
+            if (opt.hasOwnProperty("title")) {
+              this.$set(
+                opt.__config__,
+                "label",
+                opt.title ? opt.title : "分割线"
+              );
+            }
+            return opt;
+          });
         //显示字段option的展示
         if (
           tag === "el-select" ||
