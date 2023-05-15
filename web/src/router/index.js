@@ -121,6 +121,15 @@ export const constantRouterMap = [
           icon: "list",
         },
       },
+      {
+        path: "/task/detail",
+        name: "taskDetail",
+        component: () => import("@/views/index/task/detail"),
+        meta: {
+          title: "任务详情",
+          icon: "list",
+        },
+      },
     ],
   },
   {
@@ -208,6 +217,15 @@ export const constantRouterMap = [
         component: () => import("@/views/index/analyze/list"),
         meta: {
           title: "分析报告",
+          icon: "list",
+        },
+      },
+      {
+        path: "/analyze/detail",
+        name: "detail",
+        component: () => import("@/views/index/analyze/detail"),
+        meta: {
+          title: "报告详情",
           icon: "list",
         },
       },

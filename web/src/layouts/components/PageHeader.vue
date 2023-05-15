@@ -1,21 +1,10 @@
 <template>
-  <div class="page-header">
-    
-  </div>
+  <div class="page-header"></div>
 </template>
 
 <script>
 export default {
   props: {
-    avatar: {
-      type: String,
-      default: null,
-    },
-    logo: {
-      type: String,
-      default: "",
-      required: false,
-    },
     title: {
       type: [String, Boolean],
       default: true,

@@ -1,7 +1,6 @@
 import Vue from "vue";
 import router from "@/router";
 import store from "@/store";
-import { Message } from "element-ui";
 import NProgress from "nprogress"; // progress bar
 import { ACCESS_TOKEN } from "@/store/mutation-types";
 import "nprogress/nprogress.css"; // progress bar style
