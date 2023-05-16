@@ -158,6 +158,13 @@ function buildRules(scheme, ruleList) {
         }' }`
       );
     }
+    // if(config.tag==='el-input'){
+    //   if(scheme.allowChar){
+    //     rules.push(
+    //       `{ pattern: /[\\u4E00-\\u9FA5]/i, message : '${config.label}中不能包含汉字' , trigger : 'blur' }`
+    //     );
+    //   }
+    // }
     if (config.tag === "customPhone") {
       if (scheme.isMobile) {
         rules.push(

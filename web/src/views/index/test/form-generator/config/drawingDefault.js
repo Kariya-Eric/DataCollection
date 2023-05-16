@@ -19,5 +19,6 @@ export default [
     maxlength: null,
     readonly: false,
     disabled: false,
+    comment: "",
   },
 ];

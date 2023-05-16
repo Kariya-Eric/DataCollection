@@ -30,7 +30,7 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form ref="${scheme.formRef}" :model="${scheme.formModel
+  let str = `<el-form style="margin-top:24px" ref="${scheme.formRef}" :model="${scheme.formModel
     }" :rules="${scheme.formRules}" size="${scheme.size
     }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
@@ -129,6 +129,21 @@ function vif(scheme) {
   return str;
 }
 
+function labelTooltip(scheme) {
+  const comment = scheme.comment
+  if (comment === '') {
+    return ''
+  } else {
+    const str = `<span slot="label">
+      <el-tooltip style="margin:4px" effect="dark" content="${comment}" placement="bottom">
+        <i class="el-icon-question" />
+      </el-tooltip>
+      <span>${scheme.__config__.label}</span>
+    </span>`
+    return str
+  }
+}
+
 const layouts = {
   colFormItem(scheme) {
     const config = scheme.__config__;
@@ -142,9 +157,10 @@ const layouts = {
       label = "";
     }
     const hide = vif(scheme);
+    const tooltip = labelTooltip(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
     let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
-        ${tagDom}
+          ${tooltip}${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
   },
@@ -167,9 +183,10 @@ const layouts = {
       label = "";
     }
     const hide = vif(scheme);
+    const tooltip = labelTooltip(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
     let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
-        ${tagDom}
+          ${tooltip}${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
   },
@@ -341,5 +358,9 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr);
   confGlobal = null;
-  return temp;
+  const alert = `<el-alert style="margin-buttom:24px" title="填报提示" type="info" show-icon :closable="false"
+          description="文字说明文字说明文字说明文字说明文字说明文字说明"></el-alert>`;
+  const str = `<div>${alert}${temp}</div>`
+  console.log('str', str)
+  return str;
 }

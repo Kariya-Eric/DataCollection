@@ -42,24 +42,17 @@
             placeholder="请输入占位提示"
           />
         </el-form-item>
-        <el-form-item
-          v-if="activeData['start-placeholder'] !== undefined"
-          label="开始占位"
-        >
+
+        <el-form-item label="注释" v-if="activeData.comment !== undefined">
           <el-input
-            v-model="activeData['start-placeholder']"
-            placeholder="请输入占位提示"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入组件注释"
+            size="small"
+            v-model="activeData.comment"
           />
         </el-form-item>
-        <el-form-item
-          v-if="activeData['end-placeholder'] !== undefined"
-          label="结束占位"
-        >
-          <el-input
-            v-model="activeData['end-placeholder']"
-            placeholder="请输入占位提示"
-          />
-        </el-form-item>
+
         <el-form-item
           v-if="activeData.__config__.span !== undefined"
           label="组件宽度"
@@ -231,6 +224,13 @@
           label="支持固话"
         >
           <el-switch v-model="activeData.isMobile" />
+        </el-form-item>
+
+        <el-form-item
+          v-if="activeData.__config__.tag === 'el-input'"
+          label="禁止汉字"
+        >
+          <el-switch v-model="activeData.allowChar" />  
         </el-form-item>
 
         <el-form-item

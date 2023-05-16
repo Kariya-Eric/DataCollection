@@ -19,7 +19,9 @@ export default {
   watch: {
     value: {
       handler(val) {
-        this.inputVal = val.toFixed(this.precision);
+        if (val) {
+          this.inputVal = val.toFixed(this.precision);
+        }
       },
       immediate: true,
     },
