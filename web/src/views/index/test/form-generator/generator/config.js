@@ -9,6 +9,7 @@ export const formConf = {
   gutter: 15,
   disabled: false,
   span: 24,
+  formAlert: "",
   formBtns: true,
 };
 
@@ -33,7 +34,7 @@ export const inputComponents = [
     readonly: false,
     disabled: false,
     comment: "",
-    allowChar: true
+    allowChar: true,
   },
   {
     __config__: {
@@ -56,7 +57,7 @@ export const inputComponents = [
     maxlength: null,
     readonly: false,
     disabled: false,
-    comment: ""
+    comment: "",
   },
   {
     __config__: {
@@ -75,7 +76,7 @@ export const inputComponents = [
     precision: 0,
     min: undefined,
     max: undefined,
-    comment: ""
+    comment: "",
   },
   {
     __config__: {
@@ -92,7 +93,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-    comment: ""
+    comment: "",
   },
   {
     __config__: {
@@ -110,7 +111,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-    comment: ""
+    comment: "",
   },
   {
     __config__: {
@@ -127,7 +128,7 @@ export const inputComponents = [
     placeholder: "请输入",
     readonly: false,
     disabled: false,
-    comment: ""
+    comment: "",
   },
 ];
 
@@ -161,7 +162,7 @@ export const selectComponents = [
     disabled: false,
     filterable: false,
     multiple: false,
-    comment: ""
+    comment: "",
   },
   {
     __config__: {
@@ -187,7 +188,7 @@ export const selectComponents = [
       ],
     },
     disabled: false,
-    comment: ""
+    comment: "",
   },
   {
     __config__: {
@@ -215,7 +216,7 @@ export const selectComponents = [
     min: null,
     max: null,
     disabled: false,
-    comment: ""
+    comment: "",
   },
   {
     __config__: {
@@ -235,7 +236,7 @@ export const selectComponents = [
     format: "yyyy-MM-dd",
     "value-format": "yyyy-MM-dd",
     readonly: false,
-    comment: ""
+    comment: "",
   },
 ];
 
@@ -248,7 +249,7 @@ export const otherComponents = [
       tag: "customEditTable",
       showLabel: true,
       span: 24,
-      required: true
+      required: true,
     },
     row: 1,
     col: 3,
@@ -279,7 +280,7 @@ export const otherComponents = [
         isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
-        dateType: 'date'
+        dateType: "date",
       },
       {
         label: "列2",
@@ -305,7 +306,7 @@ export const otherComponents = [
         isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
-        dateType: 'date'
+        dateType: "date",
       },
       {
         label: "列3",
@@ -331,7 +332,7 @@ export const otherComponents = [
         isMobile: false,
         format: "yyyy-MM-dd",
         "value-format": "yyyy-MM-dd",
-        dateType: 'date'
+        dateType: "date",
       },
     ],
   },
@@ -352,5 +353,4 @@ export const layoutComponents = [
 ];
 
 //用于控制组件是否展示
-export const componentsVisible = [
-]
+export const componentsVisible = [];

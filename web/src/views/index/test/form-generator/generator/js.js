@@ -99,21 +99,23 @@ function callInCreated(methodName, created) {
 // 混入处理函数
 function mixinMethod() {
   const list = [];
-  let hasTable = false
+  let hasTable = false;
   for (let i = 0; i < confGlobal.fields.length; i++) {
     if (confGlobal.fields[i].__config__.tag === "customEditTable") {
-      hasTable = true
+      hasTable = true;
       break;
     }
   }
   const methods = {
-    submitForm: hasTable ? `submitForm() {
+    submitForm: hasTable
+      ? `submitForm() {
       this.$refs['${confGlobal.formRef}'].validate(valid => {
         if(!valid) return
         // TODO 提交表单
         console.log('form',this.${confGlobal.formModel})
       })
-    },` : `submitForm() {
+    },`
+      : `submitForm() {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
           // TODO 提交表单
@@ -123,7 +125,7 @@ function mixinMethod() {
     resetForm: `resetForm() {
         this.$refs['${confGlobal.formRef}'].resetFields()
       },`,
-  }
+  };
   if (methods) {
     Object.keys(methods).forEach((key) => {
       list.push(methods[key]);
@@ -154,17 +156,18 @@ function buildRules(scheme, ruleList) {
         : scheme.placeholder;
       if (message === undefined) message = `${config.label}不能为空`;
       rules.push(
-        `{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]
+        `{ required: true, ${type} message: '${message}', trigger: '${
+          ruleTrigger[config.tag]
         }' }`
       );
     }
-    // if(config.tag==='el-input'){
-    //   if(scheme.allowChar){
-    //     rules.push(
-    //       `{ pattern: /[\\u4E00-\\u9FA5]/i, message : '${config.label}中不能包含汉字' , trigger : 'blur' }`
-    //     );
-    //   }
-    // }
+    if (config.tag === "el-input") {
+      if (scheme.allowChar) {
+        rules.push(
+          `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '${config.label}中不能包含汉字' , trigger : 'blur' }`
+        );
+      }
+    }
     if (config.tag === "customPhone") {
       if (scheme.isMobile) {
         rules.push(
@@ -192,7 +195,7 @@ function buildRules(scheme, ruleList) {
         let errorMsg=result===1?'${config.label}至少需要一条数据':'${config.label}中存在不合法数据'
         callback(new Error(errorMsg));
       }
-    }}`)
+    }}`);
     ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
   }
 }

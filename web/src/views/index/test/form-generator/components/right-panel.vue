@@ -230,7 +230,7 @@
           v-if="activeData.__config__.tag === 'el-input'"
           label="禁止汉字"
         >
-          <el-switch v-model="activeData.allowChar" />  
+          <el-switch v-model="activeData.allowChar" />
         </el-form-item>
 
         <el-form-item
@@ -540,6 +540,14 @@
         </el-form-item>
         <el-form-item label="校验模型">
           <el-input v-model="formConf.formRules" placeholder="请输入校验模型" />
+        </el-form-item>
+        <el-form-item label="填报提示">
+          <el-input
+            type="textarea"
+            :rows="4"
+            v-model="formConf.formAlert"
+            placeholder="请输入填报提示"
+          />
         </el-form-item>
         <el-form-item label="表单尺寸">
           <el-radio-group v-model="formConf.size">

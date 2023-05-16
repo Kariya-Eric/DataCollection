@@ -30,9 +30,12 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
-  let str = `<el-form style="margin-top:24px" ref="${scheme.formRef}" :model="${scheme.formModel
-    }" :rules="${scheme.formRules}" size="${scheme.size
-    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  const margin = scheme.formAlert === "" ? "" : `style="margin-top:24px"`;
+  let str = `<el-form ${margin} ref="${scheme.formRef}" :model="${
+    scheme.formModel
+  }" :rules="${scheme.formRules}" size="${
+    scheme.size
+  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -130,17 +133,17 @@ function vif(scheme) {
 }
 
 function labelTooltip(scheme) {
-  const comment = scheme.comment
-  if (comment === '') {
-    return ''
+  const comment = scheme.comment;
+  if (comment === "") {
+    return "";
   } else {
     const str = `<span slot="label">
       <el-tooltip style="margin:4px" effect="dark" content="${comment}" placement="bottom">
         <i class="el-icon-question" />
       </el-tooltip>
       <span>${scheme.__config__.label}</span>
-    </span>`
-    return str
+    </span>`;
+    return str;
   }
 }
 
@@ -358,9 +361,11 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr);
   confGlobal = null;
-  const alert = `<el-alert style="margin-buttom:24px" title="填报提示" type="info" show-icon :closable="false"
-          description="文字说明文字说明文字说明文字说明文字说明文字说明"></el-alert>`;
-  const str = `<div>${alert}${temp}</div>`
-  console.log('str', str)
+  const alert =
+    formConfig.formAlert === ""
+      ? ""
+      : `<el-alert title="填报提示" type="warning" show-icon :closable="false"
+          description="${formConfig.formAlert}"></el-alert>`;
+  const str = `<div>${alert}${temp}</div>`;
   return str;
 }
