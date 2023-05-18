@@ -320,6 +320,8 @@ export default {
       this.assembleFormData();
       console.log("form", this.formData);
     },
+
+    validateField(){}
   },
 };
 </script>
