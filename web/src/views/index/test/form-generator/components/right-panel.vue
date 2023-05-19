@@ -488,8 +488,9 @@
             >
               <el-divider>选项</el-divider>
               <el-alert
-                v-show="columnOptionValidate[activeData.selectedCol - 1] != ''"
+                v-if="columnOptionValidate != ''"
                 type="error"
+                :title="columnOptionValidate"
                 :closable="false"
                 style="margin-bottom: 8px"
               />
@@ -524,11 +525,7 @@
                   <div class="close-btn select-line-icon">
                     <i
                       class="el-icon-remove-outline"
-                      @click="
-                        activeData.columns[
-                          activeData.selectedCol - 1
-                        ].options.splice(index, 1)
-                      "
+                      @click="delTableOption(index)"
                     />
                   </div>
                 </div>
@@ -646,7 +643,7 @@ export default {
       currentTab: "field",
       optionValidate: "",
       colValidate: "",
-      columnOptionValidate:[]
+      columnOptionValidate: "",
     };
   },
   computed: {
@@ -661,17 +658,6 @@ export default {
         this.$set(this.activeData, "style", { width: val + "%" });
       },
     },
-    columnOptionValidate: {
-      get() {
-        if (this.activeData.__config__.tag === "customEditTable") {
-          return this.activeData.columns.map((col) => "");
-        }
-        return [];
-      },
-      set(val) {
-        console.log('set',val);
-      },
-    },
   },
   watch: {
     formConf: {
@@ -680,14 +666,14 @@ export default {
       },
       deep: true,
     },
-    activeData:{
-      handler(val){
-        if (val.__config__.tag === "customEditTable") {
-          this.columnOptionValidate= val.columns.map((col) => "");
+    activeData: {
+      handler(val) {
+        if (val.__config__.tag === "customEditTable" && val.selectedCol != -1) {
+          this.tableOptionValidate();
         }
       },
-      deep:true,
-    }
+      deep: true,
+    },
   },
   methods: {
     // ==============自定义Start==============
@@ -753,6 +739,14 @@ export default {
         label: "选项",
         value: "",
       });
+      this.tableOptionValidate();
+    },
+    delTableOption(index) {
+      this.activeData.columns[this.activeData.selectedCol - 1].options.splice(
+        index,
+        1
+      );
+      this.tableOptionValidate();
     },
     tableOptionValidate() {
       let emptyFlag = false;
@@ -764,8 +758,7 @@ export default {
         }
       );
       if (emptyFlag) {
-        this.columnOptionValidate[this.activeData.selectedCol - 1] =
-          "选项值不能为空";
+        this.columnOptionValidate = "选项值不能为空";
       } else {
         const newValueLength = new Set(
           this.activeData.columns[this.activeData.selectedCol - 1].options.map(
@@ -776,17 +769,14 @@ export default {
           this.activeData.columns[this.activeData.selectedCol - 1].options
             .length;
         if (newValueLength < oldValueLength) {
-          this.columnOptionValidate[this.activeData.selectedCol - 1] =
-            "选项值不能重复";
+          this.columnOptionValidate = "选项值不能重复";
         } else {
-          this.columnOptionValidate[this.activeData.selectedCol - 1] = "";
+          this.columnOptionValidate = "";
         }
       }
-      console.log(this.columnOptionValidate);
     },
     setTableOptionValue(item, val) {
       item.value = isNumberStr(val) ? +val : val;
-      console.log("input", this.columnOptionValidate);
     },
     addRule() {
       this.$refs.logicdialog.show();

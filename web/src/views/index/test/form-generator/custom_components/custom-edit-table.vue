@@ -117,7 +117,6 @@ export default {
     col(val) {
       this.cols = val;
     },
-    columns(val) {},
     selectedCol(val) {
       this.selectedCells = [];
       for (let i = 0; i < this.rows; i++) {
@@ -177,5 +176,6 @@ export default {
 }
 .tableDiv {
   overflow-x: auto;
+  overflow-y: hidden;
 }
 </style>

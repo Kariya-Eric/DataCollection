@@ -318,10 +318,36 @@ export default {
 
     save() {
       this.assembleFormData();
-      console.log("form", this.formData);
+      const validateFields = this.validateField();
+      if (validateFields !== "") {
+        this.$message.warning(validateFields);
+      } else {
+        console.log("form", this.formData);
+      }
     },
 
-    validateField(){}
+    validateField() {
+      let emptyFlag = false;
+      let emptyField;
+      this.formData.fields.forEach((field) => {
+        if (field.__vModel__ === "") {
+          emptyField = field;
+          emptyFlag = true;
+        }
+      });
+      if (emptyFlag) {
+        return `组件[${emptyField.__config__.label}]字段名为空`;
+      } else {
+        const newFieldsLength = new Set(
+          this.formData.fields.map((field) => field.__vModel__)
+        ).size;
+        const oldFiledsLength = this.formData.fields.length;
+        if (newFieldsLength < oldFiledsLength) {
+          return "组件字段名不能重复,请核对";
+        }
+        return "";
+      }
+    },
   },
 };
 </script>

@@ -20,7 +20,10 @@ export default {
     value: {
       handler(val) {
         if (val) {
-          this.inputVal = val.toFixed(this.precision);
+          this.inputVal =
+            typeof val === "string"
+              ? parseInt(val).toFixed(this.precision)
+              : val.toFixed(this.precision);
         }
       },
       immediate: true,
