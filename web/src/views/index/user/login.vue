@@ -47,7 +47,7 @@
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="认证登录" name="tab2">
-          <span>开发中</span>
+          <a @click="tempLogin">临时登录入口</a>
         </el-tab-pane>
       </el-tabs>
 
@@ -104,7 +104,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions("user", ["Login"]),
+    ...mapActions("user", ["Login", "TempLogin"]),
     showPwd() {
       if (this.pwdType === "password") {
         this.pwdType = "text";
@@ -139,6 +139,12 @@ export default {
           return false;
         }
       });
+    },
+
+    tempLogin() {
+      this.TempLogin().then(() =>
+        this.$router.push({ path: this.redirect || "/" })
+      );
     },
   },
 };
