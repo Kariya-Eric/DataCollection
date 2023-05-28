@@ -12,6 +12,7 @@
         label-width="80px"
         size="small"
         :rules="rules"
+        v-loading="loading"
       >
         <el-form-item prop="code" label="角色编码">
           <el-input v-model="roleForm.code" clearable :disabled="!addFlag" />
@@ -38,10 +39,12 @@
 </template>
 
 <script>
+import { addRole, updateRole } from "@/api/system";
 export default {
   name: "RoleDialog",
   data() {
     return {
+      loading: false,
       visible: false,
       roleForm: {},
       addFlag: false,
@@ -70,9 +73,47 @@ export default {
     handleSubmit() {
       this.$refs.roleForm.validate((valid) => {
         if (valid) {
-          //TODO
+          if (this.addFlag) {
+            this.handleAdd();
+          } else {
+            this.handleUpdate();
+          }
         }
       });
+    },
+
+    handleAdd() {
+      this.loading = true;
+      addRole(this.roleForm)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+          this.close();
+        });
+    },
+
+    handleUpdate() {
+      this.loading = true;
+      updateRole(this.roleForm)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+          this.close();
+        });
     },
   },
 };

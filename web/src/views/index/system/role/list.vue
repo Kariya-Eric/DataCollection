@@ -157,7 +157,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <role-dialog ref="roleDialog" />
+    <role-dialog ref="roleDialog" @refresh="loadData" />
     <user-drawer ref="userDrawer" />
     <exist-user-dialog ref="existUserDialog" />
   </page-header-layout>

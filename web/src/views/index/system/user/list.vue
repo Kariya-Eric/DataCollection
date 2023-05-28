@@ -26,7 +26,11 @@
               @keyup.enter.native="searchQuery"
             />
           </el-form-item>
-          <el-button type="primary" size="small" icon="el-icon-search"
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-search"
+            @click="searchQuery"
             >搜索</el-button
           >
           <el-button type="primary" size="small" icon="el-icon-refresh-right"
@@ -46,6 +50,7 @@
             size="small"
             icon="el-icon-delete"
             v-if="selectedRowKeys.length > 0"
+            @click="delBatch"
             >批量删除</el-button
           >
           <el-button type="primary" size="small" icon="el-icon-upload2"
@@ -94,7 +99,7 @@
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
-    <user-drawer ref="userDrawer" />
+    <user-drawer ref="userDrawer" @refresh="loadData" />
     <reset-password-dialog ref="resetPasswordDialog" />
   </page-header-layout>
 </template>
@@ -105,6 +110,7 @@ import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import UserDrawer from "./components/user-drawer";
 import Pagination from "components/Pagination";
 import ResetPasswordDialog from "./components/reset-password-dialog";
+import { delUserBatch } from "@/api/system";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
@@ -129,6 +135,27 @@ export default {
 
     resetPwd(info) {
       this.$refs.resetPasswordDialog.show(info);
+    },
+
+    delBatch() {
+      let ids = "";
+      this.selectedRowKeys.forEach((element) => {
+        ids += element.id + ",";
+      });
+      ids = "ids=" + ids.substring(0, ids.length - 1);
+      this.loading = true;
+      delUserBatch(ids)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = true;
+          this.loadData();
+        });
     },
   },
 };

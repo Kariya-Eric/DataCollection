@@ -45,9 +45,8 @@ export function getAction(url, parameter) {
 //deleteAction
 export function deleteAction(url, parameter) {
   return request({
-    url: url,
+    url: url + `?${parameter}`,
     method: "delete",
-    params: parameter,
   });
 }
 

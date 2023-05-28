@@ -43,19 +43,15 @@
 
 <script>
 import PageHeaderLayout from "layouts/PageHeaderLayout";
-import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
+import { initTree } from "@/api/system";
 export default {
   name: "MenuList",
-  mixins: [DataCollectionMixin],
   components: { PageHeaderLayout },
   data() {
     return {
       menuProps: {
         children: "children",
         label: "name",
-      },
-      url: {
-        list: "/portal/sysMenu/getTree",
       },
       menuList: [],
       menuFilter: "",
@@ -66,10 +62,21 @@ export default {
       this.$refs.menuTree.filter(val);
     },
   },
+  created() {
+    this.initTree();
+  },
   methods: {
     filterNode(value, data) {
       if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      return data.name.indexOf(value) !== -1;
+    },
+
+    initTree() {
+      initTree().then((res) => {
+        if (res.state) {
+          this.menuList = res.value;
+        }
+      });
     },
   },
 };

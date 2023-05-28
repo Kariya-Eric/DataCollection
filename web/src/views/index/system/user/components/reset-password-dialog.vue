@@ -7,6 +7,7 @@
         label-width="80px"
         size="small"
         :rules="rules"
+        v-loading="loading"
       >
         <el-form-item prop="password" label="新密码">
           <el-input
@@ -26,7 +27,11 @@
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
+      <el-button
+        type="primary"
+        size="small"
+        @click="handleSubmit"
+        :loading="loading"
         >确 定</el-button
       >
     </div>
@@ -34,11 +39,14 @@
 </template>
 
 <script>
+import { resetPwd } from "@/api/system";
 export default {
   name: "ResetPasswordDialog",
   data() {
     return {
+      loading: false,
       visible: false,
+      userInfo: {},
       resetPasswordForm: {},
       rules: {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
@@ -61,7 +69,8 @@ export default {
   },
 
   methods: {
-    show() {
+    show(info) {
+      this.userInfo = info;
       this.visible = true;
     },
 
@@ -69,12 +78,28 @@ export default {
       this.visible = false;
       this.$refs.resetPasswordForm.resetFields();
       this.resetPasswordForm = {};
+      this.userInfo = {};
     },
 
     handleSubmit() {
       this.$refs.resetPasswordForm.validate((valid) => {
         if (valid) {
           //TODO
+          this.loading = true;
+          let pwdParam = {
+            account: this.userInfo.account,
+            newPwd: this.resetPasswordForm.password,
+          };
+          resetPwd(pwdParam)
+            .then((res) => {
+              if (res.state) {
+                this.$message.success(res.message);
+              } else {
+                this.$message.error(res.message);
+              }
+              this.loading = false;
+            })
+            .finally(() => this.close());
         }
       });
     },

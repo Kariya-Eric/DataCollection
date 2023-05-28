@@ -59,8 +59,8 @@ export const DataCollectionMixin = {
       let params = this.getQueryParams(); //构造查询条件
       postAction(this.url.list, params)
         .then((res) => {
-          this.dataSource = res.data.rows;
-          this.ipagination.total = res.data.total;
+          this.dataSource = res.value.rows;
+          this.ipagination.total = res.value.total;
         })
         .catch((e) => console.log("此处报错", e))
         .finally(() => {

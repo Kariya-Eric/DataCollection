@@ -11,6 +11,7 @@
         label-width="120px"
         size="small"
         :rules="rules"
+        v-loading="loading"
       >
         <el-form-item prop="account" label="帐号">
           <el-input
@@ -94,7 +95,11 @@
     </div>
     <div class="drawer-bottom" v-if="addFlag || updateFlag">
       <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
+      <el-button
+        type="primary"
+        size="small"
+        @click="handleSubmit"
+        :loading="loading"
         >提 交</el-button
       >
     </div>
@@ -102,6 +107,7 @@
 </template>
 
 <script>
+import { addUser, updateUser } from "@/api/system";
 export default {
   name: "UserDrawer",
   data() {
@@ -109,6 +115,7 @@ export default {
       addFlag: false,
       updateFlag: false,
       visible: false,
+      loading: false,
       userForm: {},
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
@@ -184,10 +191,32 @@ export default {
     },
 
     handleAdd() {
-      console.log("add", this.userForm);
+      this.loading = true;
+      addUser(this.userForm)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+          } else {
+            this.$message.error(res.message);
+          }
+          this.loading = false;
+        })
+        .finally(() => this.close());
     },
     handleUpdate() {
-      console.log("update", this.userForm);
+      this.loading = true;
+      updateUser(this.userForm)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+          } else {
+            this.$message.error(res.message);
+          }
+          this.loading = false;
+        })
+        .finally(() => this.close());
     },
   },
 };
