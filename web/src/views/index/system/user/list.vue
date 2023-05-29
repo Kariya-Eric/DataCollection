@@ -3,12 +3,7 @@
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
       <div class="filter-container">
-        <el-form
-          label-width="80px"
-          size="small"
-          :inline="true"
-          @keyup.enter.native="searchQuery"
-        >
+        <el-form label-width="80px" size="small" :inline="true">
           <el-form-item label="部门">
             <el-select
               v-model="queryParam.orgId"

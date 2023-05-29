@@ -2,7 +2,7 @@
   <div>
     <page-header-layout title="菜单列表">
       <el-row :gutter="24">
-        <el-col :span="8">
+        <el-col :span="6">
           <el-card shadow="always" class="app-card">
             <div class="filter-container">
               <div class="search-button-admin">
@@ -17,6 +17,7 @@
               clearable
               size="small"
               prefix-icon="el-icon-search"
+              style="margin-bottom: 12px"
             >
             </el-input>
             <el-tree
@@ -24,16 +25,25 @@
               :data="menuList"
               :props="menuProps"
               :filter-node-method="filterNode"
+              default-expand-all
+              @node-click="nodeClick"
               ref="menuTree"
             ></el-tree>
           </el-card>
         </el-col>
-        <el-col :span="16">
-          <el-card shadow="always" class="app-card">
-            <el-empty
-              description="请选择菜单查看详细信息"
-              v-if="menuFilter === ''"
-            ></el-empty>
+        <el-col :span="18">
+          <el-card
+            shadow="always"
+            class="app-card"
+            v-if="Object.keys(selectedMenu).length === 0"
+          >
+            <el-empty description="请选择菜单查看详细信息"></el-empty>
+          </el-card>
+          <el-card v-else>
+            <div slot="header">
+              <span>菜单详情</span>
+            </div>
+            <right-menu ref="rightMenu" />
           </el-card>
         </el-col>
       </el-row>
@@ -43,10 +53,11 @@
 
 <script>
 import PageHeaderLayout from "layouts/PageHeaderLayout";
+import RightMenu from "./components/right-menu";
 import { initTree } from "@/api/system";
 export default {
   name: "MenuList",
-  components: { PageHeaderLayout },
+  components: { PageHeaderLayout, RightMenu },
   data() {
     return {
       menuProps: {
@@ -55,6 +66,7 @@ export default {
       },
       menuList: [],
       menuFilter: "",
+      selectedMenu: {},
     };
   },
   watch: {
@@ -77,6 +89,11 @@ export default {
           this.menuList = res.value;
         }
       });
+    },
+
+    nodeClick(data, node, _self) {
+      this.selectedMenu = data;
+      this.$nextTick(() => this.$refs.rightMenu.show(data.id));
     },
   },
 };

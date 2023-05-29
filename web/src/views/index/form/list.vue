@@ -7,7 +7,7 @@
           label-width="80px"
           size="small"
           :inline="true"
-          @keyup.enter.native="searchQuery"
+          @submit.native.prevent
         >
           <el-form-item label="合集名称">
             <el-input
@@ -47,22 +47,27 @@
             <el-divider direction="vertical" />
             <a href="javascript:;">复制</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;">删除</a>
+            <el-popconfirm
+              @confirm="delCollection(scope.row)"
+              title="确认删除该合集吗？"
+            >
+              <a href="javascript:;" slot="reference">删除</a>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
       <!-- Table End -->
     </el-card>
-    <add-collection-dialog ref="addCollectionDialog" />
+    <add-collection-dialog ref="addCollectionDialog" @refresh="loadData" />
   </page-header-layout>
 </template>
-
 <script>
 import PageHeaderLayout from "layouts/PageHeaderLayout";
 import Pagination from "components/Pagination";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import AddCollectionDialog from "./components/add-collection-dialog";
+import { delFormCollection } from "@/api/form";
 export default {
   name: "FormList",
   mixins: [DataCollectionMixin],
@@ -70,7 +75,7 @@ export default {
   data() {
     return {
       url: {
-        list: "/uc/api/form/list",
+        list: "/uc/api/formCollection/list",
       },
     };
   },
@@ -81,6 +86,23 @@ export default {
 
     updateCollection(row) {
       this.$refs.addCollectionDialog.show(row);
+    },
+
+    delCollection(row) {
+      let param = "id=" + row.id;
+      this.loading = true;
+      delFormCollection(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.loadData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
   },
 };

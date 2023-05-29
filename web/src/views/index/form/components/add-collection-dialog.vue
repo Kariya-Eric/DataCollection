@@ -12,6 +12,7 @@
         label-width="80px"
         size="small"
         :rules="rules"
+        v-loading="loading"
       >
         <el-form-item prop="name" label="合集名称">
           <el-input
@@ -64,9 +65,11 @@
 </template>
 
 <script>
+import { addFormCollection, updateFormCollection } from "@/api/form";
 export default {
   data() {
     return {
+      loading: false,
       updateFlag: false,
       visible: false,
       addCollectionForm: {},
@@ -81,7 +84,8 @@ export default {
   methods: {
     show(data) {
       if (data) {
-        this.addCollectionForm = data;
+        this.addCollectionForm = JSON.parse(JSON.stringify(data));
+        this.updateFlag = true;
       }
       this.visible = true;
     },
@@ -93,9 +97,46 @@ export default {
     handleSubmit() {
       this.$refs.addCollectionForm.validate((valid) => {
         if (valid) {
-          //TODO
+          if (this.updateFlag) {
+            this.handleUpdate();
+          } else {
+            this.handleAdd();
+          }
         }
       });
+    },
+
+    handleAdd() {
+      this.loading = true;
+      addFormCollection(this.addCollectionForm)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.close();
+          this.loading = false;
+        });
+    },
+
+    handleUpdate() {
+      updateFormCollection(this.addCollectionForm)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.close();
+          this.loading = false;
+        });
     },
   },
 };
