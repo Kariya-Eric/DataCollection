@@ -39,7 +39,7 @@ const user = {
           "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY3Mjk3MTYwNywiaWF0IjoxNjcyODg1MjA3fQ.PWXv7f6xWDjZGCyFJGFTOu2qOHVFvTyYVcnPz3KOVT4nd-3t2qu5EMBMiR5GUfW_1lAJ6auaD7ecP8DJyLbCQQ",
           "username": "测试账号",
           "account": "test",
-          "userId": "用户主键ID"
+          "userId": "1"
         };
         Vue.ls.set(ACCESS_TOKEN, data.token, 7 * 24 * 60 * 60 * 1000);
         Vue.ls.set(USER_INFO, data);

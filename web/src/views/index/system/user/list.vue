@@ -28,7 +28,11 @@
             @click="searchQuery"
             >搜索</el-button
           >
-          <el-button type="primary" size="small" icon="el-icon-refresh-right"
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-refresh-right"
+            @click="searchReset"
             >重置</el-button
           >
         </el-form>

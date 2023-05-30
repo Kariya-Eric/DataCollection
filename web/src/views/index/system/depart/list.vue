@@ -20,6 +20,7 @@
               clearable
               size="small"
               prefix-icon="el-icon-search"
+              style="margin-bottom: 12px"
             >
             </el-input>
             <el-tree
@@ -27,6 +28,7 @@
               :data="departList"
               :props="departProps"
               :filter-node-method="filterNode"
+              @node-click="nodeClick"
               ref="departTree"
             ></el-tree>
           </el-card>
@@ -36,13 +38,14 @@
             <el-tab-pane label="组织信息" name="first">
               <el-empty
                 description="请选择部门查看详细信息"
-                v-if="departFilter !== ''"
+                v-if="Object.keys(selectedDept).length === 0"
               />
               <div v-else class="mainform">
                 <el-form
                   label-width="120px"
                   v-model="departForm"
                   ref="departForm"
+                  v-loading="loading"
                 >
                   <el-form-item label="上级部门">
                     <el-select
@@ -98,7 +101,7 @@
             <el-tab-pane label="组织人员" name="second">
               <el-empty
                 description="请选择部门查看详细信息"
-                v-if="departFilter === ''"
+                v-if="Object.keys(selectedDept).length === 0"
               />
             </el-tab-pane>
           </el-tabs>
@@ -110,10 +113,11 @@
 
 <script>
 import PageHeaderLayout from "layouts/PageHeaderLayout";
-import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
+import Vue from "vue";
+import { USER_INFO } from "@/store/mutation-types";
+import { initDeptTree } from "@/api/system";
 export default {
   name: "DepartList",
-  mixins: [DataCollectionMixin],
   components: { PageHeaderLayout },
   data() {
     return {
@@ -121,13 +125,12 @@ export default {
         children: "children",
         label: "name",
       },
-      url: {
-        list: "/uc/api/org/v1/org/getOrgTree",
-      },
       departList: [],
       departFilter: "",
       activeTable: "first",
       departForm: {},
+      selectedDept: {},
+      loading: false,
     };
   },
   watch: {
@@ -135,10 +138,26 @@ export default {
       this.$refs.departTree.filter(val);
     },
   },
+  created() {
+    this.initDepart();
+  },
   methods: {
     filterNode(value, data) {
       if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      return data.name.indexOf(value) !== -1;
+    },
+
+    initDepart() {
+      let userInfo = Vue.ls.get(USER_INFO);
+      initDeptTree(userInfo.userId).then((res) => {
+        if (res.state) {
+          this.departList = res.value;
+        }
+      });
+    },
+
+    nodeClick(data, node, _self) {
+      this.selectedDept = data;
     },
   },
 };

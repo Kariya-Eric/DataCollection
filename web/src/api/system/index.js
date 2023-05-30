@@ -14,7 +14,11 @@ const addRole = (params) => postAction("/uc/api/role/addRole", params);
 //修改角色
 const updateRole = (params) => putAction("/uc/api/role/updateRole", params);
 //获取菜单树
-const initTree = (params) => getAction("/uc/api/sysMenu/getTree", params);
+const initMenuTree = (params) => getAction("/uc/api/sysMenu/getTree", params);
+//根据id获取菜单详情
+const getMenu = (params) => getAction(`/uc/api/sysMenu/get?id=${params}`);
+//获取组织树
+const initDeptTree = (params) => getAction(`/uc/api/org/getOrgTree?userId=${params}`);
 
 export {
   addUser,
@@ -23,5 +27,7 @@ export {
   delUserBatch,
   addRole,
   updateRole,
-  initTree,
+  initMenuTree,
+  getMenu,
+  initDeptTree
 };

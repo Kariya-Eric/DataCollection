@@ -46,7 +46,9 @@ export default {
     return {
       loading: false,
       visible: false,
-      roleForm: {},
+      roleForm: {
+        enabled: 0,
+      },
       addFlag: false,
       rules: {
         name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
@@ -59,7 +61,8 @@ export default {
     show(addFlag, info) {
       this.visible = true;
       if (info) {
-        this.roleForm = JSON.parse(JSON.stringify(info));
+        const { enabled, code, name } = JSON.parse(JSON.stringify(info));
+        this.roleForm = { enabled, code, name };
       }
       this.addFlag = addFlag;
     },
@@ -67,7 +70,7 @@ export default {
     close() {
       this.visible = false;
       this.$refs.roleForm.resetFields();
-      this.roleForm = {};
+      this.roleForm = { enabled: 0 };
     },
 
     handleSubmit() {

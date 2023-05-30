@@ -120,7 +120,10 @@ export default {
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, message: "密码长度不小于6位", trigger: "blur" },
+        ],
         orgId: [{ required: true, message: "请选择部门", trigger: "blur" }],
         role: [{ required: true, message: "请选择角色", trigger: "blur" }],
         comfirmPwd: [

@@ -86,6 +86,8 @@ export default {
       if (data) {
         this.addCollectionForm = JSON.parse(JSON.stringify(data));
         this.updateFlag = true;
+      } else {
+        this.updateFlag = false;
       }
       this.visible = true;
     },

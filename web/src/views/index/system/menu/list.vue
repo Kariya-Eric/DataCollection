@@ -2,7 +2,7 @@
   <div>
     <page-header-layout title="菜单列表">
       <el-row :gutter="24">
-        <el-col :span="6">
+        <el-col :span="8">
           <el-card shadow="always" class="app-card">
             <div class="filter-container">
               <div class="search-button-admin">
@@ -31,7 +31,7 @@
             ></el-tree>
           </el-card>
         </el-col>
-        <el-col :span="18">
+        <el-col :span="16">
           <el-card
             shadow="always"
             class="app-card"
@@ -54,7 +54,7 @@
 <script>
 import PageHeaderLayout from "layouts/PageHeaderLayout";
 import RightMenu from "./components/right-menu";
-import { initTree } from "@/api/system";
+import { initMenuTree } from "@/api/system";
 export default {
   name: "MenuList",
   components: { PageHeaderLayout, RightMenu },
@@ -84,7 +84,7 @@ export default {
     },
 
     initTree() {
-      initTree().then((res) => {
+      initMenuTree().then((res) => {
         if (res.state) {
           this.menuList = res.value;
         }
