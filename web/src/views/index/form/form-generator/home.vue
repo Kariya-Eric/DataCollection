@@ -1,5 +1,10 @@
 <template>
-  <el-dialog :visible="visible" fullscreen @close="close">
+  <el-dialog
+    :visible="visible"
+    fullscreen
+    @close="close"
+    :append-to-body="true"
+  >
     <div slot="title">
       <span>表单设计</span>
     </div>

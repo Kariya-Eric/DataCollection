@@ -199,6 +199,16 @@ export const constantRouterMap = [
           icon: "list",
         },
       },
+      {
+        path: '/form/detail/:id/:name/:type/:year',
+        name: "formDetail",
+        component: () => import("@/views/index/form/detail"),
+        hidden: true,
+        meta: {
+          title: "表单详情",
+          icon: "list"
+        }
+      }
     ],
   },
   {
@@ -227,28 +237,6 @@ export const constantRouterMap = [
         meta: {
           title: "报告详情",
           icon: "list",
-        },
-      },
-    ],
-  },
-  {
-    path: "/test",
-    component: BasicLayout,
-    name: "测试",
-    alwaysShow: true,
-    meta: {
-      title: "测试表单",
-      icon: "dashboard",
-      // permission: ['monitorcenter', 'taskcenter']
-    },
-    children: [
-      {
-        path: "/test/form",
-        name: "testForm",
-        component: () => import("@/views/index/test/list"),
-        meta: {
-          title: "自定义表单",
-          icon: "test",
         },
       },
     ],

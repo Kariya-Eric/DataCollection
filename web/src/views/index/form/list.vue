@@ -39,7 +39,9 @@
         <el-table-column label="年份" prop="year" align="center" />
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <a href="javascript:;">合集类型</a>
+            <a href="javascript:;" @click="showCollectionDetail(scope.row)"
+              >合集详情</a
+            >
             <el-divider direction="vertical" />
             <a href="javascript:;" @click="updateCollection(scope.row)"
               >合集属性</a
@@ -103,6 +105,11 @@ export default {
         .finally(() => {
           this.loading = false;
         });
+    },
+
+    showCollectionDetail(row) {
+      const { id, name, type, year } = row;
+      this.$router.push({ path: `/form/detail/${id}/${name}/${type}/${year}` });
     },
   },
 };
