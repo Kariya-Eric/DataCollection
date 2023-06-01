@@ -134,6 +134,7 @@ export default {
     },
 
     close() {
+      this.$refs.addFormForm.resetFields();
       this.visible = false;
     },
 
