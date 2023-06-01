@@ -28,20 +28,23 @@
             placeholder="请输入表单名称"
           />
         </el-form-item>
-        <el-form-item prop="formBigType" label="表单大类">
+        <el-form-item prop="formCategories" label="表单大类">
           <el-select
-            v-model="addFormForm.formBigType"
+            v-model="addFormForm.formCategories"
             placeholder="请选择表单大类"
             style="width: 100%"
           >
-            <el-option label="1.学校基本信息" :value="1" />
-            <el-option label="2.学校基本条件" :value="2" />
-            <el-option label="3.教师信息" :value="3" />
+            <el-option
+              v-for="item in formCategoryList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item prop="formTime" label="统计时间类型">
+        <el-form-item prop="collectTimeType" label="统计时间类型">
           <el-select
-            v-model="addFormForm.formTime"
+            v-model="addFormForm.collectTimeType"
             placeholder="请选择统计时间类型"
             style="width: 100%"
           >
@@ -51,10 +54,13 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="formType" label="表单类型">
-          <el-radio v-model="addFormForm.formType" label="1">固定表单</el-radio>
+          <el-radio-group v-model="addFormForm.formType">
+            <el-radio label="浮动表单"></el-radio>
+            <el-radio label="固定表单"></el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item prop="isNessasary" label="是否必填">
-          <el-switch v-model="addFormForm.isNessasary" />
+        <el-form-item label="是否必填">
+          <el-switch v-model="addFormForm.required" />
         </el-form-item>
         <el-form-item prop="sort" label="排序">
           <el-input-number v-model="addFormForm.sort" />
@@ -71,11 +77,12 @@
         >提 交</el-button
       >
     </div>
-    <form-generator ref="formGenerator" />
+    <form-generator ref="formGenerator" @saveForm="saveForm" />
   </el-drawer>
 </template>
 
 <script>
+import { getFormCategories, addForm } from "@/api/form";
 import FormGenerator from "../form-generator/home";
 export default {
   name: "AddFormDrawer",
@@ -88,14 +95,15 @@ export default {
       updateFlag: false,
       loading: false,
       addFormForm: {},
+      formCategoryList: [],
       rules: {
         name: [{ required: true, message: "请输入合集名称" }],
         type: [{ required: true, message: "请选择合集类型" }],
         year: [{ required: true, message: "请选择年份" }],
         formType: [{ required: true, message: "请选择表单类型" }],
         formName: [{ required: true, message: "请输入表单名称" }],
-        formBigType: [{ required: true, message: "请选择表单大类" }],
-        formTime: [{ required: true, message: "请选择统计时间类型" }],
+        formCategories: [{ required: true, message: "请选择表单大类" }],
+        collectTimeType: [{ required: true, message: "请选择统计时间类型" }],
         sort: [{ required: true, message: "请输入排序" }],
       },
     };
@@ -107,11 +115,24 @@ export default {
       } else {
         this.updateFlag = false;
       }
+      this.addFormForm.formCollectionId = collection.id;
       this.addFormForm.name = collection.name;
       this.addFormForm.type = collection.type;
       this.addFormForm.year = collection.year;
+      let pageBean = {
+        page: 1,
+        pageSize: 1000,
+        showTotal: true,
+      };
+      const param = { id: collection.id, pageBean };
+      getFormCategories(param).then((res) => {
+        if (res.state) {
+          this.formCategoryList = res.value.rows;
+        }
+      });
       this.visible = true;
     },
+
     close() {
       this.visible = false;
     },
@@ -122,6 +143,34 @@ export default {
           this.$refs.formGenerator.show();
         }
       });
+    },
+
+    saveForm(form, rules) {
+      const { collectTimeType, formCategories, sort, formCollectionId } =
+        this.addFormForm;
+      let params = {
+        name: this.addFormForm.formName,
+        type: this.addFormForm.formType,
+        required: this.addFormForm.required ? this.addFormForm.required : false,
+        formCollectionId,
+        collectTimeType,
+        formCategories,
+        sort,
+        rowNum: 10,
+        cellNum: 4,
+      };
+      this.loading = true;
+      addForm(params)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+            this.close();
+          } else {
+            this.$message.console.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };

@@ -114,6 +114,7 @@ import {
   selectComponents,
   layoutComponents,
   otherComponents,
+  componentsVisible,
 } from "./generator/config";
 import drawingDefault from "./config/drawingDefault";
 import { saveDrawingList, getIdGlobal, saveIdGlobal } from "./utils/db";
@@ -121,7 +122,6 @@ import { deepClone } from "./utils";
 import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
 import FormDrawer from "./components/form-drawer.vue";
-
 let oldActiveId;
 let tempActiveData;
 const idGlobal = getIdGlobal();
@@ -134,6 +134,7 @@ export default {
       visible: false,
       idGlobal,
       formConf,
+      componentsVisible,
       inputComponents,
       selectComponents,
       layoutComponents,
@@ -327,7 +328,8 @@ export default {
       if (validateFields !== "") {
         this.$message.warning(validateFields);
       } else {
-        console.log("form", this.formData);
+        this.$emit("saveForm", this.formData, this.componentsVisible);
+        this.visible = false;
       }
     },
 

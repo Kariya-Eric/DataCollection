@@ -1,18 +1,35 @@
 <template>
   <page-header-layout title="任务列表">
     <el-card shadow="always" class="app-card">
-      <el-descriptions style="margin-top: 12px; margin-left: 12px">
-        <el-descriptions-item label="合集名称">{{
-          collectionDetail.name
-        }}</el-descriptions-item>
-        <el-descriptions-item label="年份">{{
-          collectionDetail.year
-        }}</el-descriptions-item>
-        <el-descriptions-item>
-          <el-button size="small">配置表单大类</el-button>
-          <el-button size="small" @click="addForm">新建表单</el-button>
-        </el-descriptions-item>
-      </el-descriptions>
+      <el-row style="margin-top: 12px; margin-bottom: 12px">
+        <el-col :span="12">
+          <el-descriptions
+            style="margin-top: 12px; margin-left: 12px"
+            :column="2"
+          >
+            <el-descriptions-item label="合集名称">{{
+              collectionDetail.name
+            }}</el-descriptions-item>
+            <el-descriptions-item label="年份">{{
+              collectionDetail.year
+            }}</el-descriptions-item>
+          </el-descriptions>
+        </el-col>
+        <el-col :span="12">
+          <div style="float: right; margin-right: 12px">
+            <el-button size="small" @click="updateFormCategory" type="primary"
+              >配置表单大类</el-button
+            >
+            <el-button
+              type="primary"
+              size="small"
+              @click="addForm"
+              icon="el-icon-plus"
+              >新建表单</el-button
+            >
+          </div>
+        </el-col>
+      </el-row>
       <el-table
         style="margin-top: 12px"
         :loading="loading"
@@ -21,17 +38,47 @@
         :data="dataSource"
       >
         <el-table-column label="表单名称" prop="name" align="center" />
-        <el-table-column label="表单大类" prop="name" align="center" />
-        <el-table-column label="统计时间类型" prop="name" align="center" />
-        <el-table-column label="表单类型" prop="name" align="center" />
-        <el-table-column label="是否必填" prop="name" align="center" />
+        <el-table-column
+          label="表单大类"
+          prop="formCategories"
+          align="center"
+        />
+        <el-table-column
+          label="统计时间类型"
+          prop="collectTimeType"
+          align="center"
+        />
+        <el-table-column label="表单类型" prop="type" align="center" />
+        <el-table-column
+          label="是否必填"
+          prop="required"
+          align="center"
+          width="80px"
+        >
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.required" />
+          </template>
+        </el-table-column>
         <el-table-column
           label="启用"
-          prop="name"
+          prop="enabledFlag"
           align="center"
-        ></el-table-column>
-        <el-table-column label="前置表单" prop="name" align="center" />
-        <el-table-column label="操作" prop="name" align="center">
+          width="80px"
+        >
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.enabledFlag"
+              :inactive-value="0"
+              :active-value="1"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="前置表单"
+          prop="formProperties"
+          align="center"
+        />
+        <el-table-column label="操作" align="center" width="250px">
           <template slot-scope="scope">
             <a href="javascript:;">表单详情</a>
             <el-divider direction="vertical" />
@@ -39,7 +86,10 @@
             <el-divider direction="vertical" />
             <a href="javascript:;">复制</a>
             <el-divider direction="vertical" />
-            <el-popconfirm title="确认删除该表单吗？">
+            <el-popconfirm
+              title="确认删除该表单吗？"
+              @confirm="delForm(scope.row)"
+            >
               <a href="javascript:;" slot="reference">删除</a>
             </el-popconfirm>
           </template>
@@ -47,7 +97,8 @@
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
-    <add-form-drawer ref="addFormDrawer" />
+    <add-form-drawer ref="addFormDrawer" @refresh="getFormList" />
+    <update-form-category ref="updateFormCategory" />
   </page-header-layout>
 </template>
 
@@ -55,9 +106,16 @@
 import PageHeaderLayout from "layouts/PageHeaderLayout";
 import Pagination from "components/Pagination";
 import AddFormDrawer from "./components/add-form-drawer";
+import UpdateFormCategory from "./components/update-form-category";
+import { getFormList, delForm } from "@/api/form";
 export default {
   name: "FormDetail",
-  components: { PageHeaderLayout, Pagination, AddFormDrawer },
+  components: {
+    PageHeaderLayout,
+    Pagination,
+    AddFormDrawer,
+    UpdateFormCategory,
+  },
   data() {
     return {
       collectionDetail: {},
@@ -72,13 +130,53 @@ export default {
     };
   },
   created() {
-    this.collectionDetail = this.$route.params;
+    this.getFormList();
   },
   methods: {
     loadData() {},
 
     addForm() {
       this.$refs.addFormDrawer.show(this.collectionDetail);
+    },
+
+    updateFormCategory() {
+      this.$refs.updateFormCategory.show(this.collectionDetail);
+    },
+
+    getFormList() {
+      this.collectionDetail = this.$route.params;
+      let pageBean = {
+        page: this.ipagination.current,
+        pageSize: this.ipagination.pageSize,
+        showTotal: true,
+      };
+      const param = { id: this.$route.params.id, pageBean };
+      this.loading = true;
+      getFormList(param)
+        .then((res) => {
+          if (res.state) {
+            this.dataSource = res.value.rows;
+            this.ipagination.total = res.value.total;
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    delForm(row) {
+      let param = "id=" + row.id;
+      this.loading = true;
+      delForm(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+          this.getFormList();
+        });
     },
   },
 };
