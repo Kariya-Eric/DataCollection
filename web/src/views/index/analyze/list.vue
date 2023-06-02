@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-layout title="分析报告">
+    <page-header-layout>
       <el-card shadow="always" class="app-card">
         <el-row>
           <el-col :span="6">

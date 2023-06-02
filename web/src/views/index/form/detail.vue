@@ -1,5 +1,5 @@
 <template>
-  <page-header-layout title="任务列表">
+  <page-header-layout>
     <el-card shadow="always" class="app-card">
       <el-row style="margin-top: 12px; margin-bottom: 12px">
         <el-col :span="12">

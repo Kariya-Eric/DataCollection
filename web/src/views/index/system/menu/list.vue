@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-layout title="菜单列表">
+    <page-header-layout>
       <el-row :gutter="24">
         <el-col :span="8">
           <el-card shadow="always" class="app-card">

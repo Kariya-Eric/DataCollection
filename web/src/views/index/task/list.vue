@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-layout title="任务列表">
+    <page-header-layout>
       <el-card shadow="always" class="app-card">
         <!-- Query Start -->
         <el-row class="search-row">

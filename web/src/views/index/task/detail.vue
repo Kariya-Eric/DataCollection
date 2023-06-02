@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-layout title="分析报告">
+    <page-header-layout>
       <el-card shadow="always" style="margin-bottom: 8px">
         <!-- Query Start -->
         <el-row class="search-row" style="margin-bottom: 0px">

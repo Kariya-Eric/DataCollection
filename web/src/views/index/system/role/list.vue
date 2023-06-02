@@ -1,5 +1,5 @@
 <template>
-  <page-header-layout title="角色列表">
+  <page-header-layout>
     <el-row :gutter="24">
       <el-col :span="leftCol">
         <el-card shadow="always" class="app-card">

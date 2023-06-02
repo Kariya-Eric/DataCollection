@@ -14,12 +14,6 @@
 
 <script>
 export default {
-  props: {
-    title: {
-      type: [String, Boolean],
-      default: true,
-    },
-  },
   created() {
     if (this.$route.path != "/dashboard/analysis") {
       this.addIndexToFirst();

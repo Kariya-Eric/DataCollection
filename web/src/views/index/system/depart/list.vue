@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-layout title="部门列表">
+    <page-header-layout>
       <el-row :gutter="24">
         <el-col :span="10">
           <el-card shadow="always" class="app-card">
