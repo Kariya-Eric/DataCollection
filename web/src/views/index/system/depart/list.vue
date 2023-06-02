@@ -4,15 +4,13 @@
       <el-row :gutter="24">
         <el-col :span="10">
           <el-card shadow="always" class="app-card">
-            <div class="filter-container">
-              <div class="search-button-admin">
-                <el-button type="primary" size="small" icon="el-icon-plus"
-                  >添加组织</el-button
-                >
-                <el-button type="primary" size="small" icon="el-icon-plus"
-                  >添加下级</el-button
-                >
-              </div>
+            <div style="margin-bottom: 12px">
+              <el-button type="primary" size="small" icon="el-icon-plus"
+                >添加组织</el-button
+              >
+              <el-button type="primary" size="small" icon="el-icon-plus"
+                >添加下级</el-button
+              >
             </div>
             <el-input
               placeholder="输入部门名称"

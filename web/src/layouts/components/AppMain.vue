@@ -4,7 +4,9 @@
       <transition name="fade-transform" mode="out-in">
         <!-- or name="fade" -->
         <!-- <router-view :key="key"></router-view> -->
-        <router-view />
+        <keep-alive>
+          <router-view />
+        </keep-alive>
       </transition>
     </section>
     <app-footer />
@@ -12,18 +14,18 @@
 </template>
 
 <script>
-import AppFooter from './AppFooter';
+import AppFooter from "./AppFooter";
 
 export default {
-  name: 'AppMain',
+  name: "AppMain",
   components: {
-    AppFooter
+    AppFooter,
   },
   computed: {
     // key() {
     //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
     // }
-  }
+  },
 };
 </script>
 

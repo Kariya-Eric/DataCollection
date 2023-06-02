@@ -1,33 +1,45 @@
 <template>
   <div>
     <page-header-layout title="分析报告">
-      <el-card shadow="always" style="margin-bottom: 12px">
+      <el-card shadow="always" style="margin-bottom: 8px">
         <!-- Query Start -->
-        <div class="filter-container">
-          <el-form
-            label-width="80px"
-            size="small"
-            :inline="true"
-            @keyup.enter.native="searchQuery"
-          >
-            <el-form-item label="年份">
-              <el-select v-model="queryParam.year" placeholder="请选择">
-                <el-option label="2022" value="2022" />
-                <el-option label="2021" value="2021" />
-                <el-option label="2020" value="2020" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="报告类型">
-              <el-select v-model="queryParam.type" placeholder="请选择">
-                <el-option
-                  label="本科教学状态数据分析报告"
-                  value="本科教学状态数据分析报告"
-                />
-                <el-option label="本科教学质量报告" value="本科教学质量报告" />
-              </el-select>
-            </el-form-item>
-          </el-form>
-        </div>
+        <el-row class="search-row" style="margin-bottom: 0px">
+          <el-col :span="22">
+            <div class="filter-container">
+              <el-form
+                label-width="70px"
+                size="small"
+                :inline="true"
+                @keyup.enter.native="searchQuery"
+              >
+                <el-form-item label="年份">
+                  <el-select v-model="queryParam.year" placeholder="请选择">
+                    <el-option label="2022" value="2022" />
+                    <el-option label="2021" value="2021" />
+                    <el-option label="2020" value="2020" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="报告类型">
+                  <el-select v-model="queryParam.type" placeholder="请选择">
+                    <el-option
+                      label="本科教学状态数据分析报告"
+                      value="本科教学状态数据分析报告"
+                    />
+                    <el-option
+                      label="本科教学质量报告"
+                      value="本科教学质量报告"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-col>
+          <el-col :span="2">
+            <div class="search-button-admin">
+              <el-button type="primary" size="small">导出</el-button>
+            </div>
+          </el-col>
+        </el-row>
       </el-card>
       <!-- Query End -->
       <el-row :gutter="24">

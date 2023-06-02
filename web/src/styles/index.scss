@@ -85,27 +85,40 @@ a:hover {
 .link-type:focus {
   color: #2d8cf0;
   cursor: pointer;
+
   &:hover {
     color: #2d8cf0;
   }
 }
 
-.filter-container {
-  .el-form--inline {
-    margin-left: 0px;
-    margin-top: 12px;
-    .el-form-item__label {
-      font-size: 13.2px;
-      letter-spacing: 0.3ch;
-    }
-  }
-}
-.search-button-admin {
+.search-row {
+  margin-bottom: 12px;
   margin-top: 12px;
-  margin-bottom: 18px;
-  .el-button + .el-button{
+}
+
+.filter-container {
+  margin-left: 12px;
+  // .el-form--inline {
+  //   margin-left: 0px;
+  //   margin-top: 12px;
+
+  //   .el-form-item__label {
+  //     font-size: 13.2px;
+  //     letter-spacing: 0.3ch;
+  //   }
+  // }
+}
+
+.search-button-admin {
+  float: right;
+  margin-right: 12px;
+
+  // margin-top: 12px;
+  // margin-bottom: 18px;
+  .el-button+.el-button {
     margin-left: 6px;
   }
+
   a {
     font-size: 13px;
     text-decoration: underline;

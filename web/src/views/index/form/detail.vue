@@ -82,7 +82,7 @@
           <template slot-scope="scope">
             <a href="javascript:;">表单详情</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;">表单属性</a>
+            <a href="javascript:;" @click="formDetail(scope.row)">表单属性</a>
             <el-divider direction="vertical" />
             <a href="javascript:;">复制</a>
             <el-divider direction="vertical" />
@@ -129,8 +129,16 @@ export default {
       },
     };
   },
-  created() {
-    this.getFormList();
+
+  watch: {
+    $route: {
+      handler(newRoute) {
+        if (newRoute.name == "formDetail") {
+          this.getFormList();
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
     loadData() {},
@@ -177,6 +185,10 @@ export default {
           this.loading = false;
           this.getFormList();
         });
+    },
+
+    formDetail(row) {
+      this.$refs.addFormDrawer.show(this.collectionDetail, row);
     },
   },
 };

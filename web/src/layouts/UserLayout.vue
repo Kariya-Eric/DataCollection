@@ -10,9 +10,9 @@
         </div>
         <div class="desc">DataCollection</div>
       </div>
-
-      <router-view />
-
+      <keep-alive>
+        <router-view />
+      </keep-alive>
       <div class="footer">
         <div class="links">AcroDesginVue不如AntDesgin-Vue一根</div>
         <div class="links">

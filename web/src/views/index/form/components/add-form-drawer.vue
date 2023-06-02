@@ -112,8 +112,19 @@ export default {
     show(collection, form) {
       if (form) {
         this.updateFlag = true;
+        const { type, name, sort, required, collectTimeType, formCategories } =
+          form;
+        this.addFormForm = {
+          formName: name,
+          sort,
+          formType: type,
+          collectTimeType,
+          required,
+          formCategories,
+        };
       } else {
         this.updateFlag = false;
+        this.addFormForm = {};
       }
       this.addFormForm.formCollectionId = collection.id;
       this.addFormForm.name = collection.name;

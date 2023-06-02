@@ -2,31 +2,37 @@
   <page-header-layout title="任务列表">
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
-      <div class="filter-container">
-        <el-form
-          label-width="80px"
-          size="small"
-          :inline="true"
-          @submit.native.prevent
-        >
-          <el-form-item label="合集名称">
-            <el-input
-              v-model="queryParam.name"
-              placeholder="请输入合集名称"
-              @keyup.enter.native="searchQuery"
-            />
-          </el-form-item>
-        </el-form>
-        <div class="search-button-admin">
-          <el-button
-            type="primary"
-            size="small"
-            icon="el-icon-plus"
-            @click="addCollection"
-            >新建合集</el-button
-          >
-        </div>
-      </div>
+      <el-row class="search-row">
+        <el-col :span="16">
+          <div class="filter-container">
+            <el-form
+              label-width="80px"
+              size="small"
+              :inline="true"
+              @submit.native.prevent
+            >
+              <el-form-item label="合集名称">
+                <el-input
+                  v-model="queryParam.name"
+                  placeholder="请输入合集名称"
+                  @keyup.enter.native="searchQuery"
+                />
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="search-button-admin">
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-plus"
+              @click="addCollection"
+              >新建合集</el-button
+            >
+          </div>
+        </el-col>
+      </el-row>
       <!-- Table Start -->
       <el-table
         v-loading="loading"

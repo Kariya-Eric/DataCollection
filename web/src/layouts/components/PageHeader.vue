@@ -1,5 +1,15 @@
 <template>
-  <div class="page-header"></div>
+  <div class="page-header">
+    <el-tabs v-model="activePage" style="margin: -8px -4px">
+      <el-tab-pane
+        v-for="page in pageList"
+        :key="page.fullPath"
+        :name="page.fullPath"
+      >
+        <span slot="label">&nbsp;{{ page.meta.title }}&nbsp;</span>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <script>
@@ -10,143 +20,68 @@ export default {
       default: true,
     },
   },
-  created() {},
+  created() {
+    if (this.$route.path != "/dashboard/analysis") {
+      this.addIndexToFirst();
+    }
+    let currentRoute = Object.assign({}, this.$route);
+    currentRoute.meta = Object.assign({}, currentRoute.meta);
+    this.pageList.push(currentRoute);
+    this.linkList.push(currentRoute.fullPath);
+    this.activePage = currentRoute.fullPath;
+  },
+  watch: {
+    $route: function (newRoute) {
+      if (this.linkList.indexOf(newRoute.fullPath) < 0) {
+        this.linkList.push(newRoute.fullPath);
+        this.pageList.push(Object.assign({}, newRoute));
+      } else if (this.linkList.indexOf(newRoute.fullPath) >= 0) {
+        let oldIndex = this.linkList.indexOf(newRoute.fullPath);
+        let oldPositionRoute = this.pageList[oldIndex];
+        this.pageList.splice(
+          oldIndex,
+          1,
+          Object.assign({}, newRoute, { meta: oldPositionRoute.meta })
+        );
+      }
+    },
+
+    activePage: function (key) {
+      let index = this.linkList.lastIndexOf(key);
+      let waitRouter = this.pageList[index];
+      if (waitRouter.fullPath !== this.$route.fullPath) {
+        this.$router.push(Object.assign({}, waitRouter));
+      }
+    },
+  },
+  data() {
+    return {
+      pageList: [],
+      linkList: [],
+      activePage: "",
+    };
+  },
+  methods: {
+    removeTab() {},
+    addIndexToFirst() {
+      this.pageList.splice(0, 0, {
+        name: "Analysis",
+        path: "/dashboard/analysis",
+        meta: {
+          title: "首页",
+        },
+      });
+      this.linkList.splice(0, 0, "/dashboard/analysis");
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .page-header {
   background: #fff;
-  height: 52px;
+  height: 48px;
   padding: 16px 32px 0px;
   border-bottom: 1px solid #e8e8e8;
-
-  // .breadcrumb {
-  //   margin-bottom: 16px;
-  // }
-
-  .detail {
-    display: flex;
-    /*margin-bottom: 16px;*/
-
-    .avatar {
-      flex: 0 1 72px;
-      margin: 0 24px 8px 0;
-
-      & > span {
-        border-radius: 72px;
-        display: block;
-        width: 72px;
-        height: 72px;
-      }
-    }
-
-    .main {
-      width: 100%;
-      flex: 0 1 auto;
-
-      .row {
-        display: flex;
-        width: 100%;
-
-        .avatar {
-          margin-bottom: 16px;
-        }
-      }
-
-      .title {
-        font-size: 20px;
-        font-weight: 500;
-
-        font-size: 20px;
-        line-height: 28px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.85);
-        margin-bottom: 16px;
-        margin-top: 0px;
-        flex: auto;
-      }
-      .logo {
-        width: 28px;
-        height: 28px;
-        border-radius: 4px;
-        margin-right: 16px;
-      }
-      .content,
-      .headerContent {
-        flex: auto;
-        color: rgba(0, 0, 0, 0.45);
-        line-height: 22px;
-
-        .link {
-          margin-top: 16px;
-          line-height: 24px;
-
-          a {
-            font-size: 14px;
-            margin-right: 32px;
-          }
-        }
-      }
-      .extra {
-        flex: 0 1 auto;
-        margin-left: 88px;
-        min-width: 242px;
-        text-align: right;
-      }
-      .action {
-        margin-left: 56px;
-        min-width: 266px;
-        flex: 0 1 auto;
-        text-align: right;
-        &:empty {
-          display: none;
-        }
-      }
-    }
-  }
-}
-
-.mobile .page-header {
-  .main {
-    .row {
-      flex-wrap: wrap;
-
-      .avatar {
-        flex: 0 1 25%;
-        margin: 0 2% 8px 0;
-      }
-      .content,
-      .headerContent {
-        flex: 0 1 70%;
-
-        .link {
-          margin-top: 16px;
-          line-height: 24px;
-
-          a {
-            font-size: 14px;
-            margin-right: 10px;
-          }
-        }
-      }
-      .extra {
-        flex: 1 1 auto;
-        margin-left: 0;
-        min-width: 0;
-        text-align: right;
-      }
-      .action {
-        margin-left: unset;
-        min-width: 266px;
-        flex: 0 1 auto;
-        text-align: left;
-        margin-bottom: 12px;
-        &:empty {
-          display: none;
-        }
-      }
-    }
-  }
 }
 </style>

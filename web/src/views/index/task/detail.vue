@@ -1,48 +1,59 @@
 <template>
   <div>
     <page-header-layout title="分析报告">
-      <el-card shadow="always" style="margin-bottom: 12px">
+      <el-card shadow="always" style="margin-bottom: 8px">
         <!-- Query Start -->
-        <div class="filter-container">
-          <el-form
-            label-width="80px"
-            size="small"
-            :inline="true"
-            @keyup.enter.native="searchQuery"
-          >
-            <el-form-item label="任务名称">
-              <el-select v-model="queryParam.name" placeholder="请选择">
-                <el-option
-                  label="2022年状态数据填报"
-                  value="2022年状态数据填报"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="表单大类">
-              <el-select v-model="queryParam.type" placeholder="请选择">
-                <el-option label="全部" value="全部" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="状态">
-              <el-select v-model="queryParam.type" placeholder="请选择">
-                <el-option label="全部" value="全部" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="表单名称">
-              <el-input
-                v-model="queryParam.formName"
-                placeholder="请输入表单名称"
-              />
-            </el-form-item>
-            <el-button type="primary" size="small" icon="el-icon-search"
-              >搜索</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-refresh-right"
-              >重置</el-button
-            >
-            <el-button type="primary" size="small">一键催办</el-button>
-          </el-form>
-        </div>
+        <el-row class="search-row" style="margin-bottom: 0px">
+          <el-col :span="22">
+            <div class="filter-container">
+              <el-form
+                label-width="70px"
+                size="small"
+                :inline="true"
+                @keyup.enter.native="searchQuery"
+              >
+                <el-form-item label="任务名称">
+                  <el-select v-model="queryParam.name" placeholder="请选择">
+                    <el-option
+                      label="2022年状态数据填报"
+                      value="2022年状态数据填报"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="表单大类">
+                  <el-select v-model="queryParam.type" placeholder="请选择">
+                    <el-option label="全部" value="全部" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="状态">
+                  <el-select v-model="queryParam.type" placeholder="请选择">
+                    <el-option label="全部" value="全部" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="表单名称">
+                  <el-input
+                    v-model="queryParam.formName"
+                    placeholder="请输入表单名称"
+                  />
+                </el-form-item>
+                <el-button type="primary" size="small" icon="el-icon-search"
+                  >搜索</el-button
+                >
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-refresh-right"
+                  >重置</el-button
+                >
+              </el-form>
+            </div>
+          </el-col>
+          <el-col :span="2">
+            <div class="search-button-admin">
+              <el-button type="primary" size="small">一键催办</el-button>
+            </div>
+          </el-col>
+        </el-row>
       </el-card>
       <el-card shadow="always">
         <el-tabs v-model="activeName">

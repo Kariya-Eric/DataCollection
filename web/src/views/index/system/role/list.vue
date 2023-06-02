@@ -4,50 +4,61 @@
       <el-col :span="leftCol">
         <el-card shadow="always" class="app-card">
           <!-- Query Start -->
-          <div class="filter-container">
-            <el-form label-width="80px" size="small" :inline="true">
-              <el-form-item label="角色名称">
-                <el-input
-                  v-model="queryParam.name"
-                  placeholder="请输入角色名称"
-                  @keyup.enter.native="searchQuery"
-                />
-              </el-form-item>
-              <el-form-item label="角色状态">
-                <el-select
-                  v-model="queryParam.status"
-                  clearable
-                  style="width: 100%"
-                  placeholder="请选择"
+          <el-row class="search-row">
+            <el-col :span="rightCol == 0 ? 18 : 24">
+              <div class="filter-container">
+                <el-form
+                  label-width="70px"
+                  size="small"
+                  :inline="true"
+                  label-position="left"
                 >
-                  <!-- TODO -->
-                </el-select>
-              </el-form-item>
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-search"
-                @click="searchQuery"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-refresh-right"
-                @click="searchReset"
-                >重置</el-button
-              >
-            </el-form>
-            <div class="search-button-admin">
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-plus"
-                @click="addRole"
-                >添加角色</el-button
-              >
-            </div>
-          </div>
+                  <el-form-item label="角色名称">
+                    <el-input
+                      v-model="queryParam.name"
+                      placeholder="请输入角色名称"
+                      @keyup.enter.native="searchQuery"
+                    />
+                  </el-form-item>
+                  <el-form-item label="角色状态">
+                    <el-select
+                      v-model="queryParam.status"
+                      clearable
+                      style="width: 100%"
+                      placeholder="请选择"
+                    >
+                      <!-- TODO -->
+                    </el-select>
+                  </el-form-item>
+                  <el-button
+                    type="primary"
+                    size="small"
+                    icon="el-icon-search"
+                    @click="searchQuery"
+                    >搜索</el-button
+                  >
+                  <el-button
+                    type="primary"
+                    size="small"
+                    icon="el-icon-refresh-right"
+                    @click="searchReset"
+                    >重置</el-button
+                  >
+                </el-form>
+              </div>
+            </el-col>
+            <el-col :span="6" v-if="rightCol == 0">
+              <div class="search-button-admin">
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-plus"
+                  @click="addRole"
+                  >添加角色</el-button
+                >
+              </div>
+            </el-col>
+          </el-row>
           <!-- Query End -->
 
           <!-- Table Start -->
@@ -99,39 +110,45 @@
           <div style="text-align: right">
             <i class="el-icon-circle-close" @click="closeRightCol"></i>
           </div>
-          <div class="filter-container">
-            <el-form label-width="80px" size="small" :inline="true">
-              <el-form-item label="用户账号">
-                <el-input placeholder="请输入账号查询" clearable />
-              </el-form-item>
-              <el-button type="primary" size="small" icon="el-icon-search"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-refresh-right"
-                >重置</el-button
-              >
-            </el-form>
-            <div class="search-button-admin">
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-plus"
-                @click="addUser"
-              >
-                添加用户</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-plus"
-                @click="addExistUser"
-                >已有用户</el-button
-              >
-            </div>
-          </div>
+          <el-row class="search-row">
+            <el-col :span="16">
+              <div class="filter-container">
+                <el-form label-width="70px" size="small" :inline="true">
+                  <el-form-item label="用户账号">
+                    <el-input placeholder="请输入账号查询" clearable />
+                  </el-form-item>
+                  <el-button type="primary" size="small" icon="el-icon-search"
+                    >搜索</el-button
+                  >
+                  <el-button
+                    type="primary"
+                    size="small"
+                    icon="el-icon-refresh-right"
+                    >重置</el-button
+                  >
+                </el-form>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="search-button-admin">
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-plus"
+                  @click="addUser"
+                >
+                  添加用户</el-button
+                >
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-plus"
+                  @click="addExistUser"
+                  >已有用户</el-button
+                >
+              </div>
+            </el-col>
+          </el-row>
           <el-table
             v-loading="userloading"
             :data="userData"

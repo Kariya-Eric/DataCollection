@@ -3,61 +3,70 @@
     <page-header-layout title="任务列表">
       <el-card shadow="always" class="app-card">
         <!-- Query Start -->
-        <div class="filter-container">
-          <el-form
-            label-width="90px"
-            size="small"
-            :inline="true"
-            @keyup.enter.native="searchQuery"
-          >
-            <el-form-item label="任务类型">
-              <el-select
-                v-model="queryParam.type"
-                clearable
-                style="width: 100%"
-                placeholder="请选择任务类型"
-              >
-                <!-- TODO -->
-              </el-select>
-            </el-form-item>
-            <el-form-item label="学年">
-              <el-select
-                v-model="queryParam.schoolYear"
-                style="width: 100%"
-                clearable
-                placeholder="请选择学年"
-              >
-                <!-- TODO -->
-              </el-select>
-            </el-form-item>
-            <el-form-item label="任务名称">
-              <el-input
-                v-model="queryParam.name"
-                placeholder="请输入任务名称"
+        <el-row class="search-row">
+          <el-col :span="16">
+            <div class="filter-container">
+              <el-form
+                label-width="70px"
+                size="small"
+                :inline="true"
                 @keyup.enter.native="searchQuery"
-              />
-            </el-form-item>
-            <el-button type="primary" size="small" icon="el-icon-search"
-              >搜索</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-refresh-right"
-              >重置</el-button
-            >
-          </el-form>
-          <div class="search-button-admin">
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-plus"
-              @click="addTask"
-              >添加任务</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-upload2"
-              >导入</el-button
-            >
-            <a>下载导入模板</a>
-          </div>
-        </div>
+              >
+                <el-form-item label="任务类型">
+                  <el-select
+                    v-model="queryParam.type"
+                    clearable
+                    style="width: 100%"
+                    placeholder="请选择任务类型"
+                  >
+                    <!-- TODO -->
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="学年">
+                  <el-select
+                    v-model="queryParam.schoolYear"
+                    style="width: 100%"
+                    clearable
+                    placeholder="请选择学年"
+                  >
+                    <!-- TODO -->
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="任务名称">
+                  <el-input
+                    v-model="queryParam.name"
+                    placeholder="请输入任务名称"
+                    @keyup.enter.native="searchQuery"
+                  />
+                </el-form-item>
+                <el-button type="primary" size="small" icon="el-icon-search"
+                  >搜索</el-button
+                >
+                <el-button
+                  type="primary"
+                  size="small"
+                  icon="el-icon-refresh-right"
+                  >重置</el-button
+                >
+              </el-form>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="search-button-admin">
+              <el-button
+                type="primary"
+                size="small"
+                icon="el-icon-plus"
+                @click="addTask"
+                >添加任务</el-button
+              >
+              <el-button type="primary" size="small" icon="el-icon-upload2"
+                >导入</el-button
+              >
+              <a>下载导入模板</a>
+            </div>
+          </el-col>
+        </el-row>
         <!-- Query End -->
 
         <!-- Table Start -->
