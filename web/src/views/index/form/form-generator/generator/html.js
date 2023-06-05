@@ -1,4 +1,4 @@
-import { componentsVisible, formConf } from "./config";
+import { formConf } from "./config";
 import { getDrawingList } from "../utils/db";
 import { isNumberStr } from "../utils";
 let confGlobal;
@@ -67,7 +67,7 @@ function colWrapper(scheme, str) {
 
 function vif(scheme) {
   let vif = "";
-  componentsVisible.forEach((vis) => {
+  formConf.componentsVisible.forEach((vis) => {
     vis.hiddenList.forEach((hide) => {
       if (hide == scheme.__config__.formId) {
         vis.termList.forEach((term) => {

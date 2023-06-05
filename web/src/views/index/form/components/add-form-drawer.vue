@@ -62,6 +62,13 @@
         <el-form-item label="是否必填">
           <el-switch v-model="addFormForm.required" />
         </el-form-item>
+        <el-form-item label="是否启用">
+          <el-switch
+            v-model="addFormForm.enabledFlag"
+            :inactive-value="0"
+            :active-value="1"
+          />
+        </el-form-item>
         <el-form-item prop="sort" label="排序">
           <el-input-number v-model="addFormForm.sort" />
         </el-form-item>
@@ -77,18 +84,14 @@
         >提 交</el-button
       >
     </div>
-    <form-generator ref="formGenerator" @saveForm="saveForm" />
   </el-drawer>
 </template>
 
 <script>
-import { getFormCategories, addForm } from "@/api/form";
-import FormGenerator from "../form-generator/home";
+import { listFormCategories, addForm, updateForm } from "@/api/form";
+
 export default {
   name: "AddFormDrawer",
-  components: {
-    FormGenerator,
-  },
   data() {
     return {
       visible: false,
@@ -112,14 +115,24 @@ export default {
     show(collection, form) {
       if (form) {
         this.updateFlag = true;
-        const { type, name, sort, required, collectTimeType, formCategories } =
-          form;
+        const {
+          type,
+          name,
+          sort,
+          required,
+          collectTimeType,
+          formCategories,
+          enabledFlag,
+          id,
+        } = form;
         this.addFormForm = {
+          id,
           formName: name,
           sort,
           formType: type,
           collectTimeType,
           required,
+          enabledFlag,
           formCategories,
         };
       } else {
@@ -130,15 +143,9 @@ export default {
       this.addFormForm.name = collection.name;
       this.addFormForm.type = collection.type;
       this.addFormForm.year = collection.year;
-      let pageBean = {
-        page: 1,
-        pageSize: 1000,
-        showTotal: true,
-      };
-      const param = { id: collection.id, pageBean };
-      getFormCategories(param).then((res) => {
+      listFormCategories(collection.id).then((res) => {
         if (res.state) {
-          this.formCategoryList = res.value.rows;
+          this.formCategoryList = res.value;
         }
       });
       this.visible = true;
@@ -152,18 +159,57 @@ export default {
     handleSubmit() {
       this.$refs.addFormForm.validate((valid) => {
         if (valid) {
-          this.$refs.formGenerator.show();
+          if (this.updateFlag) {
+            this.updateForm();
+          } else {
+            this.addForm();
+          }
         }
       });
     },
 
-    saveForm(form, rules) {
+    updateForm() {
+      const { collectTimeType, formCategories, sort, formCollectionId } =
+        this.addFormForm;
+      let params = {
+        id: this.addFormForm.id,
+        name: this.addFormForm.formName,
+        type: this.addFormForm.formType,
+        required: this.addFormForm.required ? this.addFormForm.required : false,
+        enabledFlag: this.addFormForm.enabledFlag
+          ? this.addFormForm.enabledFlag
+          : 0,
+        formCollectionId,
+        collectTimeType,
+        formCategories,
+        sort,
+        rowNum: 10,
+        cellNum: 4,
+      };
+      this.loading = true;
+      updateForm(params)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.$emit("refresh");
+            this.close();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    addForm() {
       const { collectTimeType, formCategories, sort, formCollectionId } =
         this.addFormForm;
       let params = {
         name: this.addFormForm.formName,
         type: this.addFormForm.formType,
         required: this.addFormForm.required ? this.addFormForm.required : false,
+        enabledFlag: this.addFormForm.enabledFlag
+          ? this.addFormForm.enabledFlag
+          : 0,
         formCollectionId,
         collectTimeType,
         formCategories,
@@ -179,7 +225,7 @@ export default {
             this.$emit("refresh");
             this.close();
           } else {
-            this.$message.console.error(res.message);
+            this.$message.error(res.message);
           }
         })
         .finally(() => (this.loading = false));

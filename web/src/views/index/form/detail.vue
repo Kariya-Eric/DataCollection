@@ -73,14 +73,10 @@
             />
           </template>
         </el-table-column>
-        <el-table-column
-          label="前置表单"
-          prop="formProperties"
-          align="center"
-        />
+        <el-table-column label="前置表单" prop="enabledFlag" align="center" />
         <el-table-column label="操作" align="center" width="250px">
           <template slot-scope="scope">
-            <a href="javascript:;">表单详情</a>
+            <a href="javascript:;" @click="showForm(scope.row)">表单详情</a>
             <el-divider direction="vertical" />
             <a href="javascript:;" @click="formDetail(scope.row)">表单属性</a>
             <el-divider direction="vertical" />
@@ -95,10 +91,11 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination :pagination="ipagination" @change="loadData" />
+      <pagination :pagination="ipagination" @change="getFormList" />
     </el-card>
     <add-form-drawer ref="addFormDrawer" @refresh="getFormList" />
     <update-form-category ref="updateFormCategory" />
+    <form-generator ref="formGenerator" @saveForm="saveForm" />
   </page-header-layout>
 </template>
 
@@ -107,7 +104,8 @@ import PageHeaderLayout from "layouts/PageHeaderLayout";
 import Pagination from "components/Pagination";
 import AddFormDrawer from "./components/add-form-drawer";
 import UpdateFormCategory from "./components/update-form-category";
-import { getFormList, delForm } from "@/api/form";
+import FormGenerator from "./form-generator/home";
+import { getFormList, delForm, updateForm } from "@/api/form";
 export default {
   name: "FormDetail",
   components: {
@@ -115,10 +113,12 @@ export default {
     Pagination,
     AddFormDrawer,
     UpdateFormCategory,
+    FormGenerator,
   },
   data() {
     return {
       collectionDetail: {},
+      formInfo: {},
       loading: false,
       dataSource: [],
       ipagination: {
@@ -134,15 +134,13 @@ export default {
     $route: {
       handler(newRoute) {
         if (newRoute.name == "formDetail") {
-          this.getFormList();
+          this.getFormList(1);
         }
       },
       immediate: true,
     },
   },
   methods: {
-    loadData() {},
-
     addForm() {
       this.$refs.addFormDrawer.show(this.collectionDetail);
     },
@@ -151,10 +149,10 @@ export default {
       this.$refs.updateFormCategory.show(this.collectionDetail);
     },
 
-    getFormList() {
+    getFormList(args) {
       this.collectionDetail = this.$route.params;
       let pageBean = {
-        page: this.ipagination.current,
+        page: args === 1 ? 1 : this.ipagination.current,
         pageSize: this.ipagination.pageSize,
         showTotal: true,
       };
@@ -190,9 +188,35 @@ export default {
     formDetail(row) {
       this.$refs.addFormDrawer.show(this.collectionDetail, row);
     },
+
+    showForm(row) {
+      this.formInfo = row;
+      this.$refs.formGenerator.show(row);
+    },
+
+    saveForm(formData) {
+        const { fields } = formData;
+        Reflect.deleteProperty(formData, "fields");
+        Reflect.deleteProperty(formData, "formBtns");
+        const params = {
+          ...this.formInfo,
+          formProperties: JSON.stringify(formData),
+          componentProperties: JSON.stringify(fields),
+        };
+        this.loading = true;
+        updateForm(params)
+          .then((res) => {
+            if (res.state) {
+              this.$message.success(res.message);
+              this.getFormList();
+            } else {
+              this.$message.error(res.message);
+            }
+          })
+          .finally(() => (this.loading = false));
+    },
   },
 };
 </script>
- 
-<style>
-</style>
+
+<style></style>

@@ -598,7 +598,7 @@
         </el-form-item>
         <el-divider>表单显隐规则</el-divider>
         <div
-          v-for="(item, index) in componentsVisible"
+          v-for="(item, index) in formConf.componentsVisible"
           :key="index"
           class="reg-item"
         >
@@ -627,7 +627,6 @@ import draggable from "vuedraggable";
 import { isArray } from "util";
 import { isNumberStr } from "../utils/index";
 import { saveFormConf } from "../utils/db";
-import { componentsVisible } from "../generator/config";
 import LogicDialog from "./logic-dialog";
 
 export default {
@@ -639,7 +638,6 @@ export default {
   props: ["showField", "activeData", "formConf"],
   data() {
     return {
-      componentsVisible,
       currentTab: "field",
       optionValidate: "",
       colValidate: "",
@@ -783,7 +781,7 @@ export default {
     },
 
     delRule(index) {
-      componentsVisible.splice(index, 1);
+      formConf.componentsVisible.splice(index, 1);
     },
 
     editRule(index) {
@@ -832,6 +830,7 @@ export default {
         this.$set(this.activeData.columns[selectedCol - 1], "dateType", "year");
       }
     },
+
     // ==============自定义END==============
 
     addSelectItem() {

@@ -112,14 +112,16 @@ function mixinMethod() {
       this.$refs['${confGlobal.formRef}'].validate(valid => {
         if(!valid) return
         // TODO 提交表单
-        console.log('form',this.${confGlobal.formModel})
+        this.$message.success('表单验证OK')
+        //console.log('form',this.${confGlobal.formModel})
       })
     },`
       : `submitForm() {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
           // TODO 提交表单
-          console.log('form',this.${confGlobal.formModel})
+          this.$message.success('表单验证OK')
+          //console.log('form',this.${confGlobal.formModel})
         })
       },`,
     resetForm: `resetForm() {

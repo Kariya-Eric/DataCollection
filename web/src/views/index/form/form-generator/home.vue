@@ -114,10 +114,14 @@ import {
   selectComponents,
   layoutComponents,
   otherComponents,
-  componentsVisible,
 } from "./generator/config";
 import drawingDefault from "./config/drawingDefault";
-import { saveDrawingList, getIdGlobal, saveIdGlobal } from "./utils/db";
+import {
+  saveDrawingList,
+  getIdGlobal,
+  saveIdGlobal,
+  saveFormConf,
+} from "./utils/db";
 import { deepClone } from "./utils";
 import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
@@ -134,7 +138,6 @@ export default {
       visible: false,
       idGlobal,
       formConf,
-      componentsVisible,
       inputComponents,
       selectComponents,
       layoutComponents,
@@ -189,14 +192,26 @@ export default {
     },
   },
   methods: {
-    show() {
+    show(formInfo) {
       this.visible = true;
-      const config = this.drawingList[0].__config__;
-      const componentName = config.label;
-      if (config.layout === "customItem") {
-        config.componentName = componentName;
-        delete config.label;
-        delete config.span;
+      if (formInfo.formProperties != null) {
+        const formProperties = JSON.parse(formInfo.formProperties);
+        const componentsVisible = { formProperties };
+        Reflect.deleteProperty(formProperties, "componentsVisible");
+        const componentProperties = JSON.parse(formInfo.componentProperties);
+        saveDrawingList(componentProperties);
+        saveFormConf(formProperties);
+        this.formConf = formProperties;
+        this.drawingList = componentProperties;
+        this.componentsVisible = componentsVisible;
+      } else {
+        const config = this.drawingList[0].__config__;
+        const componentName = config.label;
+        if (config.layout === "customItem") {
+          config.componentName = componentName;
+          delete config.label;
+          delete config.span;
+        }
       }
     },
     close() {
@@ -312,7 +327,7 @@ export default {
 
     run() {
       this.assembleFormData();
-      this.$refs.formDrawer.show(this.formData);
+      this.$refs.formDrawer.show(this.formData, this.formConf);
     },
 
     assembleFormData() {
@@ -328,7 +343,7 @@ export default {
       if (validateFields !== "") {
         this.$message.warning(validateFields);
       } else {
-        this.$emit("saveForm", this.formData, this.componentsVisible);
+        this.$emit("saveForm", this.formData);
         this.visible = false;
       }
     },

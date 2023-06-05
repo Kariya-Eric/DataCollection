@@ -11,6 +11,7 @@ export const formConf = {
   span: 24,
   formAlert: "",
   formBtns: true,
+  componentsVisible:[]
 };
 
 // 输入型组件 【左面板】
@@ -352,5 +353,3 @@ export const layoutComponents = [
   },
 ];
 
-//用于控制组件是否展示
-export const componentsVisible = [];

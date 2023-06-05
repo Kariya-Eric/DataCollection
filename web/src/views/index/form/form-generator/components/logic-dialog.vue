@@ -208,12 +208,13 @@
 
 <script>
 import { getDrawingList } from "../utils/db";
-import { componentsVisible } from "../generator/config";
+import { formConf } from "../generator/config";
+import { saveFormConf } from "../utils/db";
 export default {
   name: "LogicDialog",
   data() {
     return {
-      componentsVisible,
+      formConf,
       andOr: "and",
       termRows: [
         {
@@ -269,7 +270,7 @@ export default {
       );
       if (index !== undefined) {
         this.updateIndex = index;
-        let data = componentsVisible[index];
+        let data = formConf.componentsVisible[index];
         this.termRows = JSON.parse(JSON.stringify(data.termList));
         this.andOr = JSON.parse(JSON.stringify(data.equalTerm));
         this.showOption = JSON.parse(JSON.stringify(data.hiddenList));
@@ -322,9 +323,9 @@ export default {
         rules.termList = this.termRows;
         rules.equalTerm = this.andOr;
         if (this.updateFlag) {
-          componentsVisible[this.updateIndex] = rules;
+          formConf.componentsVisible[this.updateIndex] = rules;
         } else {
-          componentsVisible.push(rules);
+          formConf.componentsVisible.push(rules);
         }
       }
       this.onClose();
