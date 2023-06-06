@@ -618,7 +618,7 @@
         </div>
       </el-form>
     </div>
-    <logic-dialog ref="logicdialog" />
+    <logic-dialog ref="logicdialog" :form-conf="formConf" />
   </div>
 </template>
 
@@ -660,6 +660,7 @@ export default {
   watch: {
     formConf: {
       handler(val) {
+        console.log("val", val);
         saveFormConf(val);
       },
       deep: true,
@@ -781,7 +782,7 @@ export default {
     },
 
     delRule(index) {
-      formConf.componentsVisible.splice(index, 1);
+      this.formConf.componentsVisible.splice(index, 1);
     },
 
     editRule(index) {

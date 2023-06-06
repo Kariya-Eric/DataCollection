@@ -116,12 +116,7 @@ import {
   otherComponents,
 } from "./generator/config";
 import drawingDefault from "./config/drawingDefault";
-import {
-  saveDrawingList,
-  getIdGlobal,
-  saveIdGlobal,
-  saveFormConf,
-} from "./utils/db";
+import { saveDrawingList, getIdGlobal, saveIdGlobal } from "./utils/db";
 import { deepClone } from "./utils";
 import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
@@ -196,15 +191,13 @@ export default {
       this.visible = true;
       if (formInfo.formProperties != null) {
         const formProperties = JSON.parse(formInfo.formProperties);
-        const componentsVisible = { formProperties };
-        Reflect.deleteProperty(formProperties, "componentsVisible");
         const componentProperties = JSON.parse(formInfo.componentProperties);
-        saveDrawingList(componentProperties);
-        saveFormConf(formProperties);
+        // saveDrawingList(componentProperties);
+        // saveFormConf(formProperties);
         this.formConf = formProperties;
         this.drawingList = componentProperties;
-        this.componentsVisible = componentsVisible;
       } else {
+        this.drawingList = drawingDefault;
         const config = this.drawingList[0].__config__;
         const componentName = config.label;
         if (config.layout === "customItem") {
@@ -213,6 +206,7 @@ export default {
           delete config.span;
         }
       }
+      console.log(this.formConf);
     },
     close() {
       this.visible = false;
@@ -327,6 +321,7 @@ export default {
 
     run() {
       this.assembleFormData();
+      console.log(this.formConf);
       this.$refs.formDrawer.show(this.formData, this.formConf);
     },
 

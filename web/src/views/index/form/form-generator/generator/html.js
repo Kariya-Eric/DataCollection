@@ -367,5 +367,6 @@ export function makeUpHtml(formConfig) {
       : `<el-alert title="填报提示" type="warning" show-icon :closable="false"
           description="${formConfig.formAlert}"></el-alert>`;
   const str = `<div>${alert}${temp}</div>`;
+  console.log(str)
   return str;
 }

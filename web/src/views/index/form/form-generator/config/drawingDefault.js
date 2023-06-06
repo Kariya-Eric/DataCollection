@@ -20,5 +20,6 @@ export default [
     readonly: false,
     disabled: false,
     comment: "",
+    allowChar: true,
   },
 ];

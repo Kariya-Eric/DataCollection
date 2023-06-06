@@ -208,13 +208,11 @@
 
 <script>
 import { getDrawingList } from "../utils/db";
-import { formConf } from "../generator/config";
-import { saveFormConf } from "../utils/db";
 export default {
   name: "LogicDialog",
+  props: ["formConf"],
   data() {
     return {
-      formConf,
       andOr: "and",
       termRows: [
         {
@@ -270,7 +268,7 @@ export default {
       );
       if (index !== undefined) {
         this.updateIndex = index;
-        let data = formConf.componentsVisible[index];
+        let data = this.formConf.componentsVisible[index];
         this.termRows = JSON.parse(JSON.stringify(data.termList));
         this.andOr = JSON.parse(JSON.stringify(data.equalTerm));
         this.showOption = JSON.parse(JSON.stringify(data.hiddenList));
@@ -323,11 +321,12 @@ export default {
         rules.termList = this.termRows;
         rules.equalTerm = this.andOr;
         if (this.updateFlag) {
-          formConf.componentsVisible[this.updateIndex] = rules;
+          this.formConf.componentsVisible[this.updateIndex] = rules;
         } else {
-          formConf.componentsVisible.push(rules);
+          this.formConf.componentsVisible.push(rules);
         }
       }
+      console.log("log", this.formConf);
       this.onClose();
     },
 

@@ -26,6 +26,8 @@ export default {
   },
   watch: {
     $route: function (newRoute) {
+      console.log(newRoute);
+      this.activePage = newRoute.fullPath;
       if (this.linkList.indexOf(newRoute.fullPath) < 0) {
         this.linkList.push(newRoute.fullPath);
         this.pageList.push(Object.assign({}, newRoute));
@@ -38,6 +40,7 @@ export default {
           Object.assign({}, newRoute, { meta: oldPositionRoute.meta })
         );
       }
+      console.log(this.pageList, this.linkList);
     },
 
     activePage: function (key) {
@@ -61,6 +64,7 @@ export default {
       this.pageList.splice(0, 0, {
         name: "Analysis",
         path: "/dashboard/analysis",
+        fullPath: "/dashboard/analysis",
         meta: {
           title: "首页",
         },

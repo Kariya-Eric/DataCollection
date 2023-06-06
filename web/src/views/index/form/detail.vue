@@ -195,25 +195,25 @@ export default {
     },
 
     saveForm(formData) {
-        const { fields } = formData;
-        Reflect.deleteProperty(formData, "fields");
-        Reflect.deleteProperty(formData, "formBtns");
-        const params = {
-          ...this.formInfo,
-          formProperties: JSON.stringify(formData),
-          componentProperties: JSON.stringify(fields),
-        };
-        this.loading = true;
-        updateForm(params)
-          .then((res) => {
-            if (res.state) {
-              this.$message.success(res.message);
-              this.getFormList();
-            } else {
-              this.$message.error(res.message);
-            }
-          })
-          .finally(() => (this.loading = false));
+      const { fields } = formData;
+      Reflect.deleteProperty(formData, "fields");
+      Reflect.deleteProperty(formData, "formBtns");
+      const params = {
+        ...this.formInfo,
+        formProperties: JSON.stringify(formData),
+        componentProperties: JSON.stringify(fields),
+      };
+      this.loading = true;
+      updateForm(params)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.getFormList();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };
