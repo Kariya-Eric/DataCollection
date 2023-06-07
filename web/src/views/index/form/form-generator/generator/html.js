@@ -31,11 +31,9 @@ function buildFormTemplate(scheme, child) {
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
   const margin = scheme.formAlert === "" ? "" : `style="margin-top:24px"`;
-  let str = `<el-form ${margin} ref="${scheme.formRef}" :model="${
-    scheme.formModel
-  }" :rules="${scheme.formRules}" size="${
-    scheme.size
-  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ${margin} ref="${scheme.formRef}" :model="${scheme.formModel
+    }" :rules="${scheme.formRules}" size="${scheme.size
+    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -347,6 +345,7 @@ function buildElCheckboxGroupChild(scheme) {
  * @param {String} type 生成类型，文件或弹窗等
  */
 export function makeUpHtml(formConfig) {
+  formConf.componentsVisible = formConfig.componentsVisible
   const htmlList = [];
   confGlobal = formConfig;
   // 判断布局是否都沾满了24个栅格，以备后续简化代码结构
@@ -366,7 +365,6 @@ export function makeUpHtml(formConfig) {
       ? ""
       : `<el-alert title="填报提示" type="warning" show-icon :closable="false"
           description="${formConfig.formAlert}"></el-alert>`;
-  const str = `<div>${alert}${temp}</div>`;
-  console.log(str)
+  const str = `<div>${alert}${temp}</div>`; 
   return str;
 }

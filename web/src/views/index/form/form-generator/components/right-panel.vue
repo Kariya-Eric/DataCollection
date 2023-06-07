@@ -660,7 +660,6 @@ export default {
   watch: {
     formConf: {
       handler(val) {
-        console.log("val", val);
         saveFormConf(val);
       },
       deep: true,

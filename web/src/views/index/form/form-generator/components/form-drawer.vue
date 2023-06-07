@@ -77,7 +77,7 @@ export default {
     onOpen() {
       this.previewURL =
         process.env.BASE_URL + ":" + process.env.BASE_PORT + "/preview.html";
-      this.htmlCode = makeUpHtml(this.formData);
+      this.htmlCode = makeUpHtml(this.formData,this.generateConf);
       this.jsCode = makeUpJs(this.formData);
       this.cssCode = makeUpCss(this.formData);
       this.editorObj.html = this.htmlCode;

@@ -192,11 +192,23 @@ export default {
       if (formInfo.formProperties != null) {
         const formProperties = JSON.parse(formInfo.formProperties);
         const componentProperties = JSON.parse(formInfo.componentProperties);
-        // saveDrawingList(componentProperties);
-        // saveFormConf(formProperties);
         this.formConf = formProperties;
         this.drawingList = componentProperties;
       } else {
+        this.formConf = {
+          formRef: "myForm",
+          formModel: "formData",
+          size: "medium",
+          labelPosition: "right",
+          labelWidth: 120,
+          formRules: "rules",
+          gutter: 15,
+          disabled: false,
+          span: 24,
+          formAlert: "",
+          formBtns: true,
+          componentsVisible: [],
+        };
         this.drawingList = drawingDefault;
         const config = this.drawingList[0].__config__;
         const componentName = config.label;
@@ -206,7 +218,6 @@ export default {
           delete config.span;
         }
       }
-      console.log(this.formConf);
     },
     close() {
       this.visible = false;
@@ -321,7 +332,7 @@ export default {
 
     run() {
       this.assembleFormData();
-      console.log(this.formConf);
+      formConf.componentsVisible = this.formConf.componentsVisible;
       this.$refs.formDrawer.show(this.formData, this.formConf);
     },
 

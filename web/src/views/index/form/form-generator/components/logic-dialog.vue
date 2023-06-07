@@ -326,7 +326,6 @@ export default {
           this.formConf.componentsVisible.push(rules);
         }
       }
-      console.log("log", this.formConf);
       this.onClose();
     },
 

@@ -43,7 +43,7 @@
                 {{
                   col.options.filter(
                     (el) => el.value === scope.row[col.props]
-                  )[0].labelindex
+                  )[0].label
                 }}
               </template>
               <template v-else>
@@ -326,6 +326,7 @@ export default {
       } else {
         this.edit(scope.row);
       }
+
     },
     del(row) {
       this.tableForm.dataSource = this.tableForm.dataSource.filter(

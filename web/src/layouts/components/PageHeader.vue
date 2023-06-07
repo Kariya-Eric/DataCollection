@@ -26,7 +26,6 @@ export default {
   },
   watch: {
     $route: function (newRoute) {
-      console.log(newRoute);
       this.activePage = newRoute.fullPath;
       if (this.linkList.indexOf(newRoute.fullPath) < 0) {
         this.linkList.push(newRoute.fullPath);
@@ -40,7 +39,6 @@ export default {
           Object.assign({}, newRoute, { meta: oldPositionRoute.meta })
         );
       }
-      console.log(this.pageList, this.linkList);
     },
 
     activePage: function (key) {
