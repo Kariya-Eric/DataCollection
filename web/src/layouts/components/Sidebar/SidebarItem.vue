@@ -3,8 +3,8 @@
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
-          (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-          !item.alwaysShow
+        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
+        !item.alwaysShow
       "
     >
       <app-link :to="resolvePath(onlyOneChild.path)">
@@ -56,32 +56,32 @@
 </template>
 
 <script>
-import path from 'path';
-import { validateURL } from '@/utils/validate';
-import Item from './Item';
-import AppLink from './Link';
+import path from "path";
+import { validateURL } from "@/utils/validate";
+import Item from "./Item";
+import AppLink from "./Link";
 
 export default {
-  name: 'SidebarItem',
+  name: "SidebarItem",
   components: { Item, AppLink },
   props: {
     // route object
     item: {
       type: Object,
-      required: true
+      required: true,
     },
     isNest: {
       type: Boolean,
-      default: false
+      default: false,
     },
     basePath: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   data() {
     return {
-      onlyOneChild: null
+      onlyOneChild: null,
     };
   },
   methods: {
@@ -103,10 +103,9 @@ export default {
 
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
-        this.onlyOneChild = { ...parent, path: '', noShowingChildren: true };
+        this.onlyOneChild = { ...parent, path: "", noShowingChildren: true };
         return true;
       }
-
       return false;
     },
     resolvePath(routePath) {
@@ -117,7 +116,7 @@ export default {
     },
     isExternalLink(routePath) {
       return validateURL(routePath);
-    }
-  }
+    },
+  },
 };
 </script>

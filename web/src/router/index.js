@@ -183,7 +183,7 @@ export const constantRouterMap = [
   {
     path: "/form",
     component: BasicLayout,
-    name: "analyze",
+    name: "form",
     alwaysShow: true,
     meta: {
       title: "表单管理",
