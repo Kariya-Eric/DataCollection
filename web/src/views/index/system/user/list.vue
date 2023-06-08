@@ -1,5 +1,5 @@
 <template>
-  <page-header-layout>
+  <div>
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
       <el-row class="search-row">
@@ -112,11 +112,10 @@
     </el-card>
     <user-drawer ref="userDrawer" @refresh="loadData" />
     <reset-password-dialog ref="resetPasswordDialog" />
-  </page-header-layout>
+  </div>
 </template>
 
 <script>
-import PageHeaderLayout from "layouts/PageHeaderLayout";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import UserDrawer from "./components/user-drawer";
 import Pagination from "components/Pagination";
@@ -125,7 +124,7 @@ import { delUserBatch } from "@/api/system";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
-  components: { PageHeaderLayout, Pagination, UserDrawer, ResetPasswordDialog },
+  components: { Pagination, UserDrawer, ResetPasswordDialog },
   data() {
     return {
       url: {

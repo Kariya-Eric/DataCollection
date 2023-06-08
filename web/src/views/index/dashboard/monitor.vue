@@ -1,16 +1,11 @@
 <template>
-  <page-header-layout>
-    <el-card shadow="always" class="app-card">
-      <div />
-    </el-card>
-  </page-header-layout>
+  <el-card shadow="always" class="app-card">
+    <div />
+  </el-card>
 </template>
 
 <script>
-import PageHeaderLayout from "layouts/PageHeaderLayout";
-export default {
-  components: { PageHeaderLayout },
-};
+export default {};
 </script>
 
 <style>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header-layout>
       <el-card shadow="always" class="app-card">
         <el-row>
           <el-col :span="6">
@@ -17,7 +16,6 @@
           </el-col>
         </el-row>
       </el-card>
-    </page-header-layout>
   </div>
 </template>
 

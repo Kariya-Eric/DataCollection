@@ -1,5 +1,5 @@
 <template>
-  <page-header-layout>
+  <div>
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
       <el-row class="search-row">
@@ -68,10 +68,9 @@
       <!-- Table End -->
     </el-card>
     <add-collection-dialog ref="addCollectionDialog" @refresh="loadData" />
-  </page-header-layout>
+  </div>
 </template>
 <script>
-import PageHeaderLayout from "layouts/PageHeaderLayout";
 import Pagination from "components/Pagination";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import AddCollectionDialog from "./components/add-collection-dialog";
@@ -79,7 +78,7 @@ import { delFormCollection } from "@/api/form";
 export default {
   name: "FormList",
   mixins: [DataCollectionMixin],
-  components: { PageHeaderLayout, Pagination, AddCollectionDialog },
+  components: { Pagination, AddCollectionDialog },
   data() {
     return {
       url: {

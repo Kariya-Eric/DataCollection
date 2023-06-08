@@ -1,61 +1,58 @@
 <template>
   <div>
-    <page-header-layout>
-      <el-row :gutter="24">
-        <el-col :span="8">
-          <el-card shadow="always" class="app-card">
-            <div style="margin-bottom: 12px">
-              <el-button type="primary" size="small" icon="el-icon-plus"
-                >添加菜单</el-button
-              >
-            </div>
-            <el-input
-              placeholder="输入关键字进行过滤"
-              v-model="menuFilter"
-              clearable
-              size="small"
-              prefix-icon="el-icon-search"
-              style="margin-bottom: 12px"
+    <el-row :gutter="24">
+      <el-col :span="8">
+        <el-card shadow="always" class="app-card">
+          <div style="margin-bottom: 12px">
+            <el-button type="primary" size="small" icon="el-icon-plus"
+              >添加菜单</el-button
             >
-            </el-input>
-            <el-tree
-              class="filter-tree"
-              :data="menuList"
-              :props="menuProps"
-              :filter-node-method="filterNode"
-              default-expand-all
-              @node-click="nodeClick"
-              ref="menuTree"
-            ></el-tree>
-          </el-card>
-        </el-col>
-        <el-col :span="16">
-          <el-card
-            shadow="always"
-            class="app-card"
-            v-if="Object.keys(selectedMenu).length === 0"
+          </div>
+          <el-input
+            placeholder="输入关键字进行过滤"
+            v-model="menuFilter"
+            clearable
+            size="small"
+            prefix-icon="el-icon-search"
+            style="margin-bottom: 12px"
           >
-            <el-empty description="请选择菜单查看详细信息"></el-empty>
-          </el-card>
-          <el-card v-else>
-            <div slot="header">
-              <span>菜单详情</span>
-            </div>
-            <right-menu ref="rightMenu" />
-          </el-card>
-        </el-col>
-      </el-row>
-    </page-header-layout>
+          </el-input>
+          <el-tree
+            class="filter-tree"
+            :data="menuList"
+            :props="menuProps"
+            :filter-node-method="filterNode"
+            default-expand-all
+            @node-click="nodeClick"
+            ref="menuTree"
+          ></el-tree>
+        </el-card>
+      </el-col>
+      <el-col :span="16">
+        <el-card
+          shadow="always"
+          class="app-card"
+          v-if="Object.keys(selectedMenu).length === 0"
+        >
+          <el-empty description="请选择菜单查看详细信息"></el-empty>
+        </el-card>
+        <el-card v-else>
+          <div slot="header">
+            <span>菜单详情</span>
+          </div>
+          <right-menu ref="rightMenu" />
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import PageHeaderLayout from "layouts/PageHeaderLayout";
 import RightMenu from "./components/right-menu";
 import { initMenuTree } from "@/api/system";
 export default {
   name: "MenuList",
-  components: { PageHeaderLayout, RightMenu },
+  components: { RightMenu },
   data() {
     return {
       menuProps: {

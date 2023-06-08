@@ -9,7 +9,7 @@
       />
       <breadcrumb />
       <div class="user-wrapper">
-        <header-notice class="action"/>
+        <header-notice class="action" />
         <el-dropdown class="avatar-container" trigger="hover" size="medium">
           <span class="action action-full">
             <el-avatar class="avatar" src="@/assets/images/avatar.jpg" />
@@ -42,6 +42,7 @@
         </span>
       </div>
     </el-menu>
+    <page-header-layout />
   </div>
 </template>
 
@@ -50,14 +51,15 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import SidebarLogo from "./Sidebar/SidebarLogo.vue";
 import { mapActions, mapState } from "vuex";
-import HeaderNotice from './HeaderNotice';
-
+import HeaderNotice from "./HeaderNotice";
+import PageHeaderLayout from "../PageHeaderLayout";
 export default {
   components: {
     Breadcrumb,
     Hamburger,
     SidebarLogo,
     HeaderNotice,
+    PageHeaderLayout,
   },
   computed: {
     ...mapState("app", ["sidebar"]),

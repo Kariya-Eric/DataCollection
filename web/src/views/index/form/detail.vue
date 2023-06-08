@@ -1,5 +1,5 @@
 <template>
-  <page-header-layout>
+  <div>
     <el-card shadow="always" class="app-card">
       <el-row style="margin-top: 12px; margin-bottom: 12px">
         <el-col :span="12">
@@ -96,11 +96,10 @@
     <add-form-drawer ref="addFormDrawer" @refresh="getFormList" />
     <update-form-category ref="updateFormCategory" />
     <form-generator ref="formGenerator" @saveForm="saveForm" />
-  </page-header-layout>
+  </div>
 </template>
 
 <script>
-import PageHeaderLayout from "layouts/PageHeaderLayout";
 import Pagination from "components/Pagination";
 import AddFormDrawer from "./components/add-form-drawer";
 import UpdateFormCategory from "./components/update-form-category";
@@ -109,7 +108,6 @@ import { getFormList, delForm, updateForm } from "@/api/form";
 export default {
   name: "FormDetail",
   components: {
-    PageHeaderLayout,
     Pagination,
     AddFormDrawer,
     UpdateFormCategory,
@@ -137,7 +135,6 @@ export default {
           this.getFormList(1);
         }
       },
-      immediate: true,
     },
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <page-header-layout>
+  <div>
     <el-row :gutter="24">
       <el-col :span="leftCol">
         <el-card shadow="always" class="app-card">
@@ -22,12 +22,13 @@
                   </el-form-item>
                   <el-form-item label="角色状态">
                     <el-select
-                      v-model="queryParam.status"
+                      v-model="queryParam.enabled"
                       clearable
                       style="width: 100%"
                       placeholder="请选择"
                     >
-                      <!-- TODO -->
+                      <el-option label="启用" :value="1" />
+                      <el-option label="禁用" :value="0" />
                     </el-select>
                   </el-form-item>
                   <el-button
@@ -182,11 +183,10 @@
     <role-dialog ref="roleDialog" @refresh="loadData" />
     <user-drawer ref="userDrawer" />
     <exist-user-dialog ref="existUserDialog" />
-  </page-header-layout>
+  </div>
 </template>
 
 <script>
-import PageHeaderLayout from "layouts/PageHeaderLayout";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
 import RoleDialog from "./components/role-dialog";
@@ -196,7 +196,6 @@ export default {
   name: "RoleList",
   mixins: [DataCollectionMixin],
   components: {
-    PageHeaderLayout,
     Pagination,
     RoleDialog,
     UserDrawer,

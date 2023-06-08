@@ -33,9 +33,6 @@ export default {
       return !this.sidebar.opened;
     }
   },
-  created(){
-    console.log(this.routers)
-  }
 };
 </script>
 <style lang="scss" scoped>
