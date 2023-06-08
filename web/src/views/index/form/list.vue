@@ -5,19 +5,49 @@
       <el-row class="search-row">
         <el-col :span="16">
           <div class="filter-container">
-            <el-form
-              label-width="80px"
-              size="small"
-              :inline="true"
-              @submit.native.prevent
-            >
+            <el-form label-width="80px" size="small" :inline="true">
               <el-form-item label="合集名称">
                 <el-input
                   v-model="queryParam.name"
                   placeholder="请输入合集名称"
-                  @keyup.enter.native="searchQuery"
+                  @input="searchQuery"
                 />
               </el-form-item>
+              <el-form-item label="合集类型">
+                <el-select
+                  v-model="queryParam.type"
+                  placeholder="请选择合集类型"
+                  clearable
+                  @change="searchQuery"
+                >
+                  <el-option
+                    label="教学基本状态数据"
+                    value="教学基本状态数据"
+                  />
+                  <el-option label="其他数据" value="其他数据" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="年份">
+                <el-input
+                  v-model="queryParam.y"
+                  placeholder="请输入合集名称"
+                  @input="searchQuery"
+                />
+              </el-form-item>
+              <el-button
+                type="primary"
+                size="small"
+                icon="el-icon-search"
+                @click="searchQuery"
+                >搜索</el-button
+              >
+              <el-button
+                type="primary"
+                size="small"
+                icon="el-icon-refresh-right"
+                @click="searchReset"
+                >重置</el-button
+              >
             </el-form>
           </div>
         </el-col>
@@ -120,5 +150,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

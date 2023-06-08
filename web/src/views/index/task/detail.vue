@@ -9,10 +9,9 @@
               label-width="70px"
               size="small"
               :inline="true"
-              @keyup.enter.native="searchQuery"
             >
               <el-form-item label="任务名称">
-                <el-select v-model="queryParam.name" placeholder="请选择">
+                <el-select v-model="queryParam.name" placeholder="请选择" @change="searchQuery">
                   <el-option
                     label="2022年状态数据填报"
                     value="2022年状态数据填报"
@@ -20,12 +19,12 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="表单大类">
-                <el-select v-model="queryParam.type" placeholder="请选择">
+                <el-select v-model="queryParam.type" placeholder="请选择" @change="searchQuery">
                   <el-option label="全部" value="全部" />
                 </el-select>
               </el-form-item>
               <el-form-item label="状态">
-                <el-select v-model="queryParam.type" placeholder="请选择">
+                <el-select v-model="queryParam.type" placeholder="请选择" @change="searchQuery">
                   <el-option label="全部" value="全部" />
                 </el-select>
               </el-form-item>
@@ -33,6 +32,7 @@
                 <el-input
                   v-model="queryParam.formName"
                   placeholder="请输入表单名称"
+                  @input="searchQuery"
                 />
               </el-form-item>
               <el-button type="primary" size="small" icon="el-icon-search"

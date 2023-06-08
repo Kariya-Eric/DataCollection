@@ -5,21 +5,24 @@
       <el-row class="search-row" style="margin-bottom: 0px">
         <el-col :span="22">
           <div class="filter-container">
-            <el-form
-              label-width="70px"
-              size="small"
-              :inline="true"
-              @keyup.enter.native="searchQuery"
-            >
+            <el-form label-width="70px" size="small" :inline="true">
               <el-form-item label="年份">
-                <el-select v-model="queryParam.year" placeholder="请选择">
+                <el-select
+                  v-model="queryParam.year"
+                  placeholder="请选择"
+                  @change="searchQuery"
+                >
                   <el-option label="2022" value="2022" />
                   <el-option label="2021" value="2021" />
                   <el-option label="2020" value="2020" />
                 </el-select>
               </el-form-item>
               <el-form-item label="报告类型">
-                <el-select v-model="queryParam.type" placeholder="请选择">
+                <el-select
+                  v-model="queryParam.type"
+                  placeholder="请选择"
+                  @change="searchQuery"
+                >
                   <el-option
                     label="本科教学状态数据分析报告"
                     value="本科教学状态数据分析报告"
@@ -103,5 +106,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

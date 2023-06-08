@@ -135,6 +135,7 @@ export default {
           this.getFormList(1);
         }
       },
+      immediate: true,
     },
   },
   methods: {

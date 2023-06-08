@@ -17,7 +17,7 @@
                     <el-input
                       v-model="queryParam.name"
                       placeholder="请输入角色名称"
-                      @keyup.enter.native="searchQuery"
+                      @input="searchQuery"
                     />
                   </el-form-item>
                   <el-form-item label="角色状态">
@@ -26,6 +26,7 @@
                       clearable
                       style="width: 100%"
                       placeholder="请选择"
+                      @change="searchQuery"
                     >
                       <el-option label="启用" :value="1" />
                       <el-option label="禁用" :value="0" />

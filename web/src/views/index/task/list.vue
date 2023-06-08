@@ -9,13 +9,13 @@
               label-width="70px"
               size="small"
               :inline="true"
-              @keyup.enter.native="searchQuery"
             >
               <el-form-item label="任务类型">
                 <el-select
                   v-model="queryParam.type"
                   clearable
                   style="width: 100%"
+                  @change="searchQuery"
                   placeholder="请选择任务类型"
                 >
                   <!-- TODO -->
@@ -26,6 +26,7 @@
                   v-model="queryParam.schoolYear"
                   style="width: 100%"
                   clearable
+                  @change="searchQuery"
                   placeholder="请选择学年"
                 >
                   <!-- TODO -->
@@ -35,7 +36,7 @@
                 <el-input
                   v-model="queryParam.name"
                   placeholder="请输入任务名称"
-                  @keyup.enter.native="searchQuery"
+                  @input="searchQuery"
                 />
               </el-form-item>
               <el-button type="primary" size="small" icon="el-icon-search"
