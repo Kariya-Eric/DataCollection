@@ -23,6 +23,7 @@
             type="primary"
             style="margin-bottom: 8px"
             icon="el-icon-plus"
+            :disabled="showFlag"
             @click="addFormCategory"
             >添加大类</el-button
           >
@@ -33,7 +34,7 @@
             :loading="loading"
             :data="formCategoryForm.dataSource"
           >
-            <el-table-column type="index" align="center" />
+            <el-table-column type="index" label="序号" align="center" />
             <el-table-column label="表单大类名称" align="center">
               <template slot-scope="scope">
                 <template v-if="scope.row.isEdit">
@@ -58,11 +59,13 @@
                 <a href="javascript:;" v-else @click="edit(scope.row)">编辑</a>
                 <el-divider direction="vertical" />
                 <el-popconfirm
+                  v-if="scope.row.id"
                   @confirm="delRow(scope.row)"
                   title="确定要删除该行吗?"
                 >
                   <a href="javascript:;" slot="reference">删除</a>
                 </el-popconfirm>
+                <a href="javascript:;" v-else>取消</a>
               </template>
             </el-table-column>
           </el-table>
@@ -83,6 +86,7 @@ export default {
   name: "UpdateFormCategory",
   data() {
     return {
+      showFlag: false,
       loading: false,
       visible: false,
       formCategoryForm: {

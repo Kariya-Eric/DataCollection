@@ -3,7 +3,7 @@
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
       <el-row class="search-row">
-        <el-col :span="16">
+        <el-col :span="20">
           <div class="filter-container">
             <el-form label-width="80px" size="small" :inline="true">
               <el-form-item label="合集名称">
@@ -51,7 +51,7 @@
             </el-form>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="4">
           <div class="search-button-admin">
             <el-button
               type="primary"
@@ -73,6 +73,7 @@
         <el-table-column label="合集名称" prop="name" align="center" />
         <el-table-column label="合集类型" prop="type" align="center" />
         <el-table-column label="年份" prop="year" align="center" />
+        <el-table-column label="启用" prop="enabled" align="center" />
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <a href="javascript:;" @click="showCollectionDetail(scope.row)"
@@ -82,8 +83,6 @@
             <a href="javascript:;" @click="updateCollection(scope.row)"
               >合集属性</a
             >
-            <el-divider direction="vertical" />
-            <a href="javascript:;">复制</a>
             <el-divider direction="vertical" />
             <el-popconfirm
               @confirm="delCollection(scope.row)"

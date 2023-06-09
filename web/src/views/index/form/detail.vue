@@ -80,8 +80,6 @@
             <el-divider direction="vertical" />
             <a href="javascript:;" @click="formDetail(scope.row)">表单属性</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;">复制</a>
-            <el-divider direction="vertical" />
             <el-popconfirm
               title="确认删除该表单吗？"
               @confirm="delForm(scope.row)"
