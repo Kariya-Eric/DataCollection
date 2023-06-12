@@ -2,6 +2,7 @@
   <el-dialog
     :visible="visible"
     fullscreen
+    style="overflow: hidden;"
     @close="close"
     :append-to-body="true"
   >

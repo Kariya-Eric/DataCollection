@@ -131,13 +131,6 @@
           "
         >
           <el-divider>选项</el-divider>
-          <el-alert
-            v-if="optionValidate != ''"
-            type="error"
-            :title="optionValidate"
-            :closable="false"
-            style="margin-bottom: 8px"
-          />
           <draggable
             :list="activeData.__slot__.options"
             :animation="340"
@@ -157,14 +150,6 @@
                 placeholder="选项名"
                 size="small"
               />
-              <el-input
-                :ref="`optionInput${index}`"
-                placeholder="选项值"
-                size="small"
-                :value="item.value"
-                @input="setOptionValue(item, $event)"
-                @blur="validateOption"
-              />
               <div
                 class="close-btn select-line-icon"
                 @click="delSelectItem(index)"
@@ -182,6 +167,7 @@
             >
               添加选项
             </el-button>
+            <a style="margin-left: 96px">设置选项来源</a>
           </div>
           <el-divider />
         </template>
@@ -245,13 +231,6 @@
 
         <template v-if="activeData.__config__.tag === 'customEditTable'">
           <el-divider>列名 - 属性</el-divider>
-          <el-alert
-            v-if="colValidate != ''"
-            type="error"
-            :title="colValidate"
-            :closable="false"
-            style="margin-bottom: 8px"
-          />
           <draggable
             :list="activeData.columns"
             :animation="340"
@@ -268,7 +247,6 @@
                 <i class="el-icon-s-operation" />
               </div>
               <el-input size="small" v-model="item.label" />
-              <el-input size="small" v-model="item.props" @blur="validateCol" />
               <div class="close-btn select-line-icon">
                 <i class="el-icon-remove-outline" @click="delCol(index)" />
               </div>
@@ -419,13 +397,6 @@
               "
             >
               <el-divider>选项</el-divider>
-              <el-alert
-                v-if="columnOptionValidate != ''"
-                type="error"
-                :title="columnOptionValidate"
-                :closable="false"
-                style="margin-bottom: 8px"
-              />
               <draggable
                 :list="activeData.columns[activeData.selectedCol - 1].options"
                 :animation="340"
@@ -447,13 +418,6 @@
                     placeholder="选项名"
                     size="small"
                   />
-                  <el-input
-                    placeholder="选项值"
-                    size="small"
-                    :value="item.value"
-                    @input="setTableOptionValue(item, $event)"
-                    @blur="tableOptionValidate"
-                  />
                   <div class="close-btn select-line-icon">
                     <i
                       class="el-icon-remove-outline"
@@ -471,6 +435,7 @@
                 >
                   添加选项
                 </el-button>
+                <a style="margin-left: 96px">设置选项来源</a>
               </div>
             </template>
           </template>
@@ -548,7 +513,6 @@
 
 <script>
 import draggable from "vuedraggable";
-import { isNumberStr } from "../utils/index";
 import { saveFormConf } from "../utils/db";
 import LogicDialog from "./logic-dialog";
 
@@ -562,9 +526,6 @@ export default {
   data() {
     return {
       currentTab: "field",
-      optionValidate: "",
-      colValidate: "",
-      columnOptionValidate: "",
     };
   },
   computed: {
@@ -587,18 +548,14 @@ export default {
       },
       deep: true,
     },
-    activeData: {
-      handler(val) {
-        if (val.__config__.tag === "customEditTable" && val.selectedCol != -1) {
-          this.tableOptionValidate();
-        }
-      },
-      deep: true,
-    },
   },
   methods: {
     // ==============自定义Start==============
     addCol() {
+      for (let i = 0; i < this.activeData.columns.length; i++) {
+        this.activeData.columns[i].index = i + 1;
+        this.activeData.columns[i].props = "col" + (i + 1);
+      }
       this.activeData.columns.push({
         index: this.activeData.col + 1,
         label: "列" + (this.activeData.col + 1),
@@ -615,90 +572,63 @@ export default {
             value: 2,
           },
         ],
-        minRows: 2,
-        maxRows: 4,
-        maxlength: null,
+        allowChar: false,
         precision: 0,
         min: undefined,
         max: undefined,
-        format: "yyyy-MM-dd",
-        "value-format": "yyyy-MM-dd",
+        isMobile: false,
+        format: "yyyy-MM",
+        "value-format": "yyyy-MM",
+        dateType: "month",
+        comment: "",
       });
       this.activeData.col++;
-      this.validateCol();
     },
 
     delCol(index) {
       this.activeData.selectedCol = -1;
       this.activeData.columns.splice(index, 1);
       this.activeData.col--;
-      this.validateCol();
-    },
-    validateCol() {
-      let emptyFlag = false;
-      this.activeData.columns.forEach((col) => {
-        if (col.props == "") {
-          emptyFlag = true;
-        }
-      });
-      if (emptyFlag) {
-        this.colValidate = "列的属性不能为空";
-      } else {
-        const newValueLength = new Set(
-          this.activeData.columns.map((item) => item.props)
-        ).size;
-        const oldValueLength = this.activeData.columns.length;
-        if (newValueLength < oldValueLength) {
-          this.colValidate = "列的属性不能重复";
-        } else {
-          this.colValidate = "";
-        }
+      for (let i = 0; i < this.activeData.columns.length; i++) {
+        this.activeData.columns[i].index = i + 1;
+        this.activeData.columns[i].props = "col" + (i + 1);
       }
     },
     addTableOption() {
+      for (
+        let i = 0;
+        i <
+        this.activeData.columns[this.activeData.selectedCol - 1].options.length;
+        i++
+      ) {
+        this.activeData.columns[this.activeData.selectedCol - 1].options[
+          i
+        ].value = i + 1;
+      }
       this.activeData.columns[this.activeData.selectedCol - 1].options.push({
         label: "选项",
-        value: "",
+        value:
+          this.activeData.columns[this.activeData.selectedCol - 1].options
+            .length + 1,
       });
-      this.tableOptionValidate();
     },
     delTableOption(index) {
       this.activeData.columns[this.activeData.selectedCol - 1].options.splice(
         index,
         1
       );
-      this.tableOptionValidate();
-    },
-    tableOptionValidate() {
-      let emptyFlag = false;
-      this.activeData.columns[this.activeData.selectedCol - 1].options.forEach(
-        (opt) => {
-          if (opt.value == "") {
-            emptyFlag = true;
-          }
-        }
-      );
-      if (emptyFlag) {
-        this.columnOptionValidate = "选项值不能为空";
-      } else {
-        const newValueLength = new Set(
-          this.activeData.columns[this.activeData.selectedCol - 1].options.map(
-            (item) => item.value
-          )
-        ).size;
-        const oldValueLength =
-          this.activeData.columns[this.activeData.selectedCol - 1].options
-            .length;
-        if (newValueLength < oldValueLength) {
-          this.columnOptionValidate = "选项值不能重复";
-        } else {
-          this.columnOptionValidate = "";
-        }
+      for (
+        let i = 0;
+        i <
+        this.activeData.columns[this.activeData.selectedCol - 1].options.length;
+        i++
+      ) {
+        this.activeData.columns[this.activeData.selectedCol - 1].options[
+          i
+        ].value = i + 1;
       }
     },
-    setTableOptionValue(item, val) {
-      item.value = isNumberStr(val) ? +val : val;
-    },
+
     addRule() {
       this.$refs.logicdialog.show();
     },
@@ -743,7 +673,11 @@ export default {
           "value-format",
           "yyyyMM"
         );
-        this.$set(this.activeData.columns[selectedCol - 1], "dateType", "month");
+        this.$set(
+          this.activeData.columns[selectedCol - 1],
+          "dateType",
+          "month"
+        );
       } else {
         this.$set(
           this.activeData.columns[selectedCol - 1],
@@ -757,41 +691,20 @@ export default {
     // ==============自定义END==============
 
     addSelectItem() {
+      for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
+        this.activeData.__slot__.options[i].value = i + 1;
+      }
       this.activeData.__slot__.options.push({
         label: "选项",
-        value: "",
+        value: this.activeData.__slot__.options.length + 1,
       });
-      this.validateOption();
     },
     delSelectItem(index) {
       this.activeData.__slot__.options.splice(index, 1);
-      this.validateOption();
-    },
-    setOptionValue(item, val) {
-      item.value = isNumberStr(val) ? +val : val;
-    },
-    validateOption() {
-      let emptyFlag = false;
-      this.activeData.__slot__.options.forEach((opt) => {
-        if (opt.value == "") {
-          emptyFlag = true;
-        }
-      });
-      if (emptyFlag) {
-        this.optionValidate = "选项值不能为空";
-      } else {
-        const newValueLength = new Set(
-          this.activeData.__slot__.options.map((item) => item.value)
-        ).size;
-        const oldValueLength = this.activeData.__slot__.options.length;
-        if (newValueLength < oldValueLength) {
-          this.optionValidate = "选项值不能重复";
-        } else {
-          this.optionValidate = "";
-        }
+      for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
+        this.activeData.__slot__.options[i].value = i + 1;
       }
     },
-
     spanChange(val) {
       this.$set(this.formConf, "span", val);
     },
