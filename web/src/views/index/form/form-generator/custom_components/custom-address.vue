@@ -6,7 +6,6 @@
       filterable
       clearable
       style="width: 100%"
-      :disabled="disabled"
       v-model="selectOption"
       @change="changeOption"
       size="small"
@@ -16,7 +15,6 @@
       :rows="3"
       placeholder="请输入详细地址"
       v-model="textarea"
-      :disabled="disabled"
       @input="changeVal"
       size="small"
     />
@@ -26,7 +24,7 @@
 <script>
 export default {
   name: "CustomAddress",
-  props: ["value", "disabled"],
+  props: ["value"],
   watch: {
     value: {
       handler(val) {

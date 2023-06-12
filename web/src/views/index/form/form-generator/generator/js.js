@@ -139,10 +139,9 @@ function mixinMethod() {
 
 // 构建data
 function buildData(scheme, dataList) {
-  const config = scheme.__config__;
   if (scheme.__vModel__ === undefined) return;
-  const defaultValue = JSON.stringify(config.defaultValue);
-  dataList.push(`${scheme.__vModel__}: ${defaultValue},`);
+  const vmodel = scheme.__config__.tag === "el-checkbox-group" ? `[]` : `undefined`
+  dataList.push(`${scheme.__vModel__}: ${vmodel},`);
 }
 
 // 构建校验规则
@@ -158,8 +157,7 @@ function buildRules(scheme, ruleList) {
         : scheme.placeholder;
       if (message === undefined) message = `${config.label}不能为空`;
       rules.push(
-        `{ required: true, ${type} message: '${message}', trigger: '${
-          ruleTrigger[config.tag]
+        `{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]
         }' }`
       );
     }

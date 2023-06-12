@@ -3,8 +3,6 @@
     prefix-icon="el-icon-message"
     clearable
     size="small"
-    :disabled="disabled"
-    :readonly="readonly"
     :placeholder="placeholder"
     v-model="inputVal"
     @input="changeVal"
@@ -14,7 +12,7 @@
 <script>
 export default {
   name: "CustomMail",
-  props: ["value", "readonly", "disabled", "placeholder"],
+  props: ["value", "placeholder"],
   watch: {
     value(val) {
       this.inputVal = val;

@@ -3,8 +3,6 @@
     prefix-icon="el-icon-mobile"
     clearable
     size="small"
-    :disabled="disabled"
-    :readonly="readonly"
     :placeholder="placeholder"
     v-model="inputVal"
     :maxlength="!isMobile ? 11 : null"
@@ -16,7 +14,7 @@
 <script>
 export default {
   name: "CustomPhone",
-  props: ["value", "readonly", "disabled", "placeholder", "isMobile"],
+  props: ["value", "placeholder", "isMobile"],
   watch: {
     value(val) {
       this.inputVal = val;

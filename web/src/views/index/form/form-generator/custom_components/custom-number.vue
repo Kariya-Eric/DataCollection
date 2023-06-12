@@ -1,7 +1,6 @@
 <template>
   <el-input-number
     size="small"
-    :disabled="disabled"
     controls-position="right"
     v-model="inputVal"
     :placeholder="placeholder"
@@ -15,7 +14,7 @@
 <script>
 export default {
   name: "CustomNumber",
-  props: ["value", "disabled", "precision", "min", "max", "placeholder"],
+  props: ["value", "precision", "min", "max", "placeholder"],
   watch: {
     value: {
       handler(val) {
@@ -43,4 +42,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/deep/ .el-input__inner::placeholder {
+  text-align: left;
+}
+</style>

@@ -195,52 +195,44 @@ const layouts = {
 
 const tags = {
   "el-input": (el) => {
-    const { tag, disabled, vModel, clearable, placeholder, width } =
+    const { tag, vModel, clearable, placeholder, width } =
       attrBuilder(el);
-    const maxlength = el.maxlength ? `:maxlength="${el.maxlength}"` : "";
-    const showWordLimit = el["show-word-limit"] ? "show-word-limit" : "";
-    const readonly = el.readonly ? "readonly" : "";
     const type = el.type ? `type="${el.type}"` : "";
-    const autosize =
-      el.autosize && el.autosize.minRows
-        ? `:autosize="{minRows: ${el.autosize.minRows}, maxRows: ${el.autosize.maxRows}}"`
-        : "";
-    return `<${tag} ${vModel} ${type} ${placeholder} ${maxlength} ${showWordLimit} ${readonly} ${disabled} ${clearable} ${autosize} ${width}></${tag}>`;
+    return `<${tag} ${vModel} ${type} ${placeholder} ${clearable} ${width}></${tag}>`;
   },
   "el-select": (el) => {
-    const { tag, disabled, vModel, clearable, placeholder, width } =
+    const { tag, vModel, clearable, placeholder, width } =
       attrBuilder(el);
     const filterable = el.filterable ? "filterable" : "";
     const multiple = el.multiple ? "multiple" : "";
     let child = buildElSelectChild(el);
 
     if (child) child = `\n${child}\n`; // 换行
-    return `<${tag} ${vModel} ${placeholder} ${disabled} ${multiple} ${filterable} ${clearable} ${width}>${child}</${tag}>`;
+    return `<${tag} ${vModel} ${placeholder} ${multiple} ${filterable} ${clearable} ${width}>${child}</${tag}>`;
   },
   "el-radio-group": (el) => {
-    const { tag, disabled, vModel } = attrBuilder(el);
+    const { tag, vModel } = attrBuilder(el);
     let child = buildElRadioGroupChild(el);
     if (child) child = `\n${child}\n`; // 换行
-    return `<${tag} ${vModel} ${disabled}>${child}</${tag}>`;
+    return `<${tag} ${vModel}>${child}</${tag}>`;
   },
   "el-checkbox-group": (el) => {
-    const { tag, disabled, vModel } = attrBuilder(el);
+    const { tag, vModel } = attrBuilder(el);
     const min = el.min ? `:min="${el.min}"` : "";
     const max = el.max ? `:max="${el.max}"` : "";
     let child = buildElCheckboxGroupChild(el);
     if (child) child = `\n${child}\n`; // 换行
-    return `<${tag} ${vModel} ${min} ${max} ${disabled}>${child}</${tag}>`;
+    return `<${tag} ${vModel} ${min} ${max}>${child}</${tag}>`;
   },
   "el-date-picker": (el) => {
-    const { tag, disabled, vModel, clearable, placeholder, width } =
+    const { tag, vModel, clearable, placeholder, width } =
       attrBuilder(el);
     const format = el.format ? `format="${el.format}"` : "";
     const valueFormat = el["value-format"]
       ? `value-format="${el["value-format"]}"`
       : "";
     const type = el.type ? `type=${el.type}` : `type="date"`;
-    const readonly = el.readonly ? "readonly" : "";
-    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${clearable} ${readonly} ${disabled}></${tag}>`;
+    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${clearable} ></${tag}>`;
   },
   // ============自定义组件=============================
   customDivider: (el, hide) => {
@@ -252,26 +244,25 @@ const tags = {
     return `<custom-divider ${title} ${titlePosition} ${fontSize} ${letterSpacing} ${color} ${hide}/>`;
   },
   customPhone: (el) => {
-    const { disabled, vModel, placeholder, width } = attrBuilder(el);
-    const readonly = el.readonly ? "readonly" : "";
+    const { vModel, placeholder, width } = attrBuilder(el);
+
     const isMobile = `:isMobile="${el.isMobile}"`;
-    return `<custom-phone ${vModel} ${placeholder} ${readonly} ${disabled} ${width} ${isMobile} />`;
+    return `<custom-phone ${vModel} ${placeholder} ${width} ${isMobile} />`;
   },
   customMail: (el) => {
-    const { disabled, vModel, placeholder, width } = attrBuilder(el);
-    const readonly = el.readonly ? "readonly" : "";
-    return `<custom-mail ${vModel} ${placeholder} ${readonly} ${disabled} ${width} />`;
+    const { vModel, placeholder, width } = attrBuilder(el);
+    return `<custom-mail ${vModel} ${placeholder} ${width} />`;
   },
   customNumber: (el) => {
-    const { disabled, vModel, placeholder, width } = attrBuilder(el);
+    const { vModel, placeholder, width } = attrBuilder(el);
     const precision = `:precision="${el.precision}"`;
     const min = el.min ? `:min="${el.min}"` : "";
     const max = el.max ? `:max="${el.max}"` : "";
-    return `<custom-number ${vModel} ${placeholder} ${precision} ${max} ${min} ${disabled} ${width}/>`;
+    return `<custom-number ${vModel} ${placeholder} ${precision} ${max} ${min} ${width}/>`;
   },
   customAddress: (el) => {
-    const { disabled, vModel, placeholder, width } = attrBuilder(el);
-    return `<custom-address ${vModel} ${placeholder} ${disabled} ${width} />`;
+    const { vModel, placeholder, width } = attrBuilder(el);
+    return `<custom-address ${vModel} ${placeholder} ${width} />`;
   },
   customEditTable: (el) => {
     const ref = `ref='customTable_${el.__config__.formId}'`;
@@ -302,7 +293,7 @@ function buildElSelectChild(scheme) {
   const slot = scheme.__slot__;
   if (slot && slot.options && slot.options.length) {
     children.push(
-      `<el-option v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>`
+      `<el-option v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.label" :value="item.value"></el-option>`
     );
   }
   return children.join("\n");
@@ -312,12 +303,10 @@ function buildElSelectChild(scheme) {
 function buildElRadioGroupChild(scheme) {
   const children = [];
   const slot = scheme.__slot__;
-  const config = scheme.__config__;
   if (slot && slot.options && slot.options.length) {
-    const tag = config.optionType === "button" ? "el-radio-button" : "el-radio";
-    const border = config.border ? "border" : "";
+    const tag = "el-radio";
     children.push(
-      `<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`
+      `<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" >{{item.label}}</${tag}>`
     );
   }
   return children.join("\n");
@@ -327,13 +316,10 @@ function buildElRadioGroupChild(scheme) {
 function buildElCheckboxGroupChild(scheme) {
   const children = [];
   const slot = scheme.__slot__;
-  const config = scheme.__config__;
   if (slot && slot.options && slot.options.length) {
-    const tag =
-      config.optionType === "button" ? "el-checkbox-button" : "el-checkbox";
-    const border = config.border ? "border" : "";
+    const tag = "el-checkbox";
     children.push(
-      `<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`
+      `<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value">{{item.label}}</${tag}>`
     );
   }
   return children.join("\n");
@@ -365,6 +351,6 @@ export function makeUpHtml(formConfig) {
       ? ""
       : `<el-alert title="填报提示" type="warning" show-icon :closable="false"
           description="${formConfig.formAlert}"></el-alert>`;
-  const str = `<div>${alert}${temp}</div>`; 
+  const str = `<div>${alert}${temp}</div>`;
   return str;
 }

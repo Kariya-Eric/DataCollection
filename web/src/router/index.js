@@ -239,6 +239,15 @@ export const constantRouterMap = [
           icon: "list",
         },
       },
+      {
+        path: "/test/list",
+        name: "test",
+        component: () => import("@/views/index/test/list"),
+        meta: {
+          title: "test",
+          icon: "list",
+        },
+      },
     ],
   },
 ];

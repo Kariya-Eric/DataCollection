@@ -7,7 +7,6 @@ export default [
       showLabel: true,
       tag: "el-input",
       tagIcon: "input",
-      defaultValue: undefined,
       required: true,
       layout: "colFormItem",
       span: 24,
@@ -16,10 +15,7 @@ export default [
     style: { width: "100%" },
     // 其余的为可直接写在组件标签上的属性
     placeholder: "请输入单行文本",
-    maxlength: null,
-    readonly: false,
-    disabled: false,
     comment: "",
-    allowChar: true,
+    allowChar: false,
   },
 ];

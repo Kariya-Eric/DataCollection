@@ -12,12 +12,6 @@
         size="small"
         label-width="90px"
       >
-        <el-form-item v-if="activeData.__vModel__ !== undefined" label="字段名">
-          <el-input
-            v-model="activeData.__vModel__"
-            placeholder="请输入字段名（v-model）"
-          />
-        </el-form-item>
         <el-form-item
           v-if="activeData.__config__.componentName !== undefined"
           label="组件名"
@@ -71,28 +65,15 @@
         >
           <el-slider v-model="inputWidth" :marks="{ 50: '' }"></el-slider>
         </el-form-item>
-        <el-form-item
-          v-if="
-            activeData.__vModel__ !== undefined &&
-            activeData.__config__.layout !== 'customTable'
-          "
-          label="默认值"
-        >
-          <el-input
-            :value="setDefaultValue(activeData.__config__.defaultValue)"
-            placeholder="请输入默认值"
-            @input="onDefaultValueInput"
-          />
-        </el-form-item>
 
         <el-form-item
           v-if="activeData.__config__.tag === 'customNumber'"
-          label="精度"
+          label="小数位数"
         >
           <el-input-number
             v-model="activeData.precision"
             :min="0"
-            placeholder="精度"
+            placeholder="小数位数"
           />
         </el-form-item>
         <el-form-item
@@ -130,29 +111,6 @@
             @input="$set(activeData, 'max', $event ? $event : undefined)"
           />
         </el-form-item>
-        <el-form-item v-if="activeData.autosize !== undefined" label="最小行数">
-          <el-input-number
-            v-model="activeData.autosize.minRows"
-            :min="1"
-            placeholder="最小行数"
-          />
-        </el-form-item>
-        <el-form-item v-if="activeData.autosize !== undefined" label="最大行数">
-          <el-input-number
-            v-model="activeData.autosize.maxRows"
-            :min="1"
-            placeholder="最大行数"
-          />
-        </el-form-item>
-
-        <el-form-item
-          v-if="activeData.maxlength !== undefined"
-          label="最多输入"
-        >
-          <el-input v-model="activeData.maxlength" placeholder="请输入字符长度">
-            <template slot="append"> 个字符 </template>
-          </el-input>
-        </el-form-item>
 
         <el-form-item v-if="activeData.format !== undefined" label="时间格式">
           <el-select
@@ -161,8 +119,8 @@
             style="width: 100%"
           >
             <el-option label="年（yyyy）" value="yyyy" />
-            <el-option label="年月（yyyy-MM）" value="yyyy-MM" />
-            <el-option label="年月日（yyyy-MM-dd）" value="yyyy-MM-dd" />
+            <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
+            <el-option label="年月（yyyyMM）" value="yyyyMM" />
           </el-select>
         </el-form-item>
         <template
@@ -249,12 +207,6 @@
           <el-switch v-model="activeData.__config__.showLabel" />
         </el-form-item>
 
-        <el-form-item v-if="activeData.readonly !== undefined" label="是否只读">
-          <el-switch v-model="activeData.readonly" />
-        </el-form-item>
-        <el-form-item v-if="activeData.disabled !== undefined" label="是否禁用">
-          <el-switch v-model="activeData.disabled" />
-        </el-form-item>
         <el-form-item
           v-if="activeData.__config__.tag === 'el-select'"
           label="能否搜索"
@@ -350,6 +302,17 @@
                 <el-option label="日期选择" value="datepick" />
               </el-select>
             </el-form-item>
+
+            <el-form-item label="注释">
+              <el-input
+                type="textarea"
+                :rows="4"
+                placeholder="请输入组件注释"
+                size="small"
+                v-model="activeData.columns[activeData.selectedCol - 1].comment"
+              />
+            </el-form-item>
+
             <el-form-item
               v-if="
                 activeData.columns[activeData.selectedCol - 1].type === 'phone'
@@ -369,58 +332,27 @@
                 activeData.columns[activeData.selectedCol - 1].type ===
                   'inputarea'
               "
-              label="最多输入"
+              label="禁止汉字"
             >
-              <el-input
+              <el-switch
                 v-model="
-                  activeData.columns[activeData.selectedCol - 1].maxlength
+                  activeData.columns[activeData.selectedCol - 1].allowChar
                 "
-                placeholder="请输入字符长度"
-                style="width: 100%"
-              >
-                <template slot="append"> 个字符 </template>
-              </el-input>
-            </el-form-item>
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                'inputarea'
-              "
-              label="最小行数"
-            >
-              <el-input-number
-                v-model="activeData.columns[activeData.selectedCol - 1].minRows"
-                :min="1"
-                placeholder="最小行数"
               />
             </el-form-item>
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                'inputarea'
-              "
-              label="最大行数"
-            >
-              <el-input-number
-                v-model="activeData.columns[activeData.selectedCol - 1].maxRows"
-                :min="1"
-                placeholder="最大行数"
-              />
-            </el-form-item>
-
             <el-form-item
               v-if="
                 activeData.columns[activeData.selectedCol - 1].type ===
                 'inputnumber'
               "
-              label="精度"
+              label="小数位数"
             >
               <el-input-number
                 v-model="
                   activeData.columns[activeData.selectedCol - 1].precision
                 "
                 :min="0"
-                placeholder="精度"
+                placeholder="小数位数"
               />
             </el-form-item>
             <el-form-item
@@ -469,8 +401,8 @@
                   @change="changeColTimeFormat"
                 >
                   <el-option label="年（yyyy）" value="yyyy" />
-                  <el-option label="年月（yyyy-MM）" value="yyyy-MM" />
-                  <el-option label="年月日（yyyy-MM-dd）" value="yyyy-MM-dd" />
+                  <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
+                  <el-option label="年月（yyyyMM）" value="yyyyMM" />
                 </el-select>
               </el-form-item>
             </template>
@@ -561,14 +493,6 @@
         <el-form-item label="校验模型">
           <el-input v-model="formConf.formRules" placeholder="请输入校验模型" />
         </el-form-item>
-        <el-form-item label="填报提示">
-          <el-input
-            type="textarea"
-            :rows="4"
-            v-model="formConf.formAlert"
-            placeholder="请输入填报提示"
-          />
-        </el-form-item>
         <el-form-item label="表单尺寸">
           <el-radio-group v-model="formConf.size">
             <el-radio-button label="medium"> 中等 </el-radio-button>
@@ -624,7 +548,6 @@
 
 <script>
 import draggable from "vuedraggable";
-import { isArray } from "util";
 import { isNumberStr } from "../utils/index";
 import { saveFormConf } from "../utils/db";
 import LogicDialog from "./logic-dialog";
@@ -792,9 +715,9 @@ export default {
       if (val === "yyyy-MM") {
         this.$set(this.activeData, "value-format", "yyyy-MM");
         this.$set(this.activeData, "type", "month");
-      } else if (val === "yyyy-MM-dd") {
-        this.$set(this.activeData, "value-format", "yyyy-MM-dd");
-        this.$set(this.activeData, "type", "date");
+      } else if (val === "yyyyMM") {
+        this.$set(this.activeData, "value-format", "yyyyMM");
+        this.$set(this.activeData, "type", "month");
       } else {
         this.$set(this.activeData, "type", "yyyy");
         this.$set(this.activeData, "type", "year");
@@ -814,13 +737,13 @@ export default {
           "dateType",
           "month"
         );
-      } else if (val === "yyyy-MM-dd") {
+      } else if (val === "yyyyMM") {
         this.$set(
           this.activeData.columns[selectedCol - 1],
           "value-format",
-          "yyyy-MM-dd"
+          "yyyyMM"
         );
-        this.$set(this.activeData.columns[selectedCol - 1], "dateType", "date");
+        this.$set(this.activeData.columns[selectedCol - 1], "dateType", "month");
       } else {
         this.$set(
           this.activeData.columns[selectedCol - 1],
@@ -866,38 +789,6 @@ export default {
         } else {
           this.optionValidate = "";
         }
-      }
-    },
-    setDefaultValue(val) {
-      if (Array.isArray(val)) {
-        return val.join(",");
-      }
-      // if (['string', 'number'].indexOf(typeof val) > -1) {
-      //   return val
-      // }
-      if (typeof val === "boolean") {
-        return `${val}`;
-      }
-      return val;
-    },
-    onDefaultValueInput(str) {
-      if (isArray(this.activeData.__config__.defaultValue)) {
-        // 数组
-        this.$set(
-          this.activeData.__config__,
-          "defaultValue",
-          str.split(",").map((val) => (isNumberStr(val) ? +val : val))
-        );
-      } else if (["true", "false"].indexOf(str) > -1) {
-        // 布尔
-        this.$set(this.activeData.__config__, "defaultValue", JSON.parse(str));
-      } else {
-        // 字符串和数字
-        this.$set(
-          this.activeData.__config__,
-          "defaultValue",
-          isNumberStr(str) ? +str : str
-        );
       }
     },
 

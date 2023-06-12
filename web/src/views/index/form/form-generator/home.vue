@@ -337,6 +337,10 @@ export default {
     },
 
     assembleFormData() {
+      this.drawingList.forEach((item) => {
+        const __config__ = item.__config__;
+        delete __config__.defaultValue;
+      });
       this.formData = {
         fields: deepClone(this.drawingList),
         ...this.formConf,

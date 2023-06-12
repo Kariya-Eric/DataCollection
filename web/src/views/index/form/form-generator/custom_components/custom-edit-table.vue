@@ -19,7 +19,6 @@
             <template v-if="columns[colIndex].type === 'input'">
               <el-input
                 :placeholder="`请输入${columns[colIndex].label}`"
-                :maxlength="columns[colIndex].maxlength"
                 clearable
                 size="small"
               />
@@ -28,19 +27,13 @@
               <el-input
                 type="textarea"
                 clearable
-                :autosize="{
-                  maxRows: columns[colIndex].maxRows,
-                  minRows: columns[colIndex].minRows,
-                }"
                 :placeholder="`请输入${columns[colIndex].label}`"
-                :maxlength="columns[colIndex].maxlength"
               />
             </template>
             <template v-if="columns[colIndex].type === 'inputnumber'">
               <custom-number
                 style="width: 100%"
                 :value="datasource"
-                :disabled="false"
                 :precision="columns[colIndex].precision"
                 :min="columns[colIndex].min"
                 :max="columns[colIndex].max"
@@ -50,8 +43,6 @@
               <custom-mail
                 style="width: 100%"
                 :value="datasource"
-                :readonly="false"
-                :disabled="false"
                 :placeholder="`请输入${columns[colIndex].label}`"
               />
             </template>
@@ -59,9 +50,7 @@
               <custom-phone
                 style="width: 100%"
                 :value="datasource"
-                :readonly="false"
                 :isMobile="columns[colIndex].isMobile"
-                :disabled="false"
                 :placeholder="`请输入${columns[colIndex].label}`"
               />
             </template>
@@ -69,7 +58,6 @@
               <custom-address
                 style="width: 100%"
                 :value="datasource"
-                :disabled="false"
                 :placeholder="`请输入${columns[colIndex].label}`"
               />
             </template>

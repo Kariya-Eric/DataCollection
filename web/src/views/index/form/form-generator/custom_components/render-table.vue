@@ -3,7 +3,6 @@
     <el-button type="text" @click="addRow"
       ><span style="font-size: 10px">添加行</span></el-button
     >
-    <el-button type="text"><span style="font-size: 10px">导入</span></el-button>
     <el-popconfirm
       title="确认删除选中行吗？"
       @confirm="delBatch"
@@ -37,6 +36,24 @@
           width="auto"
           min-width="220"
         >
+          <template slot="header" slot-scope="scope">
+            <template v-if="col.comment !== ''">
+              <span slot="label">
+                <span>{{ scope.column.label }}</span>
+                <el-tooltip
+                  style="margin: 2px"
+                  effect="dark"
+                  :content="col.comment"
+                  placement="right"
+                >
+                  <i class="el-icon-question" />
+                </el-tooltip>
+              </span>
+            </template>
+            <template v-else>
+              {{ scope.column.label }}
+            </template>
+          </template>
           <template slot-scope="scope">
             <template v-if="scope.row.isEdit">
               <template v-if="col.type === 'select'">
@@ -63,8 +80,6 @@
                   <el-input
                     clearable
                     v-model="scope.row[col.props]"
-                    :maxlength="col.maxlength"
-                    :show-word-limit="col.maxlength ? true : false"
                     :placeholder="`请输入${col.label}`"
                     size="small"
                     style="width: 100%"
@@ -84,14 +99,8 @@
                   <el-input
                     type="textarea"
                     v-model="scope.row[col.props]"
-                    :autosize="{
-                      maxRows: col.maxRows,
-                      minRows: col.minRows,
-                    }"
                     clearable
-                    :maxlength="col.maxlength"
                     :placeholder="`请输入${col.label}`"
-                    :show-word-limit="col.maxlength ? true : false"
                     size="small"
                     style="width: 100%"
                   />
@@ -286,12 +295,14 @@ export default {
         pattern: /^(\+\d{2}-)?(\d{2,3}-)?([1][3,4,5,7,8][0-9]\d{8})$/,
         message: "请输入正确的手机号",
       },
-      phoneRule: [
-        {
-          pattern: /^(\+\d{2}-)?0\d{2,3}-\d{7,8}$/,
-          message: "请输入正确的电话号码",
-        },
-      ],
+      phoneRule: {
+        pattern: /^(\+\d{2}-)?0\d{2,3}-\d{7,8}$/,
+        message: "请输入正确的电话号码",
+      },
+      charRule: {
+        pattern: /^[^\\u4E00-\\u9FA5]+$/,
+        message: "输入内容不能包含汉字",
+      },
     };
   },
   methods: {
@@ -326,7 +337,6 @@ export default {
       } else {
         this.edit(scope.row);
       }
-
     },
     del(row) {
       this.tableForm.dataSource = this.tableForm.dataSource.filter(
