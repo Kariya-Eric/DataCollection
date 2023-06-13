@@ -106,7 +106,7 @@ export const inputComponents = [
       changeTag: true,
       showLabel: true,
       tag: "customAddress",
-      tagIcon: "smartphone",
+      tagIcon: "address",
       required: true,
       layout: "colFormItem",
       span: 24,

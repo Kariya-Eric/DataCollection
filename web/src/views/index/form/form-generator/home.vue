@@ -156,7 +156,7 @@ export default {
           list: layoutComponents,
         },
       ],
-      drawingList: drawingDefault,
+      drawingList: [],
       activeId: drawingDefault[0].formId,
       activeData: drawingDefault[0],
       saveDrawingListDebounce: debounce(340, saveDrawingList),
@@ -210,14 +210,10 @@ export default {
           formBtns: true,
           componentsVisible: [],
         };
-        this.drawingList = drawingDefault;
-        const config = this.drawingList[0].__config__;
-        const componentName = config.label;
-        if (config.layout === "customItem") {
-          config.componentName = componentName;
-          delete config.label;
-          delete config.span;
-        }
+        this.formConf.componentsVisible = [];
+        formConf.componentsVisible = this.formConf.componentsVisible;
+        this.drawingList = [];
+        this.idGlobal = 100;
       }
     },
     close() {
@@ -298,7 +294,6 @@ export default {
         }
       });
       this.activeData = newTag;
-      console.log(newTag, this.drawingList);
       this.updateDrawingList(newTag, this.drawingList);
     },
 
@@ -308,11 +303,6 @@ export default {
       );
       if (index > -1) {
         list.splice(index, 1, newTag);
-      } else {
-        list.forEach((item) => {
-          if (Array.isArray(item.__config__.children))
-            this.updateDrawingList(newTag, item.__config__.children);
-        });
       }
     },
 
