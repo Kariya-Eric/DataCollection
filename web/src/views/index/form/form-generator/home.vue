@@ -2,7 +2,7 @@
   <el-dialog
     :visible="visible"
     fullscreen
-    style="overflow: hidden;"
+    style="overflow: hidden"
     @close="close"
     :append-to-body="true"
   >
@@ -292,19 +292,13 @@ export default {
       config.span = this.activeData.__config__.span;
       this.activeData.__config__.tag = config.tag;
       this.activeData.__config__.tagIcon = config.tagIcon;
-      this.activeData.__config__.document = config.document;
-      if (
-        typeof this.activeData.__config__.defaultValue ===
-        typeof config.defaultValue
-      ) {
-        config.defaultValue = this.activeData.__config__.defaultValue;
-      }
       Object.keys(newTag).forEach((key) => {
         if (this.activeData[key] !== undefined) {
           newTag[key] = this.activeData[key];
         }
       });
       this.activeData = newTag;
+      console.log(newTag, this.drawingList);
       this.updateDrawingList(newTag, this.drawingList);
     },
 
@@ -325,6 +319,8 @@ export default {
     empty() {
       this.$confirm("确定要清空所有组件吗？", "提示", { type: "warning" }).then(
         () => {
+          this.formConf.componentsVisible = [];
+          formConf.componentsVisible = this.formConf.componentsVisible;
           this.drawingList = [];
           this.idGlobal = 100;
         }
@@ -350,36 +346,8 @@ export default {
 
     save() {
       this.assembleFormData();
-      const validateFields = this.validateField();
-      if (validateFields !== "") {
-        this.$message.warning(validateFields);
-      } else {
-        this.$emit("saveForm", this.formData);
-        this.visible = false;
-      }
-    },
-
-    validateField() {
-      let emptyFlag = false;
-      let emptyField;
-      this.formData.fields.forEach((field) => {
-        if (field.__vModel__ === "") {
-          emptyField = field;
-          emptyFlag = true;
-        }
-      });
-      if (emptyFlag) {
-        return `组件[${emptyField.__config__.label}]字段名为空`;
-      } else {
-        const newFieldsLength = new Set(
-          this.formData.fields.map((field) => field.__vModel__)
-        ).size;
-        const oldFiledsLength = this.formData.fields.length;
-        if (newFieldsLength < oldFiledsLength) {
-          return "组件字段名不能重复,请核对";
-        }
-        return "";
-      }
+      this.$emit("saveForm", this.formData);
+      this.visible = false;
     },
   },
 };

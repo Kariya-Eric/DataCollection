@@ -20,6 +20,7 @@ export const inputComponents = [
     // 组件的自定义配置
     __config__: {
       label: "单行文本",
+      changeTag: true,
       showLabel: true,
       tag: "el-input",
       tagIcon: "input",
@@ -36,6 +37,7 @@ export const inputComponents = [
   {
     __config__: {
       label: "多行文本",
+      changeTag: true,
       showLabel: true,
       tag: "el-input",
       tagIcon: "textarea",
@@ -52,6 +54,7 @@ export const inputComponents = [
   {
     __config__: {
       label: "数字",
+      changeTag: true,
       showLabel: true,
       tag: "customNumber",
       tagIcon: "number",
@@ -69,6 +72,7 @@ export const inputComponents = [
   {
     __config__: {
       label: "邮箱",
+      changeTag: true,
       showLabel: true,
       tag: "customMail",
       tagIcon: "mail",
@@ -83,6 +87,7 @@ export const inputComponents = [
   {
     __config__: {
       label: "电话",
+      changeTag: true,
       showLabel: true,
       tag: "customPhone",
       tagIcon: "smartphone",
@@ -98,6 +103,7 @@ export const inputComponents = [
   {
     __config__: {
       label: "地址",
+      changeTag: true,
       showLabel: true,
       tag: "customAddress",
       tagIcon: "smartphone",
@@ -116,6 +122,7 @@ export const selectComponents = [
   {
     __config__: {
       label: "下拉选择",
+      changeTag: true,
       showLabel: true,
       tag: "el-select",
       tagIcon: "select",
@@ -145,6 +152,7 @@ export const selectComponents = [
   {
     __config__: {
       label: "单选框组",
+      changeTag: true,
       showLabel: true,
       tag: "el-radio-group",
       tagIcon: "radio",
@@ -170,6 +178,7 @@ export const selectComponents = [
     __config__: {
       label: "多选框组",
       tag: "el-checkbox-group",
+      changeTag: true,
       tagIcon: "checkbox",
       defaultValue: [],
       span: 24,
@@ -198,6 +207,7 @@ export const selectComponents = [
     __config__: {
       label: "日期选择",
       tag: "el-date-picker",
+      changeTag: true,
       tagIcon: "date",
       showLabel: true,
       layout: "colFormItem",
@@ -253,7 +263,9 @@ export const otherComponents = [
         format: "yyyy-MM",
         "value-format": "yyyy-MM",
         dateType: "month",
-        comment: ''
+        comment: '',
+        filterable: false,
+        multiple: false,
       },
       {
         label: "列2",
@@ -278,7 +290,9 @@ export const otherComponents = [
         format: "yyyy-MM",
         "value-format": "yyyy-MM",
         dateType: "month",
-        comment: ''
+        comment: '',
+        filterable: false,
+        multiple: false,
       },
       {
         label: "列3",
@@ -303,7 +317,9 @@ export const otherComponents = [
         format: "yyyy-MM",
         "value-format": "yyyy-MM",
         dateType: "month",
-        comment: ''
+        comment: '',
+        filterable: false,
+        multiple: false,
       },
     ],
   },

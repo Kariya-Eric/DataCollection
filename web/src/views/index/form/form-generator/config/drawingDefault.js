@@ -4,6 +4,7 @@ export default [
     __config__: {
       formId: 100,
       label: "单行文本",
+      changeTag: true,
       showLabel: true,
       tag: "el-input",
       tagIcon: "input",

@@ -56,7 +56,7 @@
           </template>
           <template slot-scope="scope">
             <template v-if="scope.row.isEdit">
-              <template v-if="col.type === 'select'">
+              <template v-if="col.type === 'select'&&!col.multiple">
                 {{
                   col.options.filter(
                     (el) => el.value === scope.row[col.props]
@@ -72,7 +72,14 @@
                 <el-form-item
                   :rules="
                     col.required
-                      ? [{ required: true, message: `${col.label}不能为空` }]
+                      ? col.allowChar
+                        ? [
+                            { required: true, message: `${col.label}不能为空` },
+                            charRule,
+                          ]
+                        : [{ required: true, message: `${col.label}不能为空` }]
+                      : col.allowChar
+                      ? [charRule]
                       : []
                   "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
@@ -90,7 +97,14 @@
                 <el-form-item
                   :rules="
                     col.required
-                      ? [{ required: true, message: `${col.label}不能为空` }]
+                      ? col.allowChar
+                        ? [
+                            { required: true, message: `${col.label}不能为空` },
+                            charRule,
+                          ]
+                        : [{ required: true, message: `${col.label}不能为空` }]
+                      : col.allowChar
+                      ? [charRule]
                       : []
                   "
                   :prop="'dataSource.' + scope.$index + '.' + col.props"
@@ -216,6 +230,8 @@
                   <el-select
                     size="small"
                     style="width: 100%"
+                    :multiple="col.multiple"
+                    :filterable="col.filterable"
                     v-model="scope.row[col.props]"
                     :placeholder="`请选择${col.label}`"
                   >
@@ -300,7 +316,7 @@ export default {
         message: "请输入正确的电话号码",
       },
       charRule: {
-        pattern: /^[^\\u4E00-\\u9FA5]+$/,
+        pattern: /^[^\u4E00-\u9FA5]+$/,
         message: "输入内容不能包含汉字",
       },
     };
@@ -322,7 +338,12 @@ export default {
     save(scope) {
       let rows = Object.keys(scope.row)
         .filter((key) => key !== "isEdit")
-        .map((key) => `dataSource.${scope.$index}.${key}`);
+        .map((key) => {
+          if (typeof scope.row[key] === "object") {
+            scope.row[key] = scope.row[key].join(",");
+          }
+          return `dataSource.${scope.$index}.${key}`;
+        });
       let flag = true;
       rows.forEach((row) => {
         this.$refs.tableForm.validateField(row, (valid) => {
@@ -331,6 +352,7 @@ export default {
           }
         });
       });
+
       if (flag) {
         scope.row.isEdit = true;
         this.$emit("input", this.tableForm.dataSource);
@@ -364,6 +386,12 @@ export default {
       }
       let keys = this.columns.map((col) => {
         const { props } = col;
+        for (let i = 0; i < this.tableForm.dataSource.length; i++) {
+          if (typeof this.tableForm.dataSource[i][props] === "object") {
+            this.tableForm.dataSource[i][props] =
+              this.tableForm.dataSource[i][props].join(",");
+          }
+        }
         return props;
       });
       let flag = true;

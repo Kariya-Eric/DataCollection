@@ -12,6 +12,33 @@
         size="small"
         label-width="90px"
       >
+        <el-form-item v-if="activeData.__config__.changeTag" label="组件类型">
+          <el-select
+            v-model="activeData.__config__.tagIcon"
+            placeholder="请选择组件类型"
+            :style="{ width: '100%' }"
+            @change="tagChange"
+          >
+            <el-option-group
+              v-for="group in tagList"
+              :key="group.label"
+              :label="group.label"
+            >
+              <el-option
+                v-for="item in group.options"
+                :key="item.__config__.label"
+                :label="item.__config__.label"
+                :value="item.__config__.tagIcon"
+              >
+                <svg-icon
+                  class="node-icon"
+                  :icon-class="item.__config__.tagIcon"
+                />
+                <span> {{ item.__config__.label }}</span>
+              </el-option>
+            </el-option-group>
+          </el-select>
+        </el-form-item>
         <el-form-item
           v-if="activeData.__config__.componentName !== undefined"
           label="组件名"
@@ -358,32 +385,50 @@
               />
             </el-form-item>
 
-            <template
+            <el-form-item
               v-if="
                 activeData.columns[activeData.selectedCol - 1].type ===
                 'datepick'
               "
+              label="时间格式"
             >
-              <el-form-item
-                v-if="
-                  activeData.columns[activeData.selectedCol - 1].type ===
-                  'datepick'
-                "
-                label="时间格式"
+              <el-select
+                style="width: 100%"
+                v-model="activeData.columns[activeData.selectedCol - 1].format"
+                @change="changeColTimeFormat"
               >
-                <el-select
-                  style="width: 100%"
-                  v-model="
-                    activeData.columns[activeData.selectedCol - 1].format
-                  "
-                  @change="changeColTimeFormat"
-                >
-                  <el-option label="年（yyyy）" value="yyyy" />
-                  <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
-                  <el-option label="年月（yyyyMM）" value="yyyyMM" />
-                </el-select>
-              </el-form-item>
-            </template>
+                <el-option label="年（yyyy）" value="yyyy" />
+                <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
+                <el-option label="年月（yyyyMM）" value="yyyyMM" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type === 'select'
+              "
+              label="能否搜索"
+            >
+              <el-switch
+                v-model="
+                  activeData.columns[activeData.selectedCol - 1].filterable
+                "
+              />
+            </el-form-item>
+
+            <el-form-item
+              v-if="
+                activeData.columns[activeData.selectedCol - 1].type === 'select'
+              "
+              label="能否多选"
+            >
+              <el-switch
+                v-model="
+                  activeData.columns[activeData.selectedCol - 1].multiple
+                "
+              />
+            </el-form-item>
+
             <el-form-item label="是否必填">
               <el-switch
                 v-model="
@@ -515,7 +560,7 @@
 import draggable from "vuedraggable";
 import { saveFormConf } from "../utils/db";
 import LogicDialog from "./logic-dialog";
-
+import { inputComponents, selectComponents } from "../generator/config";
 export default {
   name: "RightPanel",
   components: {
@@ -539,6 +584,18 @@ export default {
       set(val) {
         this.$set(this.activeData, "style", { width: val + "%" });
       },
+    },
+    tagList() {
+      return [
+        {
+          label: "输入型组件",
+          options: inputComponents,
+        },
+        {
+          label: "选择型组件",
+          options: selectComponents,
+        },
+      ];
     },
   },
   watch: {
@@ -581,6 +638,8 @@ export default {
         "value-format": "yyyy-MM",
         dateType: "month",
         comment: "",
+        filterable: false,
+        multiple: false,
       });
       this.activeData.col++;
     },
@@ -718,6 +777,17 @@ export default {
       if (obj.oldIndex + 1 == this.activeData.selectedCol) {
         this.activeData.selectedCol = obj.newIndex + 1;
       }
+    },
+
+    tagChange(tagIcon) {
+      let target = inputComponents.find(
+        (item) => item.__config__.tagIcon === tagIcon
+      );
+      if (!target)
+        target = selectComponents.find(
+          (item) => item.__config__.tagIcon === tagIcon
+        );
+      this.$emit("tag-change", target);
     },
   },
 };
