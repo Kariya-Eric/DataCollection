@@ -55,13 +55,9 @@ export default {
     value(val) {
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
-          window.tinymce.get(this.tinymceId).setContent(val || "")
+          window.tinymce.get(this.tinymceId).setContent(val)
         );
       }
-    },
-    language() {
-      this.destroyTinymce();
-      this.$nextTick(() => this.initTinymce());
     },
   },
   mounted() {

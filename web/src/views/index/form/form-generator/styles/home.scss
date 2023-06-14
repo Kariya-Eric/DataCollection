@@ -109,7 +109,7 @@ $lighterBlue: #409eff;
 
 .empty-info {
   position: absolute;
-  top: 46%;
+  top: 6%;
   left: 0;
   right: 0;
   text-align: center;
@@ -124,7 +124,7 @@ $lighterBlue: #409eff;
 
   &>.el-form {
     // 69 = 12+15+42
-    height: calc(100vh - 69px);
+    height: calc(80vh - 69px);
   }
 }
 

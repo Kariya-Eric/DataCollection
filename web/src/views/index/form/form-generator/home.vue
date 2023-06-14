@@ -1,8 +1,8 @@
 <template>
   <el-dialog
+    v-if="visible"
     :visible="visible"
     fullscreen
-    style="overflow: hidden"
     :show-close="false"
     :append-to-body="true"
   >
@@ -89,7 +89,9 @@
         </div>
         <el-scrollbar class="center-scrollbar">
           <div class="tinymceDiv">
+            <h4>填报提示</h4>
             <tinymce v-model="formConf.formAlert" :height="100" />
+            <el-divider />
           </div>
           <el-row class="center-board-row" :gutter="formConf.gutter">
             <el-form
@@ -247,7 +249,7 @@ export default {
           gutter: 15,
           disabled: false,
           span: 24,
-          formAlert: "请再此处填写填报提示,若不需要填报提示请清空",
+          formAlert: "",
           formBtns: true,
           componentsVisible: [],
         };

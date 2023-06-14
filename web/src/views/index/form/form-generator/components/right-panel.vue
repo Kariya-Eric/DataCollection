@@ -490,16 +490,20 @@
       </el-form>
 
       <!-- 表单属性 -->
-      <el-form v-show="currentTab === 'form'" size="small" label-width="90px">
+      <el-form v-show="currentTab === 'form'" size="small" label-width="100px">
         <el-form-item label="表单名">
-          <el-input
-            v-model="baseInfo.name"
-            placeholder="请输入表单名（ref）"
-          />
+          <el-input v-model="baseInfo.name" />
         </el-form-item>
         <!-- <el-form-item label="表单模型">
           <el-input v-model="formConf.formModel" placeholder="请输入数据模型" />
         </el-form-item> -->
+        <el-form-item label="统计时间类型">
+          <el-select v-model="baseInfo.collectTimeType" style="width: 100%">
+            <el-option label="时点" value="时点" />
+            <el-option label="学年" value="学年" />
+            <el-option label="自然年" value="自然年" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="表单类型">
           <el-input v-model="baseInfo.type" disabled />
         </el-form-item>

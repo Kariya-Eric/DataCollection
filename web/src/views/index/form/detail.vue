@@ -130,12 +130,14 @@ export default {
     $route: {
       handler(newRoute) {
         if (newRoute.name == "formDetail") {
+          this.collectionDetail = JSON.parse(newRoute.query.collectionInfo);
           this.getFormList(1);
         }
       },
       immediate: true,
     },
   },
+
   methods: {
     addForm() {
       this.$refs.addFormDrawer.show(this.collectionDetail);
@@ -146,13 +148,12 @@ export default {
     },
 
     getFormList(args) {
-      this.collectionDetail = this.$route.params;
       let pageBean = {
         page: args === 1 ? 1 : this.ipagination.current,
         pageSize: this.ipagination.pageSize,
         showTotal: true,
       };
-      const param = { id: this.$route.params.id, pageBean };
+      const param = { id: this.collectionDetail.id, pageBean };
       this.loading = true;
       getFormList(param)
         .then((res) => {

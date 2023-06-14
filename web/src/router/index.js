@@ -200,7 +200,7 @@ export const constantRouterMap = [
         },
       },
       {
-        path: '/form/detail/:id/:name/:type/:year',
+        path: '/form/detail',
         name: "formDetail",
         component: () => import("@/views/index/form/detail"),
         hidden: true,
