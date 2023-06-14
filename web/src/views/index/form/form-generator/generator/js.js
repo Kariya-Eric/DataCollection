@@ -168,6 +168,11 @@ function buildRules(scheme, ruleList) {
         );
       }
     }
+    if (config.tag === "customLink") {
+      rules.push(
+        `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '请输入正确的${config.label}' , trigger : 'blur' }`
+      );
+    }
     if (config.tag === "customPhone") {
       if (scheme.isMobile) {
         rules.push(

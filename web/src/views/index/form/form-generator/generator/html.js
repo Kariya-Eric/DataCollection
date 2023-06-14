@@ -31,11 +31,9 @@ function buildFormTemplate(scheme, child) {
   }
   const disabled = scheme.disabled ? `:disabled="${scheme.disabled}"` : "";
   const margin = scheme.formAlert === "" ? "" : `style="margin-top:24px"`;
-  let str = `<el-form ${margin} ref="${scheme.formRef}" :model="${
-    scheme.formModel
-  }" :rules="${scheme.formRules}" size="${
-    scheme.size
-  }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
+  let str = `<el-form ${margin} ref="${scheme.formRef}" :model="${scheme.formModel
+    }" :rules="${scheme.formRules}" size="${scheme.size
+    }" ${disabled} label-width="${scheme.labelWidth}px" ${labelPosition}>
       ${child}
       ${buildFromBtns(scheme)}
     </el-form>`;
@@ -244,9 +242,12 @@ const tags = {
   },
   customPhone: (el) => {
     const { vModel, placeholder, width } = attrBuilder(el);
-
     const isMobile = `:isMobile="${el.isMobile}"`;
     return `<custom-phone ${vModel} ${placeholder} ${width} ${isMobile} />`;
+  },
+  customLink: (el) => {
+    const { vModel, placeholder, width } = attrBuilder(el);
+    return `<custom-link ${vModel} ${placeholder} ${width}  />`;
   },
   customMail: (el) => {
     const { vModel, placeholder, width } = attrBuilder(el);
@@ -348,9 +349,7 @@ export function makeUpHtml(formConfig) {
   const alert =
     formConfig.formAlert === ""
       ? ""
-      : `<el-alert title="填报提示" type="warning" show-icon :closable="false"
-          description="${formConfig.formAlert}"></el-alert>`;
+      : `<el-alert title="填报提示" type="warning" :closable="false">${formConfig.formAlert}</el-alert>`;
   const str = `<div>${alert}${temp}</div>`;
-  console.log(str);
   return str;
 }

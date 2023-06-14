@@ -12,5 +12,6 @@ export default {
   'customMail': 'blur',
   'customPhone': 'blur',
   'customAddress': 'blur',
-  'customNumber':'blur'
+  'customNumber':'blur',
+  'customLink':'blur'
 }

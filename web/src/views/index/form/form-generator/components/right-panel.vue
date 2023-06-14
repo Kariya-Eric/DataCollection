@@ -493,15 +493,15 @@
       <el-form v-show="currentTab === 'form'" size="small" label-width="90px">
         <el-form-item label="表单名">
           <el-input
-            v-model="formConf.formRef"
+            v-model="baseInfo.name"
             placeholder="请输入表单名（ref）"
           />
         </el-form-item>
-        <el-form-item label="表单模型">
+        <!-- <el-form-item label="表单模型">
           <el-input v-model="formConf.formModel" placeholder="请输入数据模型" />
-        </el-form-item>
-        <el-form-item label="校验模型">
-          <el-input v-model="formConf.formRules" placeholder="请输入校验模型" />
+        </el-form-item> -->
+        <el-form-item label="表单类型">
+          <el-input v-model="baseInfo.type" disabled />
         </el-form-item>
         <el-form-item label="表单尺寸">
           <el-radio-group v-model="formConf.size">
@@ -567,7 +567,7 @@ export default {
     draggable,
     LogicDialog,
   },
-  props: ["showField", "activeData", "formConf"],
+  props: ["showField", "activeData", "formConf", "baseInfo"],
   data() {
     return {
       currentTab: "field",

@@ -3,14 +3,45 @@
     :visible="visible"
     fullscreen
     style="overflow: hidden"
-    @close="close"
+    :show-close="false"
     :append-to-body="true"
   >
     <div slot="title">
-      <span>表单设计</span>
+      <el-row>
+        <el-col :span="10">
+          <el-tag type="warning" style="margin-right: 24px">{{
+            info.type
+          }}</el-tag>
+          <span style="font-weight: bold; font-size: 18px"
+            >{{ info.name }}（{{ info.collectTimeType }}）</span
+          >
+        </el-col>
+        <el-col :span="10">
+          <el-button type="text" @click="() => (activeTab = 0)"
+            >表单设计</el-button
+          >
+          <el-button type="text" @click="() => (activeTab = 1)"
+            >校验规则</el-button
+          >
+        </el-col>
+        <el-col :span="4">
+          <div class="search-button-admin">
+            <el-button
+              icon="el-icon-document-checked"
+              type="primary"
+              size="small"
+              @click="save"
+              >保存</el-button
+            >
+            <el-button icon="el-icon-back" size="small" @click="close"
+              >返回</el-button
+            >
+          </div>
+        </el-col>
+      </el-row>
     </div>
 
-    <div class="container">
+    <div class="container" v-if="activeTab === 0">
       <div class="left-board">
         <div class="components-list">
           <div v-for="(item, listIndex) in leftComponents" :key="listIndex">
@@ -47,9 +78,6 @@
           <el-button icon="el-icon-view" type="text" @click="run">
             预览
           </el-button>
-          <el-button icon="el-icon-document-checked" type="text" @click="save">
-            保存
-          </el-button>
           <el-button
             class="delete-btn"
             icon="el-icon-delete"
@@ -60,6 +88,9 @@
           </el-button>
         </div>
         <el-scrollbar class="center-scrollbar">
+          <div class="tinymceDiv">
+            <tinymce v-model="formConf.formAlert" :height="100" />
+          </div>
           <el-row class="center-board-row" :gutter="formConf.gutter">
             <el-form
               :size="formConf.size"
@@ -98,11 +129,13 @@
         :active-data="activeData"
         :form-conf="formConf"
         :show-field="!!drawingList.length"
+        :base-info="info"
         @tag-change="tagChange"
       />
 
       <form-drawer ref="formDrawer" />
     </div>
+    <div class="container" v-else>校验规则</div>
   </el-dialog>
 </template>
 
@@ -122,18 +155,22 @@ import { deepClone } from "./utils";
 import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
 import FormDrawer from "./components/form-drawer.vue";
+import Tinymce from "components/Tinymce";
+
 let oldActiveId;
 let tempActiveData;
 const idGlobal = getIdGlobal();
 
 export default {
   name: "FormGenerator",
-  components: { draggable, DraggableItem, RightPanel, FormDrawer },
+  components: { draggable, DraggableItem, RightPanel, FormDrawer, Tinymce },
   data() {
     return {
       visible: false,
       idGlobal,
+      info: {},
       formConf,
+      activeTab: 0,
       inputComponents,
       selectComponents,
       layoutComponents,
@@ -189,12 +226,16 @@ export default {
   },
   methods: {
     show(formInfo) {
+      this.activeTab = 0;
+      this.info = JSON.parse(JSON.stringify(formInfo));
       this.visible = true;
       if (formInfo.formProperties != null) {
         const formProperties = JSON.parse(formInfo.formProperties);
         const componentProperties = JSON.parse(formInfo.componentProperties);
         this.formConf = formProperties;
         this.drawingList = componentProperties;
+        this.activeData = this.drawingList[0];
+        this.activeId = this.drawingList[0].formId;
       } else {
         this.formConf = {
           formRef: "myForm",
@@ -206,7 +247,7 @@ export default {
           gutter: 15,
           disabled: false,
           span: 24,
-          formAlert: "",
+          formAlert: "请再此处填写填报提示,若不需要填报提示请清空",
           formBtns: true,
           componentsVisible: [],
         };
@@ -294,6 +335,9 @@ export default {
         }
       });
       this.activeData = newTag;
+      if (newTag.__config__.tag == "el-checkbox-group") {
+        this.activeData.__config__.defaultValue = [];
+      }
       this.updateDrawingList(newTag, this.drawingList);
     },
 
@@ -324,10 +368,6 @@ export default {
     },
 
     assembleFormData() {
-      this.drawingList.forEach((item) => {
-        const __config__ = item.__config__;
-        delete __config__.defaultValue;
-      });
       this.formData = {
         fields: deepClone(this.drawingList),
         ...this.formConf,
@@ -354,5 +394,9 @@ export default {
   border-top: none;
   border-left: none;
   border-right: none;
+}
+.tinymceDiv {
+  margin-left: 12px;
+  width: 97%;
 }
 </style>
