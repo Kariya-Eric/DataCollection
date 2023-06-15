@@ -236,8 +236,10 @@ export default {
         const componentProperties = JSON.parse(formInfo.componentProperties);
         this.formConf = formProperties;
         this.drawingList = componentProperties;
-        this.activeData = this.drawingList[0];
-        this.activeId = this.drawingList[0].formId;
+        if (this.drawingList.length > 0) {
+          this.activeData = this.drawingList[0];
+          this.activeId = this.drawingList[0].formId;
+        }
       } else {
         this.formConf = {
           formRef: "myForm",
