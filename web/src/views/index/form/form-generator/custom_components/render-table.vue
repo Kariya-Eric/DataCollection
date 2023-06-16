@@ -56,12 +56,15 @@
           </template>
           <template slot-scope="scope">
             <template v-if="scope.row.isEdit">
-              <template v-if="col.type === 'select'&&!col.multiple">
+              <template v-if="col.type === 'select' && !col.multiple">
                 {{
                   col.options.filter(
                     (el) => el.value === scope.row[col.props]
                   )[0].label
                 }}
+              </template>
+              <template v-if="col.type === 'select' && col.multiple">
+                {{ showSelectVal(scope.row[col.props], col.options) }}
               </template>
               <template v-else>
                 {{ scope.row[col.props] }}
@@ -325,7 +328,11 @@ export default {
     addRow() {
       let newVal = {};
       this.columns.forEach((col) => {
-        newVal[col.props] = undefined;
+        if (col.type === "select" && col.multiple) {
+          newVal[col.props] = [];
+        } else {
+          newVal[col.props] = undefined;
+        }
       });
       newVal = { id: nanoid(), ...newVal, isEdit: false };
       this.tableForm.dataSource.push(newVal);
@@ -367,6 +374,20 @@ export default {
     },
     onSelectChange(selectedRowKeys, _) {
       this.selectedRowKeys = selectedRowKeys.map((rowkey) => rowkey.id);
+    },
+
+    showSelectVal(val, options) {
+      let vals = val.split(",");
+      let multiSelectValues = [];
+      for (let i = 0; i < vals.length; i++) {
+        for (let j = 0; j < options.length; j++) {
+          if (options[j].value == vals[i]) {
+            multiSelectValues.push(options[j].label);
+            continue;
+          }
+        }
+      }
+      return multiSelectValues.join("，");
     },
 
     delBatch() {

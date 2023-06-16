@@ -139,6 +139,26 @@
           />
         </el-form-item>
 
+        <el-form-item
+          v-if="activeData.__config__.tag === 'customAddress'"
+          label="地址格式"
+        >
+          <el-select v-model="activeData.type" style="width: 100%">
+            <el-option
+              label="国/省（直辖市、自治区）/市"
+              value="国/省（直辖市、自治区）/市"
+            />
+            <el-option
+              label="省（直辖市、自治区）/市/区-详细地址"
+              value="省（直辖市、自治区）/市/区-详细地址"
+            />
+            <el-option
+              label="省（直辖市、自治区）/市/区"
+              value="省（直辖市、自治区）/市/区"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item v-if="activeData.format !== undefined" label="时间格式">
           <el-select
             v-model="activeData.format"
@@ -494,9 +514,16 @@
         <el-form-item label="表单名">
           <el-input v-model="baseInfo.name" />
         </el-form-item>
-        <!-- <el-form-item label="表单模型">
-          <el-input v-model="formConf.formModel" placeholder="请输入数据模型" />
-        </el-form-item> -->
+        <el-form-item label="表单大类">
+          <el-select v-model="baseInfo.formCategories" style="width: 100%">
+            <el-option
+              v-for="item in baseInfo.listCategories"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="统计时间类型">
           <el-select v-model="baseInfo.collectTimeType" style="width: 100%">
             <el-option label="时点" value="时点" />

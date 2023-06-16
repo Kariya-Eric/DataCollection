@@ -5,11 +5,7 @@
       <el-row class="search-row">
         <el-col :span="16">
           <div class="filter-container">
-            <el-form
-              label-width="70px"
-              size="small"
-              :inline="true"
-            >
+            <el-form label-width="70px" size="small" :inline="true">
               <el-form-item label="任务类型">
                 <el-select
                   v-model="queryParam.type"
@@ -18,7 +14,11 @@
                   @change="searchQuery"
                   placeholder="请选择任务类型"
                 >
-                  <!-- TODO -->
+                  <el-option
+                    label="教学基本状态数据"
+                    value="教学基本状态数据"
+                  />
+                  <el-option label="其他数据" value="其他数据" />
                 </el-select>
               </el-form-item>
               <el-form-item label="学年">
@@ -88,7 +88,7 @@
           prop="name"
           align="center"
           fixed
-          width="150"
+          width="220"
         />
         <el-table-column
           label="统计开始时间"
@@ -100,7 +100,7 @@
           prop="statisticsEndTime"
           align="center"
         />
-        <el-table-column label="学年" prop="schoolYear" align="center" />
+        <el-table-column label="学年" prop="schoolYear" align="center" width="120" />
         <el-table-column label="自然年" prop="year" align="center" width="80" />
         <el-table-column
           label="任务状态"
@@ -129,21 +129,30 @@
             ></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" fixed="right" width="500">
+        <el-table-column label="操作" align="center" fixed="right" width="320">
           <template slot-scope="scope">
             <a href="javascript:;" @click="showTaskInfo(scope.row)">任务概览</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;" v-if="scope.row.enabled !== 0">任务详情</a>
+            <a
+              href="javascript:;"
+              v-if="scope.row.enabled !== 0"
+              @click="showTaskDetail(scope.row)"
+              >任务详情</a
+            >
             <el-divider direction="vertical" v-if="scope.row.enabled !== 0" />
             <a href="javascript:;">删除</a>
             <el-divider direction="vertical" />
-            <a href="javascript:;">指南下载</a>
-            <el-divider direction="vertical" />
-            <a href="javascript:;">模板下载</a>
-            <el-divider direction="vertical" />
-            <a href="javascript:;">预览报告</a>
-            <el-divider direction="vertical" />
-            <a href="javascript:;">导出报告</a>
+            <el-dropdown @command="handleCommand" trigger="click">
+              <span class="el-dropdown-link">
+                更多<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="a">指南下载</el-dropdown-item>
+                <el-dropdown-item command="b">模板下载</el-dropdown-item>
+                <el-dropdown-item command="c">预览报告</el-dropdown-item>
+                <el-dropdown-item command="d">导出报告</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -151,7 +160,6 @@
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
     <add-task-dialog ref="addTaskDialog" />
-    <task-info-dialog ref="taskInfoDialog" />
   </div>
 </template>
 
@@ -159,15 +167,14 @@
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
 import AddTaskDialog from "./components/add-task-dialog";
-import TaskInfoDialog from "./components/task-info-dialog";
 export default {
   name: "TaskList",
   mixins: [DataCollectionMixin],
-  components: { Pagination, AddTaskDialog, TaskInfoDialog },
+  components: { Pagination, AddTaskDialog },
   data() {
     return {
       url: {
-        list: "/portal/api/task/list",
+        list: "/uc/api/task/list",
       },
     };
   },
@@ -177,10 +184,30 @@ export default {
     },
 
     showTaskInfo(row) {
-      this.$refs.taskInfoDialog.show(row);
+      this.$router.push({
+        path: "/task/info",
+        query: { taskInfo: JSON.stringify(row) },
+      });
     },
+
+    showTaskDetail(row) {
+      this.$router.push({
+        path: "/task/detail",
+        query: { taskDetail: JSON.stringify(row) },
+      });
+    },
+    handleCommand(command) {},
   },
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+  font-size: 12px;
+}
+.el-icon-arrow-down {
+  font-size: 8px;
+}
+</style>

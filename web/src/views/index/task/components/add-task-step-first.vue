@@ -1,6 +1,6 @@
 <template>
   <div class="main-form">
-    <el-form label-width="120px">
+    <el-form label-width="120px" size="small">
       <el-row>
         <h2>学校基本信息</h2>
       </el-row>
@@ -13,7 +13,8 @@
               style="width: 100%"
               placeholder="请选择任务类型"
             >
-              <!-- TODO -->
+              <el-option label="教学基本状态数据" value="教学基本状态数据"></el-option>
+              <el-option label="其他数据" value="其他数据"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -127,7 +128,7 @@ export default {
 
 <style lang="scss" scoped>
 .main-form {
-  width: 60%;
+  width: 50%;
   margin: auto;
 }
 </style>

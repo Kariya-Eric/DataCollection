@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="visible" @close="close" width="90%">
+  <el-card shadow="always" class="app-card">
     <div class="mainContent">
       <el-descriptions title="基础信息" :column="4">
         <template slot="extra">
@@ -14,7 +14,7 @@
             >保存</el-button
           >
           <el-button type="primary" size="small">导出</el-button>
-          <el-button size="small" @click="close">返回</el-button>
+          <el-button size="small" @click="goBack">返回</el-button>
         </template>
         <el-descriptions-item label="任务名称"
           ><span v-if="!editFlag">{{ taskInfo.name }}</span>
@@ -117,7 +117,7 @@
         <el-table-column label="统计截止日期" align="center" />
       </el-table>
     </div>
-  </el-dialog>
+  </el-card>
 </template>
 
 <script>
@@ -125,23 +125,29 @@ export default {
   name: "TaskInfo",
   data() {
     return {
-      visible: false,
       taskInfo: {},
       editFlag: false,
-      formList:[],
-      loading:false
+      formList: [],
+      loading: false,
     };
   },
+
+  watch: {
+    $route: {
+      handler(newRoute) {
+        if (newRoute.name == "taskInfo") {
+          this.taskInfo = JSON.parse(newRoute.query.taskInfo);
+        }
+      },
+      immediate: true,
+    },
+  },
+
   methods: {
-    close() {
-      this.visible = false;
-      this.editFlag = false;
+    goBack() {
+      this.$router.back(-1);
     },
 
-    show(task) {
-      this.visible = true;
-      this.taskInfo = task;
-    },
     editTask() {
       this.editFlag = true;
     },
@@ -155,7 +161,7 @@ export default {
 
 <style lang="scss" scoped>
 .mainContent {
-  padding: 32px;
+  padding: 12px 24px 24px 24px;
 }
 /deep/ .el-descriptions-item__container {
   .el-descriptions-item__label {

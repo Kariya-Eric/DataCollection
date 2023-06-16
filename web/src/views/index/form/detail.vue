@@ -102,7 +102,12 @@ import Pagination from "components/Pagination";
 import AddFormDrawer from "./components/add-form-drawer";
 import UpdateFormCategory from "./components/update-form-category";
 import FormGenerator from "./form-generator/home";
-import { getFormList, delForm, updateForm } from "@/api/form";
+import {
+  getFormList,
+  delForm,
+  updateForm,
+  listFormCategories,
+} from "@/api/form";
 export default {
   name: "FormDetail",
   components: {
@@ -114,7 +119,6 @@ export default {
   data() {
     return {
       collectionDetail: {},
-      formInfo: {},
       loading: false,
       dataSource: [],
       ipagination: {
@@ -187,16 +191,20 @@ export default {
     },
 
     showForm(row) {
-      this.formInfo = row;
-      this.$refs.formGenerator.show(row);
+      listFormCategories(this.collectionDetail.id).then((res) => {
+        if (res.state) {
+          row.listCategories = res.value;
+          this.$refs.formGenerator.show(row);
+        }
+      });
     },
 
-    saveForm(formData) {
+    saveForm(formData, formInfo) {
       const { fields } = formData;
       Reflect.deleteProperty(formData, "fields");
       Reflect.deleteProperty(formData, "formBtns");
       const params = {
-        ...this.formInfo,
+        ...formInfo,
         formProperties: JSON.stringify(formData),
         componentProperties: JSON.stringify(fields),
       };

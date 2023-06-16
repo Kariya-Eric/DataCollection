@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="添加任务" :visible="visible" fullscreen @close="close" style="overflow: hidden">
+  <el-dialog
+    title="添加任务"
+    :visible="visible"
+    fullscreen
+    @close="close"
+    style="overflow: hidden"
+  >
     <div class="steps">
       <el-steps
         :active="currentStep"
@@ -24,10 +30,15 @@
         type="primary"
         icon="el-icon-arrow-left"
         :disabled="currentStep === 0"
+        size="small"
         @click="backStep"
         >上一步</el-button
       >
-      <el-button type="primary" :disabled="currentStep === 3" @click="frontStep"
+      <el-button
+        type="primary"
+        :disabled="currentStep === 3"
+        @click="frontStep"
+        size="small"
         >下一步<i class="el-icon-arrow-right el-icon--right"></i
       ></el-button>
     </div>
@@ -79,7 +90,7 @@ export default {
 
 <style lang="scss" scoped>
 .steps {
-  width: 80%;
+  width: 70%;
   margin: auto;
   margin-bottom: 36px;
 }

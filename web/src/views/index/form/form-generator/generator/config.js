@@ -244,6 +244,7 @@ export const selectComponents = [
     },
     style: { width: "100%" },
     placeholder: "请输入",
+    type: "省（直辖市、自治区）/市/区-详细地址",
     comment: "",
   },
 ];

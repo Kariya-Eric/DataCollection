@@ -1,21 +1,19 @@
 <template>
   <div>
-      <el-card shadow="always" class="app-card">
-        <el-row>
-          <el-col :span="6">
-            <el-card class="box-card" @click.native="clickFirst">
-              <router-link :to="{ path: '/task/list' }">
-                <el-result title="本科教学状态数据分析报告"></el-result>
-              </router-link>
-            </el-card>
-          </el-col>
-          <el-col :span="6" style="margin-left: 24px">
-            <el-card class="box-card" @click.native="clickSecond">
-              <el-result title="本科教学质量报告"></el-result>
-            </el-card>
-          </el-col>
-        </el-row>
-      </el-card>
+    <el-card shadow="always" class="app-card">
+      <el-row>
+        <el-col :span="6">
+          <el-card class="box-card" @click.native="clickFirst">
+            <el-result title="本科教学状态数据分析报告"></el-result>
+          </el-card>
+        </el-col>
+        <el-col :span="6" style="margin-left: 24px">
+          <el-card class="box-card" @click.native="clickSecond">
+            <el-result title="本科教学质量报告"></el-result>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-card>
   </div>
 </template>
 

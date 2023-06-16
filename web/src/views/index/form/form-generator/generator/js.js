@@ -113,7 +113,7 @@ function mixinMethod() {
         if(!valid) return
         // TODO 提交表单
         this.$message.success('表单验证OK')
-        //console.log('form',this.${confGlobal.formModel})
+        console.log('form',this.${confGlobal.formModel})
       })
     },`
       : `submitForm() {
@@ -121,7 +121,7 @@ function mixinMethod() {
           if(!valid) return
           // TODO 提交表单
           this.$message.success('表单验证OK')
-          //console.log('form',this.${confGlobal.formModel})
+          console.log('form',this.${confGlobal.formModel})
         })
       },`,
     resetForm: `resetForm() {
@@ -264,6 +264,8 @@ function buildexport(
     }
   },
   created () {
+    //处理多选的表单验证问题
+    this.$nextTick(()=>this.resetForm());
     ${created}
   },
   methods: {

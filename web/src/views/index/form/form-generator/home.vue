@@ -137,7 +137,9 @@
 
       <form-drawer ref="formDrawer" />
     </div>
-    <div class="container" v-else>校验规则</div>
+    <div class="container" v-else>
+      <rule-detail />
+    </div>
   </el-dialog>
 </template>
 
@@ -158,6 +160,7 @@ import DraggableItem from "./components/draggable-item.vue";
 import RightPanel from "./components/right-panel.vue";
 import FormDrawer from "./components/form-drawer.vue";
 import Tinymce from "components/Tinymce";
+import RuleDetail from "../components/rule-detail";
 
 let oldActiveId;
 let tempActiveData;
@@ -165,7 +168,14 @@ const idGlobal = getIdGlobal();
 
 export default {
   name: "FormGenerator",
-  components: { draggable, DraggableItem, RightPanel, FormDrawer, Tinymce },
+  components: {
+    draggable,
+    DraggableItem,
+    RightPanel,
+    FormDrawer,
+    Tinymce,
+    RuleDetail,
+  },
   data() {
     return {
       visible: false,
@@ -380,8 +390,7 @@ export default {
 
     save() {
       this.assembleFormData();
-      this.$emit("saveForm", this.formData);
-      this.visible = false;
+      this.$emit("saveForm", this.formData, this.info);
     },
   },
 };
@@ -393,6 +402,9 @@ export default {
   padding: 8px;
 }
 ::v-deep .el-dialog__header {
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 0ch;
   padding-bottom: 12px;
   border: 1px solid #ccc;
   border-top: none;

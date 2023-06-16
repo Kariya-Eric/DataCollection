@@ -142,7 +142,6 @@ export default {
     },
 
     showCollectionDetail(row) {
-      //   const { id, name, type, year } = row;
       this.$router.push({
         path: "/form/detail",
         query: { collectionInfo: JSON.stringify(row) },

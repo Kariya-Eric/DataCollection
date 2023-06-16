@@ -5,6 +5,17 @@
   }
 }
 
+.el-dialog__header {
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  padding-bottom: 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
 .el-upload__input {
   display: none;
 }

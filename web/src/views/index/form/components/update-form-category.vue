@@ -65,7 +65,9 @@
                 >
                   <a href="javascript:;" slot="reference">删除</a>
                 </el-popconfirm>
-                <a href="javascript:;" v-else>取消</a>
+                <a href="javascript:;" v-else @click="cancel(scope.row)"
+                  >取消</a
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -100,6 +102,12 @@ export default {
     };
   },
   methods: {
+    cancel(row) {
+      this.formCategoryForm.dataSource =
+        this.formCategoryForm.dataSource.filter((item) => item !== row);
+      this.showFlag = false;
+    },
+
     show(formCategory) {
       this.formCategoryForm = { ...formCategory, ...this.formCategoryForm };
       this.loadFormCategory();
@@ -108,6 +116,7 @@ export default {
 
     close() {
       this.visible = false;
+      this.showFlag = false;
       this.formCategoryForm = { dataSource: [] };
     },
 
@@ -139,7 +148,10 @@ export default {
                 this.$message.error(res.message);
               }
             })
-            .finally(() => this.loadFormCategory());
+            .finally(() => {
+              this.showFlag = false;
+              this.loadFormCategory();
+            });
         } else {
           //新增
           let param = {
@@ -154,12 +166,16 @@ export default {
                 this.$message.error(res.message);
               }
             })
-            .finally(() => this.loadFormCategory());
+            .finally(() => {
+              this.showFlag = false;
+              this.loadFormCategory();
+            });
         }
       }
     },
 
     edit(row) {
+      this.showFlag = true;
       row.isEdit = !row.isEdit;
     },
 
@@ -169,6 +185,7 @@ export default {
         isEdit: true,
       };
       this.formCategoryForm.dataSource.push(data);
+      this.showFlag = true;
     },
 
     loadFormCategory() {
