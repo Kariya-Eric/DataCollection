@@ -20,12 +20,18 @@
             <el-button size="small" @click="updateFormCategory" type="primary"
               >配置表单大类</el-button
             >
+            <el-button size="small" type="primary" icon="el-icon-document-copy"
+              >复制表单</el-button
+            >
             <el-button
               type="primary"
               size="small"
               @click="addForm"
               icon="el-icon-plus"
               >新建表单</el-button
+            >
+            <el-button size="small" icon="el-icon-back" @click="goBack"
+              >返回</el-button
             >
           </div>
         </el-col>
@@ -220,6 +226,7 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+    goBack(){}
   },
 };
 </script>
