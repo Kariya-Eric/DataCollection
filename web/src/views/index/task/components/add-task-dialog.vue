@@ -20,27 +20,10 @@
       </el-steps>
     </div>
     <div>
-      <add-task-step-first v-if="currentStep === 0" ref="firstStep" />
+      <add-task-step-first v-if="currentStep === 0" @init="initTask" />
       <add-task-step-second v-if="currentStep === 1" />
       <add-task-step-third v-if="currentStep === 2" />
       <add-task-step-fourth v-if="currentStep === 3" />
-    </div>
-    <div class="footer">
-      <el-button
-        type="primary"
-        icon="el-icon-arrow-left"
-        :disabled="currentStep === 0"
-        size="small"
-        @click="backStep"
-        >上一步</el-button
-      >
-      <el-button
-        type="primary"
-        :disabled="currentStep === 3"
-        @click="frontStep"
-        size="small"
-        >下一步<i class="el-icon-arrow-right el-icon--right"></i
-      ></el-button>
     </div>
   </el-dialog>
 </template>
@@ -62,6 +45,7 @@ export default {
     return {
       visible: false,
       currentStep: 0,
+      taskId: undefined,
     };
   },
   methods: {
@@ -73,18 +57,15 @@ export default {
       this.visible = false;
     },
 
-    backStep() {
-      this.currentStep--;
+    initTask(taskId, flag) {
+      this.taskId = taskId;
+      if (flag) {
+        this.changeStep(1);
+      }
     },
 
-    async frontStep() {
-      if (this.currentStep === 0) {
-        let ret = await this.$refs.firstStep.validateRules();
-        if (ret) {
-          this.currentStep++;
-        }
-      }
-      //this.currentStep++;
+    changeStep(step) {
+      this.currentStep = step;
     },
   },
 };
@@ -95,12 +76,5 @@ export default {
   width: 70%;
   margin: auto;
   margin-bottom: 36px;
-}
-.footer {
-  margin-top: 24px;
-  text-align: center;
-  .el-button + .el-button {
-    margin-left: 32px;
-  }
 }
 </style>

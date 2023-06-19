@@ -19,8 +19,11 @@
               style="width: 100%"
               placeholder="请选择任务类型"
             >
-              <el-option label="教学基本状态数据" :value="0"></el-option>
-              <el-option label="其他数据" :value="1"></el-option>
+              <el-option
+                label="教学基本状态数据"
+                value="教学基本状态数据"
+              ></el-option>
+              <el-option label="其他数据" value="其他数据"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -35,7 +38,7 @@
           <el-form-item label="统计开始时间" prop="statisticsStartTime">
             <el-date-picker
               style="width: 100%"
-              type="date"
+              value-format="yyyy-MM-dd"
               v-model="basicForm.statisticsStartTime"
             />
           </el-form-item>
@@ -44,7 +47,7 @@
           <el-form-item label="统计截止时间" prop="statisticsEndTime">
             <el-date-picker
               style="width: 100%"
-              type="date"
+              value-format="yyyy-MM-dd"
               v-model="basicForm.statisticsEndTime"
             />
           </el-form-item>
@@ -75,7 +78,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-form label-width="150px" v-if="basicForm.type === 0">
+    <el-form label-width="150px" v-if="basicForm.type == '教学基本状态数据'">
       <el-row>
         <h2>学校专业类别信息</h2>
       </el-row>
@@ -130,10 +133,19 @@
         </el-col>
       </el-row>
     </el-form>
+    <div class="footer">
+      <el-button type="primary" size="small" @click="save" :disabled="true"
+        >保存</el-button
+      >
+      <el-button type="primary" @click="frontStep" size="small"
+        >下一步</el-button
+      >
+    </div>
   </div>
 </template>
 
 <script>
+import { initTask } from "@/api/task";
 export default {
   name: "AddTaskStepFirst",
   data() {
@@ -165,10 +177,27 @@ export default {
     },
   },
   methods: {
-    validateRules() {
-      return new Promise((resovle) => {
-        this.$refs.basicForm.validate((valid) => resovle(valid));
-      });
+    save() {
+      this.initTask(false);
+    },
+    frontStep() {
+      this.initTask(true);
+    },
+
+    initTask(flag) {
+    //   this.$refs.basicForm.validate((valid) => {
+    //     if (valid) {
+    //       initTask(this.basicForm).then((res) => {
+    //         if (res.state) {
+    //           this.$message.success(res.message);
+    //           this.$emit("init", res.value, flag);
+    //         } else {
+    //           this.$message.error(res.message);
+    //         }
+    //       });
+    //     }
+    //   });
+      this.$emit("init", '123456', flag);
     },
   },
 };
@@ -178,5 +207,12 @@ export default {
 .main-form {
   width: 50%;
   margin: auto;
+}
+.footer {
+  margin-top: 24px;
+  text-align: center;
+  .el-button + .el-button {
+    margin-left: 24px;
+  }
 }
 </style>

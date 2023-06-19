@@ -1,8 +1,11 @@
 //to reset element-ui default css
 .el-upload {
-  input[type='file'] {
+  input[type="file"] {
     display: none !important;
   }
+}
+.el-button {
+ min-width: 72px;
 }
 
 .el-dialog__header {
