@@ -1,32 +1,38 @@
 <template>
   <div class="main-form">
-    <el-form label-width="120px" size="small">
+    <el-form
+      label-width="120px"
+      size="small"
+      ref="basicForm"
+      :model="basicForm"
+      :rules="basicRules"
+    >
       <el-row>
         <h2>学校基本信息</h2>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="任务类型">
+          <el-form-item label="任务类型" prop="type">
             <el-select
               v-model="basicForm.type"
               clearable
               style="width: 100%"
               placeholder="请选择任务类型"
             >
-              <el-option label="教学基本状态数据" value="教学基本状态数据"></el-option>
-              <el-option label="其他数据" value="其他数据"></el-option>
+              <el-option label="教学基本状态数据" :value="0"></el-option>
+              <el-option label="其他数据" :value="1"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="任务名称">
+          <el-form-item label="任务名称" prop="name">
             <el-input v-model="basicForm.name" placeholder="请输入任务名称" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="统计开始时间">
+          <el-form-item label="统计开始时间" prop="statisticsStartTime">
             <el-date-picker
               style="width: 100%"
               type="date"
@@ -35,7 +41,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="统计截止时间">
+          <el-form-item label="统计截止时间" prop="statisticsEndTime">
             <el-date-picker
               style="width: 100%"
               type="date"
@@ -46,25 +52,30 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="学年">
+          <el-form-item label="学年" prop="schoolYear">
             <el-select
               v-model="basicForm.schoolYear"
               style="width: 100%"
               clearable
-              placeholder="请选择任务类型"
+              placeholder="请选择学年"
             >
-              <!-- TODO -->
+              <el-option
+                v-for="(opt, index) in schoolYearList"
+                :label="opt"
+                :key="index"
+                :value="opt"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="自然年">
+          <el-form-item label="自然年" prop="year">
             <el-input v-model="basicForm.year" />
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <el-form label-width="150px">
+    <el-form label-width="150px" v-if="basicForm.type === 0">
       <el-row>
         <h2>学校专业类别信息</h2>
       </el-row>
@@ -93,19 +104,28 @@
         </el-col>
         <el-col :span="12"
           ><el-form-item label="人文社科类专业">
-            <el-switch v-model="advancedForm.fourth" />
+            <el-switch v-model="advancedForm.fourth" disabled /><span
+              style="margin-left: 12px"
+              >暂未开放</span
+            >
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12"
           ><el-form-item label="农学类专业">
-            <el-switch v-model="advancedForm.fifth" />
+            <el-switch v-model="advancedForm.fifth" disabled /><span
+              style="margin-left: 12px"
+              >暂未开放</span
+            >
           </el-form-item>
         </el-col>
         <el-col :span="12"
           ><el-form-item label="理学类专业">
-            <el-switch v-model="advancedForm.sixth" />
+            <el-switch v-model="advancedForm.sixth" disabled /><span
+              style="margin-left: 12px"
+              >暂未开放</span
+            >
           </el-form-item>
         </el-col>
       </el-row>
@@ -120,9 +140,37 @@ export default {
     return {
       basicForm: {},
       advancedForm: {},
+      basicRules: {
+        type: [{ required: true, message: "请选择任务类型" }],
+        name: [{ required: true, message: "请输入任务名称" }],
+        statisticsStartTime: [
+          { required: true, message: "请选择统计开始时间" },
+        ],
+        statisticsEndTime: [{ required: true, message: "请选择统计结束时间" }],
+        schoolYear: [{ required: true, message: "请选择学年" }],
+        year: [{ required: true, message: "请输入自然年" }],
+      },
     };
   },
-  methods: {},
+  computed: {
+    schoolYearList() {
+      let startYear = 2018;
+      let nowYear = new Date().getFullYear();
+      let yearList = [];
+      for (let i = startYear; i < nowYear; i++) {
+        let option = `${i}-${i + 1}`;
+        yearList.push(option);
+      }
+      return yearList;
+    },
+  },
+  methods: {
+    validateRules() {
+      return new Promise((resovle) => {
+        this.$refs.basicForm.validate((valid) => resovle(valid));
+      });
+    },
+  },
 };
 </script>
 

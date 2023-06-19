@@ -13,14 +13,14 @@
         finish-status="success"
         process-status="finish"
       >
-        <el-step title="基础信息" @click.native="changeStep(0)" />
-        <el-step title="表单配置" @click.native="changeStep(1)" />
-        <el-step title="权限配置" @click.native="changeStep(2)" />
-        <el-step title="任务配置完成" @click.native="changeStep(3)" />
+        <el-step title="基础信息" />
+        <el-step title="表单配置" />
+        <el-step title="权限配置" />
+        <el-step title="任务配置完成" />
       </el-steps>
     </div>
     <div>
-      <add-task-step-first v-if="currentStep === 0" />
+      <add-task-step-first v-if="currentStep === 0" ref="firstStep" />
       <add-task-step-second v-if="currentStep === 1" />
       <add-task-step-third v-if="currentStep === 2" />
       <add-task-step-fourth v-if="currentStep === 3" />
@@ -73,16 +73,18 @@ export default {
       this.visible = false;
     },
 
-    changeStep(step) {
-      this.currentStep = step;
-    },
-
     backStep() {
       this.currentStep--;
     },
 
-    frontStep() {
-      this.currentStep++;
+    async frontStep() {
+      if (this.currentStep === 0) {
+        let ret = await this.$refs.firstStep.validateRules();
+        if (ret) {
+          this.currentStep++;
+        }
+      }
+      //this.currentStep++;
     },
   },
 };
