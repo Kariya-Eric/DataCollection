@@ -178,7 +178,7 @@
       </el-table>
       <!-- Table End -->
       <pagination :pagination="ipagination" @change="loadData" />
-      <add-task-dialog ref="addTaskDialog" />
+      <add-task-dialog ref="addTaskDialog" @refresh="loadData" />
     </el-card>
   </div>
 </template>

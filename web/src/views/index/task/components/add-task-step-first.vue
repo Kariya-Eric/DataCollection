@@ -240,26 +240,27 @@ export default {
     },
   },
   methods: {
-    save() {
+    save(flag) {
       if (this.taskId) {
-        this.updateTask();
+        this.updateTask(flag);
       } else {
-        this.initTask();
+        this.getTaskId(flag);
       }
     },
+
     frontStep() {
-      this.save();
-      this.$emit("change", 1);
+      this.save(true);
     },
 
-    initTask() {
+    getTaskId(flag) {
       this.$refs.basicForm.validate((valid) => {
         if (valid) {
           this.loading = true;
           initTask(this.basicForm)
             .then((res) => {
               if (res.state) {
-                this.$emit("initTask", res.value);
+                this.basicForm.id = res.value;
+                this.updateTask(flag);
               } else {
                 this.$message.error(res.message);
               }
@@ -269,7 +270,7 @@ export default {
       });
     },
 
-    updateTask() {
+    updateTask(flag) {
       this.$refs.basicForm.validate((valid) => {
         if (valid) {
           this.loading = true;
@@ -283,7 +284,10 @@ export default {
           updateTask(params)
             .then((res) => {
               if (res.state) {
-                this.$emit("initTask", this.taskId);
+                this.$emit("initTask", this.basicForm.id);
+                if (flag) {
+                  this.$emit("change", 1);
+                }
               } else {
                 this.$message.error(res.message);
               }
@@ -295,6 +299,7 @@ export default {
 
     back() {
       this.$emit("back");
+      this.$refs.basicForm.resetFields();
     },
   },
 };

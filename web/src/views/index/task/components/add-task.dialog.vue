@@ -4,7 +4,7 @@
     :visible="visible"
     :title="taskId ? '修改任务' : '添加任务'"
     :append-to-body="true"
-    @close="close"
+    :show-close="false"
   >
     <div class="steps">
       <el-steps
@@ -81,6 +81,7 @@ export default {
     },
     initTask(taskId) {
       this.taskId = taskId;
+      this.$emit("refresh");
     },
   },
 };
