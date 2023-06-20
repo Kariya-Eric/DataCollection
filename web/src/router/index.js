@@ -122,16 +122,6 @@ export const constantRouterMap = [
         },
       },
       {
-        path: "/task/add",
-        name: "taskAdd",
-        hidden: true,
-        component: () => import("@/views/index/task/add"),
-        meta: {
-          title: "添加任务",
-          icon: "list",
-        },
-      },
-      {
         path: "/task/detail",
         name: "taskDetail",
         hidden: true,
@@ -221,15 +211,15 @@ export const constantRouterMap = [
         },
       },
       {
-        path: '/form/detail',
+        path: "/form/detail",
         name: "formDetail",
         component: () => import("@/views/index/form/detail"),
         hidden: true,
         meta: {
           title: "表单详情",
-          icon: "list"
-        }
-      }
+          icon: "list",
+        },
+      },
     ],
   },
   {

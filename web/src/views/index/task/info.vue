@@ -117,11 +117,14 @@
         <el-table-column label="统计截止日期" align="center" />
       </el-table>
     </div>
+    <add-task-dialog ref="addTaskDialog" />
   </el-card>
 </template>
 
 <script>
+import addTaskDialog from "./components/add-task.dialog";
 export default {
+  components: { addTaskDialog },
   name: "TaskInfo",
   data() {
     return {
@@ -149,7 +152,8 @@ export default {
     },
 
     editTask() {
-      this.editFlag = true;
+      this.$refs.addTaskDialog.show(this.taskInfo.id);
+      //this.editFlag = true;
     },
 
     saveTask() {

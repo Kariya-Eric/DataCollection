@@ -178,6 +178,7 @@
       </el-table>
       <!-- Table End -->
       <pagination :pagination="ipagination" @change="loadData" />
+      <add-task-dialog ref="addTaskDialog" />
     </el-card>
   </div>
 </template>
@@ -185,10 +186,11 @@
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
+import AddTaskDialog from "./components/add-task.dialog.vue";
 export default {
   name: "TaskList",
   mixins: [DataCollectionMixin],
-  components: { Pagination },
+  components: { Pagination, AddTaskDialog },
   data() {
     return {
       url: {
@@ -210,7 +212,7 @@ export default {
   },
   methods: {
     addTask() {
-      this.$router.push({ path: "/task/add" });
+      this.$refs.addTaskDialog.show();
     },
 
     showTaskInfo(row) {

@@ -53,9 +53,14 @@
       <el-button type="primary" @click="nextStep" size="small"
         >下一步</el-button
       >
+      <el-button @click="back" size="small">返回</el-button>
     </div>
     <unfill-dialog ref="unfillDialog" />
-    <count-deadline-dialog ref="countDeadlineDialog" />
+    <count-deadline-dialog
+      ref="countDeadlineDialog"
+      :taskId="taskId"
+      @refresh="refresh"
+    />
   </div>
 </template>
 
@@ -63,8 +68,10 @@
 import CountDeadlineDialog from "./count-deadline-dialog";
 import UnfillDialog from "./unfill-dialog";
 import { formCollectionList, getFormList } from "@/api/form";
+import { getTask } from "@/api/task";
 export default {
   components: { UnfillDialog, CountDeadlineDialog },
+  props: ["taskId"],
   name: "AddTaskStepSecond",
   data() {
     return {
@@ -80,6 +87,23 @@ export default {
   },
 
   watch: {
+    taskId: {
+      handler(newVal) {
+        if (newVal !== undefined) {
+          this.loading = true;
+          getTask(newVal)
+            .then((res) => {
+              if (res.state) {
+                this.selectFormCollection = res.value.formCollectionId;
+              }
+            })
+            .finally(() => (this.loading = false));
+        } else {
+          this.selectFormCollection = "";
+        }
+      },
+      immediate: true,
+    },
     selectFormCollection(newVal) {
       if (newVal === "") {
         this.formList = [];
@@ -103,7 +127,7 @@ export default {
     apply() {
       this.$refs.unfillDialog.show();
     },
-
+    refresh() {},
     applyDeadline(isBatch, row) {
       if (isBatch) {
         this.$refs.countDeadlineDialog.show(isBatch, this.formList);
@@ -134,7 +158,9 @@ export default {
       });
     },
 
-    getFormList() {},
+    back() {
+      this.$emit("back");
+    },
   },
 };
 </script>

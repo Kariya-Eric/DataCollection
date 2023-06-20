@@ -134,24 +134,34 @@
       </el-row>
     </el-form>
     <div class="footer">
-      <el-button type="primary" size="small" @click="save" :disabled="true"
+      <el-button type="primary" size="small" @click="save" :loading="loading"
         >保存</el-button
       >
       <el-button type="primary" @click="frontStep" size="small"
         >下一步</el-button
       >
+      <el-button @click="back" size="small">返回</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { initTask } from "@/api/task";
+import { initTask, updateTask, getTask } from "@/api/task";
 export default {
   name: "AddTaskStepFirst",
+  props: ["taskId"],
   data() {
     return {
       basicForm: {},
-      advancedForm: {},
+      advancedForm: {
+        first: true,
+        second: true,
+        third: true,
+        fourth: false,
+        fifth: false,
+        sixth: false,
+      },
+      loading: false,
       basicRules: {
         type: [{ required: true, message: "请选择任务类型" }],
         name: [{ required: true, message: "请输入任务名称" }],
@@ -186,6 +196,37 @@ export default {
       },
     };
   },
+  watch: {
+    taskId: {
+      handler(newVal) {
+        if (newVal !== undefined) {
+          getTask(newVal).then((res) => {
+            if (res.state) {
+              this.basicForm = res.value;
+              const { professionalCategory } = res.value;
+              this.advancedForm.first =
+                professionalCategory.indexOf("师范类") != -1;
+              this.advancedForm.second =
+                professionalCategory.indexOf("医学专业") != -1;
+              this.advancedForm.third =
+                professionalCategory.indexOf("工科类") != -1;
+            }
+          });
+        } else {
+          this.basicForm = {};
+          this.advancedForm = {
+            first: true,
+            second: true,
+            third: true,
+            fourth: false,
+            fifth: false,
+            sixth: false,
+          };
+        }
+      },
+      immediate: true,
+    },
+  },
   computed: {
     schoolYearList() {
       let startYear = 2018;
@@ -200,26 +241,60 @@ export default {
   },
   methods: {
     save() {
-      this.initTask(false);
+      if (this.taskId) {
+        this.updateTask();
+      } else {
+        this.initTask();
+      }
     },
     frontStep() {
-      this.initTask(true);
+      this.save();
+      this.$emit("change", 1);
     },
 
-    initTask(flag) {
-      //   this.$refs.basicForm.validate((valid) => {
-      //     if (valid) {
-      //       initTask(this.basicForm).then((res) => {
-      //         if (res.state) {
-      //           this.$message.success(res.message);
-      //           this.$emit("init", res.value, flag);
-      //         } else {
-      //           this.$message.error(res.message);
-      //         }
-      //       });
-      //     }
-      //   });
-      this.$emit("init", "123456", flag);
+    initTask() {
+      this.$refs.basicForm.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          initTask(this.basicForm)
+            .then((res) => {
+              if (res.state) {
+                this.$emit("initTask", res.value);
+              } else {
+                this.$message.error(res.message);
+              }
+            })
+            .finally(() => (this.loading = false));
+        }
+      });
+    },
+
+    updateTask() {
+      this.$refs.basicForm.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          let professionalCategory = "";
+          if (this.basicForm.type == "教学基本状态数据") {
+            professionalCategory += this.advancedForm.first ? "师范类," : "";
+            professionalCategory += this.advancedForm.second ? "医学专业," : "";
+            professionalCategory += this.advancedForm.third ? "工科类" : "";
+          }
+          let params = { ...this.basicForm, professionalCategory };
+          updateTask(params)
+            .then((res) => {
+              if (res.state) {
+                this.$emit("initTask", this.taskId);
+              } else {
+                this.$message.error(res.message);
+              }
+            })
+            .finally(() => (this.loading = false));
+        }
+      });
+    },
+
+    back() {
+      this.$emit("back");
     },
   },
 };

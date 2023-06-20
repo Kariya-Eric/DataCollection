@@ -30,9 +30,7 @@
               icon="el-icon-plus"
               >新建表单</el-button
             >
-            <el-button size="small" icon="el-icon-back" @click="goBack"
-              >返回</el-button
-            >
+            <el-button size="small" @click="goBack">返回</el-button>
           </div>
         </el-col>
       </el-row>
@@ -226,7 +224,9 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
-    goBack(){}
+    goBack() {
+      this.$router.go(-1);
+    },
   },
 };
 </script>

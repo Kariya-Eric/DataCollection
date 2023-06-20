@@ -5,8 +5,10 @@
 	d.条件查询 schoolYear 字段
 2、添加任务第一步
 	a.保存返回逻辑，若保存了返回后需要展示已保存的逻辑，需要提供获取缓存taskId接口，taskId缓存不能交给浏览器缓存
+	b.保存，下一步在进行修改逻辑后 statisticsEndTime statisticsStartTime 匹配 format \"yyyy-MM-dd HH:mm:ss\"
 	
 3、添加任务第二步
 	a.表单合集下拉框  不包含pageBean接口
-	b.表单列表对应的状态和备注字段,是否包含分页
+	b.表单列表对应的状态和备注字段，统计截止时间,是否包含分
 	c.子表单问题（1-1.1-1-1.1-1-2） 影响配置统计截止时间的级联菜单/下拉菜单
+	d.配置 statisticsEndTime statisticsStartTime 匹配 format \"yyyy-MM-dd HH:mm:ss\"

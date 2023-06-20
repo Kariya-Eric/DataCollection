@@ -12,6 +12,7 @@
       size="small"
       label-width="120px"
       :rules="rules"
+      v-loading="loading"
     >
       <el-form-item label="表单名称" prop="formIds">
         <el-select
@@ -57,12 +58,16 @@
 </template>
 
 <script>
+import Vue from "vue";
+import { configEndTime } from "@/api/task";
 export default {
   name: "CountDeadlineDialog",
+  props: ["taskId"],
   data() {
     return {
       visible: false,
       isBatch: false,
+      loading: false,
       deadlineForm: { formIds: [], statisticsEndTime: "" },
       formList: [],
       rules: {
@@ -91,7 +96,19 @@ export default {
     handleSubmit() {
       this.$refs.deadlineForm.validate((valid) => {
         if (valid) {
-          console.log(this.deadlineForm);
+          this.loading = true;
+          let deadlineForm = { taskId: this.taskId, ...this.deadlineForm };
+          configEndTime(deadlineForm)
+            .then((res) => {
+              if (res.state) {
+                this.$message.success(res.message);
+                this.$emit("refresh");
+                this.close();
+              } else {
+                this.$message.error(res.message);
+              }
+            })
+            .finally(() => (this.loading = false));
         }
       });
     },
@@ -99,5 +116,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
