@@ -13,22 +13,38 @@
       label-width="120px"
       :rules="rules"
     >
-      <el-form-item label="表单名称" prop="name">
-        <el-cascader
+      <el-form-item label="表单名称" prop="formIds">
+        <el-select
+          style="width: 100%"
+          v-model="deadlineForm.formIds"
+          placeholder="请选择"
+          multiple
+          clearable
+          filterable
+          :disabled="!isBatch"
+        >
+          <el-option
+            v-for="item in formList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        <!-- <el-cascader
           clearable
           filterable
           :props="{ multiple: true }"
           v-model="deadlineForm.name"
           :disabled="!isBatch"
           style="width: 100%"
-        />
+        /> -->
       </el-form-item>
-      <el-form-item label="统计截止时间" prop="deadline">
+      <el-form-item label="统计截止时间" prop="statisticsEndTime">
         <el-date-picker
-          v-model="deadlineForm.deadline"
           style="width: 100%"
-          placeholder="请选择统计截止时间"
-        ></el-date-picker>
+          value-format="yyyy-MM-dd"
+          v-model="deadlineForm.statisticsEndTime"
+        />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -47,13 +63,23 @@ export default {
     return {
       visible: false,
       isBatch: false,
-      deadlineForm: {},
-      rules: {},
+      deadlineForm: { formIds: [], statisticsEndTime: "" },
+      formList: [],
+      rules: {
+        formIds: [{ required: true, message: "请选择表单名称" }],
+        statisticsEndTime: [{ required: true, message: "请选择统计截止时间" }],
+      },
     };
   },
   methods: {
-    show(isBatch) {
+    show(isBatch, formList) {
       this.isBatch = isBatch;
+      this.formList = formList;
+      if (!isBatch) {
+        this.deadlineForm.formIds = formList.map((form) => form.id);
+      } else {
+        this.deadlineForm = { formIds: [], statisticsEndTime: "" };
+      }
       this.visible = true;
     },
 
@@ -64,7 +90,9 @@ export default {
 
     handleSubmit() {
       this.$refs.deadlineForm.validate((valid) => {
-        //TODO
+        if (valid) {
+          console.log(this.deadlineForm);
+        }
       });
     },
   },

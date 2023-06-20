@@ -36,6 +36,8 @@ const updateForm = (params) => putAction("/uc/api/form/update", params);
 //根据id获取表单大类，不包分页
 const listFormCategories = (params) =>
   postAction(`/uc/api/formCategories/listAll/${params}`);
+//表单合集列表
+const formCollectionList = (params) => postAction("/uc/api/formCollection/list", params)
 export {
   addFormCollection,
   updateFormCollection,
@@ -49,4 +51,5 @@ export {
   delForm,
   updateForm,
   listFormCategories,
+  formCollectionList
 };

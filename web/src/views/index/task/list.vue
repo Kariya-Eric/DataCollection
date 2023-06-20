@@ -29,7 +29,12 @@
                   @change="searchQuery"
                   placeholder="请选择学年"
                 >
-                  <!-- TODO -->
+                  <el-option
+                    v-for="(opt, index) in schoolYearList"
+                    :label="opt"
+                    :key="index"
+                    :value="opt"
+                  />
                 </el-select>
               </el-form-item>
               <el-form-item label="任务名称">
@@ -39,13 +44,18 @@
                   @input="searchQuery"
                 />
               </el-form-item>
-              <el-button type="primary" size="small" icon="el-icon-search"
+              <el-button
+                type="primary"
+                size="small"
+                icon="el-icon-search"
+                @click="searchQuery"
                 >搜索</el-button
               >
               <el-button
                 type="primary"
                 size="small"
                 icon="el-icon-refresh-right"
+                @click="searchReset"
                 >重置</el-button
               >
             </el-form>
@@ -100,7 +110,12 @@
           prop="statisticsEndTime"
           align="center"
         />
-        <el-table-column label="学年" prop="schoolYear" align="center" width="120" />
+        <el-table-column
+          label="学年"
+          prop="schoolYear"
+          align="center"
+          width="120"
+        />
         <el-table-column label="自然年" prop="year" align="center" width="80" />
         <el-table-column
           label="任务状态"
@@ -120,10 +135,15 @@
             <el-progress :percentage="scope.row.percentage" />
           </template>
         </el-table-column>
-        <el-table-column label="启用" prop="enabled" align="center" width="80">
+        <el-table-column
+          label="启用"
+          prop="enabledFlag"
+          align="center"
+          width="80"
+        >
           <template slot-scope="scope">
             <el-switch
-              v-model="scope.row.enabled"
+              v-model="scope.row.enabledFlag"
               :active-value="1"
               :inactive-value="0"
             ></el-switch>
@@ -159,18 +179,16 @@
       <!-- Table End -->
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
-    <add-task-dialog ref="addTaskDialog" />
   </div>
 </template>
 
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
-import AddTaskDialog from "./components/add-task-dialog";
 export default {
   name: "TaskList",
   mixins: [DataCollectionMixin],
-  components: { Pagination, AddTaskDialog },
+  components: { Pagination },
   data() {
     return {
       url: {
@@ -178,9 +196,21 @@ export default {
       },
     };
   },
+  computed: {
+    schoolYearList() {
+      let startYear = 2018;
+      let nowYear = new Date().getFullYear();
+      let yearList = [];
+      for (let i = startYear; i < nowYear; i++) {
+        let option = `${i}-${i + 1}`;
+        yearList.push(option);
+      }
+      return yearList;
+    },
+  },
   methods: {
     addTask() {
-      this.$refs.addTaskDialog.show();
+      this.$router.push({ path: "/task/add" });
     },
 
     showTaskInfo(row) {

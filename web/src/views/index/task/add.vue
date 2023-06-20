@@ -1,11 +1,5 @@
 <template>
-  <el-dialog
-    title="添加任务"
-    :visible="visible"
-    fullscreen
-    @close="close"
-    style="overflow: hidden"
-  >
+  <el-card shadow="always" class="app-card add">
     <div class="steps">
       <el-steps
         :active="currentStep"
@@ -21,20 +15,20 @@
     </div>
     <div>
       <add-task-step-first v-if="currentStep === 0" @init="initTask" />
-      <add-task-step-second v-if="currentStep === 1" />
-      <add-task-step-third v-if="currentStep === 2" />
-      <add-task-step-fourth v-if="currentStep === 3" />
+      <add-task-step-second v-if="currentStep === 1" @change="changeStep" />
+      <add-task-step-third v-if="currentStep === 2" @change="changeStep" />
+      <add-task-step-fourth v-if="currentStep === 3" @back="close" />
     </div>
-  </el-dialog>
+  </el-card>
 </template>
 
 <script>
-import AddTaskStepFirst from "./add-task-step-first";
-import AddTaskStepSecond from "./add-task-step-second";
-import AddTaskStepThird from "./add-task-step-third";
-import AddTaskStepFourth from "./add-task-step-fourth";
+import AddTaskStepFirst from "./components/add-task-step-first";
+import AddTaskStepSecond from "./components/add-task-step-second";
+import AddTaskStepThird from "./components/add-task-step-third";
+import AddTaskStepFourth from "./components/add-task-step-fourth";
 export default {
-  name: "AddTaskDialog",
+  name: "AddTask",
   components: {
     AddTaskStepFirst,
     AddTaskStepSecond,
@@ -76,5 +70,9 @@ export default {
   width: 70%;
   margin: auto;
   margin-bottom: 36px;
+  margin-top: 36px;
+}
+.add {
+  min-height: 800px;
 }
 </style>

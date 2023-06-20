@@ -9,6 +9,9 @@
         </el-card>
       </template>
     </el-result>
+    <div class="footer">
+      <el-button @click="back" size="small">返回</el-button>
+    </div>
   </div>
 </template>
 
@@ -18,7 +21,11 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    back() {
+      this.$emit("back");
+    },
+  },
 };
 </script>
 
@@ -32,5 +39,12 @@ export default {
 .main-form {
   width: 50%;
   margin: auto;
+}
+.footer {
+  margin-top: 24px;
+  text-align: center;
+  .el-button + .el-button {
+    margin-left: 24px;
+  }
 }
 </style>

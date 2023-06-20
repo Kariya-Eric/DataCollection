@@ -67,7 +67,7 @@
                 :label="opt"
                 :key="index"
                 :value="opt"
-              ></el-option>
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -156,9 +156,31 @@ export default {
         type: [{ required: true, message: "请选择任务类型" }],
         name: [{ required: true, message: "请输入任务名称" }],
         statisticsStartTime: [
-          { required: true, message: "请选择统计开始时间" },
+          {
+            validator: (rule, value, callback) => {
+              if (value) {
+                if (value > this.basicForm.statisticsEndTime) {
+                  callback(new Error("开始时间不能大于结束时间"));
+                }
+                callback();
+              }
+              callback(new Error("请选择统计开始时间"));
+            },
+          },
         ],
-        statisticsEndTime: [{ required: true, message: "请选择统计结束时间" }],
+        statisticsEndTime: [
+          {
+            validator: (rule, value, callback) => {
+              if (value) {
+                if (value < this.basicForm.statisticsStartTime) {
+                  callback(new Error("结束时间不能小于开始时间"));
+                }
+                callback();
+              }
+              callback(new Error("请选择统计结束时间"));
+            },
+          },
+        ],
         schoolYear: [{ required: true, message: "请选择学年" }],
         year: [{ required: true, message: "请输入自然年" }],
       },
@@ -185,19 +207,19 @@ export default {
     },
 
     initTask(flag) {
-    //   this.$refs.basicForm.validate((valid) => {
-    //     if (valid) {
-    //       initTask(this.basicForm).then((res) => {
-    //         if (res.state) {
-    //           this.$message.success(res.message);
-    //           this.$emit("init", res.value, flag);
-    //         } else {
-    //           this.$message.error(res.message);
-    //         }
-    //       });
-    //     }
-    //   });
-      this.$emit("init", '123456', flag);
+      //   this.$refs.basicForm.validate((valid) => {
+      //     if (valid) {
+      //       initTask(this.basicForm).then((res) => {
+      //         if (res.state) {
+      //           this.$message.success(res.message);
+      //           this.$emit("init", res.value, flag);
+      //         } else {
+      //           this.$message.error(res.message);
+      //         }
+      //       });
+      //     }
+      //   });
+      this.$emit("init", "123456", flag);
     },
   },
 };
