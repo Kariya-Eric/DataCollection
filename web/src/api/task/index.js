@@ -9,5 +9,10 @@ const configEndTime = (params) =>
   putAction("/uc/api/taskForm/configEndTime", params);
 //获取任务详情
 const getTask = (params) => getAction(`/uc/api/task/get/${params}`);
-
-export { initTask, updateTask, configEndTime, getTask };
+//表单配置列表&权限配置列表
+const getTaskFormList = (params) => postAction(`/uc/api/taskForm/list?taskId=${params.taskId}&formCollectionId=${params.formCollectionId}`)
+//启用任务
+const enableTask = (params) => putAction("/uc/api/task/enable", params)
+//获取任务信息
+const getTaskInfo = (params) => getAction(`/uc/api/task/get/${params}`)
+export { initTask, updateTask, configEndTime, getTask, getTaskFormList, enableTask, getTaskInfo };

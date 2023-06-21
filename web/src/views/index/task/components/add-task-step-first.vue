@@ -61,6 +61,7 @@
               style="width: 100%"
               clearable
               placeholder="请选择学年"
+              @change="shoolYearChange"
             >
               <el-option
                 v-for="(opt, index) in schoolYearList"
@@ -72,8 +73,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="自然年" prop="year">
-            <el-input v-model="basicForm.year" />
+          <el-form-item label="自然年">
+            <el-input v-model="basicForm.year" disabled />
           </el-form-item>
         </el-col>
       </el-row>
@@ -134,7 +135,11 @@
       </el-row>
     </el-form>
     <div class="footer">
-      <el-button type="primary" size="small" @click="save" :loading="loading"
+      <el-button
+        type="primary"
+        size="small"
+        @click="save(false)"
+        :loading="loading"
         >保存</el-button
       >
       <el-button type="primary" @click="frontStep" size="small"
@@ -192,7 +197,6 @@ export default {
           },
         ],
         schoolYear: [{ required: true, message: "请选择学年" }],
-        year: [{ required: true, message: "请输入自然年" }],
       },
     };
   },
@@ -240,6 +244,10 @@ export default {
     },
   },
   methods: {
+    shoolYearChange(val) {
+      this.basicForm.year = val.substring(0, 4);
+    },
+
     save(flag) {
       if (this.taskId) {
         this.updateTask(flag);
@@ -278,12 +286,17 @@ export default {
           if (this.basicForm.type == "教学基本状态数据") {
             professionalCategory += this.advancedForm.first ? "师范类," : "";
             professionalCategory += this.advancedForm.second ? "医学专业," : "";
-            professionalCategory += this.advancedForm.third ? "工科类" : "";
+            professionalCategory += this.advancedForm.third ? "工科类," : "";
+            professionalCategory = professionalCategory.substring(
+              0,
+              professionalCategory.length - 1
+            );
           }
           let params = { ...this.basicForm, professionalCategory };
           updateTask(params)
             .then((res) => {
               if (res.state) {
+                this.$message.success(res.message);
                 this.$emit("initTask", this.basicForm.id);
                 if (flag) {
                   this.$emit("change", 1);

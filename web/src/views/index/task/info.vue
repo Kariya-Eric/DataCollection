@@ -6,90 +6,50 @@
           <el-button
             type="primary"
             size="small"
-            v-if="!editFlag"
+            v-if="!taskInfo.enabledFlag"
             @click="editTask"
             >编辑</el-button
-          >
-          <el-button type="primary" size="small" v-else @click="saveTask"
-            >保存</el-button
           >
           <el-button type="primary" size="small">导出</el-button>
           <el-button size="small" @click="goBack">返回</el-button>
         </template>
         <el-descriptions-item label="任务名称"
-          ><span v-if="!editFlag">{{ taskInfo.name }}</span>
-          <el-input
-            v-else
-            v-model="taskInfo.name"
-            size="small"
-            style="width: 80%"
-          ></el-input>
+          >{{ taskInfo.name }}
         </el-descriptions-item>
-        <el-descriptions-item label="任务类型"
-          ><span v-if="!editFlag">{{ taskInfo.type }}</span>
-          <el-select
-            v-else
-            v-model="taskInfo.type"
-            size="small"
-            style="width: 80%"
-          ></el-select
-        ></el-descriptions-item>
+        <el-descriptions-item label="任务类型">{{
+          taskInfo.type
+        }}</el-descriptions-item>
         <el-descriptions-item label="统计开始时间"
-          ><span v-if="!editFlag">{{ taskInfo.statisticsStartTime }}</span>
-          <el-date-picker
-            v-else
-            v-model="taskInfo.statisticsStartTime"
-            size="small"
-            style="width: 80%"
-          />
+          >{{ taskInfo.statisticsStartTime }}
         </el-descriptions-item>
         <el-descriptions-item label="统计截止时间">
-          <span v-if="!editFlag">{{ taskInfo.statisticsEndTime }}</span>
-          <el-date-picker
-            v-else
-            v-model="taskInfo.statisticsEndTime"
-            size="small"
-            style="width: 80%"
-          />
+          {{ taskInfo.statisticsEndTime }}
         </el-descriptions-item>
         <el-descriptions-item label="学年">
-          <span v-if="!editFlag">{{ taskInfo.schoolYear }}</span>
-          <el-select
-            v-else
-            v-model="taskInfo.schoolYear"
-            size="small"
-            style="width: 80%"
-          ></el-select>
+          {{ taskInfo.schoolYear }}
         </el-descriptions-item>
         <el-descriptions-item label="自然年">
-          <span v-if="!editFlag">{{ taskInfo.year }}</span>
-          <el-select
-            v-else
-            v-model="taskInfo.year"
-            size="small"
-            style="width: 80%"
-          ></el-select>
+          {{ taskInfo.year }}
         </el-descriptions-item>
-        <el-descriptions-item label="学校专业类别"></el-descriptions-item>
-        <el-descriptions-item label="任务状态">
-          <div v-if="!editFlag">
-            <el-tag v-if="taskInfo.status === 0" type="info" size="small"
-              >未启用</el-tag
-            >
-            <el-tag v-if="taskInfo.status === 1" size="small">启用中</el-tag>
-            <el-tag v-if="taskInfo.status === 2" type="success" size="small"
-              >完成</el-tag
-            >
-            <el-tag v-if="taskInfo.status === 3" type="danger" size="small"
-              >停用</el-tag
+        <el-descriptions-item label="学校专业类别">
+          <div class="tagDiv">
+            <el-tag
+              v-for="(item, index) in tagList"
+              :key="index"
+              size="small"
+              >{{ item }}</el-tag
             >
           </div>
-          <el-select
-            v-else
-            v-model="taskInfo.status"
-            size="small"
-            style="width: 80%"
-          ></el-select>
+        </el-descriptions-item>
+        <el-descriptions-item label="任务状态">
+          <div>
+            <el-tag v-if="taskInfo.enabledFlag === 0" type="info" size="small"
+              >未启用</el-tag
+            >
+            <el-tag v-if="taskInfo.enabledFlag === 1" size="small"
+              >启用中</el-tag
+            >
+          </div>
         </el-descriptions-item>
         <el-descriptions-item label="任务进度">
           <el-progress
@@ -111,35 +71,49 @@
         v-loading="loading"
       >
         <el-table-column label="表单大类" align="center" />
-        <el-table-column label="表单名称" align="center" />
-        <el-table-column label="负责部门" align="center" />
-        <el-table-column label="协作部门" align="center" />
-        <el-table-column label="统计截止日期" align="center" />
+        <el-table-column label="表单名称" align="center" prop="formName" />
+        <el-table-column
+          label="负责部门"
+          align="center"
+          prop="responsibleOrgId"
+        />
+        <el-table-column
+          label="协作部门"
+          align="center"
+          prop="collaborateOrgId"
+        />
+        <el-table-column
+          label="统计截止日期"
+          align="center"
+          prop="statisticsEndTime"
+        />
       </el-table>
     </div>
-    <add-task-dialog ref="addTaskDialog" />
+    <add-task-dialog ref="addTaskDialog" @refresh="getTaskInfo" />
   </el-card>
 </template>
 
 <script>
 import addTaskDialog from "./components/add-task.dialog";
+import { getTaskFormList, getTaskInfo } from "@/api/task";
 export default {
   components: { addTaskDialog },
   name: "TaskInfo",
   data() {
     return {
+      taskId: undefined,
       taskInfo: {},
-      editFlag: false,
       formList: [],
       loading: false,
+      tagList: [],
     };
   },
-
   watch: {
     $route: {
       handler(newRoute) {
         if (newRoute.name == "taskInfo") {
-          this.taskInfo = JSON.parse(newRoute.query.taskInfo);
+          this.taskId = newRoute.query.taskId;
+          this.getTaskInfo();
         }
       },
       immediate: true,
@@ -151,13 +125,37 @@ export default {
       this.$router.back(-1);
     },
 
-    editTask() {
-      this.$refs.addTaskDialog.show(this.taskInfo.id);
-      //this.editFlag = true;
+    getTaskInfo() {
+      getTaskInfo(this.taskId).then((res) => {
+        if (res.state) {
+          this.taskInfo = res.value;
+          if (this.taskInfo.professionalCategory) {
+            this.tagList = this.taskInfo.professionalCategory.split(",");
+          }
+          if (this.taskInfo.formCollectionId) {
+            this.getFormList();
+          }
+        }
+      });
     },
 
-    saveTask() {
-      this.editFlag = false;
+    editTask() {
+      this.$refs.addTaskDialog.show(this.taskInfo.id);
+    },
+
+    getFormList() {
+      this.loading = true;
+      let query = {
+        taskId: this.taskInfo.id,
+        formCollectionId: this.taskInfo.formCollectionId,
+      };
+      getTaskFormList(query)
+        .then((res) => {
+          if (res.state) {
+            this.formList = res.value;
+          }
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };
@@ -178,5 +176,8 @@ export default {
       margin-left: 12px;
     }
   }
+}
+.tagDiv .el-tag {
+  margin-right: 4px;
 }
 </style>

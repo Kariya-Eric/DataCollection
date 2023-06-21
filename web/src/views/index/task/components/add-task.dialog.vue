@@ -37,6 +37,7 @@
         v-if="currentStep === 2"
         @change="changeStep"
         :taskId="taskId"
+        @back="close"
       />
       <add-task-step-fourth
         v-if="currentStep === 3"
@@ -75,13 +76,14 @@ export default {
     },
     close() {
       this.visible = false;
+      this.taskId = undefined;
+      this.$emit("refresh");
     },
     changeStep(step) {
       this.currentStep = step;
     },
     initTask(taskId) {
       this.taskId = taskId;
-      this.$emit("refresh");
     },
   },
 };

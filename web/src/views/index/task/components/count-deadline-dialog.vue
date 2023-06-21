@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import { configEndTime } from "@/api/task";
 export default {
   name: "CountDeadlineDialog",
@@ -77,14 +76,10 @@ export default {
     };
   },
   methods: {
-    show(isBatch, formList) {
+    show(isBatch, selectedFormList, formList) {
       this.isBatch = isBatch;
       this.formList = formList;
-      if (!isBatch) {
-        this.deadlineForm.formIds = formList.map((form) => form.id);
-      } else {
-        this.deadlineForm = { formIds: [], statisticsEndTime: "" };
-      }
+      this.deadlineForm.formIds = selectedFormList.map((form) => form.id);
       this.visible = true;
     },
 
@@ -101,7 +96,7 @@ export default {
           configEndTime(deadlineForm)
             .then((res) => {
               if (res.state) {
-                this.$message.success(res.message);
+                //this.$message.success(res.message);
                 this.$emit("refresh");
                 this.close();
               } else {

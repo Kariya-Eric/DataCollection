@@ -15,24 +15,52 @@
           type="primary"
           size="small"
           style="float: right"
+          v-if="selectedRowKeys.length > 0"
           @click="applyDeadline(true)"
           >批量配置统计截止时间</el-button
         >
       </el-row>
     </div>
-    <el-table :data="formList" size="small" :border="true" v-loading="loading">
+    <el-table
+      :data="formList"
+      size="small"
+      :border="true"
+      v-loading="loading"
+      @selection-change="onSelectChange"
+    >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="表单名称" prop="name" align="center" />
-      <el-table-column label="状态" align="center" />
-      <el-table-column label="备注" align="center" />
-      <el-table-column label="统计截止日期" align="center" />
+      <el-table-column label="表单名称" prop="formName" align="center" />
+      <el-table-column label="状态" align="center" width="120">
+        <template slot-scope="scope">
+          <el-tag size="small" v-if="scope.row.isCanFill" type="success"
+            >可填报</el-tag
+          >
+          <el-tag size="small" v-else type="warning">不可填报</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.remark">
+            {{ scope.row.remark }}
+            <!-- <el-tooltip :content="" placement="right" effect="dark">
+            </el-tooltip> -->
+          </div>
+          <div v-else>-</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="统计截止日期"
+        prop="statisticsEndTime"
+        align="center"
+        width="150"
+      />
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <a href="javascript:;" @click="applyDeadline(false, scope.row)"
             >配置统计截止时间</a
           >
-          <el-divider direction="vertical" v-if="scope.row.status == 1" />
-          <a href="javascript:;" v-if="scope.row.status == 1" @click="apply"
+          <el-divider direction="vertical" v-if="scope.row.isCanFill" />
+          <a href="javascript:;" v-if="scope.row.isCanFill" @click="apply"
             >申请不可填报</a
           >
           <el-popconfirm
@@ -67,18 +95,20 @@
 <script>
 import CountDeadlineDialog from "./count-deadline-dialog";
 import UnfillDialog from "./unfill-dialog";
-import { formCollectionList, getFormList } from "@/api/form";
-import { getTask } from "@/api/task";
+import { formCollectionList } from "@/api/form";
+import { getTask, updateTask, getTaskFormList } from "@/api/task";
 export default {
   components: { UnfillDialog, CountDeadlineDialog },
   props: ["taskId"],
   name: "AddTaskStepSecond",
   data() {
     return {
+      selectedRowKeys: [],
       selectFormCollection: "",
       formCollectionList: [],
       formList: [],
       loading: false,
+      taskInfo: {},
     };
   },
 
@@ -94,29 +124,29 @@ export default {
           getTask(newVal)
             .then((res) => {
               if (res.state) {
+                this.taskInfo = res.value;
                 this.selectFormCollection = res.value.formCollectionId;
               }
             })
             .finally(() => (this.loading = false));
-        } else {
-          this.selectFormCollection = "";
         }
       },
       immediate: true,
     },
+
     selectFormCollection(newVal) {
-      if (newVal === "") {
+      if (newVal == "" || !newVal) {
         this.formList = [];
       } else {
         this.loading = true;
         let query = {
-          id: newVal,
-          pageBean: { page: 1, pageSize: 1000, showTotal: true },
+          taskId: this.taskInfo.id,
+          formCollectionId: newVal,
         };
-        getFormList(query)
+        getTaskFormList(query)
           .then((res) => {
             if (res.state) {
-              this.formList = res.value.rows;
+              this.formList = res.value;
             }
           })
           .finally(() => (this.loading = false));
@@ -124,17 +154,43 @@ export default {
     },
   },
   methods: {
+    onSelectChange(selectedRowKeys, _) {
+      this.selectedRowKeys = selectedRowKeys;
+    },
     apply() {
       this.$refs.unfillDialog.show();
     },
-    refresh() {},
+    refresh() {
+      //TODO 配置完成的回显
+      this.selectedRowKeys = [];
+      this.$message.success("配置时间完毕，需提供后端接口刷新列表");
+      let params = {
+        ...this.taskInfo,
+        formCollectionId: this.selectFormCollection,
+      };
+      this.loading = true;
+      updateTask(params)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+          } else {
+            this.$message.warning(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
     applyDeadline(isBatch, row) {
       if (isBatch) {
-        this.$refs.countDeadlineDialog.show(isBatch, this.formList);
+        this.$refs.countDeadlineDialog.show(
+          isBatch,
+          this.selectedRowKeys,
+          this.formList
+        );
       } else {
         let formList = [];
         formList.push(row);
-        this.$refs.countDeadlineDialog.show(isBatch, formList);
+        this.$refs.countDeadlineDialog.show(isBatch, formList, this.formList);
       }
     },
 
@@ -143,7 +199,22 @@ export default {
     },
 
     nextStep() {
-      this.$emit("change", 2);
+      if (this.selectFormCollection == "" || !this.selectFormCollection) {
+        this.$message.warning("请选择表单合集！");
+        return;
+      }
+      let params = {
+        ...this.taskInfo,
+        formCollectionId: this.selectFormCollection,
+      };
+      this.loading = true;
+      updateTask(params)
+        .then((res) => {
+          if (res.state) {
+            this.$emit("change", 2);
+          }
+        })
+        .finally(() => (this.loading = false));
     },
 
     getFormCollectionList() {

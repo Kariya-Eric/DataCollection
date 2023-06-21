@@ -50,8 +50,7 @@
             :border="true"
             v-loading="loading"
           >
-            <el-table-column type="selection" width="55" align="center" />
-            <el-table-column label="表单列表" align="center" />
+            <el-table-column label="表单名称" align="center" prop="name" />
             <el-table-column label="权限配置状态" align="center" />
             <el-table-column label="负责部门" align="center" />
             <el-table-column label="协作" align="center" />
@@ -75,6 +74,7 @@
       <el-button type="primary" @click="nextStep" size="small"
         >下一步</el-button
       >
+      <el-button @click="back" size="small">返回</el-button>
     </div>
     <permission-dialog ref="permissionDialog" />
     <copy-permission-dialog ref="copyPermissionDialog" />
@@ -87,13 +87,17 @@ import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 import CopyPermissionDialog from "./copy-permission-dialog";
 import PermissionDialog from "./permission-dialog";
+import { getTask, updateTask } from "@/api/task";
+import { getFormList } from "@/api/form";
 export default {
   components: { PermissionDialog, CopyPermissionDialog },
   name: "AddTaskStepThird",
+  props: ["taskId"],
   data() {
     return {
       departList: [],
       departFilter: "",
+      taskInfo: {},
       departProps: {
         children: "children",
         label: "name",
@@ -111,6 +115,25 @@ export default {
   mounted() {
     this.initDepart();
   },
+  watch: {
+    taskId: {
+      handler(newVal) {
+        if (newVal !== undefined) {
+          this.loading = true;
+          getTask(newVal)
+            .then((res) => {
+              if (res.state) {
+                this.taskInfo = res.value;
+                this.getFormList(this.taskInfo.formCollectionId);
+              }
+            })
+            .finally(() => (this.loading = false));
+        }
+      },
+      immediate: true,
+    },
+  },
+
   methods: {
     initDepart() {
       let userInfo = Vue.ls.get(USER_INFO);
@@ -134,6 +157,20 @@ export default {
       }
     },
 
+    getFormList(formCollectionId) {
+      this.loading = true;
+      let query = {
+        id: formCollectionId,
+        pageBean: { page: 1, pageSize: 1000, showTotal: true },
+      };
+      getFormList(query)
+        .then((res) => {
+          if (res.state) {
+            this.formList = res.value.rows;
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
     copyPermission() {
       this.$refs.copyPermissionDialog.show();
     },
@@ -144,6 +181,10 @@ export default {
 
     nextStep() {
       this.$emit("change", 3);
+    },
+
+    back() {
+      this.$emit("back");
     },
   },
 };

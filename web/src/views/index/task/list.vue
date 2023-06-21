@@ -104,11 +104,13 @@
           label="统计开始时间"
           prop="statisticsStartTime"
           align="center"
+          sortable
         />
         <el-table-column
           label="统计截止时间"
           prop="statisticsEndTime"
           align="center"
+          sortable
         />
         <el-table-column
           label="学年"
@@ -143,6 +145,7 @@
         >
           <template slot-scope="scope">
             <el-switch
+              disabled
               v-model="scope.row.enabledFlag"
               :active-value="1"
               :inactive-value="0"
@@ -218,7 +221,7 @@ export default {
     showTaskInfo(row) {
       this.$router.push({
         path: "/task/info",
-        query: { taskInfo: JSON.stringify(row) },
+        query: { taskId: row.id },
       });
     },
 
