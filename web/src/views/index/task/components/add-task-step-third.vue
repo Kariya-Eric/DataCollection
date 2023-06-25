@@ -26,35 +26,61 @@
           <div class="header">
             <el-row>
               <span>权限配置状态&nbsp;&nbsp;&nbsp;</span
-              ><el-select v-model="statusOptions" size="small">
+              ><el-select
+                v-model="statusOptions"
+                size="small"
+                @change="changeStatus"
+              >
                 <el-option label="全部" :value="0" />
                 <el-option label="已配置" :value="1" />
                 <el-option label="未配置" :value="2" />
               </el-select>
               <div style="float: right">
-                <el-button type="primary" size="small" @click="copyPermission"
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="copyPermission"
+                  v-if="selectedRowKeys.length > 0"
                   >复制其他任务权限</el-button
                 >
                 <el-button
                   type="primary"
                   size="small"
                   @click="applyPermission(true)"
+                  v-if="selectedRowKeys.length > 0"
                   >批量配置权限</el-button
                 >
               </div>
             </el-row>
           </div>
           <el-table
-            :data="formList"
+            :data="configFormList"
             size="small"
             :border="true"
             v-loading="loading"
+            @selection-change="onSelectChange"
           >
-            <el-table-column label="表单名称" align="center" prop="name" />
-            <el-table-column label="权限配置状态" align="center" />
-            <el-table-column label="负责部门" align="center" />
-            <el-table-column label="协作" align="center" />
-            <el-table-column label="操作" align="center">
+            <el-table-column type="selection" width="55" align="center" />
+            <el-table-column label="表单名称" align="center" prop="formName" />
+            <el-table-column label="权限配置状态" align="center" width="120">
+              <template slot-scope="scope">
+                <el-tag v-if="scope.row.configStatus" size="small"
+                  >已配置</el-tag
+                >
+                <el-tag v-else size="small">未配置</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="负责部门"
+              align="center"
+              prop="responsibleOrgId"
+            />
+            <el-table-column
+              label="协作部门"
+              align="center"
+              prop="collaborateOrgId"
+            />
+            <el-table-column label="操作" align="center" width="120">
               <template slot-scope="scope">
                 <a
                   href="javascript:;"
@@ -76,7 +102,11 @@
       >
       <el-button @click="back" size="small">返回</el-button>
     </div>
-    <permission-dialog ref="permissionDialog" />
+    <permission-dialog
+      ref="permissionDialog"
+      :taskId="taskId"
+      @refresh="refresh"
+    />
     <copy-permission-dialog ref="copyPermissionDialog" />
   </div>
 </template>
@@ -87,8 +117,7 @@ import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 import CopyPermissionDialog from "./copy-permission-dialog";
 import PermissionDialog from "./permission-dialog";
-import { getTask, updateTask } from "@/api/task";
-import { getFormList } from "@/api/form";
+import { getTask, updateTask, getTaskFormList } from "@/api/task";
 export default {
   components: { PermissionDialog, CopyPermissionDialog },
   name: "AddTaskStepThird",
@@ -104,7 +133,9 @@ export default {
       },
       statusOptions: 0,
       formList: [],
+      configFormList: [],
       loading: false,
+      selectedRowKeys: [],
     };
   },
   watch: {
@@ -133,8 +164,29 @@ export default {
       immediate: true,
     },
   },
-
   methods: {
+    refresh() {
+      //TODO 配置完成的回显
+      this.selectedRowKeys = [];
+      this.getFormList(this.taskInfo.formCollectionId);
+    },
+
+    onSelectChange(selectedRowKeys, _) {
+      this.selectedRowKeys = selectedRowKeys;
+    },
+    changeStatus(val) {
+      if (val == 0) {
+        this.configFormList = this.formList;
+      }
+      if (val == 1) {
+        this.configFormList = this.formList.filter((form) => form.configStatus);
+      }
+      if (val == 2) {
+        this.configFormList = this.formList.filter(
+          (form) => !form.configStatus
+        );
+      }
+    },
     initDepart() {
       let userInfo = Vue.ls.get(USER_INFO);
       initDeptTree(userInfo.userId).then((res) => {
@@ -151,22 +203,35 @@ export default {
 
     applyPermission(isBatch, row) {
       if (isBatch) {
-        this.$refs.permissionDialog.show(isBatch);
+        this.$refs.permissionDialog.show(
+          isBatch,
+          this.selectedRowKeys,
+          this.formList,
+          this.departList
+        );
       } else {
-        this.$refs.permissionDialog.show(isBatch, row.id);
+        let formList = [];
+        formList.push(row);
+        this.$refs.permissionDialog.show(
+          isBatch,
+          formList,
+          this.formList,
+          this.departList
+        );
       }
     },
 
     getFormList(formCollectionId) {
       this.loading = true;
       let query = {
-        id: formCollectionId,
-        pageBean: { page: 1, pageSize: 1000, showTotal: true },
+        taskId: this.taskInfo.id,
+        formCollectionId,
       };
-      getFormList(query)
+      getTaskFormList(query)
         .then((res) => {
           if (res.state) {
-            this.formList = res.value.rows;
+            this.formList = res.value;
+            this.changeStatus(0);
           }
         })
         .finally(() => (this.loading = false));

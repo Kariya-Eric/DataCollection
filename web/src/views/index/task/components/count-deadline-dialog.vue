@@ -26,9 +26,9 @@
         >
           <el-option
             v-for="item in formList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
+            :key="item.formId"
+            :label="item.formName"
+            :value="item.formId"
           />
         </el-select>
         <!-- <el-cascader
@@ -79,7 +79,7 @@ export default {
     show(isBatch, selectedFormList, formList) {
       this.isBatch = isBatch;
       this.formList = formList;
-      this.deadlineForm.formIds = selectedFormList.map((form) => form.id);
+      this.deadlineForm.formIds = selectedFormList.map((form) => form.formId);
       this.visible = true;
     },
 

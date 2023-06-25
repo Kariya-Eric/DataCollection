@@ -126,10 +126,16 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 0" type="info">未启用</el-tag>
-            <el-tag v-if="scope.row.status === 1">启用中</el-tag>
-            <el-tag v-if="scope.row.status === 2" type="success">完成</el-tag>
-            <el-tag v-if="scope.row.status === 3" type="danger">停用</el-tag>
+            <el-tag v-if="scope.row.status === 0" type="info" size="small"
+              >未启用</el-tag
+            >
+            <el-tag v-if="scope.row.status === 1" size="small">启用中</el-tag>
+            <el-tag v-if="scope.row.status === 2" type="success" size="small"
+              >完成</el-tag
+            >
+            <el-tag v-if="scope.row.status === 3" type="danger" size="small"
+              >停用</el-tag
+            >
           </template>
         </el-table-column>
         <el-table-column label="完成进度" prop="percentage" align="center">
@@ -228,7 +234,7 @@ export default {
     showTaskDetail(row) {
       this.$router.push({
         path: "/task/detail",
-        query: { taskDetail: JSON.stringify(row) },
+        query: { taskId: row.id },
       });
     },
     handleCommand(command) {},

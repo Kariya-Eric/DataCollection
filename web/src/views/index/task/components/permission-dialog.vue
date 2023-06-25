@@ -8,35 +8,78 @@
   >
     <el-form
       size="small"
-      v-model="permissionForm"
+      :model="permissionForm"
       ref="permissionForm"
       label-width="80px"
+      :rules="rules"
+      v-loading="loading"
     >
-      <el-form-item label="表单名称">
-        <el-cascader
+      <el-form-item label="表单名称" prop="formIds">
+        <el-select
+          style="width: 100%"
+          v-model="permissionForm.formIds"
+          placeholder="请选择"
+          multiple
           clearable
           filterable
-          :props="{ multiple: true }"
-          v-model="permissionForm.name"
           :disabled="!isBatch"
-          style="width: 100%"
-        />
+        >
+          <el-option
+            v-for="item in formList"
+            :key="item.formId"
+            :label="item.formName"
+            :value="item.formId"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="负责部门">
-        <el-cascader
+      <el-form-item label="负责部门" prop="responsibleOrgId">
+        <el-select
+          style="width: 100%"
+          v-model="permissionForm.responsibleOrgId"
+          placeholder="请选择"
           clearable
           filterable
-          v-model="permissionForm.charge"
-          style="width: 100%"
-        />
-      </el-form-item>
-      <el-form-item label="协作部门">
-        <el-cascader
+        >
+          <el-option
+            v-for="item in departList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        <!-- <el-cascader
           clearable
           filterable
-          v-model="permissionForm.assist"
+          v-model="permissionForm.responsibleOrgId"
           style="width: 100%"
-        />
+          :props="departProps"
+          :options="departList"
+        /> -->
+      </el-form-item>
+      <el-form-item label="协作部门" prop="collaborateOrgId">
+        <el-select
+          style="width: 100%"
+          multiple
+          v-model="permissionForm.collaborateOrgId"
+          placeholder="请选择"
+          clearable
+          filterable
+        >
+          <el-option
+            v-for="item in departList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+        <!-- <el-cascader
+          clearable
+          filterable
+          v-model="permissionForm.collaborateOrgId"
+          style="width: 100%"
+          :props="departProps"
+          :options="departList"
+        /> -->
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -49,13 +92,25 @@
 </template>
 
 <script>
+import { configAuthority } from "@/api/task";
 export default {
   name: "PermissionDialog",
+  props: ["taskId"],
   data() {
     return {
       isBatch: false,
       visible: false,
-      permissionForm: {},
+      permissionForm: {
+        collaborateOrgId: [],
+      },
+      formList: [],
+      departList: [],
+      loading: false,
+      rules: {
+        formIds: [{ required: true, message: "请选择表单名称" }],
+        collaborateOrgId: [{ required: true, message: "请选协作部门" }],
+        responsibleOrgId: [{ required: true, message: "请选负责部门" }],
+      },
     };
   },
   methods: {
@@ -66,17 +121,37 @@ export default {
 
     handleSubmit() {
       this.$refs.permissionForm.validate((valid) => {
-        //TODO
+        if (valid) {
+          this.loading = true;
+          let collaborateOrgId = this.permissionForm.collaborateOrgId.join(",");
+          let permissionForm = {
+            taskId: this.taskId,
+            ...this.permissionForm,
+            collaborateOrgId,
+          };
+          configAuthority(permissionForm)
+            .then((res) => {
+              if (res.state) {
+                this.$emit("refresh");
+                this.close();
+              } else {
+                this.$message.error(res.message);
+              }
+            })
+            .finally(() => (this.loading = false));
+        }
       });
     },
 
-    show(isBatch) {
+    show(isBatch, selectedFormList, formList, departList) {
       this.isBatch = isBatch;
+      this.formList = formList;
+      this.permissionForm.formIds = selectedFormList.map((form) => form.formId);
+      this.departList = departList;
       this.visible = true;
     },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

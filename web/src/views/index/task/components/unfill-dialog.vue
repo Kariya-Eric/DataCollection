@@ -7,7 +7,7 @@
   >
     <el-form size="small" ref="unfillForm" v-model="unfillForm">
       <el-form-item>
-        <el-inpu
+        <el-input
           type="textarea"
           :rows="6"
           show-word-limit

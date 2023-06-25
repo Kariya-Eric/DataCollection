@@ -59,17 +59,18 @@
           <a href="javascript:;" @click="applyDeadline(false, scope.row)"
             >配置统计截止时间</a
           >
-          <el-divider direction="vertical" v-if="scope.row.isCanFill" />
+          <el-divider direction="vertical" />
           <a href="javascript:;" v-if="scope.row.isCanFill" @click="apply"
             >申请不可填报</a
           >
           <el-popconfirm
             v-else
+            @confirm="redoCanfill(scope.row)"
             title="确定撤销不可填报吗？"
             icon="el-icon-info"
             icon-color="red"
           >
-            <a href="javascript:;">撤销不可填报</a>
+            <a href="javascript:;" slot="reference">撤销不可填报</a>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -163,7 +164,6 @@ export default {
     refresh() {
       //TODO 配置完成的回显
       this.selectedRowKeys = [];
-      this.$message.success("配置时间完毕，需提供后端接口刷新列表");
       let params = {
         ...this.taskInfo,
         formCollectionId: this.selectFormCollection,
@@ -173,6 +173,15 @@ export default {
         .then((res) => {
           if (res.state) {
             this.$message.success(res.message);
+            let query = {
+              taskId: this.taskInfo.id,
+              formCollectionId: this.selectFormCollection,
+            };
+            getTaskFormList(query).then((res) => {
+              if (res.state) {
+                this.formList = res.value;
+              }
+            });
           } else {
             this.$message.warning(res.message);
           }
@@ -232,6 +241,8 @@ export default {
     back() {
       this.$emit("back");
     },
+
+    redoCanfill(row) {},
   },
 };
 </script>
