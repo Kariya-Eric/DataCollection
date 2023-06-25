@@ -3,7 +3,7 @@
     :title="updateFlag ? '合集属性' : '新建合集'"
     :visible="visible"
     @close="close"
-    width="35%"
+    width="25%"
   >
     <div class="formDiv">
       <el-form
@@ -47,12 +47,6 @@
             style="width: 100%"
           />
         </el-form-item>
-        <el-form-item prop="sort" label="排序">
-          <el-input-number
-            v-model="addCollectionForm.sort"
-            placeholder="请输入"
-          />
-        </el-form-item>
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
@@ -77,7 +71,6 @@ export default {
         name: [{ required: true, message: "请输入合集名称" }],
         type: [{ required: true, message: "请选择合集类型" }],
         year: [{ required: true, message: "请选择年份" }],
-        sort: [{ required: true, message: "请输入排序" }],
       },
     };
   },

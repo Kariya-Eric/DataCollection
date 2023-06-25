@@ -60,9 +60,10 @@
           width="80px"
         >
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.required" />
+            {{ scope.row.required ? `是` : `否` }}
           </template>
         </el-table-column>
+        <el-table-column label="前置表单" align="center" />
         <el-table-column
           label="启用"
           prop="enabledFlag"
@@ -77,7 +78,6 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="前置表单" prop="enabledFlag" align="center" />
         <el-table-column label="操作" align="center" width="250px">
           <template slot-scope="scope">
             <a href="javascript:;" @click="showForm(scope.row)">表单详情</a>
@@ -85,7 +85,7 @@
             <a href="javascript:;" @click="formDetail(scope.row)">表单属性</a>
             <el-divider direction="vertical" />
             <el-popconfirm
-              title="确认删除该表单吗？"
+              title="表单删除后不可恢复，是否确认删除？"
               @confirm="delForm(scope.row)"
             >
               <a href="javascript:;" slot="reference">删除</a>
@@ -95,7 +95,7 @@
       </el-table>
       <pagination :pagination="ipagination" @change="getFormList" />
     </el-card>
-    <add-form-drawer ref="addFormDrawer" @refresh="getFormList" />
+    <add-form-dialog ref="addFormDialog" @refresh="getFormList" />
     <update-form-category ref="updateFormCategory" />
     <form-generator ref="formGenerator" @saveForm="saveForm" />
   </div>
@@ -103,7 +103,7 @@
 
 <script>
 import Pagination from "components/Pagination";
-import AddFormDrawer from "./components/add-form-drawer";
+import AddFormDialog from "./components/add-form-dialog";
 import UpdateFormCategory from "./components/update-form-category";
 import FormGenerator from "./form-generator/home";
 import {
@@ -116,7 +116,7 @@ export default {
   name: "FormDetail",
   components: {
     Pagination,
-    AddFormDrawer,
+    AddFormDialog,
     UpdateFormCategory,
     FormGenerator,
   },
@@ -148,7 +148,7 @@ export default {
 
   methods: {
     addForm() {
-      this.$refs.addFormDrawer.show(this.collectionDetail);
+      this.$refs.addFormDialog.show(this.collectionDetail);
     },
 
     updateFormCategory() {
@@ -191,7 +191,7 @@ export default {
     },
 
     formDetail(row) {
-      this.$refs.addFormDrawer.show(this.collectionDetail, row);
+      this.$refs.addFormDialog.show(this.collectionDetail, row);
     },
 
     showForm(row) {

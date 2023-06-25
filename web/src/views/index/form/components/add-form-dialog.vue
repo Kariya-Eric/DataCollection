@@ -1,97 +1,94 @@
 <template>
-  <el-drawer
+  <el-dialog
     :title="updateFlag ? '表单属性' : '新建表单'"
     :visible="visible"
+    width="40%"
     @close="close"
   >
-    <div class="formDiv">
-      <el-form
-        v-loading="loading"
-        ref="addFormForm"
-        :model="addFormForm"
-        label-width="150px"
-        size="small"
-        :rules="rules"
-      >
-        <el-form-item prop="name" label="所属合集">
-          <el-input v-model="addFormForm.name" :disabled="true" />
-        </el-form-item>
-        <el-form-item prop="type" label="合集类型">
-          <el-input v-model="addFormForm.type" :disabled="true" />
-        </el-form-item>
-        <el-form-item prop="year" label="年份">
-          <el-input v-model="addFormForm.year" :disabled="true" />
-        </el-form-item>
-        <el-form-item prop="formName" label="表单名称">
-          <el-input
-            v-model="addFormForm.formName"
-            placeholder="请输入表单名称"
+    <el-form
+      v-loading="loading"
+      ref="addFormForm"
+      :model="addFormForm"
+      label-width="120px"
+      size="small"
+      :rules="rules"
+    >
+      <el-form-item prop="name" label="所属合集">
+        <el-input v-model="addFormForm.name" :disabled="true" />
+      </el-form-item>
+      <el-form-item prop="type" label="合集类型">
+        <el-input v-model="addFormForm.type" :disabled="true" />
+      </el-form-item>
+      <el-form-item prop="year" label="年份">
+        <el-input v-model="addFormForm.year" :disabled="true" />
+      </el-form-item>
+      <el-form-item prop="formName" label="表单名称">
+        <el-input v-model="addFormForm.formName" placeholder="请输入表单名称" />
+      </el-form-item>
+      <el-form-item prop="formCategories" label="表单大类">
+        <el-select
+          :disabled="formCategoryList.length == 0"
+          v-model="addFormForm.formCategories"
+          placeholder="请选择表单大类"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in formCategoryList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.name"
           />
-        </el-form-item>
-        <el-form-item prop="formCategories" label="表单大类">
-          <el-select
-            v-model="addFormForm.formCategories"
-            placeholder="请选择表单大类"
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in formCategoryList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.name"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="collectTimeType" label="统计时间类型">
-          <el-select
-            v-model="addFormForm.collectTimeType"
-            placeholder="请选择统计时间类型"
-            style="width: 100%"
-          >
-            <el-option label="时点" value="时点" />
-            <el-option label="学年" value="学年" />
-            <el-option label="自然年" value="自然年" />
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="formType" label="表单类型">
-          <el-radio-group v-model="addFormForm.formType">
-            <el-radio label="浮动表单"></el-radio>
-            <el-radio label="固定表单"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="是否必填">
-          <el-switch v-model="addFormForm.required" />
-        </el-form-item>
-        <el-form-item label="是否启用">
-          <el-switch
-            v-model="addFormForm.enabledFlag"
-            :inactive-value="0"
-            :active-value="1"
-          />
-        </el-form-item>
-        <el-form-item prop="sort" label="排序">
-          <el-input-number v-model="addFormForm.sort" />
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="drawer-bottom">
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="collectTimeType" label="统计时间类型">
+        <el-select
+          v-model="addFormForm.collectTimeType"
+          placeholder="请选择统计时间类型"
+          style="width: 100%"
+        >
+          <el-option label="时点" value="时点" />
+          <el-option label="学年" value="学年" />
+          <el-option label="自然年" value="自然年" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="formType" label="表单类型">
+        <el-radio-group v-model="addFormForm.formType" :disabled="updateFlag">
+          <el-radio label="浮动表单"></el-radio>
+          <el-radio label="固定表单"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否必填">
+        <el-switch v-model="addFormForm.required" />
+      </el-form-item>
+      <el-form-item label="是否启用">
+        <el-switch
+          v-model="addFormForm.enabledFlag"
+          :inactive-value="0"
+          :active-value="1"
+        />
+      </el-form-item>
+      <el-form-item prop="sort" label="排序">
+        <el-input-number v-model="addFormForm.sort" />
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="close">取 消</el-button>
       <el-button
         type="primary"
         size="small"
         :loading="loading"
         @click="handleSubmit"
-        >提 交</el-button
+        >提交</el-button
       >
     </div>
-  </el-drawer>
+  </el-dialog>
 </template>
 
 <script>
 import { listFormCategories, addForm, updateForm } from "@/api/form";
 
 export default {
-  name: "AddFormDrawer",
+  name: "AddFormDialog",
   data() {
     return {
       visible: false,
@@ -235,21 +232,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.formDiv {
-  margin-right: 60px;
-  /deep/ .el-form-item {
-    margin-bottom: 32px;
-  }
-}
-.drawer-bottom {
-  position: absolute;
-  bottom: -8px;
-  width: 100%;
-  border-top: 1px solid #e8e8e8;
-  padding: 12px 16px 20px;
-  text-align: right;
-  left: 0;
-  background: #fff;
-  border-radius: 0 0 2px 2px;
-}
 </style>
