@@ -17,10 +17,16 @@
           >
         </el-col>
         <el-col :span="10">
-          <el-button type="text" @click="() => (activeTab = 0)"
+          <el-button
+            :round="activeTab == 0"
+            :type="activeTab == 0 ? 'primary' : 'text'"
+            @click="() => (activeTab = 0)"
             >表单设计</el-button
           >
-          <el-button type="text" @click="() => (activeTab = 1)"
+          <el-button
+            :round="activeTab == 1"
+            :type="activeTab == 1 ? 'primary' : 'text'"
+            @click="() => (activeTab = 1)"
             >校验规则</el-button
           >
         </el-col>
@@ -214,7 +220,6 @@ export default {
       formData: {},
     };
   },
-
   watch: {
     activeId: {
       handler(val) {

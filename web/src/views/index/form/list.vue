@@ -72,9 +72,13 @@
       >
         <el-table-column label="合集名称" prop="name" align="center" />
         <el-table-column label="合集类型" prop="type" align="center" />
-        <el-table-column label="年份" prop="year" align="center" />
-        <el-table-column label="启用" prop="enabled" align="center" />
-        <el-table-column label="操作" align="center">
+        <el-table-column label="年份" prop="year" align="center" sortable width="150"/>
+        <el-table-column label="启用" prop="enabled" align="center" width="100">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.enabled"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="280">
           <template slot-scope="scope">
             <a href="javascript:;" @click="showCollectionDetail(scope.row)"
               >合集详情</a
@@ -86,7 +90,7 @@
             <el-divider direction="vertical" />
             <el-popconfirm
               @confirm="delCollection(scope.row)"
-              title="确认删除该合集吗？"
+              title="合集删除后不可恢复，是否确认删除？"
             >
               <a href="javascript:;" slot="reference">删除</a>
             </el-popconfirm>
