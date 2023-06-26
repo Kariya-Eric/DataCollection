@@ -88,12 +88,12 @@
             />
             <el-table-column
               label="负责部门"
-              prop="responsibleOrgId"
+              prop="responsibleOrgName"
               align="center"
             />
             <el-table-column
               label="协作部门"
-              prop="collaborateOrgId"
+              prop="collaborateOrgName"
               align="center"
             />
             <el-table-column label="填报人" prop="email" align="center" />
@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getTaskFormDetail } from "@/api/task";
+import { getTaskFormDetail, taskFormDetail } from "@/api/task";
 import FormDrawer from "./components/fom-drawer";
 import Pagination from "components/Pagination";
 export default {
@@ -183,8 +183,14 @@ export default {
     },
 
     showForm(row) {
-      console.log(row.id);
-      this.$refs.formDrawer.show();
+      taskFormDetail(row.id).then((res) => {
+        if (res.state) {
+          const formProperties = JSON.parse(res.value.formProperties);
+          const componentProperties = JSON.parse(res.value.componentProperties);
+          let formData = { ...formProperties, fields: componentProperties };
+          this.$refs.formDrawer.show(formData, formProperties,res.value);
+        }
+      });
     },
   },
 };

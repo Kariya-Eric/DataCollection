@@ -75,12 +75,12 @@
         <el-table-column
           label="负责部门"
           align="center"
-          prop="responsibleOrgId"
+          prop="responsibleOrgName"
         />
         <el-table-column
           label="协作部门"
           align="center"
-          prop="collaborateOrgId"
+          prop="collaborateOrgName"
         />
         <el-table-column
           label="统计截止日期"

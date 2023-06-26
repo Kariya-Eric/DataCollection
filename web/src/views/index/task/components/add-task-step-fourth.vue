@@ -7,7 +7,7 @@
           <p>任务名称:{{ taskName }}</p>
           <p>
             是否启用任务:<el-switch
-              v-model="enableFlag"
+              v-model="enabledFlag"
               :active-value="1"
               :inactive-value="0"
               @change="enableTask"
@@ -29,7 +29,7 @@ export default {
   props: ["taskId"],
   data() {
     return {
-      enableFlag: 0,
+      enabledFlag: 0,
       taskName: "",
     };
   },
@@ -40,7 +40,7 @@ export default {
           getTask(newVal).then((res) => {
             if (res.state) {
               this.taskName = res.value.name;
-              this.enableFlag = res.value.enableFlag;
+              this.enabledFlag = res.value.enabledFlag;
             }
           });
         }

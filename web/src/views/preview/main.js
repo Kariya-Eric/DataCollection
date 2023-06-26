@@ -20,12 +20,15 @@ function init(event) {
     $previewApp.innerHTML = `<style>${code.css}</style><div id="app"></div>`;
     newVue(code.js, code.html);
   }
+  if (event.data.type === "resetForm") {
+    this.vm.$refs.child.resetForm();
+  }
 }
 
 function newVue(main, html) {
   main = eval(`(${main})`);
   main.template = `<div style="overflow:hidden">${html}</div>`;
-  new Vue({
+  const vm = new Vue({
     components: {
       child: main,
     },
@@ -34,6 +37,7 @@ function newVue(main, html) {
         visible: true,
       };
     },
-    template: `<div style="overflow:hidden"><child/></div>`,
+    template: `<div style="overflow:hidden"><child ref='child'/></div>`,
   }).$mount("#app");
+  window.vm = vm;
 }

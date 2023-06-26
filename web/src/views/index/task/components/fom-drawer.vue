@@ -2,9 +2,27 @@
   <el-drawer
     :append-to-body="true"
     :visible="visible"
-    @close="close"
     size="80%"
+    :show-close="false"
   >
+    <div slot="title">
+      <el-row>
+        <el-col :span="12">{{ formInfo.formName }}</el-col>
+        <el-col :span="12">
+          <div class="search-button-admin">
+            <a href="javascript:;">下载导入模板</a>
+            <el-button type="primary" size="small">导入</el-button>
+            <el-button type="primary" size="small">导出</el-button>
+            <el-button type="primary" size="small">导出数据</el-button>
+            <el-button type="primary" size="small">保存</el-button>
+            <el-button type="primary" size="small" @click="submit"
+              >提交</el-button
+            >
+            <el-button @click="close" size="small">返回</el-button>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
     <el-scrollbar wrap-class="scrollbar-wrapper" style="height: 100%">
       <div class="right-preview">
         <el-row style="height: 100%; overflow: auto">
@@ -30,8 +48,8 @@
 </template>
 
 <script>
-import { makeUpHtml } from "../../form/form-generator/generator/html";
-import { makeUpJs } from "../../form/form-generator/generator/js";
+import { makeUpHtml } from "../utils/html";
+import { makeUpJs } from "../utils/js";
 import { makeUpCss } from "../../form/form-generator/generator/css";
 import { parse } from "@babel/parser";
 import { exportDefault } from "../../form/form-generator/utils/index";
@@ -49,6 +67,7 @@ export default {
       visible: false,
       editorObj,
       formData: {},
+      formInfo: {},
       generateConf: null,
       isIframeLoaded: false,
       isInitcode: false, // 保证open后两个异步只执行一次runcode
@@ -57,9 +76,10 @@ export default {
     };
   },
   methods: {
-    show(formData, formConf) {
+    show(formData, formConf, info) {
       this.generateConf = formConf;
       this.formData = formData;
+      this.formInfo = info;
       this.onOpen();
       this.visible = true;
     },
@@ -129,6 +149,11 @@ export default {
         console.error(err);
       }
     },
+
+    submit() {
+      let iframe = this.$refs.previewPage.contentWindow;
+      iframe.postMessage({ type: "resetForm" });
+    },
   },
 };
 </script>
@@ -145,5 +170,16 @@ export default {
     padding: 6px;
     box-sizing: border-box;
   }
+}
+
+::v-deep .el-drawer__header {
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 0ch;
+  padding-bottom: 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-left: none;
+  border-right: none;
 }
 </style>
