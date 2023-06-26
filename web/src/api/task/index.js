@@ -21,7 +21,13 @@ const getTaskInfo = (params) => getAction(`/uc/api/task/get/${params}`);
 //配置权限
 const configAuthority = (params) =>
   putAction("/uc/api/taskForm/configAuthority", params);
-  
+//获取表单信息
+const taskFormDetail = (params) => getAction(`/uc/api/taskFormDetail/get/${params}`)
+//任务详情-表单列表
+const getTaskFormDetail = (params) =>
+  postAction(
+    `/uc/api/taskFormDetail/list?taskId=${params.taskId}&type=${params.type}`
+  );
 export {
   initTask,
   updateTask,
@@ -31,4 +37,5 @@ export {
   enableTask,
   getTaskInfo,
   configAuthority,
+  taskFormDetail, getTaskFormDetail
 };

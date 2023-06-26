@@ -108,7 +108,7 @@
               <template slot-scope="scope">
                 <a href="javascript:;">配置人员</a>
                 <el-divider direction="vertical" />
-                <a href="javascript:;">查看</a>
+                <a href="javascript:;" @click="showForm(scope.row)">查看</a>
                 <el-divider direction="vertical" />
                 <a href="javascript:;">审核</a>
                 <el-divider direction="vertical" />
@@ -122,15 +122,17 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
+    <form-drawer ref="formDrawer" />
   </div>
 </template>
 
 <script>
-import { getTaskFormDetail } from "@/api/form";
+import { getTaskFormDetail } from "@/api/task";
+import FormDrawer from "./components/fom-drawer";
 import Pagination from "components/Pagination";
 export default {
   name: "TaskDetail",
-  components: { Pagination },
+  components: { Pagination, FormDrawer },
   data() {
     return {
       typeList: [
@@ -178,6 +180,11 @@ export default {
           }
         })
         .finally(() => (this.loading = false));
+    },
+
+    showForm(row) {
+      console.log(row.id);
+      this.$refs.formDrawer.show();
     },
   },
 };

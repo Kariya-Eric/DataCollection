@@ -39,11 +39,7 @@ const listFormCategories = (params) =>
 //表单合集列表
 const formCollectionList = (params) =>
   postAction("/uc/api/formCollection/list", params);
-//任务详情-表单列表
-const getTaskFormDetail = (params) =>
-  postAction(
-    `/uc/api/taskFormDetail/list?taskId=${params.taskId}&type=${params.type}`
-  );
+
 export {
   addFormCollection,
   updateFormCollection,
@@ -58,5 +54,4 @@ export {
   updateForm,
   listFormCategories,
   formCollectionList,
-  getTaskFormDetail,
 };
