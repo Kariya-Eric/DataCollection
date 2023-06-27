@@ -151,10 +151,10 @@
         >
           <template slot-scope="scope">
             <el-switch
-              disabled
               v-model="scope.row.enabledFlag"
               :active-value="1"
               :inactive-value="0"
+              @change="(val) => changeEnabledFlag(scope.row, val)"
             ></el-switch>
           </template>
         </el-table-column>
@@ -196,6 +196,7 @@
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
 import AddTaskDialog from "./components/add-task.dialog.vue";
+import { enableTask } from "@/api/task";
 export default {
   name: "TaskList",
   mixins: [DataCollectionMixin],
@@ -238,6 +239,17 @@ export default {
       });
     },
     handleCommand(command) {},
+
+    changeEnabledFlag(row, val) {
+      enableTask({ id: row.id, enabledFlag: val }).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          this.loadData();
+        } else {
+          this.$message.error(res.message);
+        }
+      });
+    },
   },
 };
 </script>

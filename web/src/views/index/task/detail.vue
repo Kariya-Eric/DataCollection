@@ -82,9 +82,9 @@
             <el-table-column label="表单名称" prop="formName" align="center" />
             <el-table-column
               label="类型"
-              prop="name"
+              prop="type"
               align="center"
-              width="80"
+              width="100"
             />
             <el-table-column
               label="负责部门"
@@ -96,13 +96,29 @@
               prop="collaborateOrgName"
               align="center"
             />
-            <el-table-column label="填报人" prop="email" align="center" />
-            <el-table-column label="审核人" prop="email" align="center" />
-            <el-table-column label="状态" prop="email" align="center" />
+            <el-table-column
+              label="填报人"
+              prop="email"
+              align="center"
+              width="120"
+            />
+            <el-table-column
+              label="审核人"
+              prop="email"
+              align="center"
+              width="120"
+            />
+            <el-table-column
+              label="状态"
+              prop="email"
+              align="center"
+              width="120"
+            />
             <el-table-column
               label="统计截止时间"
               prop="statisticsEndTime"
               align="center"
+              width="120"
             />
             <el-table-column label="操作" align="center" width="320">
               <template slot-scope="scope">
@@ -176,20 +192,36 @@ export default {
       getTaskFormDetail(params)
         .then((res) => {
           if (res.state) {
-            this.taskFormDataSource = res.value;
+            this.taskFormDataSource = this.handlerData(res.value);
           }
         })
         .finally(() => (this.loading = false));
     },
 
     showForm(row) {
-      taskFormDetail(row.id).then((res) => {
+      let id = row.id.indexOf("parent") > -1 ? row.id.substring(7) : row.id;
+      taskFormDetail(id).then((res) => {
         if (res.state) {
           const formProperties = JSON.parse(res.value.formProperties);
           const componentProperties = JSON.parse(res.value.componentProperties);
           let formData = { ...formProperties, fields: componentProperties };
-          this.$refs.formDrawer.show(formData, formProperties,res.value);
+          this.$refs.formDrawer.show(formData, formProperties, res.value);
         }
+      });
+    },
+
+    handlerData(datasource) {
+      return datasource.map((ele) => {
+        if (ele.children.length !== 0) {
+          ele.id = "parent_" + ele.id;
+          ele.type = "总表";
+          ele.children.forEach((item) => {
+            item.type = "子表";
+          });
+        } else {
+          ele.type = "-";
+        }
+        return ele;
       });
     },
   },

@@ -53,6 +53,7 @@ import { makeUpJs } from "../utils/js";
 import { makeUpCss } from "../../form/form-generator/generator/css";
 import { parse } from "@babel/parser";
 import { exportDefault } from "../../form/form-generator/utils/index";
+import { updateTaskFormDetail } from "@/api/task";
 
 const editorObj = {
   html: null,
@@ -164,7 +165,17 @@ export default {
     },
 
     getMessageFromFrame(value) {
-      console.log("frame", value);
+      updateTaskFormDetail({
+        id: this.formInfo.id,
+        formData: JSON.stringify(value),
+      }).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          this.close();
+        } else {
+          this.$message.warning(res.message);
+        }
+      });
     },
   },
 };
