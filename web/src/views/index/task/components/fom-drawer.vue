@@ -75,6 +75,11 @@ export default {
       previewURL: "",
     };
   },
+
+  created() {
+    window.getMessageFromFrame = this.getMessageFromFrame;
+  },
+
   methods: {
     show(formData, formConf, info) {
       this.generateConf = formConf;
@@ -141,6 +146,9 @@ export default {
             postData,
             location.origin
           );
+          this.$refs.previewPage.contentWindow.postMessage({
+            type: "resetForm",
+          });
         } else {
           this.$message.error("请使用export default");
         }
@@ -152,7 +160,11 @@ export default {
 
     submit() {
       let iframe = this.$refs.previewPage.contentWindow;
-      iframe.postMessage({ type: "resetForm" });
+      iframe.postMessage({ type: "submitForm" });
+    },
+
+    getMessageFromFrame(value) {
+      console.log("frame", value);
     },
   },
 };

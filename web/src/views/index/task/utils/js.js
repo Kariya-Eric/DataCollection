@@ -103,31 +103,18 @@ function callInCreated(methodName, created) {
 // 混入处理函数
 function mixinMethod() {
   const list = [];
-  let hasTable = false;
-  for (let i = 0; i < confGlobal.fields.length; i++) {
-    if (confGlobal.fields[i].__config__.tag === "customEditTable") {
-      hasTable = true;
-      break;
-    }
-  }
   const methods = {
-    submitForm: hasTable
-      ? `submitForm() {
-      this.$refs['${confGlobal.formRef}'].validate(valid => {
-        if(!valid) return
-        // TODO 提交表单
-        this.$message.success('表单验证OK')
-        console.log('form',this.${confGlobal.formModel})
-      })
-    },`
-      : `submitForm() {
+    submitForm: `submitForm() {
+      return new Promise((resolve)=>{
         this.$refs['${confGlobal.formRef}'].validate(valid => {
-          if(!valid) return
-          // TODO 提交表单
-          this.$message.success('表单验证OK')
-          console.log('form',this.${confGlobal.formModel})
+          if(!valid){
+            resolve(undefined)
+          }else{
+            resolve(this.${confGlobal.formModel})
+          }
         })
-      },`,
+      })
+    },`,
     resetForm: `resetForm() {
         this.$refs['${confGlobal.formRef}'].resetFields()
       },`,
@@ -162,8 +149,7 @@ function buildRules(scheme, ruleList) {
         : scheme.placeholder;
       if (message === undefined) message = `${config.label}不能为空`;
       rules.push(
-        `{ required: true, ${type} message: '${message}', trigger: '${
-          ruleTrigger[config.tag]
+        `{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]
         }' }`
       );
     }

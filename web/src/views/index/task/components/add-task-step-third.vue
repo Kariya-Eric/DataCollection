@@ -117,7 +117,7 @@ import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 import CopyPermissionDialog from "./copy-permission-dialog";
 import PermissionDialog from "./permission-dialog";
-import { getTask, updateTask, getTaskFormList } from "@/api/task";
+import { getTask, getTaskFormList } from "@/api/task";
 export default {
   components: { PermissionDialog, CopyPermissionDialog },
   name: "AddTaskStepThird",

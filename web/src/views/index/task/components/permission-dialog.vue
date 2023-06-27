@@ -44,7 +44,7 @@
             v-for="item in departList"
             :key="item.id"
             :label="item.name"
-            :value="item.id"
+            :value="item.id + ';' + item.name"
           />
         </el-select>
         <!-- <el-cascader
@@ -69,7 +69,7 @@
             v-for="item in departList"
             :key="item.id"
             :label="item.name"
-            :value="item.id"
+            :value="item.id + ';' + item.name"
           />
         </el-select>
         <!-- <el-cascader
@@ -123,11 +123,23 @@ export default {
       this.$refs.permissionForm.validate((valid) => {
         if (valid) {
           this.loading = true;
-          let collaborateOrgId = this.permissionForm.collaborateOrgId.join(",");
+          let collaborateOrgId = this.permissionForm.collaborateOrgId
+            .map((item) => item.split(";")[0])
+            .join(",");
+          let collaborateOrgName = this.permissionForm.collaborateOrgId
+            .map((item) => item.split(";")[1])
+            .join(",");
+          let responsibleOrgId =
+            this.permissionForm.responsibleOrgId.split(";")[0];
+          let responsibleOrgName =
+            this.permissionForm.responsibleOrgId.split(";")[1];
           let permissionForm = {
             taskId: this.taskId,
             ...this.permissionForm,
             collaborateOrgId,
+            collaborateOrgName,
+            responsibleOrgId,
+            responsibleOrgName,
           };
           configAuthority(permissionForm)
             .then((res) => {

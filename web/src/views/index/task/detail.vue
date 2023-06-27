@@ -137,8 +137,8 @@ export default {
     return {
       typeList: [
         { type: "ALL", name: "全部" },
-        { type: "APPROVE", name: "我填报的" },
-        { type: "FILL", name: "我审核的" },
+        { type: "FILL", name: "我填报的" },
+        { type: "APPROVE", name: "我审核的" },
       ],
       activeName: "ALL",
       taskId: "",

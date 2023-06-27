@@ -100,23 +100,8 @@ function callInCreated(methodName, created) {
 function mixinMethod() {
   const list = [];
   let hasTable = false;
-  for (let i = 0; i < confGlobal.fields.length; i++) {
-    if (confGlobal.fields[i].__config__.tag === "customEditTable") {
-      hasTable = true;
-      break;
-    }
-  }
   const methods = {
-    submitForm: hasTable
-      ? `submitForm() {
-      this.$refs['${confGlobal.formRef}'].validate(valid => {
-        if(!valid) return
-        // TODO 提交表单
-        this.$message.success('表单验证OK')
-        console.log('form',this.${confGlobal.formModel})
-      })
-    },`
-      : `submitForm() {
+    submitForm: `submitForm() {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
           // TODO 提交表单

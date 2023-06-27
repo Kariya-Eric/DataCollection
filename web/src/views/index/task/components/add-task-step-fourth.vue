@@ -54,7 +54,7 @@ export default {
     },
 
     enableTask(val) {
-      enableTask({ id: this.taskId, enableFlag: val }).then((res) => {
+      enableTask({ id: this.taskId, enabledFlag: val }).then((res) => {
         if (res.state) {
           this.$message.success(res.message);
         } else {

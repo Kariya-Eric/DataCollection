@@ -23,6 +23,13 @@ function init(event) {
   if (event.data.type === "resetForm") {
     this.vm.$refs.child.resetForm();
   }
+  if (event.data.type === 'submitForm') {
+    this.vm.$refs.child.submitForm().then(res => {
+      if (res != undefined) {
+        parent.getMessageFromFrame(res)
+      }
+    })
+  }
 }
 
 function newVue(main, html) {
