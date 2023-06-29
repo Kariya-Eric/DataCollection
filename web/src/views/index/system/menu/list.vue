@@ -4,8 +4,20 @@
       <el-col :span="8">
         <el-card shadow="always" class="app-card">
           <div style="margin-bottom: 12px">
-            <el-button type="primary" size="small" icon="el-icon-plus"
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-plus"
+              @click="addMenu"
               >添加菜单</el-button
+            >
+            <el-button
+              v-if="JSON.stringify(selectedMenu) != '{}'"
+              type="primary"
+              size="small"
+              icon="el-icon-plus"
+              @click="addChildMenu"
+              >添加下级菜单</el-button
             >
           </div>
           <el-input
@@ -24,6 +36,7 @@
             :filter-node-method="filterNode"
             default-expand-all
             @node-click="nodeClick"
+            highlight-current
             ref="menuTree"
           ></el-tree>
         </el-card>
@@ -38,21 +51,33 @@
         </el-card>
         <el-card v-else>
           <div slot="header">
-            <span>菜单详情</span>
+            <span style="font-weight: bold; font-size: 16px">菜单详情</span>
+            <div class="search-button-admin">
+              <el-button
+                icon="el-icon-document-checked"
+                type="primary"
+                :loading="loading"
+                size="small"
+                @click="saveMenu"
+                >保存</el-button
+              >
+            </div>
           </div>
           <right-menu ref="rightMenu" />
         </el-card>
       </el-col>
     </el-row>
+    <add-menu-dialog ref="addMenuDialog" />
   </div>
 </template>
 
 <script>
 import RightMenu from "./components/right-menu";
-import { initMenuTree } from "@/api/system";
+import AddMenuDialog from "./components/add-menu-dialog";
+import { initMenuTree, saveMenu } from "@/api/system";
 export default {
   name: "MenuList",
-  components: { RightMenu },
+  components: { RightMenu, AddMenuDialog },
   data() {
     return {
       menuProps: {
@@ -62,6 +87,7 @@ export default {
       menuList: [],
       menuFilter: "",
       selectedMenu: {},
+      loading: false,
     };
   },
   watch: {
@@ -89,6 +115,35 @@ export default {
     nodeClick(data, node, _self) {
       this.selectedMenu = data;
       this.$nextTick(() => this.$refs.rightMenu.show(data.id));
+    },
+
+    saveMenu() {
+      this.$refs.rightMenu.updateMenuDetail().then((res) => {
+        if (res !== undefined) {
+          res.sysMethods.forEach((method) => {
+            if (method.id.length < 32) {
+              delete method.id;
+            }
+          });
+          saveMenu(res).then((res) => {
+            if (res.state) {
+              this.$message.success(res.message);
+              this.initTree();
+              this.selectedMenu = {};
+            } else {
+              this.$message.error(res.message);
+            }
+          });
+        }
+      });
+    },
+
+    addMenu() {
+      this.$refs.addMenuDialog.show();
+    },
+
+    addChildMenu() {
+      this.$refs.addMenuDialog.show(this.selectedMenu, this.menuList);
     },
   },
 };

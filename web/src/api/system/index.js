@@ -18,8 +18,10 @@ const initMenuTree = (params) => getAction("/uc/api/sysMenu/getTree", params);
 //根据id获取菜单详情
 const getMenu = (params) => getAction(`/uc/api/sysMenu/get?id=${params}`);
 //获取组织树
-const initDeptTree = (params) => getAction(`/uc/api/org/getOrgTree?userId=${params}`);
-
+const initDeptTree = (params) =>
+  getAction(`/uc/api/org/getOrgTree?userId=${params}`);
+//新增修改菜单
+const saveMenu = (params) => postAction("/uc/api/sysMenu/save", params);
 export {
   addUser,
   updateUser,
@@ -29,5 +31,6 @@ export {
   updateRole,
   initMenuTree,
   getMenu,
-  initDeptTree
+  initDeptTree,
+  saveMenu,
 };

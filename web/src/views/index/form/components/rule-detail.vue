@@ -27,7 +27,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <a href="javascript:;">查看</a>
-          <a-divider direction="vertical" />
+          <el-divider direction="vertical" />
           <a href="javascript:;">编辑</a>
           <el-divider direction="vertical" />
           <el-popconfirm title="确认删除该校验规则吗？">
