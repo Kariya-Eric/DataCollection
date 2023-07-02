@@ -30,6 +30,7 @@
           >
           </el-input>
           <el-tree
+            v-loading="loading"
             class="filter-tree"
             :data="menuList"
             :props="menuProps"
@@ -56,7 +57,7 @@
               <el-button
                 icon="el-icon-document-checked"
                 type="primary"
-                :loading="loading"
+                :loading="treeLoading"
                 size="small"
                 @click="saveMenu"
                 >保存</el-button
@@ -67,7 +68,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <add-menu-dialog ref="addMenuDialog" />
+    <add-menu-dialog ref="addMenuDialog" @refresh="initTree" />
   </div>
 </template>
 
@@ -88,6 +89,7 @@ export default {
       menuFilter: "",
       selectedMenu: {},
       loading: false,
+      treeLoading: false,
     };
   },
   watch: {
@@ -105,11 +107,14 @@ export default {
     },
 
     initTree() {
-      initMenuTree().then((res) => {
-        if (res.state) {
-          this.menuList = res.value;
-        }
-      });
+      this.treeLoading = true;
+      initMenuTree()
+        .then((res) => {
+          if (res.state) {
+            this.menuList = res.value;
+          }
+        })
+        .finally(() => (this.treeLoading = false));
     },
 
     nodeClick(data, node, _self) {

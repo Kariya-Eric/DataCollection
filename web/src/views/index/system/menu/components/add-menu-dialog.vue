@@ -6,6 +6,7 @@
       label-width="120px"
       :rules="rule"
       size="small"
+      v-loading="loading"
     >
       <el-form-item label="菜单名称" prop="name"
         ><el-input v-model="menuForm.name"
@@ -44,26 +45,34 @@
       <el-form-item label="模板URL" prop="templateUrl"
         ><el-input v-model="menuForm.templateUrl"
       /></el-form-item>
-      <el-form-item label="图标"></el-form-item>
+      <!-- <el-form-item label="图标"></el-form-item> -->
       <el-form-item label="排序" prop="sn">
         <el-input-number v-model="menuForm.sn" />
       </el-form-item>
-      <el-form-item label="在菜单中显示">
-        <el-select v-model="menuForm.enableMenu" prop="enableMenu">
+      <el-form-item label="在菜单中显示" prop="enableMenu">
+        <el-select v-model="menuForm.enableMenu">
           <el-option label="是" :value="1"></el-option>
           <el-option label="否" :value="0"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="small" @click="close">取 消</el-button>
+      <el-button type="primary" size="small" @click="handleSubmit"
+        >确 定</el-button
+      >
+    </div>
   </el-dialog>
 </template>
 
 <script>
+import { saveMenu } from "@/api/system";
 export default {
   name: "AddMenuDialog",
   data() {
     return {
       visible: false,
+      loading: false,
       menuProps: {
         children: "children",
         label: "name",
@@ -110,6 +119,25 @@ export default {
         options.push({ label: menu.name, value: menu.id });
         if (menu.children && menu.children.length > 0) {
           this.recusiveMenu(menu.children, options);
+        }
+      });
+    },
+
+    handleSubmit() {
+      this.$refs.menuForm.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          saveMenu(this.menuForm)
+            .then((res) => {
+              if (res.state) {
+                this.$message.success(res.message);
+                this.$emit("refresh");
+                this.close();
+              } else {
+                this.$message.error(res.message);
+              }
+            })
+            .finally(() => (this.loading = false));
         }
       });
     },

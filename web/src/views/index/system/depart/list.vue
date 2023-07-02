@@ -145,7 +145,7 @@ export default {
       let userInfo = Vue.ls.get(USER_INFO);
       initDeptTree(userInfo.userId).then((res) => {
         if (res.state) {
-          this.departList = this.buildTree(res.value);
+          this.departList = res.value;
         } else {
           this.$message.error(res.message);
         }
@@ -154,10 +154,6 @@ export default {
 
     nodeClick(data, node, _self) {
       this.selectedDept = data;
-    },
-
-    buildTree(DepartList) {
-      return [];
     },
   },
 };
