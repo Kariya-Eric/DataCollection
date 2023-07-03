@@ -100,7 +100,9 @@
                 <el-divider direction="vertical" />
                 <a href="javascript:;" @click="updateRole(scope.row)">编辑</a>
                 <el-divider direction="vertical" />
-                <a href="javascript:;">授权</a>
+                <a href="javascript:;" @click="showPermission(scope.row)"
+                  >授权</a
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -184,6 +186,7 @@
     <role-dialog ref="roleDialog" @refresh="loadData" />
     <user-drawer ref="userDrawer" />
     <exist-user-dialog ref="existUserDialog" />
+    <role-permission-drawer ref="rolePermissionDrawer" />
   </div>
 </template>
 
@@ -193,6 +196,7 @@ import Pagination from "components/Pagination";
 import RoleDialog from "./components/role-dialog";
 import UserDrawer from "../user/components/user-drawer";
 import ExistUserDialog from "./components/exist-user-dialog";
+import RolePermissionDrawer from "./components/role-permission-drawer";
 export default {
   name: "RoleList",
   mixins: [DataCollectionMixin],
@@ -201,6 +205,7 @@ export default {
     RoleDialog,
     UserDrawer,
     ExistUserDialog,
+    RolePermissionDrawer,
   },
   data() {
     return {
@@ -253,6 +258,10 @@ export default {
     },
 
     loadUserData() {},
+
+    showPermission(row) {
+      this.$refs.rolePermissionDrawer.show(row);
+    },
   },
 };
 </script>

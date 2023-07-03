@@ -36,6 +36,7 @@
             :props="menuProps"
             :filter-node-method="filterNode"
             default-expand-all
+            :expand-on-click-node="false"
             @node-click="nodeClick"
             highlight-current
             ref="menuTree"
@@ -126,6 +127,7 @@ export default {
       this.$refs.rightMenu.updateMenuDetail().then((res) => {
         if (res !== undefined) {
           res.sysMethods.forEach((method) => {
+            delete method.editFlag;
             if (method.id.length < 32) {
               delete method.id;
             }

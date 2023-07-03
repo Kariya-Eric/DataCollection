@@ -124,7 +124,7 @@
             <a
               href="javascript:;"
               v-if="scope.row.editFlag"
-              @click="saveRow(scope.row)"
+              @click="saveRow(scope)"
               >保存</a
             >
             <a href="javascript:;" v-else @click="editRow(scope.row)">修改</a>
@@ -191,12 +191,35 @@ export default {
       this.menuDetail.sysMethods.push(sysMethod);
     },
 
-    saveRow(row) {
-      this.$refs.sysMethodForm.validate((valid) => {
-        if (valid) {
-          row.editFlag = false;
+    saveRow(scope) {
+      let flag = true;
+      this.$refs.sysMethodForm.validateField(
+        "sysMethods." + scope.$index + ".alias",
+        (valid) => {
+          if (valid && valid.length) {
+            flag = false;
+          }
         }
-      });
+      );
+      this.$refs.sysMethodForm.validateField(
+        "sysMethods." + scope.$index + ".name",
+        (valid) => {
+          if (valid && valid.length) {
+            flag = false;
+          }
+        }
+      );
+      this.$refs.sysMethodForm.validateField(
+        "sysMethods." + scope.$index + ".requestUrl",
+        (valid) => {
+          if (valid && valid.length) {
+            flag = false;
+          }
+        }
+      );
+      if (flag) {
+        scope.row.editFlag = false;
+      }
     },
     editRow(row) {
       row.editFlag = true;

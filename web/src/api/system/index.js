@@ -22,6 +22,14 @@ const initDeptTree = (params) =>
   getAction(`/uc/api/org/getOrgTree?userId=${params}`);
 //新增修改菜单
 const saveMenu = (params) => postAction("/uc/api/sysMenu/save", params);
+//资源授权-获取左侧菜单树
+const getAllMenuByRoleCode = (params) => getAction(`/uc/api/sysMenu/getAllMenuByRoleCode?roleCode=${params}`);
+//资源授权-获取右侧权限列表
+const getAllMethodByRoleCode = (params) => getAction(`/uc/api/sysMenu/getAllMethodByRoleCode?roleCode=${params}`);
+//获取组织详情
+const getOrgInfo = (params) => getAction(`/uc/api/org/get/${params}`)
+//获取组织人员
+const getOrgUser = (params) => getAction(`/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyWord}&roleId=${params.roleId}`)
 export {
   addUser,
   updateUser,
@@ -33,4 +41,8 @@ export {
   getMenu,
   initDeptTree,
   saveMenu,
+  getAllMenuByRoleCode,
+  getAllMethodByRoleCode,
+  getOrgInfo,
+  getOrgUser
 };
