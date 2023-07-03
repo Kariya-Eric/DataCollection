@@ -48,12 +48,17 @@
               <el-form
                 label-width="120px"
                 v-model="departForm"
+                size="small"
                 ref="departForm"
                 v-loading="loading"
               >
                 <el-form-item label="上级部门">
-                  <el-select v-model="departForm.parentId" style="width: 100%">
-                  </el-select>
+                  <select-tree
+                    :options="departList"
+                    :value="departForm.parentId"
+                    @getValue="getSelectedValue"
+                    style="width: 100%"
+                  />
                 </el-form-item>
                 <el-form-item label="部门名称">
                   <el-input v-model="departForm.name" />
@@ -145,10 +150,12 @@
 
 <script>
 import Vue from "vue";
+import SelectTree from "components/SelectTree";
 import { USER_INFO } from "@/store/mutation-types";
 import { initDeptTree, getOrgInfo, getOrgUser } from "@/api/system";
 export default {
   name: "DepartList",
+  components: { SelectTree },
   data() {
     return {
       departProps: {
@@ -191,6 +198,10 @@ export default {
           this.$message.error(res.message);
         }
       });
+    },
+
+    getSelectedValue(val) {
+      this.departForm.parentId = val;
     },
 
     changeSelect(data, node) {

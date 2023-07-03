@@ -16,25 +16,12 @@
         v-if="menuForm.parentId != undefined"
         prop="parentId"
       >
-        <el-select v-model="menuForm.parentId" style="width: 100%">
-          <el-option
-            v-for="item in renderMenuList(menuList)"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-            style="display: none"
-          />
-          <el-tree
-            node-key="id"
-            :data="menuList"
-            :props="menuProps"
-            default-expand-all
-            @node-click="nodeClick"
-            :current-node-key="menuForm.parentId"
-            highlight-current
-            ref="menuTree"
-          ></el-tree>
-        </el-select>
+        <select-tree
+          :options="menuList"
+          :value="menuForm.parentId"
+          @getValue="getSelectedValue"
+          style="width: 100%"
+        />
       </el-form-item>
       <el-form-item label="别名" prop="alias"
         ><el-input v-model="menuForm.alias"
@@ -67,8 +54,10 @@
 
 <script>
 import { saveMenu } from "@/api/system";
+import SelectTree from "components/SelectTree";
 export default {
   name: "AddMenuDialog",
+  components: { SelectTree },
   data() {
     return {
       visible: false,
@@ -86,6 +75,20 @@ export default {
         templateUrl: [{ required: true, message: "模板Url不能为空" }],
         sn: [{ required: true, message: "排序不能为空" }],
         enableMenu: [{ required: true, message: "请选择是否在菜单中显示" }],
+        parentId: [
+          {
+            validator: (rule, value, callback) => {
+              if (
+                this.menuForm.parentId == undefined ||
+                this.menuForm.parentId == ""
+              ) {
+                callback(new Error("请选择父级菜单"));
+              }
+              callback();
+            },
+            trigger: ["blur", "change"],
+          },
+        ],
       },
     };
   },
@@ -99,28 +102,12 @@ export default {
       if (info) {
         this.menuForm.parentId = info.id;
         this.menuList = menuList;
-        console.log(this.menuList);
       }
       this.visible = true;
     },
 
-    nodeClick(node) {
-      this.menuForm.parentId = node.id;
-    },
-
-    renderMenuList(menuList) {
-      let options = [];
-      this.recusiveMenu(menuList, options);
-      return options;
-    },
-
-    recusiveMenu(menuList, options) {
-      menuList.forEach((menu) => {
-        options.push({ label: menu.name, value: menu.id });
-        if (menu.children && menu.children.length > 0) {
-          this.recusiveMenu(menu.children, options);
-        }
-      });
+    getSelectedValue(val) {
+      this.menuForm.parentId = val;
     },
 
     handleSubmit() {
