@@ -47,12 +47,13 @@
             <div v-else class="mainform">
               <el-form
                 label-width="120px"
-                v-model="departForm"
+                :model="departForm"
                 size="small"
                 ref="departForm"
+                :rules="departRules"
                 v-loading="loading"
               >
-                <el-form-item label="上级部门">
+                <el-form-item label="上级部门" prop="parentId">
                   <select-tree
                     :options="departList"
                     :value="departForm.parentId"
@@ -60,20 +61,20 @@
                     style="width: 100%"
                   />
                 </el-form-item>
-                <el-form-item label="部门名称">
+                <el-form-item label="部门名称" prop="name">
                   <el-input v-model="departForm.name" />
                 </el-form-item>
                 <el-form-item label="部门编码">
                   <el-input v-model="departForm.code" disabled />
                 </el-form-item>
-                <el-form-item label="排序">
-                  <el-input-number :min="0" />
+                <el-form-item label="排序" prop="sort">
+                  <el-input-number :min="0" v-model="departForm.sort" />
                 </el-form-item>
-                <el-form-item label="职能类型">
-                  <el-select
-                    v-model="departForm.type"
-                    style="width: 100%"
-                  ></el-select>
+                <el-form-item label="职能类型" prop="type">
+                  <el-select v-model="departForm.type" style="width: 100%">
+                    <el-option label="职能部门" value="ZNBM" />
+                    <el-option label="教学部门" value="JXBM" />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="负责人">
                   <el-select
@@ -95,10 +96,11 @@
                   />
                 </el-form-item>
                 <div class="formButton">
-                  <el-button icon="el-icon-refresh" size="small"
-                    >重置</el-button
-                  >
-                  <el-button type="primary" icon="el-icon-edit" size="small"
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="small"
+                    @click="submitDepart"
                     >保存</el-button
                   >
                 </div>
@@ -173,6 +175,27 @@ export default {
         keyWord: "",
         roleId: "",
       },
+      departRules: {
+        name: [{ required: true, message: "部门名称不能为空" }],
+        type: [{ required: true, message: "职能类型不能为空" }],
+        sort: [{ required: true, message: "排序不能为空" }],
+        parentId: [
+          {
+            validator: (rule, value, callback) => {
+              if (
+                this.departForm.parentId == undefined ||
+                this.departForm.parentId == ""
+              ) {
+                callback(new Error("请选择上级部门"));
+              } else if (value == this.departForm.id) {
+                callback(new Error("上级部门不能为当前部门"));
+              }
+              callback();
+            },
+            trigger: ["blur", "change"],
+          },
+        ],
+      },
     };
   },
   watch: {
@@ -184,6 +207,13 @@ export default {
     this.initDepart();
   },
   methods: {
+    submitDepart() {
+      this.$refs.departForm.validate((valid) => {
+        if (valid) {
+          console.log(this.departForm);
+        }
+      });
+    },
     filterNode(value, data) {
       if (!value) return true;
       return data.name.indexOf(value) !== -1;

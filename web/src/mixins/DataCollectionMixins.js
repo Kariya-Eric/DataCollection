@@ -19,8 +19,6 @@ export const DataCollectionMixin = {
       loading: false,
       // table选中keys
       selectedRowKeys: [],
-      // table选中rows
-      selectedRows: [],
       // 筛选参数
       filters: {},
       // 排序参数
@@ -80,14 +78,12 @@ export const DataCollectionMixin = {
       return { params: Object.assign(this.queryParam), pageBean };
     },
 
-    onSelectChange(selectedRowKeys, selectedRows) {
+    onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys;
-      this.selectedRows = selectedRows;
     },
 
     onSelectClear() {
       this.selectedRowKeys = [];
-      this.selectedRows = [];
     },
   },
 };

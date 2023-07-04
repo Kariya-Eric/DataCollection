@@ -50,8 +50,17 @@
           ></el-tree>
         </el-col>
         <el-col :span="18">
-          <el-table :data="sysMethodDataSource" :border="true">
-            <el-table-column type="selection" width="55" align="center" />
+          <el-table
+            size="small"
+            :data="sysMethodDataSource"
+            :border="true"
+            :loading="tableLoading"
+          >
+            <el-table-column type="selection" width="55" align="center">
+              <template slot-scope="scope">
+                <el-checkbox v-model="scope.row.checked" />
+              </template>
+            </el-table-column>
             <el-table-column label="别名" align="center" prop="alias" />
             <el-table-column label="名称" align="center" prop="name" />
             <el-table-column
@@ -71,6 +80,7 @@ import {
   initMenuTree,
   getAllMenuByRoleCode,
   getAllMethodByRoleCode,
+  getMenu,
 } from "@/api/system";
 export default {
   name: "RolePermissionDrawer",
@@ -80,12 +90,14 @@ export default {
       menuList: [],
       menuFilter: "",
       loading: false,
+      tableLoading: false,
       menuProps: {
         children: "children",
         label: "name",
       },
       roleInfo: {},
       sysMethodDataSource: [],
+      sysMethods: [],
     };
   },
   watch: {
@@ -108,6 +120,7 @@ export default {
         .then((res) => {
           if (res.state) {
             this.menuList = res.value;
+            this.recusiveMenuDetail(this.menuList);
           }
         })
         .finally(() => (this.loading = false));
@@ -140,6 +153,19 @@ export default {
       });
     },
 
+    recusiveMenuDetail(menuList) {
+      menuList.forEach((menu) => {
+        getMenu(menu.id).then((res) => {
+          if (res.state) {
+            menu.sysMethods = res.value.sysMethods;
+          }
+        });
+        if (menu.children && menu.children.length > 0) {
+          this.recusiveMenuDetail(menu.children);
+        }
+      });
+    },
+
     renderMenuList(menuList) {
       let options = [];
       this.recusiveMenu(menuList, options);
@@ -152,10 +178,6 @@ export default {
 
     changeSelect(data, node) {
       this.sysMethodDataSource = data.sysMethods;
-      getAllMethodByRoleCode(this.roleInfo.code).then((res) => {
-        if (res.state) {
-        }
-      });
     },
   },
 };
