@@ -23,13 +23,32 @@ const initDeptTree = (params) =>
 //新增修改菜单
 const saveMenu = (params) => postAction("/uc/api/sysMenu/save", params);
 //资源授权-获取左侧菜单树
-const getAllMenuByRoleCode = (params) => getAction(`/uc/api/sysMenu/getAllMenuByRoleCode?roleCode=${params}`);
+const getAllMenuByRoleCode = (params) =>
+  getAction(`/uc/api/sysMenu/getAllMenuByRoleCode?roleCode=${params}`);
 //资源授权-获取右侧权限列表
-const getAllMethodByRoleCode = (params) => getAction(`/uc/api/sysMenu/getAllMethodByRoleCode?roleCode=${params}`);
+const getAllMethodByRoleCode = (params) =>
+  getAction(`/uc/api/sysMenu/getAllMethodByRoleCode?roleCode=${params}`);
 //获取组织详情
-const getOrgInfo = (params) => getAction(`/uc/api/org/get/${params}`)
+const getOrgInfo = (params) => getAction(`/uc/api/org/get/${params}`);
 //获取组织人员
-const getOrgUser = (params) => getAction(`/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyWord}&roleId=${params.roleId}`)
+const getOrgUser = (params) =>
+  getAction(
+    `/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyWord}&roleId=${params.roleId}`
+  );
+//删除组织
+const delOrg = (params) => deleteAction("/uc/api/org/getOrgTree", params);
+//资源授权
+const saveRoleAuth = (params) =>
+  postAction("/uc/api/sysMenu/saveRoleAuth", params);
+//批量解除关系
+const delOrgUser = (params) => deleteAction("/uc/api/org/delOrgUser", params);
+//获取用户列表
+const getUserList = (params) => postAction("/uc/api/user/getUserPage", params);
+//
+const addOrgUser = (params) =>
+  postAction(
+    `/uc/api/org/addOrgUser?userids=${params.userIds}&orgId=${params.orgId}`
+  );
 export {
   addUser,
   updateUser,
@@ -44,5 +63,10 @@ export {
   getAllMenuByRoleCode,
   getAllMethodByRoleCode,
   getOrgInfo,
-  getOrgUser
+  getOrgUser,
+  delOrg,
+  saveRoleAuth,
+  delOrgUser,
+  getUserList,
+  addOrgUser,
 };

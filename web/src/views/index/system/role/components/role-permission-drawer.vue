@@ -43,9 +43,7 @@
             :filter-node-method="filterNode"
             default-expand-all
             :expand-on-click-node="false"
-            highlight-current
             :check-strictly="true"
-            @current-change="changeSelect"
             ref="menuTree"
           ></el-tree>
         </el-col>
@@ -58,7 +56,10 @@
           >
             <el-table-column type="selection" width="55" align="center">
               <template slot-scope="scope">
-                <el-checkbox v-model="scope.row.checked" />
+                <el-checkbox
+                  :value="scope.row.isSelected == '1'"
+                  @change="(val) => changeChecked(scope.row, val)"
+                />
               </template>
             </el-table-column>
             <el-table-column label="别名" align="center" prop="alias" />
@@ -77,10 +78,9 @@
 
 <script>
 import {
-  initMenuTree,
   getAllMenuByRoleCode,
   getAllMethodByRoleCode,
-  getMenu,
+  saveRoleAuth,
 } from "@/api/system";
 export default {
   name: "RolePermissionDrawer",
@@ -105,26 +105,13 @@ export default {
       this.$refs.menuTree.filter(val);
     },
   },
-  created() {
-    this.initPermissionList();
-  },
+
   methods: {
     filterNode(value, data) {
       if (!value) return true;
       return data.name.indexOf(value) !== -1;
     },
 
-    initPermissionList() {
-      this.loading = true;
-      initMenuTree()
-        .then((res) => {
-          if (res.state) {
-            this.menuList = res.value;
-            this.recusiveMenuDetail(this.menuList);
-          }
-        })
-        .finally(() => (this.loading = false));
-    },
     show(row) {
       this.roleInfo = row;
       this.visible = true;
@@ -133,35 +120,50 @@ export default {
       this.visible = false;
     },
     drawerOpen() {
+      this.initData();
+    },
+
+    initData() {
       this.loading = true;
+      this.tableLoading = true;
       getAllMenuByRoleCode(this.roleInfo.code)
         .then((res) => {
           if (res.state) {
-            let options = this.renderMenuList(res.value).map((m) => m.value);
+            this.menuList = res.value;
+            let options = this.renderMenuList(res.value)
+              .filter((m) => m.checked == "1")
+              .map((m) => m.value);
             this.$refs.menuTree.setCheckedKeys(options);
+            getAllMethodByRoleCode(this.roleInfo.code).then((resp) => {
+              if (resp.state) {
+                this.sysMethodDataSource = resp.value;
+              }
+            });
           }
         })
-        .finally(() => (this.loading = false));
+        .finally(() => {
+          this.loading = false;
+          this.tableLoading = true;
+        });
+    },
+
+    changeChecked(row, val) {
+      if (val) {
+        row.isSelected = "1";
+      } else {
+        row.isSelected = "0";
+      }
     },
 
     recusiveMenu(menuList, options) {
       menuList.forEach((menu) => {
-        options.push({ label: menu.name, value: menu.id });
-        if (menu.children && menu.children.length > 0) {
-          this.recusiveMenu(menu.children, options);
-        }
-      });
-    },
-
-    recusiveMenuDetail(menuList) {
-      menuList.forEach((menu) => {
-        getMenu(menu.id).then((res) => {
-          if (res.state) {
-            menu.sysMethods = res.value.sysMethods;
-          }
+        options.push({
+          label: menu.name,
+          value: menu.id,
+          checked: menu.checked,
         });
         if (menu.children && menu.children.length > 0) {
-          this.recusiveMenuDetail(menu.children);
+          this.recusiveMenu(menu.children, options);
         }
       });
     },
@@ -173,11 +175,25 @@ export default {
     },
 
     savePermission() {
-      console.log(this.$refs.menuTree.getCheckedKeys());
-    },
-
-    changeSelect(data, node) {
-      this.sysMethodDataSource = data.sysMethods;
+      let arrMenuAlias = this.$refs.menuTree
+        .getCheckedNodes()
+        .map((node) => node.alias);
+      let arrMethodAlias = this.sysMethodDataSource
+        .filter((data) => data.isSelected == "1")
+        .map((data) => data.alias);
+      let param = {
+        arrMenuAlias,
+        arrMethodAlias,
+        roleCode: this.roleInfo.code,
+      };
+      saveRoleAuth(param).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          this.initData();
+        } else {
+          this.$message.error(res.message);
+        }
+      });
     },
   },
 };

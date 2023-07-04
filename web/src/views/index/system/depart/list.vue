@@ -101,8 +101,18 @@
                     icon="el-icon-edit"
                     size="small"
                     @click="submitDepart"
+                    style="margin-right: 12px"
                     >保存</el-button
                   >
+                  <el-popconfirm @confirm="delOrg" title="确认要删除该组织吗？">
+                    <el-button
+                      type="danger"
+                      icon="el-icon-delete"
+                      size="small"
+                      slot="reference"
+                      >删除</el-button
+                    >
+                  </el-popconfirm>
                 </div>
               </el-form>
             </div>
@@ -113,40 +123,86 @@
               v-if="Object.keys(selectedDept).length === 0"
             />
             <div v-else>
-              <div class="filter-container">
+              <div class="container">
                 <el-form
-                  label-width="70px"
+                  label-width="50px"
                   size="small"
                   :inline="true"
                   label-position="left"
+                  style="margin-bottom: 12px"
                 >
-                  <el-form-item label="姓名">
-                    <el-input v-model="searchUserForm.keyWord" />
-                  </el-form-item>
-                  <el-form-item label="角色">
-                    <el-select v-model="searchUserForm.roleId"></el-select>
-                  </el-form-item>
+                  <el-row>
+                    <el-col :span="18">
+                      <el-form-item label="姓名">
+                        <el-input v-model="searchUserForm.keyWord" />
+                      </el-form-item>
+                      <el-form-item label="角色">
+                        <el-select v-model="searchUserForm.roleId"></el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <div class="search-button-admin">
+                        <el-popconfirm
+                          title="确认要批量解除吗？"
+                          @click="delOrgUserBatch"
+                        >
+                          <el-button
+                            type="danger"
+                            size="small"
+                            icon="el-icon-delete"
+                            slot="reference"
+                            >批量解除</el-button
+                          >
+                        </el-popconfirm>
+                        <el-button
+                          type="primary"
+                          size="small"
+                          icon="el-icon-plus"
+                          @click="addOrgUser"
+                          >添加</el-button
+                        >
+                      </div></el-col
+                    >
+                  </el-row>
                 </el-form>
+                <el-table
+                  :data="userList"
+                  :loading="loading"
+                  :border="true"
+                  size="small"
+                  @selection-change="onSelectChange"
+                >
+                  <el-table-column type="selection" align="center" />
+                  <el-table-column label="帐号" prop="account" align="center" />
+                  <el-table-column label="姓名" prop="account" align="center" />
+                  <el-table-column
+                    label="所属部门"
+                    prop="orgName"
+                    align="center"
+                  />
+                  <el-table-column label="状态" prop="status" align="center">
+                    <template slot-scope="scope">
+                      {{ scope.row.status == 1 ? "正常" : "禁用" }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" align="center" width="100">
+                    <template slot-scope="scope">
+                      <el-popconfirm
+                        title="确认要解绑关系吗?"
+                        @confirm="delOrgUser(scope.row)"
+                      >
+                        <a href="javascript:;" slot="reference">解绑关系</a>
+                      </el-popconfirm>
+                    </template>
+                  </el-table-column>
+                </el-table>
               </div>
-              <el-table :data="userList" :loading="loading">
-                <el-table-column label="帐号" prop="account" align="center" />
-                <el-table-column label="姓名" prop="account" align="center" />
-                <el-table-column
-                  label="所属部门"
-                  prop="orgName"
-                  align="center"
-                />
-                <el-table-column label="状态" prop="status" align="center">
-                  <template slot-scope="scope">
-                    {{ scope.row.status == 1 ? "正常" : "禁用" }}
-                  </template>
-                </el-table-column>
-              </el-table>
             </div>
           </el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
+    <add-depart-user-dialog ref="addDepartUserDialog" @refresh="refreshUser" />
   </div>
 </template>
 
@@ -154,10 +210,17 @@
 import Vue from "vue";
 import SelectTree from "components/SelectTree";
 import { USER_INFO } from "@/store/mutation-types";
-import { initDeptTree, getOrgInfo, getOrgUser } from "@/api/system";
+import AddDepartUserDialog from "./components/add-depart-user-dialog";
+import {
+  initDeptTree,
+  getOrgInfo,
+  getOrgUser,
+  delOrg,
+  delOrgUser,
+} from "@/api/system";
 export default {
   name: "DepartList",
-  components: { SelectTree },
+  components: { SelectTree, AddDepartUserDialog },
   data() {
     return {
       departProps: {
@@ -171,6 +234,7 @@ export default {
       selectedDept: {},
       loading: false,
       userList: [],
+      selectedRowKeys: [],
       searchUserForm: {
         keyWord: "",
         roleId: "",
@@ -207,6 +271,53 @@ export default {
     this.initDepart();
   },
   methods: {
+    addOrgUser() {
+      this.$refs.addDepartUserDialog.show(this.selectedDept.id);
+    },
+
+    delOrgUserBatch() {
+      if (this.selectedRowKeys.length == 0) {
+        this.$message.error("请至少选择一项!");
+        return;
+      }
+      let ids = this.selectedRowKeys.map((row) => row.id);
+      let param = "ids=" + ids.join(",");
+      this.loading = true;
+      delOrgUser(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            let param = {
+              orgId: this.selectedDept.id,
+              keyWord: this.searchUserForm.keyWord,
+              roleId: this.searchUserForm.roleId,
+            };
+            getOrgUser(param).then((res) => {
+              this.userList = res;
+            });
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    onSelectChange(selectedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys;
+    },
+
+    delOrg() {
+      let params = "id=" + this.selectedDept.id;
+      delOrg(params).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          this.initDepart();
+        } else {
+          this.$message.error(res.message);
+        }
+      });
+    },
+
     submitDepart() {
       this.$refs.departForm.validate((valid) => {
         if (valid) {
@@ -221,6 +332,7 @@ export default {
 
     initDepart() {
       let userInfo = Vue.ls.get(USER_INFO);
+      this.selectedDept = {};
       initDeptTree(userInfo.userId).then((res) => {
         if (res.state) {
           this.departList = res.value;
@@ -251,12 +363,26 @@ export default {
           keyWord: this.searchUserForm.keyWord,
           roleId: this.searchUserForm.roleId,
         };
-        getOrgUser(param).then((res) => {
-          if (res.state) {
+        getOrgUser(param)
+          .then((res) => {
             this.userList = res;
-          }
-        });
+          })
+          .finally(() => (this.loading = false));
       }
+    },
+
+    refreshUser() {
+      this.loading = true;
+      let param = {
+        orgId: this.selectedDept.id,
+        keyWord: this.searchUserForm.keyWord,
+        roleId: this.searchUserForm.roleId,
+      };
+      getOrgUser(param)
+        .then((res) => {
+          this.userList = res;
+        })
+        .finally(() => (this.loading = false));
     },
 
     changeActiveTab(tab, event) {
@@ -276,13 +402,37 @@ export default {
             keyWord: this.searchUserForm.keyWord,
             roleId: this.searchUserForm.roleId,
           };
-          getOrgUser(param).then((res) => {
-            if (res.state) {
+          getOrgUser(param)
+            .then((res) => {
               this.userList = res;
-            }
-          });
+            })
+            .finally(() => (this.loading = false));
         }
       }
+    },
+
+    delOrgUser(row) {
+      let ids = [];
+      ids.push(row.id);
+      let param = "ids=" + ids.join(",");
+      this.loading = true;
+      delOrgUser(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            let param = {
+              orgId: this.selectedDept.id,
+              keyWord: this.searchUserForm.keyWord,
+              roleId: this.searchUserForm.roleId,
+            };
+            getOrgUser(param).then((res) => {
+              this.userList = res;
+            });
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };
@@ -297,5 +447,8 @@ export default {
 }
 .formButton {
   text-align: center;
+}
+.container {
+  padding: 18px;
 }
 </style>
