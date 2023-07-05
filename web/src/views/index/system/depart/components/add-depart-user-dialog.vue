@@ -72,13 +72,13 @@ export default {
         total: 0,
       },
       selectedRowKeys: [],
-      orgId: "",
+      orgCode: "",
     };
   },
 
   methods: {
-    show(orgId) {
-      this.orgId = orgId;
+    show(orgCode) {
+      this.orgCode = orgCode;
       this.initUserList();
       this.visible = true;
     },
@@ -114,18 +114,18 @@ export default {
     },
 
     handleSubmit() {
-      let param = {
-        orgId: this.orgId,
-        userIds: this.selectedRowKeys.map((key) => key.id).join(","),
-      };
-      addOrgUser(param).then((res) => {
-        if (res.state) {
-          this.$message.success(res.message);
-          this.$emit("refresh");
-          this.close();
-        } else {
-          this.$message.error(res.message);
-        }
+      let queue = this.selectedRowKeys.map((key) => {
+        new Promise((resovle) =>
+          addOrgUser({ orgCode: this.orgCode, account: key.account }).then(
+            (res) => {
+              resovle(res);
+            }
+          )
+        );
+      });
+      Promise.all(queue).then((res) => {
+        this.$emit("refresh");
+        this.close;
       });
     },
   },

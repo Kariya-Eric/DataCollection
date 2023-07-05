@@ -272,7 +272,7 @@ export default {
   },
   methods: {
     addOrgUser() {
-      this.$refs.addDepartUserDialog.show(this.selectedDept.id);
+      this.$refs.addDepartUserDialog.show(this.selectedDept.code);
     },
 
     delOrgUserBatch() {
@@ -372,6 +372,7 @@ export default {
     },
 
     refreshUser() {
+      this.$message.success("添加成功！");
       this.loading = true;
       let param = {
         orgId: this.selectedDept.id,

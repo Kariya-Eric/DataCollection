@@ -47,7 +47,7 @@ const getUserList = (params) => postAction("/uc/api/user/getUserPage", params);
 //
 const addOrgUser = (params) =>
   postAction(
-    `/uc/api/org/addOrgUser?userids=${params.userIds}&orgId=${params.orgId}`
+    `/uc/api/org/addOrgUser`, params
   );
 export {
   addUser,
