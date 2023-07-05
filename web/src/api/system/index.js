@@ -36,7 +36,7 @@ const getOrgUser = (params) =>
     `/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyWord}&roleId=${params.roleId}`
   );
 //删除组织
-const delOrg = (params) => deleteAction("/uc/api/org/getOrgTree", params);
+const delOrg = (params) => deleteAction("/uc/api/org/remove", params);
 //资源授权
 const saveRoleAuth = (params) =>
   postAction("/uc/api/sysMenu/saveRoleAuth", params);
@@ -44,11 +44,11 @@ const saveRoleAuth = (params) =>
 const delOrgUser = (params) => deleteAction("/uc/api/org/delOrgUser", params);
 //获取用户列表
 const getUserList = (params) => postAction("/uc/api/user/getUserPage", params);
-//
-const addOrgUser = (params) =>
-  postAction(
-    `/uc/api/org/addOrgUser`, params
-  );
+const addOrgUser = (params) => postAction(`/uc/api/org/addOrgUser`, params);
+const getRoleList = (params) => postAction("/uc/api/role/getRolePage", params);
+const updateOrg = (params) => putAction("/uc/api/org/updateOrg", params);
+const addOrg = (params) => postAction("/uc/api/org/addOrg", params);
+const delMenu = (params) => deleteAction("/uc/api/sysMenu/remove", params);
 export {
   addUser,
   updateUser,
@@ -69,4 +69,8 @@ export {
   delOrgUser,
   getUserList,
   addOrgUser,
+  getRoleList,
+  updateOrg,
+  addOrg,
+  delMenu,
 };

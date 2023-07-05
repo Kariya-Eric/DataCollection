@@ -5,6 +5,7 @@
     v-model="valueName"
     :multiple="multiple"
     :clearable="clearable"
+    :readonly="readonly"
     @clear="clearHandle"
     @change="changeValue"
   >
@@ -65,6 +66,10 @@ export default {
       default: false,
     },
     accordion: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
       type: Boolean,
       default: false,
     },

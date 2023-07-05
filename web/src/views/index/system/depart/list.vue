@@ -4,11 +4,12 @@
       <el-col :span="10">
         <el-card shadow="always" class="app-card">
           <div style="margin-bottom: 12px">
-            <el-button type="primary" size="small" icon="el-icon-plus"
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-plus"
+              @click="addDepart"
               >添加组织</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-plus"
-              >添加下级</el-button
             >
           </div>
           <el-input
@@ -67,8 +68,8 @@
                 <el-form-item label="部门编码">
                   <el-input v-model="departForm.code" disabled />
                 </el-form-item>
-                <el-form-item label="排序" prop="sort">
-                  <el-input-number :min="0" v-model="departForm.sort" />
+                <el-form-item label="排序" prop="orderNo">
+                  <el-input-number :min="0" v-model="departForm.orderNo" />
                 </el-form-item>
                 <el-form-item label="职能类型" prop="type">
                   <el-select v-model="departForm.type" style="width: 100%">
@@ -96,14 +97,6 @@
                   />
                 </el-form-item>
                 <div class="formButton">
-                  <el-button
-                    type="primary"
-                    icon="el-icon-edit"
-                    size="small"
-                    @click="submitDepart"
-                    style="margin-right: 12px"
-                    >保存</el-button
-                  >
                   <el-popconfirm @confirm="delOrg" title="确认要删除该组织吗？">
                     <el-button
                       type="danger"
@@ -113,6 +106,14 @@
                       >删除</el-button
                     >
                   </el-popconfirm>
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="small"
+                    @click="submitDepart"
+                    style="margin-right: 12px"
+                    >保存</el-button
+                  >
                 </div>
               </el-form>
             </div>
@@ -144,7 +145,7 @@
                       <div class="search-button-admin">
                         <el-popconfirm
                           title="确认要批量解除吗？"
-                          @click="delOrgUserBatch"
+                          @confirm="delOrgUserBatch"
                         >
                           <el-button
                             type="danger"
@@ -203,6 +204,7 @@
       </el-col>
     </el-row>
     <add-depart-user-dialog ref="addDepartUserDialog" @refresh="refreshUser" />
+    <add-depart-dialog ref="addDepartDialog" @refresh="initDepart" />
   </div>
 </template>
 
@@ -211,16 +213,18 @@ import Vue from "vue";
 import SelectTree from "components/SelectTree";
 import { USER_INFO } from "@/store/mutation-types";
 import AddDepartUserDialog from "./components/add-depart-user-dialog";
+import AddDepartDialog from "./components/add-depart-dialog";
 import {
   initDeptTree,
   getOrgInfo,
   getOrgUser,
   delOrg,
   delOrgUser,
+  updateOrg,
 } from "@/api/system";
 export default {
   name: "DepartList",
-  components: { SelectTree, AddDepartUserDialog },
+  components: { SelectTree, AddDepartUserDialog, AddDepartDialog },
   data() {
     return {
       departProps: {
@@ -242,7 +246,7 @@ export default {
       departRules: {
         name: [{ required: true, message: "部门名称不能为空" }],
         type: [{ required: true, message: "职能类型不能为空" }],
-        sort: [{ required: true, message: "排序不能为空" }],
+        orderNo: [{ required: true, message: "排序不能为空" }],
         parentId: [
           {
             validator: (rule, value, callback) => {
@@ -274,7 +278,9 @@ export default {
     addOrgUser() {
       this.$refs.addDepartUserDialog.show(this.selectedDept.code);
     },
-
+    addDepart() {
+      this.$refs.addDepartDialog.show(this.departList);
+    },
     delOrgUserBatch() {
       if (this.selectedRowKeys.length == 0) {
         this.$message.error("请至少选择一项!");
@@ -321,7 +327,14 @@ export default {
     submitDepart() {
       this.$refs.departForm.validate((valid) => {
         if (valid) {
-          console.log(this.departForm);
+          updateOrg(this.departForm).then((res) => {
+            if (res.state) {
+              this.$message.success(res.message);
+              this.initDepart();
+            } else {
+              this.$message.error(res.message);
+            }
+          });
         }
       });
     },

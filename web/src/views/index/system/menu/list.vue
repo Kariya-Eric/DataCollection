@@ -55,6 +55,16 @@
           <div slot="header">
             <span style="font-weight: bold; font-size: 16px">菜单详情</span>
             <div class="search-button-admin">
+              <el-popconfirm @confirm="delMenu" title="确认要删除该菜单吗？">
+                <el-button
+                  icon="el-icon-delete"
+                  type="danger"
+                  :loading="treeLoading"
+                  size="small"
+                  slot="reference"
+                  >删除</el-button
+                >
+              </el-popconfirm>
               <el-button
                 icon="el-icon-document-checked"
                 type="primary"
@@ -76,7 +86,7 @@
 <script>
 import RightMenu from "./components/right-menu";
 import AddMenuDialog from "./components/add-menu-dialog";
-import { initMenuTree, saveMenu } from "@/api/system";
+import { initMenuTree, saveMenu, delMenu } from "@/api/system";
 export default {
   name: "MenuList",
   components: { RightMenu, AddMenuDialog },
@@ -147,6 +157,19 @@ export default {
 
     addMenu() {
       this.$refs.addMenuDialog.show();
+    },
+
+    delMenu() {
+      let param = "id=" + this.selectedMenu.id;
+      delMenu(param).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          this.initTree();
+          this.selectedMenu = {};
+        } else {
+          this.$message.error(res.message);
+        }
+      });
     },
 
     addChildMenu() {

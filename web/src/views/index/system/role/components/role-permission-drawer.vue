@@ -44,6 +44,8 @@
             default-expand-all
             :expand-on-click-node="false"
             :check-strictly="true"
+            @node-click="nodeClick"
+            highlight-current
             ref="menuTree"
           ></el-tree>
         </el-col>
@@ -136,6 +138,7 @@ export default {
             this.$refs.menuTree.setCheckedKeys(options);
             getAllMethodByRoleCode(this.roleInfo.code).then((resp) => {
               if (resp.state) {
+                this.sysMethods = resp.value;
                 this.sysMethodDataSource = resp.value;
               }
             });
@@ -149,9 +152,9 @@ export default {
 
     changeChecked(row, val) {
       if (val) {
-        row.isSelected = "1";
+        this.sysMethods.filter((sys) => sys.id == row.id)[0].isSelected = "1";
       } else {
-        row.isSelected = "0";
+        this.sysMethods.filter((sys) => sys.id == row.id)[0].isSelected = "0";
       }
     },
 
@@ -161,6 +164,7 @@ export default {
           label: menu.name,
           value: menu.id,
           checked: menu.checked,
+          alias: menu.alias,
         });
         if (menu.children && menu.children.length > 0) {
           this.recusiveMenu(menu.children, options);
@@ -178,7 +182,7 @@ export default {
       let arrMenuAlias = this.$refs.menuTree
         .getCheckedNodes()
         .map((node) => node.alias);
-      let arrMethodAlias = this.sysMethodDataSource
+      let arrMethodAlias = this.sysMethods
         .filter((data) => data.isSelected == "1")
         .map((data) => data.alias);
       let param = {
@@ -194,6 +198,20 @@ export default {
           this.$message.error(res.message);
         }
       });
+    },
+
+    nodeClick(data) {
+      let menu = [data];
+      let aliasList = this.renderMenuList(menu).map((menu) => menu.alias);
+      let options = [];
+      aliasList.forEach((alias) => {
+        this.sysMethods.forEach((sys) => {
+          if (sys.menuAlias == alias) {
+            options.push(sys);
+          }
+        });
+      });
+      this.sysMethodDataSource = options;
     },
   },
 };

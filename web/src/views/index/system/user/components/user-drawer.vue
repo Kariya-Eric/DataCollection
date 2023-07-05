@@ -46,14 +46,14 @@
           />
         </el-form-item>
         <el-form-item prop="orgId" label="所属部门">
-          <el-select
+          <select-tree
+            :options="departList"
             :readonly="!addFlag && !updateFlag"
-            v-model="userForm.orgId"
             placeholder="请选择部门"
+            :value="userForm.orgId"
+            @getValue="getSelectedValue"
             style="width: 100%"
-            clearable
-          >
-          </el-select>
+          />
         </el-form-item>
         <el-form-item prop="role" label="角色">
           <el-select
@@ -63,6 +63,12 @@
             style="width: 100%"
             :readonly="!addFlag && !updateFlag"
           >
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            />
           </el-select>
         </el-form-item>
         <el-form-item prop="email" label="邮箱">
@@ -107,9 +113,13 @@
 </template>
 
 <script>
-import { addUser, updateUser } from "@/api/system";
+import Vue from "vue";
+import { USER_INFO } from "@/store/mutation-types";
+import { addUser, updateUser, initDeptTree, getRoleList } from "@/api/system";
+import SelectTree from "components/SelectTree";
 export default {
   name: "UserDrawer",
+  components: { SelectTree },
   data() {
     return {
       addFlag: false,
@@ -117,6 +127,8 @@ export default {
       visible: false,
       loading: false,
       userForm: {},
+      roleList: [],
+      departList: [],
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
@@ -124,7 +136,20 @@ export default {
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, message: "密码长度不小于6位", trigger: "blur" },
         ],
-        orgId: [{ required: true, message: "请选择部门", trigger: "blur" }],
+        orgId: [
+          {
+            validator: (rule, value, callback) => {
+              if (
+                this.userForm.orgId == undefined ||
+                this.userForm.orgId == ""
+              ) {
+                callback(new Error("请选择部门"));
+              }
+              callback();
+            },
+            trigger: ["blur", "change"],
+          },
+        ],
         role: [{ required: true, message: "请选择角色", trigger: "blur" }],
         comfirmPwd: [
           {
@@ -164,7 +189,39 @@ export default {
       },
     };
   },
+  created() {
+    this.initDepart();
+  },
   methods: {
+    initDepart() {
+      let userInfo = Vue.ls.get(USER_INFO);
+      initDeptTree(userInfo.userId).then((res) => {
+        if (res.state) {
+          this.departList = res.value;
+          this.initRole();
+        }
+      });
+    },
+    initRole() {
+      let param = {
+        pageBean: {
+          page: 1,
+          pageSize: 10000,
+          showTotal: true,
+        },
+        params: {},
+      };
+      getRoleList(param).then((res) => {
+        if (res.state) {
+          this.roleList = res.value.rows;
+        }
+      });
+    },
+
+    getSelectedValue(val) {
+      this.userForm.orgId = val;
+    },
+
     show(addFlag, updateFlag, info) {
       this.visible = true;
       if (info) {
