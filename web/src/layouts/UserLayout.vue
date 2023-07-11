@@ -1,5 +1,5 @@
 <template>
-  <div id="userLayout" :class="['user-layout-wrapper', device]">
+  <div id="userLayout" :class="['user-layout-wrapper']">
     <div class="container">
       <div class="top">
         <div class="header">
@@ -29,15 +29,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-
 export default {
   name: "UserLayout",
   data() {
     return {};
-  },
-  computed: {
-    ...mapState("app", ["device"]),
   },
   mounted() {
     document.body.classList.add("userLayout");
@@ -51,15 +46,6 @@ export default {
 <style lang="scss" scoped>
 #userLayout.user-layout-wrapper {
   height: 100%;
-
-  &.mobile {
-    .container {
-      .main {
-        max-width: 368px;
-        width: 98%;
-      }
-    }
-  }
 
   .container {
     width: 100%;

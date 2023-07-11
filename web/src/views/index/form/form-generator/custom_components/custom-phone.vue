@@ -2,7 +2,6 @@
   <el-input
     prefix-icon="el-icon-mobile"
     clearable
-    size="small"
     :placeholder="placeholder"
     v-model="inputVal"
     :maxlength="!isMobile ? 11 : null"

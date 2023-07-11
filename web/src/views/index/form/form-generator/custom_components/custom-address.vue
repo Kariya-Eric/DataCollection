@@ -8,7 +8,6 @@
       style="width: 100%"
       v-model="selectOption"
       @change="changeOption"
-      size="small"
     />
     <el-input
       type="textarea"
@@ -16,7 +15,6 @@
       placeholder="请输入详细地址"
       v-model="textarea"
       @input="changeVal"
-      size="small"
     />
   </div>
 </template>

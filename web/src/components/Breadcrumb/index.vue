@@ -1,36 +1,39 @@
 <template>
-  <el-breadcrumb class="app-breadcrumb" separator="/">
-    <transition-group name="breadcrumb">
-      <el-breadcrumb-item v-for="(item, index) in levelList" :key="item.path">
-        <span
-          v-if="
-            item.meta.title &&
+  <div>
+    <el-breadcrumb class="app-breadcrumb" separator="/">
+      <transition-group name="breadcrumb">
+        <el-breadcrumb-item v-for="(item, index) in levelList" :key="item.path">
+          <span
+            v-if="
+              item.meta.title &&
               (item.redirect === 'noredirect' || index == levelList.length - 1)
-          "
-          class="no-redirect"
-          >{{ item.meta.title }}</span
-        >
-        <router-link v-else :to="item.redirect || item.path">{{
-          item.meta.title
-        }}</router-link>
-      </el-breadcrumb-item>
-    </transition-group>
-  </el-breadcrumb>
+            "
+            class="no-redirect"
+            >{{ item.meta.title }}</span
+          >
+          <router-link v-else :to="item.redirect || item.path">{{
+            item.meta.title
+          }}</router-link>
+        </el-breadcrumb-item>
+      </transition-group>
+    </el-breadcrumb>
+    <el-button size="small" class="backbutton">返回</el-button>
+  </div>
 </template>
 
 <script>
-import pathToRegexp from 'path-to-regexp';
+import pathToRegexp from "path-to-regexp";
 
 export default {
   data() {
     return {
-      levelList: null
+      levelList: null,
     };
   },
   watch: {
     $route() {
       this.getBreadcrumb();
-    }
+    },
   },
   created() {
     this.getBreadcrumb();
@@ -46,14 +49,14 @@ export default {
         }
       });
       const first = matched[0];
-      if (first && first.name !== 'Dashboard') {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' } }].concat(
+      if (first && first.name !== "Dashboard") {
+        matched = [{ path: "/dashboard", meta: { title: "Dashboard" } }].concat(
           matched
         );
       }
       this.levelList = matched;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -61,11 +64,16 @@ export default {
 .app-breadcrumb.el-breadcrumb {
   display: inline-block;
   font-size: 14px;
-  line-height: 64px;
-  margin-left: 10px;
+  line-height: 54px;
+  margin-left: 24px;
   .no-redirect {
     color: #97a8be;
     cursor: text;
   }
+}
+.backbutton {
+  float: right;
+  margin-top: 14px;
+  margin-right: 12px;
 }
 </style>

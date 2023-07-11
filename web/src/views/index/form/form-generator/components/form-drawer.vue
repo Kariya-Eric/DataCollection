@@ -9,27 +9,17 @@
       size="80%"
       title="表单预览"
     >
-      <el-scrollbar wrap-class="scrollbar-wrapper" style="height: 100%">
-        <div class="right-preview">
-          <el-row style="height: 100%; overflow: auto">
-            <el-col :span="24">
-              <iframe
-                v-show="isIframeLoaded"
-                ref="previewPage"
-                class="result-wrapper"
-                frameborder="0"
-                :src="previewURL"
-                @load="iframeLoad"
-              />
-              <div
-                v-show="!isIframeLoaded"
-                v-loading="true"
-                class="result-wrapper"
-              />
-            </el-col>
-          </el-row>
-        </div>
-      </el-scrollbar>
+      <div class="right-preview">
+        <iframe
+          v-show="isIframeLoaded"
+          ref="previewPage"
+          class="result-wrapper"
+          frameborder="0"
+          :src="previewURL"
+          @load="iframeLoad"
+        />
+        <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -77,7 +67,7 @@ export default {
     onOpen() {
       this.previewURL =
         process.env.BASE_URL + ":" + process.env.BASE_PORT + "/preview.html";
-      this.htmlCode = makeUpHtml(this.formData,this.generateConf);
+      this.htmlCode = makeUpHtml(this.formData, this.generateConf);
       this.jsCode = makeUpJs(this.formData);
       this.cssCode = makeUpCss(this.formData);
       this.editorObj.html = this.htmlCode;
@@ -147,7 +137,6 @@ export default {
     width: 100%;
     overflow: auto;
     padding: 12px;
-    box-sizing: border-box;
   }
 }
 </style>

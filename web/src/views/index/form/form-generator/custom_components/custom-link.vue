@@ -2,7 +2,6 @@
   <el-input
     prefix-icon="el-icon-link"
     clearable
-    size="small"
     :placeholder="placeholder"
     v-model="inputVal"
     @input="changeVal"

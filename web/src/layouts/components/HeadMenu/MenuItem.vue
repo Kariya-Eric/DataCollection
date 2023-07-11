@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden && item.children" class="menu-wrapper">
+  <div v-if="!item.hidden && item.children" >
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
@@ -8,10 +8,7 @@
       "
     >
       <app-link :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item
-          :index="resolvePath(onlyOneChild.path)"
-          :class="{ 'submenu-title-noDropdown': !isNest }"
-        >
+        <el-menu-item :index="resolvePath(onlyOneChild.path)">
           <item
             v-if="onlyOneChild.meta"
             :icon="onlyOneChild.meta.icon || item.meta.icon"
@@ -35,10 +32,8 @@
           <sidebar-item
             v-if="child.children && child.children.length > 0"
             :key="child.path"
-            :is-nest="true"
             :item="child"
             :base-path="resolvePath(child.path)"
-            class="nest-menu"
           />
           <app-link v-else :key="child.name" :to="resolvePath(child.path)">
             <el-menu-item :index="resolvePath(child.path)">
@@ -69,10 +64,6 @@ export default {
     item: {
       type: Object,
       required: true,
-    },
-    isNest: {
-      type: Boolean,
-      default: false,
     },
     basePath: {
       type: String,
@@ -120,3 +111,6 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+
+</style>

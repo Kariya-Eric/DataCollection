@@ -1,6 +1,5 @@
 <template>
   <el-input-number
-    size="small"
     controls-position="right"
     v-model="inputVal"
     :placeholder="placeholder"

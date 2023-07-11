@@ -1,0 +1,39 @@
+<template>
+  <div class="logo">
+    <a>
+      <img src="@/assets/images/logo.png" />
+      <span class="head">数据采集系统</span>
+    </a>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Logo",
+};
+</script>
+
+<style lang="scss" scoped>
+.logo {
+  width: 250px;
+  height: 54px;
+  padding-left: 30px;
+  overflow: hidden;
+  transition: all 0.3s;
+  line-height: 54px;
+
+  img {
+    display: inline-block;
+    height: 32px;
+    vertical-align: middle;
+    color: #ffffff;
+  }
+
+  .head {
+    font-size: 18px;
+    font-family: PingFangSC-Semibold, PingFang SC;
+    font-weight: 600;
+    color: #ffffff;
+  }
+}
+</style>

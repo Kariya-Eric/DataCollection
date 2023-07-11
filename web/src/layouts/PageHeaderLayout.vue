@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="pagehead">
     <slot name="top" />
-    <page-header />
+    <breadcrumb />
     <div v-if="$slots.default" class="app-content">
       <slot />
     </div>
@@ -9,13 +9,16 @@
 </template>
 
 <script>
-import PageHeader from "./components/PageHeader.vue";
+import Breadcrumb from "@/components/Breadcrumb";
 export default {
-  components: {
-    PageHeader,
-  },
-  mounted() {},
+  components: { Breadcrumb },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.pagehead {
+  background-color: #f0f2f5;
+  opacity: 1;
+  height: 54px;
+}
+</style>

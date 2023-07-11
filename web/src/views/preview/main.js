@@ -34,7 +34,7 @@ function init(event) {
 
 function newVue(main, html) {
   main = eval(`(${main})`);
-  main.template = `<div style="overflow:hidden">${html}</div>`;
+  main.template = `<div style="overflow-y:auto">${html}</div>`;
   const vm = new Vue({
     components: {
       child: main,
@@ -44,7 +44,7 @@ function newVue(main, html) {
         visible: true,
       };
     },
-    template: `<div style="overflow:hidden"><child ref='child'/></div>`,
+    template: `<div><child ref='child'/></div>`,
   }).$mount("#app");
   window.vm = vm;
 }

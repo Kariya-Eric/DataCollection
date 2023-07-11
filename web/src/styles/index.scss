@@ -2,7 +2,7 @@
 @import "./mixin.scss";
 @import "./transition.scss";
 @import "./element-ui.scss";
-@import "./sidebar.scss";
+
 
 body {
   overflow: hidden;
@@ -24,6 +24,13 @@ html {
 #app {
   overflow: auto;
   height: 100%;
+
+  // 主体区域
+  .main-container {
+    min-height: 100%;
+    transition: margin-left 0.28s;
+    position: relative;
+  }
 }
 
 *,
@@ -74,11 +81,6 @@ a:hover {
   margin: 12px 12px 0px 12px;
 }
 
-.mobile {
-  .app-content {
-    margin: 12px 0;
-  }
-}
 
 .app-card {
   margin-bottom: 12px;

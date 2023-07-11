@@ -68,7 +68,7 @@ export const constantRouterMap = [
     name: "Dashboard",
     alwaysShow: true,
     meta: {
-      title: "Dashboard",
+      title: "首页",
       icon: "dashboard",
       // permission: ['monitorcenter', 'taskcenter']
     },

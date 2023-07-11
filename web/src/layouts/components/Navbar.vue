@@ -1,72 +1,31 @@
 <template>
   <div>
-    <sidebar-logo />
-    <el-menu class="navbar" mode="horizontal">
-      <hamburger
-        :toggle-click="ToggleSideBar"
-        :is-active="sidebar.opened"
-        class="hamburger-container"
-      />
-      <breadcrumb />
-      <div class="user-wrapper">
-        <header-notice class="action" />
-        <el-dropdown class="avatar-container" trigger="hover" size="medium">
-          <span class="action action-full">
-            <el-avatar class="avatar" src="@/assets/images/avatar.jpg" />
-            <span>欢迎您，{{ userInfo.username }}</span>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <router-link class="inlineBlock" to="/accountcenter">
-              <el-dropdown-item>
-                <span>
-                  <svg-icon icon-class="settings" />
-                </span>
-                个人中心
-              </el-dropdown-item>
-            </router-link>
-            <router-link class="inlineBlock" to="/accountcenter/accountsetting">
-              <el-dropdown-item>
-                <span>
-                  <svg-icon icon-class="user" />
-                </span>
-                个人设置
-              </el-dropdown-item>
-            </router-link>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <span class="action">
-          <a class="logout_title" href="javascript:;" @click="logout">
-            <i class="el-icon-connection" style="font-size: 18px" />
-            <span>&nbsp;退出登录</span>
-          </a>
-        </span>
-      </div>
-    </el-menu>
+    <div class="navbar">
+      <logo />
+      <head-menu />
+      <head-notice />
+    </div>
     <page-header-layout />
   </div>
 </template>
 
 <script>
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
-import SidebarLogo from "./Sidebar/SidebarLogo.vue";
+import Logo from "./Logo";
+import HeadMenu from "./HeadMenu";
 import { mapActions, mapState } from "vuex";
-import HeaderNotice from "./HeaderNotice";
+import HeadNotice from "./HeadNotice";
 import PageHeaderLayout from "../PageHeaderLayout";
 export default {
   components: {
-    Breadcrumb,
-    Hamburger,
-    SidebarLogo,
-    HeaderNotice,
+    HeadNotice,
     PageHeaderLayout,
+    Logo,
+    HeadMenu,
   },
   computed: {
-    ...mapState("app", ["sidebar"]),
     ...mapState("user", ["userInfo", "roles"]),
   },
   methods: {
-    ...mapActions("app", ["ToggleSideBar"]),
     ...mapActions("user", ["LogOut"]),
     logout() {
       this.LogOut().then(() => {
@@ -78,52 +37,15 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.logout_title {
-  color: inherit;
-  text-decoration: none;
-}
-.user-wrapper {
-  float: right;
-  height: 100%;
-  .action {
-    cursor: pointer;
-    padding: 0 14px;
-    display: inline-block;
-    transition: all 0.3s;
-    height: 60%;
-    line-height: 64px;
-
-    &.action-full {
-      height: 100%;
-    }
-
-    .avatar {
-      margin: 10px 10px 20px 0;
-      vertical-align: middle;
-    }
-  }
-}
 .navbar {
-  height: 64px;
-  margin-left: 240px;
-  line-height: 64px;
+  display: flex;
+  height: 54px;
+  line-height: 54px;
   border-radius: 0px !important;
-  // background: #096dd9;
+  background: url("~@/assets/head/head.png") no-repeat;
   .item {
     margin-top: 10px;
     margin-right: 40px;
-  }
-  .hamburger-container {
-    line-height: 75px;
-    height: 64px;
-    float: left;
-    padding: 0 10px;
-  }
-  .screenfull {
-    position: absolute;
-    right: 90px;
-    top: 16px;
-    color: red;
   }
 }
 </style>
