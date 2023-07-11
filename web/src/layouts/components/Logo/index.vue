@@ -18,7 +18,6 @@ export default {
   width: 250px;
   height: 54px;
   padding-left: 30px;
-  overflow: hidden;
   transition: all 0.3s;
   line-height: 54px;
 
@@ -33,6 +32,7 @@ export default {
     font-size: 18px;
     font-family: PingFangSC-Semibold, PingFang SC;
     font-weight: 600;
+    letter-spacing: 0.6px;
     color: #ffffff;
   }
 }

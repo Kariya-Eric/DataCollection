@@ -34,6 +34,9 @@ export default {
   border-bottom: 0;
   background: url("~@/assets/head/head.png") no-repeat;
 }
+/deep/.el-submenu__icon-arrow {
+  display: none;
+}
 .menu {
   width: calc(100% - 500px);
 }

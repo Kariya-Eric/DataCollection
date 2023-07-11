@@ -15,7 +15,7 @@ router.beforeEach((to, from, next) => {
   NProgress.start(); // start progress bar
   if (to.path === "/") {
     next({
-      path: "/dashboard",
+      path: "/home",
     });
     NProgress.done();
   } else {
@@ -23,7 +23,7 @@ router.beforeEach((to, from, next) => {
     if (Vue.ls.get(ACCESS_TOKEN)) {
       if (to.path === "/user/login") {
         next({
-          path: "/dashboard",
+          path: "/home",
         });
         NProgress.done(); // if current page is dashboard will not trigger	afterEach hook, so manually handle it
       } else {

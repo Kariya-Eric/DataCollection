@@ -1,16 +1,16 @@
 <script>
 export default {
-  name: 'MenuItem',
+  name: "MenuItem",
   functional: true,
   props: {
     icon: {
       type: String,
-      default: ''
+      default: "",
     },
     title: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   render(h, context) {
     const { icon, title } = context.props;
@@ -21,9 +21,21 @@ export default {
     }
 
     if (title) {
-      vnodes.push(<span slot='title'>{title}</span>);
+      vnodes.push(
+        <span slot="title" class="menuName">
+          {title}
+        </span>
+      );
     }
     return vnodes;
-  }
+  },
 };
 </script>
+<style lang="scss" scoped>
+.menuName {
+  margin-left: 12px;
+  font-size: 16px;
+  color: black;
+  font-family: PingFangSC-Semibold, PingFang SC;
+}
+</style>

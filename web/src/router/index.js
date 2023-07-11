@@ -62,15 +62,33 @@ export const constantRouterMap = [
     hidden: true,
   },
   {
-    path: "/dashboard",
+    path: "/home",
+    name: "Home",
     component: BasicLayout,
-    redirect: "/dashboard/workplace",
-    name: "Dashboard",
     alwaysShow: true,
     meta: {
       title: "首页",
       icon: "dashboard",
-      // permission: ['monitorcenter', 'taskcenter']
+    },
+    children: [
+      {
+        path: "home",
+        name: "HomePage",
+        component: () => import("@/views/index/home/home"),
+        meta: {
+          title: "首页",
+        },
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    component: BasicLayout,
+    name: "Dashboard",
+    alwaysShow: true,
+    meta: {
+      title: "仪表板",
+      icon: "dashboard",
     },
     children: [
       {

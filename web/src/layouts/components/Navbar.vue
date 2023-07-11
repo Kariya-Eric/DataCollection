@@ -42,7 +42,7 @@ export default {
   height: 54px;
   line-height: 54px;
   border-radius: 0px !important;
-  background: url("~@/assets/head/head.png") no-repeat;
+  background: url("~@/assets/head/head.png") repeat-x;
   .item {
     margin-top: 10px;
     margin-right: 40px;

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden && item.children" >
+  <div v-if="!item.hidden && item.children">
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
@@ -29,7 +29,7 @@
 
       <template v-for="child in item.children">
         <template v-if="!child.hidden">
-          <sidebar-item
+          <menu-item
             v-if="child.children && child.children.length > 0"
             :key="child.path"
             :item="child"
@@ -57,7 +57,7 @@ import Item from "./Item";
 import AppLink from "./Link";
 
 export default {
-  name: "SidebarItem",
+  name: "MenuItem",
   components: { Item, AppLink },
   props: {
     // route object
@@ -111,6 +111,4 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
