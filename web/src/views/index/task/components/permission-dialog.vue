@@ -47,14 +47,6 @@
             :value="item.id + ';' + item.name"
           />
         </el-select>
-        <!-- <el-cascader
-          clearable
-          filterable
-          v-model="permissionForm.responsibleOrgId"
-          style="width: 100%"
-          :props="departProps"
-          :options="departList"
-        /> -->
       </el-form-item>
       <el-form-item label="协作部门" prop="collaborateOrgId">
         <el-select

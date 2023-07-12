@@ -60,13 +60,6 @@
       <el-form-item label="是否必填">
         <el-switch v-model="addFormForm.required" />
       </el-form-item>
-      <el-form-item label="是否启用">
-        <el-switch
-          v-model="addFormForm.enabledFlag"
-          :inactive-value="0"
-          :active-value="1"
-        />
-      </el-form-item>
       <el-form-item prop="sort" label="排序">
         <el-input-number v-model="addFormForm.sort" />
       </el-form-item>
@@ -119,7 +112,6 @@ export default {
           required,
           collectTimeType,
           formCategories,
-          enabledFlag,
           id,
         } = form;
         this.addFormForm = {
@@ -129,12 +121,11 @@ export default {
           formType: type,
           collectTimeType,
           required,
-          enabledFlag,
           formCategories,
         };
       } else {
         this.updateFlag = false;
-        this.addFormForm = {};
+        this.addFormForm = { required: true };
       }
       this.addFormForm.formCollectionId = collection.id;
       this.addFormForm.name = collection.name;
@@ -173,9 +164,6 @@ export default {
         name: this.addFormForm.formName,
         type: this.addFormForm.formType,
         required: this.addFormForm.required ? this.addFormForm.required : false,
-        enabledFlag: this.addFormForm.enabledFlag
-          ? this.addFormForm.enabledFlag
-          : 0,
         formCollectionId,
         collectTimeType,
         formCategories,
@@ -204,9 +192,6 @@ export default {
         name: this.addFormForm.formName,
         type: this.addFormForm.formType,
         required: this.addFormForm.required ? this.addFormForm.required : false,
-        enabledFlag: this.addFormForm.enabledFlag
-          ? this.addFormForm.enabledFlag
-          : 0,
         formCollectionId,
         collectTimeType,
         formCategories,
@@ -231,5 +216,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -39,6 +39,8 @@ const listFormCategories = (params) =>
 //表单合集列表
 const formCollectionList = (params) =>
   postAction("/uc/api/formCollection/list", params);
+const enableForm = (params) =>
+  putAction("/uc/api/formCollection/enable", params);
 
 export {
   addFormCollection,
@@ -54,4 +56,5 @@ export {
   updateForm,
   listFormCategories,
   formCollectionList,
+  enableForm,
 };

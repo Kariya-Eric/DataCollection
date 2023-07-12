@@ -17,25 +17,14 @@ export default {
     const vnodes = [];
 
     if (icon) {
-      vnodes.push(<svg-icon icon-class={icon} />);
+      vnodes.push(<svg-icon icon-class={icon} width="16px" height="16px"/>);
     }
 
     if (title) {
-      vnodes.push(
-        <span slot="title" class="menuName">
-          {title}
-        </span>
-      );
+      vnodes.push(<span slot="title">{title}</span>);
     }
     return vnodes;
   },
 };
 </script>
-<style lang="scss" scoped>
-.menuName {
-  margin-left: 12px;
-  font-size: 16px;
-  color: black;
-  font-family: PingFangSC-Semibold, PingFang SC;
-}
-</style>
+<style lang="scss" scoped></style>

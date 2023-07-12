@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card shadow="always" class="app-card">
-      <el-row style="margin-top: 12px; margin-bottom: 12px">
+      <el-row>
         <el-col :span="12">
           <el-descriptions
             style="margin-top: 12px; margin-left: 12px"
@@ -15,7 +15,42 @@
             }}</el-descriptions-item>
           </el-descriptions>
         </el-col>
-        <el-col :span="12">
+      </el-row>
+      <el-row style="margin-top: 12px; margin-bottom: 12px">
+        <el-col :span="16">
+          <el-form label-width="80px" size="small" :inline="true">
+            <el-form-item label="表单大类">
+              <el-select
+                v-model="queryParam.listCategory"
+                placeholder="请选择表单大类"
+                clearable
+              >
+                <el-option
+                  v-for="item in listCategories"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="前置表单">
+              <el-select
+                v-model="queryParam.type"
+                placeholder="请选择前置表单"
+                clearable
+              >
+                <el-option label="全部" value="全部" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="表单名称">
+              <el-input
+                v-model="queryParam.name"
+                placeholder="请输入表单名称"
+              />
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="8">
           <div style="float: right; margin-right: 12px">
             <el-button size="small" @click="updateFormCategory" type="primary"
               >配置表单大类</el-button
@@ -111,6 +146,7 @@ import {
   delForm,
   updateForm,
   listFormCategories,
+  getFormCategories,
 } from "@/api/form";
 export default {
   name: "FormDetail",
@@ -124,7 +160,9 @@ export default {
     return {
       collectionDetail: {},
       loading: false,
+      queryParam: {},
       dataSource: [],
+      listCategories: [],
       ipagination: {
         current: 1,
         pageSize: 10,
@@ -139,6 +177,7 @@ export default {
       handler(newRoute) {
         if (newRoute.name == "formDetail") {
           this.collectionDetail = JSON.parse(newRoute.query.collectionInfo);
+          this.loadCategories();
           this.getFormList(1);
         }
       },
@@ -147,6 +186,20 @@ export default {
   },
 
   methods: {
+    loadCategories() {
+      let pageBean = {
+        page: 1,
+        pageSize: 1000,
+        showTotal: true,
+      };
+      const param = { id: this.collectionDetail.id, pageBean };
+      getFormCategories(param).then((res) => {
+        if (res.state) {
+          this.listCategories = res.value.rows;
+        }
+      });
+    },
+
     addForm() {
       this.$refs.addFormDialog.show(this.collectionDetail);
     },

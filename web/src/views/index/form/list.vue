@@ -72,10 +72,21 @@
       >
         <el-table-column label="合集名称" prop="name" align="center" />
         <el-table-column label="合集类型" prop="type" align="center" />
-        <el-table-column label="年份" prop="year" align="center" sortable width="150"/>
+        <el-table-column
+          label="年份"
+          prop="year"
+          align="center"
+          sortable
+          width="150"
+        />
         <el-table-column label="启用" prop="enabled" align="center" width="100">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.enabled"></el-switch>
+            <el-switch
+              :active-value="1"
+              :inactive-value="0"
+              v-model="scope.row.enabledFlag"
+              @change="(val) => enableForm(val, scope.row)"
+            ></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="280">
@@ -107,7 +118,7 @@
 import Pagination from "components/Pagination";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import AddCollectionDialog from "./components/add-collection-dialog";
-import { delFormCollection } from "@/api/form";
+import { delFormCollection, enableForm } from "@/api/form";
 export default {
   name: "FormList",
   mixins: [DataCollectionMixin],
@@ -129,6 +140,10 @@ export default {
     },
 
     delCollection(row) {
+      if (row.enabledFlag == 1) {
+        this.$message.error("表单启用中,不能删除!");
+        return;
+      }
       let param = "id=" + row.id;
       this.loading = true;
       delFormCollection(param)
@@ -150,6 +165,22 @@ export default {
         path: "/form/detail",
         query: { collectionInfo: JSON.stringify(row) },
       });
+    },
+
+    enableForm(val, row) {
+      this.loading = true;
+      enableForm({ id: row.id, enabledFlag: val })
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+          } else {
+            this.$message.error(res.value);
+          }
+        })
+        .finally(() => {
+          this.loadData();
+          this.loading = false;
+        });
     },
   },
 };

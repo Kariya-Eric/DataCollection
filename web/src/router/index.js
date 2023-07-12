@@ -64,11 +64,11 @@ export const constantRouterMap = [
   {
     path: "/home",
     name: "Home",
-    redirect:'/home/home',
+    redirect: "/home/home",
     component: BasicLayout,
     meta: {
       title: "首页",
-      icon: "dashboard",
+      icon: "首页-white",
     },
     children: [
       {
@@ -82,13 +82,152 @@ export const constantRouterMap = [
     ],
   },
   {
+    path: "/task",
+    component: BasicLayout,
+    name: "task",
+    alwaysShow: true,
+    meta: {
+      title: "数据采集",
+      icon: "数据采集-white",
+    },
+    children: [
+      {
+        path: "/task/list",
+        name: "taskList",
+        component: () => import("@/views/index/task/list"),
+        meta: {
+          title: "任务列表",
+        },
+      },
+      {
+        path: "/task/detail",
+        name: "taskDetail",
+        hidden: true,
+        component: () => import("@/views/index/task/detail"),
+        meta: {
+          title: "任务详情",
+        },
+      },
+      {
+        path: "/task/info",
+        name: "taskInfo",
+        hidden: true,
+        component: () => import("@/views/index/task/info"),
+        meta: {
+          title: "任务概览",
+        },
+      },
+    ],
+  },
+  {
+    path: "/form",
+    component: BasicLayout,
+    name: "form",
+    alwaysShow: true,
+    meta: {
+      title: "表单管理",
+      icon: "表单管理-white",
+    },
+    children: [
+      {
+        path: "/form/list",
+        name: "formList",
+        component: () => import("@/views/index/form/list"),
+        meta: {
+          title: "表单列表",
+        },
+      },
+      {
+        path: "/form/detail",
+        name: "formDetail",
+        component: () => import("@/views/index/form/detail"),
+        hidden: true,
+        meta: {
+          title: "表单详情",
+        },
+      },
+    ],
+  },
+  {
+    path: "/sys",
+    component: BasicLayout,
+    name: "system",
+    alwaysShow: true,
+    meta: {
+      title: "系统管理",
+      icon: "系统管理-white",
+    },
+    children: [
+      {
+        path: "/sys/user",
+        name: "userList",
+        component: () => import("@/views/index/system/user/list"),
+        meta: {
+          title: "用户管理",
+        },
+      },
+      {
+        path: "/sys/role",
+        name: "roleList",
+        component: () => import("@/views/index/system/role/list"),
+        meta: {
+          title: "角色管理",
+        },
+      },
+      {
+        path: "/sys/menu",
+        name: "menuList",
+        component: () => import("@/views/index/system/menu/list"),
+        meta: {
+          title: "菜单管理",
+        },
+      },
+      {
+        path: "/sys/depart",
+        name: "departList",
+        component: () => import("@/views/index/system/depart/list"),
+        meta: {
+          title: "组织管理",
+          icon: "list",
+        },
+      },
+    ],
+  },
+  {
+    path: "/analyze",
+    component: BasicLayout,
+    name: "analyze",
+    alwaysShow: true,
+    meta: {
+      title: "分析报告",
+    },
+    children: [
+      {
+        path: "/analyze/list",
+        name: "analyzeList",
+        component: () => import("@/views/index/analyze/list"),
+        meta: {
+          title: "分析报告",
+        },
+      },
+      {
+        path: "/analyze/detail",
+        name: "detail",
+        hidden: true,
+        component: () => import("@/views/index/analyze/detail"),
+        meta: {
+          title: "报告详情",
+        },
+      },
+    ],
+  },
+  {
     path: "/dashboard",
     component: BasicLayout,
     name: "Dashboard",
     alwaysShow: true,
     meta: {
       title: "仪表板",
-      icon: "dashboard",
     },
     children: [
       {
@@ -116,157 +255,6 @@ export const constantRouterMap = [
         meta: {
           title: "工作台",
           // permission: ['workplace']
-        },
-      },
-    ],
-  },
-  {
-    path: "/task",
-    component: BasicLayout,
-    name: "task",
-    alwaysShow: true,
-    meta: {
-      title: "任务管理",
-      icon: "dashboard",
-    },
-    children: [
-      {
-        path: "/task/list",
-        name: "taskList",
-        component: () => import("@/views/index/task/list"),
-        meta: {
-          title: "任务列表",
-          icon: "list",
-        },
-      },
-      {
-        path: "/task/detail",
-        name: "taskDetail",
-        hidden: true,
-        component: () => import("@/views/index/task/detail"),
-        meta: {
-          title: "任务详情",
-          icon: "list",
-        },
-      },
-      {
-        path: "/task/info",
-        name: "taskInfo",
-        hidden: true,
-        component: () => import("@/views/index/task/info"),
-        meta: {
-          title: "任务概览",
-          icon: "list",
-        },
-      },
-    ],
-  },
-  {
-    path: "/sys",
-    component: BasicLayout,
-    name: "system",
-    alwaysShow: true,
-    meta: {
-      title: "系统管理",
-      icon: "dashboard",
-    },
-    children: [
-      {
-        path: "/sys/user",
-        name: "userList",
-        component: () => import("@/views/index/system/user/list"),
-        meta: {
-          title: "用户管理",
-          icon: "list",
-        },
-      },
-      {
-        path: "/sys/role",
-        name: "roleList",
-        component: () => import("@/views/index/system/role/list"),
-        meta: {
-          title: "角色管理",
-          icon: "list",
-        },
-      },
-      {
-        path: "/sys/menu",
-        name: "menuList",
-        component: () => import("@/views/index/system/menu/list"),
-        meta: {
-          title: "菜单管理",
-          icon: "list",
-        },
-      },
-      {
-        path: "/sys/depart",
-        name: "departList",
-        component: () => import("@/views/index/system/depart/list"),
-        meta: {
-          title: "组织管理",
-          icon: "list",
-        },
-      },
-    ],
-  },
-  {
-    path: "/form",
-    component: BasicLayout,
-    name: "form",
-    alwaysShow: true,
-    meta: {
-      title: "表单管理",
-      icon: "dashboard",
-    },
-    children: [
-      {
-        path: "/form/list",
-        name: "formList",
-        component: () => import("@/views/index/form/list"),
-        meta: {
-          title: "表单列表",
-          icon: "list",
-        },
-      },
-      {
-        path: "/form/detail",
-        name: "formDetail",
-        component: () => import("@/views/index/form/detail"),
-        hidden: true,
-        meta: {
-          title: "表单详情",
-          icon: "list",
-        },
-      },
-    ],
-  },
-  {
-    path: "/analyze",
-    component: BasicLayout,
-    name: "analyze",
-    alwaysShow: true,
-    meta: {
-      title: "分析报告",
-      icon: "dashboard",
-    },
-    children: [
-      {
-        path: "/analyze/list",
-        name: "analyzeList",
-        component: () => import("@/views/index/analyze/list"),
-        meta: {
-          title: "分析报告",
-          icon: "list",
-        },
-      },
-      {
-        path: "/analyze/detail",
-        name: "detail",
-        hidden: true,
-        component: () => import("@/views/index/analyze/detail"),
-        meta: {
-          title: "报告详情",
-          icon: "list",
         },
       },
     ],
