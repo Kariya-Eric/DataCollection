@@ -64,8 +64,8 @@ export const constantRouterMap = [
   {
     path: "/home",
     name: "Home",
+    redirect:'/home/home',
     component: BasicLayout,
-    alwaysShow: true,
     meta: {
       title: "首页",
       icon: "dashboard",
