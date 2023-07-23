@@ -42,8 +42,8 @@ export default {
   height: 100%;
   color: #fff;
   padding: 0 14px;
+  cursor: pointer;
   .action {
-    cursor: pointer;
     color: #fff;
     margin-left: 36px;
     transition: all 0.3s;

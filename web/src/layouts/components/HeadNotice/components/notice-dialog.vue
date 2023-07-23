@@ -2,7 +2,7 @@
   <div>
     <el-dialog
       :visible="visible"
-      :append-to-body="true"
+      :append-to-body="false"
       @close="onClose"
       title="消息通知"
     >
