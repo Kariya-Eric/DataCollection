@@ -11,7 +11,6 @@
                   v-model="queryParam.type"
                   clearable
                   style="width: 100%"
-                  @change="searchQuery"
                   placeholder="请选择任务类型"
                 >
                   <el-option
@@ -26,7 +25,6 @@
                   v-model="queryParam.schoolYear"
                   style="width: 100%"
                   clearable
-                  @change="searchQuery"
                   placeholder="请选择学年"
                 >
                   <el-option
@@ -41,7 +39,6 @@
                 <el-input
                   v-model="queryParam.name"
                   placeholder="请输入任务名称"
-                  @input="searchQuery"
                 />
               </el-form-item>
               <el-button
@@ -169,7 +166,12 @@
               >任务详情</a
             >
             <el-divider direction="vertical" v-if="scope.row.enabled !== 0" />
-            <a href="javascript:;">删除</a>
+            <el-popconfirm
+              @confirm="delTask(scope.row)"
+              title="确认删除任务吗？"
+            >
+              <a href="javascript:;" slot="reference">删除</a>
+            </el-popconfirm>
             <el-divider direction="vertical" />
             <el-dropdown @command="handleCommand" trigger="click">
               <span class="el-dropdown-link">
@@ -196,7 +198,7 @@
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import Pagination from "components/Pagination";
 import AddTaskDialog from "./components/add-task.dialog.vue";
-import { enableTask } from "@/api/task";
+import { enableTask, delTask } from "@/api/task";
 export default {
   name: "TaskList",
   mixins: [DataCollectionMixin],
@@ -241,14 +243,32 @@ export default {
     handleCommand(command) {},
 
     changeEnabledFlag(row, val) {
-      enableTask({ id: row.id, enabledFlag: val }).then((res) => {
-        if (res.state) {
-          this.$message.success(res.message);
-          this.loadData();
-        } else {
-          this.$message.error(res.message);
-        }
-      });
+      this.loading = true;
+      enableTask({ id: row.id, enabledFlag: val })
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.loadData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    delTask(row) {
+      this.loading = true;
+      let param = "id=" + row.id;
+      delTask(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.loadData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };

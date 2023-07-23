@@ -42,6 +42,9 @@ const formCollectionList = (params) =>
 const enableForm = (params) =>
   putAction("/uc/api/formCollection/enable", params);
 
+const saveFormCategories = (params) =>
+  postAction("/uc/api/formCategories/saveList", params);
+
 export {
   addFormCollection,
   updateFormCollection,
@@ -57,4 +60,5 @@ export {
   listFormCategories,
   formCollectionList,
   enableForm,
+  saveFormCategories,
 };

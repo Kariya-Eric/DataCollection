@@ -33,6 +33,31 @@ const getTaskFormDetail = (params) =>
 const updateTaskFormDetail = (params) =>
   putAction("/uc/api/taskFormDetail/update", params);
 
+const delTask = (params) => deleteAction(`/uc/api/task/delete`, params);
+/*  */
+const taskList = (params) => postAction(`/uc/api/task/list`, params);
+
+const copyAuthority = (params) =>
+  postAction(
+    `/uc/api/taskForm/copyAuthority?taskId=${params.taskId}&sourceTaskId=${params.sourceTaskId}`
+  );
+
+const configFillStatus = (params) =>
+  putAction("/uc/api/taskForm/configFillStatus", params);
+
+const configAuthUser = (params) =>
+  putAction("/uc/api/taskForm/configAuthUser", params);
+const approveForm = (params) =>
+  putAction("/uc/api/taskFormDetail/approve", params);
+
+const recallForm = (params) =>
+  getAction(`/uc/api/taskFormDetail/recall/${params}`);
+
+const collaborationProgress = (params) =>
+  postAction(
+    `/uc/api/taskFormDetail/collaborationProgress?taskFormId=${params}`
+  );
+  
 export {
   initTask,
   updateTask,
@@ -45,4 +70,12 @@ export {
   taskFormDetail,
   getTaskFormDetail,
   updateTaskFormDetail,
+  delTask,
+  taskList,
+  copyAuthority,
+  configFillStatus,
+  configAuthUser,
+  approveForm,
+  recallForm,
+  collaborationProgress,
 };

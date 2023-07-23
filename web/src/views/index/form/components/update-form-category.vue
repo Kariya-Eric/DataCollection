@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="配置表单大类" :visible="visible" @close="close" width="35%">
+  <el-dialog title="配置表单大类" :visible="visible" @close="close" width="40%">
     <div class="formDiv">
       <el-form
         ref="formCategoryForm"
@@ -18,61 +18,105 @@
           <el-input v-model="formCategoryForm.year" :disabled="true" />
         </el-form-item>
         <el-form-item label="表单大类">
-          <el-button
+          <vxe-toolbar>
+            <template #buttons>
+              <vxe-button icon="vxe-icon-square-plus" @click="insertRow()"
+                >添加大类</vxe-button
+              >
+            </template>
+          </vxe-toolbar>
+          <vxe-table
+            border
+            resizable
             size="small"
-            type="primary"
-            style="margin-bottom: 8px"
-            icon="el-icon-plus"
-            :disabled="showFlag"
-            @click="addFormCategory"
-            >添加大类</el-button
-          >
-          <el-table
-            size="small"
-            :border="true"
-            height="220"
-            :loading="loading"
+            show-overflow
+            ref="xTable"
+            max-height="400"
+            :row-config="{ isHover: true }"
             :data="formCategoryForm.dataSource"
+            align="center"
           >
-            <el-table-column type="index" label="序号" align="center" />
-            <el-table-column label="表单大类名称" align="center">
-              <template slot-scope="scope">
-                <template v-if="scope.row.isEdit">
-                  <el-input
-                    v-model="scope.row.name"
-                    placeholder="请输入表单大类"
-                  />
-                </template>
-                <template v-else>
-                  {{ scope.row.name }}
-                </template>
+            <vxe-column field="index" width="60">
+              <template #default="{ row }">
+                <span>{{ row.index + 1 }}</span>
               </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" width="120px">
-              <template slot-scope="scope">
-                <a
-                  href="javascript:;"
-                  v-if="scope.row.isEdit"
-                  @click="save(scope.row)"
-                  >保存</a
-                >
-                <a href="javascript:;" v-else @click="edit(scope.row)">编辑</a>
+            </vxe-column>
+            <vxe-column field="name" title="表单大类名称"></vxe-column>
+            <vxe-column title="操作" width="220" show-overflow>
+              <template #default="{ row }">
+                <a href="javascript:;" @click="editRow(row)">编辑</a>
                 <el-divider direction="vertical" />
                 <el-popconfirm
-                  v-if="scope.row.id"
-                  @confirm="delRow(scope.row)"
-                  title="确定要删除该行吗?"
+                  @confirm="removeRow(row)"
+                  title="确认删除该条数据吗"
                 >
                   <a href="javascript:;" slot="reference">删除</a>
                 </el-popconfirm>
-                <a href="javascript:;" v-else @click="cancel(scope.row)"
-                  >取消</a
+                <el-divider direction="vertical" v-if="row.index != 0" />
+                <a href="javascript:;" @click="upRow(row)" v-if="row.index != 0"
+                  >上移</a
+                >
+                <el-divider
+                  direction="vertical"
+                  v-if="row.index != formCategoryForm.dataSource.length - 1"
+                />
+                <a
+                  href="javascript:;"
+                  @click="downRow(row)"
+                  v-if="row.index != formCategoryForm.dataSource.length - 1"
+                  >下移</a
                 >
               </template>
-            </el-table-column>
-          </el-table>
+            </vxe-column>
+          </vxe-table>
+          <vxe-modal
+            v-model="showEdit"
+            :title="selectRow ? '编辑表单大类' : '新增表单大类'"
+            width="600"
+            :loading="submitLoading"
+            resize
+            destroy-on-close
+          >
+            <template #default>
+              <vxe-form
+                :data="formData"
+                :rules="formRules"
+                @submit="submitEvent"
+              >
+                <vxe-form-item
+                  field="name"
+                  :span="24"
+                  title="表单大类名称"
+                  :item-render="{}"
+                >
+                  <template #default="{ data }">
+                    <vxe-input
+                      v-model="data.name"
+                      placeholder="请输入表单大类名称"
+                    ></vxe-input>
+                  </template>
+                </vxe-form-item>
+                <vxe-form-item align="center" title-align="left" :span="24">
+                  <template #default>
+                    <vxe-button type="submit">提交</vxe-button>
+                    <vxe-button type="reset">重置</vxe-button>
+                  </template>
+                </vxe-form-item>
+              </vxe-form>
+            </template>
+          </vxe-modal>
         </el-form-item>
       </el-form>
+    </div>
+    <div slot="footer" class="dialog-footer">
+      <el-button size="small" @click="close">取 消</el-button>
+      <el-button
+        type="primary"
+        size="small"
+        :loading="loading"
+        @click="handleSubmit"
+        >提交</el-button
+      >
     </div>
   </el-dialog>
 </template>
@@ -83,11 +127,16 @@ import {
   updateFormCategory,
   addFormCategory,
   delFormCategory,
+  saveFormCategories,
 } from "@/api/form";
 export default {
   name: "UpdateFormCategory",
   data() {
     return {
+      showEdit: false,
+      selectRow: null,
+      submitLoading: false,
+      tableData: [],
       showFlag: false,
       loading: false,
       visible: false,
@@ -99,15 +148,15 @@ export default {
         type: [{ required: true, message: "请选择合集类型" }],
         year: [{ required: true, message: "请选择年份" }],
       },
+      formData: {
+        name: "",
+      },
+      formRules: {
+        name: [{ required: true, message: "请输入表单大类名称" }],
+      },
     };
   },
   methods: {
-    cancel(row) {
-      this.formCategoryForm.dataSource =
-        this.formCategoryForm.dataSource.filter((item) => item !== row);
-      this.showFlag = false;
-    },
-
     show(formCategory) {
       this.formCategoryForm = { ...formCategory, ...this.formCategoryForm };
       this.loadFormCategory();
@@ -118,74 +167,6 @@ export default {
       this.visible = false;
       this.showFlag = false;
       this.formCategoryForm = { dataSource: [] };
-    },
-
-    delRow(row) {
-      let param = "id=" + row.id;
-      delFormCategory(param)
-        .then((res) => {
-          if (res.state) {
-            this.$message.success(res.message);
-          } else {
-            this.$message.error(res.message);
-          }
-        })
-        .finally(() => this.loadFormCategory());
-    },
-
-    save(row) {
-      if (row.name == undefined || row.name.trim() == "") {
-        this.$message.warning("表单大类名称不能为空");
-      } else {
-        if (row.id) {
-          //修改
-          let param = { id: row.id, name: row.name };
-          updateFormCategory(param)
-            .then((res) => {
-              if (res.state) {
-                this.$message.success(res.message);
-              } else {
-                this.$message.error(res.message);
-              }
-            })
-            .finally(() => {
-              this.showFlag = false;
-              this.loadFormCategory();
-            });
-        } else {
-          //新增
-          let param = {
-            name: row.name,
-            formCollectionId: this.formCategoryForm.id,
-          };
-          addFormCategory(param)
-            .then((res) => {
-              if (res.state) {
-                this.$message.success(res.message);
-              } else {
-                this.$message.error(res.message);
-              }
-            })
-            .finally(() => {
-              this.showFlag = false;
-              this.loadFormCategory();
-            });
-        }
-      }
-    },
-
-    edit(row) {
-      this.showFlag = true;
-      row.isEdit = !row.isEdit;
-    },
-
-    addFormCategory() {
-      let data = {
-        name: undefined,
-        isEdit: true,
-      };
-      this.formCategoryForm.dataSource.push(data);
-      this.showFlag = true;
     },
 
     loadFormCategory() {
@@ -202,9 +183,122 @@ export default {
             this.formCategoryForm.dataSource = [];
             for (let i = 0; i < res.value.rows.length; i++) {
               let row = res.value.rows[i];
-              let data = { ...row, isEdit: false };
+              let data = { ...row, index: i };
               this.formCategoryForm.dataSource.push(data);
             }
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    editRow(row) {
+      this.formData = {
+        id: row.id,
+        name: row.name,
+        sort: row.sort,
+      };
+      this.selectRow = row;
+      this.showEdit = true;
+    },
+
+    removeRow(row) {
+      this.loading = true;
+      let param = "id=" + row.id;
+      delFormCategory(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.loadFormCategory();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+    upRow(row) {
+      let before = this.formCategoryForm.dataSource.slice(0, row.index - 1);
+      let after = this.formCategoryForm.dataSource.slice(
+        row.index + 1,
+        this.formCategoryForm.dataSource.length
+      );
+      let rowBefore = this.formCategoryForm.dataSource.filter(
+        (data) => data.index == row.index - 1
+      )[0];
+      row.index = row.index - 1;
+      rowBefore.index = rowBefore.index + 1;
+      this.formCategoryForm.dataSource = [...before, row, rowBefore, ...after];
+    },
+    downRow(row) {
+      let before = this.formCategoryForm.dataSource.slice(0, row.index);
+      let after = this.formCategoryForm.dataSource.slice(
+        row.index + 2,
+        this.formCategoryForm.dataSource.length
+      );
+      let rowAfter = this.formCategoryForm.dataSource.filter(
+        (data) => data.index == row.index + 1
+      )[0];
+      row.index = row.index + 1;
+      rowAfter.index = rowAfter.index - 1;
+      this.formCategoryForm.dataSource = [...before, rowAfter, row, ...after];
+    },
+    insertRow() {
+      this.formData = {
+        name: "",
+        sort: this.formCategoryForm.dataSource.length + 1,
+      };
+      this.selectRow = null;
+      this.showEdit = true;
+    },
+    submitEvent() {
+      this.submitLoading = true;
+      this.showEdit = false;
+      if (!this.selectRow) {
+        let param = {
+          name: this.formData.name,
+          formCollectionId: this.formCategoryForm.id,
+          sort: this.formData.sort,
+        };
+        addFormCategory(param)
+          .then((res) => {
+            if (res.state) {
+              this.$message.success(res.message);
+              this.loadFormCategory();
+            } else {
+              this.$message.error(res.message);
+            }
+          })
+          .finally(() => (this.submitLoading = false));
+      } else {
+        updateFormCategory(this.formData)
+          .then((res) => {
+            if (res.state) {
+              this.$message.success(res.message);
+              this.loadFormCategory();
+            } else {
+              this.$message.error(res.message);
+            }
+          })
+          .finally(() => (this.submitLoading = false));
+      }
+    },
+
+    handleSubmit() {
+      this.loading = true;
+      let param = {
+        formCollectionId: this.formCategoryForm.id,
+        categories: this.formCategoryForm.dataSource.map((data) => {
+          data.sort = data.index;
+          delete data.index;
+          return data;
+        }),
+      };
+      saveFormCategories(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.close();
+          } else {
+            this.$message.error(res.message);
           }
         })
         .finally(() => (this.loading = false));

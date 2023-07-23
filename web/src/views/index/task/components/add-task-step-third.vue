@@ -17,6 +17,7 @@
             :data="departList"
             :props="departProps"
             :filter-node-method="filterNode"
+            default-expand-all
             ref="departTree"
           ></el-tree>
         </div>
@@ -36,18 +37,13 @@
                 <el-option label="未配置" :value="2" />
               </el-select>
               <div style="float: right">
-                <el-button
-                  type="primary"
-                  size="small"
-                  @click="copyPermission"
-                  v-if="selectedRowKeys.length > 0"
+                <el-button type="primary" size="small" @click="copyPermission"
                   >复制其他任务权限</el-button
                 >
                 <el-button
                   type="primary"
                   size="small"
                   @click="applyPermission(true)"
-                  v-if="selectedRowKeys.length > 0"
                   >批量配置权限</el-button
                 >
               </div>
@@ -107,7 +103,7 @@
       :taskId="taskId"
       @refresh="refresh"
     />
-    <copy-permission-dialog ref="copyPermissionDialog" />
+    <copy-permission-dialog ref="copyPermissionDialog" :taskId="taskId" @refresh="refresh"/>
   </div>
 </template>
 
@@ -203,6 +199,10 @@ export default {
 
     applyPermission(isBatch, row) {
       if (isBatch) {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning("请至少选择一行");
+          return;
+        }
         this.$refs.permissionDialog.show(
           isBatch,
           this.selectedRowKeys,

@@ -16,7 +16,6 @@
                   v-model="queryParam.orgId"
                   clearable
                   style="width: 100%"
-                  @change="searchQuery"
                   placeholder="请选择部门"
                 >
                   <!-- TODO -->
@@ -26,7 +25,6 @@
                 <el-input
                   v-model="queryParam.queryWord"
                   placeholder="请输入姓名,帐号,手机"
-                  @input="searchQuery"
                 />
               </el-form-item>
               <el-button

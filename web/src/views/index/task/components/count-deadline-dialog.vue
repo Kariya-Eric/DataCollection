@@ -31,14 +31,6 @@
             :value="item.formId"
           />
         </el-select>
-        <!-- <el-cascader
-          clearable
-          filterable
-          :props="{ multiple: true }"
-          v-model="deadlineForm.name"
-          :disabled="!isBatch"
-          style="width: 100%"
-        /> -->
       </el-form-item>
       <el-form-item label="统计截止时间" prop="statisticsEndTime">
         <el-date-picker
@@ -67,19 +59,40 @@ export default {
       visible: false,
       isBatch: false,
       loading: false,
+      endTime: "",
       deadlineForm: { formIds: [], statisticsEndTime: "" },
       formList: [],
       rules: {
         formIds: [{ required: true, message: "请选择表单名称" }],
-        statisticsEndTime: [{ required: true, message: "请选择统计截止时间" }],
+        statisticsEndTime: [
+          {
+            validator: (rule, value, callback) => {
+              if (value) {
+                if (Date.parse(value) > Date.parse(this.endTime)) {
+                  callback(new Error("统计截止时间需小于任务截止时间"));
+                }
+                callback();
+              }
+              callback(new Error("请选择统计截止时间"));
+            },
+            trigger: ["blur", "change"],
+          },
+        ],
       },
     };
   },
   methods: {
-    show(isBatch, selectedFormList, formList) {
+    show(isBatch, selectedFormList, formList, endTime) {
       this.isBatch = isBatch;
       this.formList = formList;
+      this.endTime = endTime;
       this.deadlineForm.formIds = selectedFormList.map((form) => form.formId);
+      if (!isBatch) {
+        this.deadlineForm.statisticsEndTime =
+          selectedFormList[0].statisticsEndTime;
+      } else {
+        this.deadlineForm.statisticsEndTime = "";
+      }
       this.visible = true;
     },
 

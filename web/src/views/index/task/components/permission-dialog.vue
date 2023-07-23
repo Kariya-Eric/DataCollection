@@ -33,45 +33,23 @@
         </el-select>
       </el-form-item>
       <el-form-item label="负责部门" prop="responsibleOrgId">
-        <el-select
-          style="width: 100%"
-          v-model="permissionForm.responsibleOrgId"
+        <select-tree
+          :options="departList"
+          :value="permissionForm.responsibleOrgId"
           placeholder="请选择"
-          clearable
-          filterable
-        >
-          <el-option
-            v-for="item in departList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id + ';' + item.name"
-          />
-        </el-select>
+          @getValue="getOrgValue"
+          style="width: 100%"
+        />
       </el-form-item>
       <el-form-item label="协作部门" prop="collaborateOrgId">
-        <el-select
-          style="width: 100%"
-          multiple
-          v-model="permissionForm.collaborateOrgId"
-          placeholder="请选择"
-          clearable
-          filterable
-        >
-          <el-option
-            v-for="item in departList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id + ';' + item.name"
-          />
-        </el-select>
-        <!-- <el-cascader
-          clearable
-          filterable
-          v-model="permissionForm.collaborateOrgId"
-          style="width: 100%"
-          :props="departProps"
+        <select-tree
           :options="departList"
-        /> -->
+          :valueMultiple="permissionForm.collaborateOrgId"
+          multiple
+          placeholder="请选择"
+          @getValue="getAssistValue"
+          style="width: 100%"
+        />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -85,9 +63,11 @@
 
 <script>
 import { configAuthority } from "@/api/task";
+import SelectTree from "components/SelectTree";
 export default {
   name: "PermissionDialog",
   props: ["taskId"],
+  components: { SelectTree },
   data() {
     return {
       isBatch: false,
@@ -100,8 +80,51 @@ export default {
       loading: false,
       rules: {
         formIds: [{ required: true, message: "请选择表单名称" }],
-        collaborateOrgId: [{ required: true, message: "请选协作部门" }],
-        responsibleOrgId: [{ required: true, message: "请选负责部门" }],
+        collaborateOrgId: [
+          {
+            validator: (rule, value, callback) => {
+              if (
+                this.permissionForm.collaborateOrgId == undefined ||
+                this.permissionForm.collaborateOrgId.length == 0
+              ) {
+                callback(new Error("请选协助部门"));
+              }
+              let flag = true;
+              for (
+                let i = 0;
+                i < this.permissionForm.collaborateOrgId.length;
+                i++
+              ) {
+                if (
+                  this.permissionForm.collaborateOrgId[i].id ==
+                  this.permissionForm.responsibleOrgId
+                ) {
+                  flag = false;
+                  break;
+                }
+              }
+              if (!flag) {
+                callback(new Error("协作部门和负责部门不能为同一个"));
+              }
+              callback();
+            },
+            trigger: ["blur", "change"],
+          },
+        ],
+        responsibleOrgId: [
+          {
+            validator: (rule, value, callback) => {
+              if (
+                this.permissionForm.responsibleOrgId == undefined ||
+                this.permissionForm.responsibleOrgId == ""
+              ) {
+                callback(new Error("请选负责部门"));
+              }
+              callback();
+            },
+            trigger: ["blur", "change"],
+          },
+        ],
       },
     };
   },
@@ -115,22 +138,22 @@ export default {
       this.$refs.permissionForm.validate((valid) => {
         if (valid) {
           this.loading = true;
+
           let collaborateOrgId = this.permissionForm.collaborateOrgId
-            .map((item) => item.split(";")[0])
+            .map((item) => item.id)
             .join(",");
           let collaborateOrgName = this.permissionForm.collaborateOrgId
-            .map((item) => item.split(";")[1])
+            .map((item) => item.name)
             .join(",");
-          let responsibleOrgId =
-            this.permissionForm.responsibleOrgId.split(";")[0];
-          let responsibleOrgName =
-            this.permissionForm.responsibleOrgId.split(";")[1];
+          let responsibleOrgName = this.renderList(this.departList).filter(
+            (depart) => depart.id == this.permissionForm.responsibleOrgId
+          )[0].name;
           let permissionForm = {
             taskId: this.taskId,
             ...this.permissionForm,
             collaborateOrgId,
             collaborateOrgName,
-            responsibleOrgId,
+            responsibleOrgId: this.permissionForm.responsibleOrgId,
             responsibleOrgName,
           };
           configAuthority(permissionForm)
@@ -153,6 +176,28 @@ export default {
       this.permissionForm.formIds = selectedFormList.map((form) => form.formId);
       this.departList = departList;
       this.visible = true;
+    },
+
+    renderList(list) {
+      let options = [];
+      this.recusive(list, options);
+      return options;
+    },
+
+    recusive(list, options) {
+      list.forEach((item) => {
+        options.push({ name: item.name, id: item.id });
+        if (item.children && item.children.length > 0) {
+          this.recusive(item.children, options);
+        }
+      });
+    },
+
+    getOrgValue(val) {
+      this.permissionForm.responsibleOrgId = val;
+    },
+    getAssistValue(val) {
+      this.permissionForm.collaborateOrgId = val;
     },
   },
 };

@@ -98,39 +98,81 @@
             />
             <el-table-column
               label="填报人"
-              prop="email"
+              prop="fillUserName"
               align="center"
               width="120"
             />
             <el-table-column
               label="审核人"
-              prop="email"
+              prop="responsibleUserName"
               align="center"
               width="120"
             />
             <el-table-column
               label="状态"
-              prop="email"
+              prop="status"
               align="center"
-              width="120"
-            />
+              width="100"
+            >
+              <template slot-scope="scope">
+                <el-tag v-if="scope.row.status === 0" type="info" size="small"
+                  >待提交</el-tag
+                >
+                <el-tag v-if="scope.row.status === 1" size="small"
+                  >审核中</el-tag
+                >
+                <el-tag
+                  v-if="scope.row.status === 2"
+                  type="success"
+                  size="small"
+                  >审核通过</el-tag
+                >
+                <el-tag v-if="scope.row.status === 3" type="danger" size="small"
+                  >退回修改</el-tag
+                >
+              </template>
+            </el-table-column>
             <el-table-column
               label="统计截止时间"
               prop="statisticsEndTime"
               align="center"
               width="120"
             />
-            <el-table-column label="操作" align="center" width="320">
+            <el-table-column label="操作" align="center" width="360">
               <template slot-scope="scope">
-                <a href="javascript:;">配置人员</a>
+                <a href="javascript:;" @click="handleConfig(scope.row)"
+                  >配置人员</a
+                >
                 <el-divider direction="vertical" />
                 <a href="javascript:;" @click="showForm(scope.row)">查看</a>
+                <el-divider direction="vertical" v-if="scope.row.status == 1" />
+                <el-popconfirm
+                  @confirm="authForm(scope.row)"
+                  @cancel="authFormBack(scope.row)"
+                  confirm-button-text="通过"
+                  cancel-button-text="驳回"
+                  title="如何操作该表？"
+                  v-if="scope.row.status == 1"
+                >
+                  <a href="javascript:;" slot="reference">审核</a>
+                </el-popconfirm>
+                <el-divider
+                  direction="vertical"
+                  v-if="scope.row.status !== 2"
+                />
+                <a href="javascript:;" v-if="scope.row.status !== 2">催办</a>
+                <el-divider direction="vertical" v-if="scope.row.status == 1" />
+                <el-popconfirm
+                  @confirm="redoForm(scope.row)"
+                  title="确认要撤回该表吗"
+                  v-if="scope.row.status == 1"
+                >
+                  <a href="javascript:;" slot="reference">撤回</a>
+                </el-popconfirm>
                 <el-divider direction="vertical" />
-                <a href="javascript:;">审核</a>
-                <el-divider direction="vertical" />
-                <a href="javascript:;">催办</a>
-                <el-divider direction="vertical" />
-                <a href="javascript:;">填报进度</a>
+                <a href="javascript:;" @click="showProgress(scope.row)"
+                  >填报进度</a
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -138,17 +180,26 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
+    <config-user-dialog ref="configUserDialog" @refresh="getTaskDetail" />
     <form-drawer ref="formDrawer" />
+    <progress-drawer ref="progressDrawer" />
   </div>
 </template>
 
 <script>
-import { getTaskFormDetail, taskFormDetail } from "@/api/task";
+import {
+  getTaskFormDetail,
+  taskFormDetail,
+  approveForm,
+  recallForm,
+} from "@/api/task";
 import FormDrawer from "./components/fom-drawer";
+import ProgressDrawer from "./components/progress-drawer";
 import Pagination from "components/Pagination";
+import ConfigUserDialog from "./components/config-user-dialog";
 export default {
   name: "TaskDetail",
-  components: { Pagination, FormDrawer },
+  components: { Pagination, FormDrawer, ConfigUserDialog, ProgressDrawer },
   data() {
     return {
       typeList: [
@@ -199,13 +250,18 @@ export default {
     },
 
     showForm(row) {
-      let id = row.id.indexOf("parent") > -1 ? row.id.substring(7) : row.id;
-      taskFormDetail(id).then((res) => {
+      taskFormDetail(row.id).then((res) => {
         if (res.state) {
-          const formProperties = JSON.parse(res.value.formProperties);
-          const componentProperties = JSON.parse(res.value.componentProperties);
-          let formData = { ...formProperties, fields: componentProperties };
-          this.$refs.formDrawer.show(formData, formProperties, res.value);
+          if (res.value.formProperties && res.value.componentProperties) {
+            const formProperties = JSON.parse(res.value.formProperties);
+            const componentProperties = JSON.parse(
+              res.value.componentProperties
+            );
+            let formData = { ...formProperties, fields: componentProperties };
+            this.$refs.formDrawer.show(formData, formProperties, res.value);
+          } else {
+            this.$message.error("未根据id查询到表单");
+          }
         }
       });
     },
@@ -213,16 +269,74 @@ export default {
     handlerData(datasource) {
       return datasource.map((ele) => {
         if (ele.children.length !== 0) {
-          ele.id = "parent_" + ele.id;
+          let children = ele.children.slice(1, ele.children.length);
+          ele = ele.children[0];
           ele.type = "总表";
-          ele.children.forEach((item) => {
-            item.type = "子表";
+          ele.collaborateOrgName = "-";
+          ele.children = children.map((child, index) => {
+            child.type = "子表";
+            child.responsibleOrgName = "-";
+            child.collaborateOrgName =
+              child.collaborateOrgName.split(",")[index];
+            return child;
           });
         } else {
           ele.type = "-";
         }
         return ele;
       });
+    },
+
+    handleConfig(row) {
+      this.$refs.configUserDialog.show(row, this.taskId);
+    },
+
+    authForm(row) {
+      this.loading = true;
+      let param = { id: row.id, status: 2 };
+      approveForm(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.getTaskDetail();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    authFormBack(row) {
+      this.loading = true;
+      let param = { id: row.id, status: 3 };
+      approveForm(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.getTaskDetail();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    redoForm(row) {
+      this.loading = true;
+      recallForm(row.id)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.getTaskDetail();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
+    showProgress(row) {
+      this.$refs.progressDrawer.show(row);
     },
   },
 };

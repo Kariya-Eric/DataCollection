@@ -10,7 +10,6 @@
                 <el-input
                   v-model="queryParam.name"
                   placeholder="请输入合集名称"
-                  @input="searchQuery"
                 />
               </el-form-item>
               <el-form-item label="合集类型">
@@ -18,7 +17,6 @@
                   v-model="queryParam.type"
                   placeholder="请选择合集类型"
                   clearable
-                  @change="searchQuery"
                 >
                   <el-option
                     label="教学基本状态数据"
@@ -29,9 +27,8 @@
               </el-form-item>
               <el-form-item label="年份">
                 <el-input
-                  v-model="queryParam.y"
+                  v-model="queryParam.year"
                   placeholder="请输入合集名称"
-                  @input="searchQuery"
                 />
               </el-form-item>
               <el-button
@@ -69,6 +66,7 @@
         :data="dataSource"
         size="small"
         :border="true"
+        @sort-change="sortChange"
       >
         <el-table-column label="合集名称" prop="name" align="center" />
         <el-table-column label="合集类型" prop="type" align="center" />
@@ -76,7 +74,7 @@
           label="年份"
           prop="year"
           align="center"
-          sortable
+          sortable="custom"
           width="150"
         />
         <el-table-column label="启用" prop="enabled" align="center" width="100">
@@ -181,6 +179,18 @@ export default {
           this.loadData();
           this.loading = false;
         });
+    },
+
+    sortChange({ column, prop, order }) {
+      if (order == "ascending") {
+        this.sorter = [{ property: prop, direction: "ASC" }];
+      } else if (order == null) {
+        this.sorter = [];
+      } else {
+        this.sorter = [{ property: prop, direction: "DESC" }];
+      }
+
+      this.loadData();
     },
   },
 };

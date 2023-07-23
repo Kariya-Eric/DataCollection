@@ -11,7 +11,7 @@ export const formConf = {
   span: 24,
   formAlert: "",
   formBtns: true,
-  componentsVisible: []
+  componentsVisible: [],
 };
 
 // 输入型组件 【左面板】
@@ -152,7 +152,7 @@ export const selectComponents = [
     placeholder: "请选择",
     style: { width: "100%" },
     clearable: true,
-    filterable: false,
+    filterable: true,
     multiple: false,
     comment: "",
   },
@@ -288,7 +288,7 @@ export const otherComponents = [
         format: "yyyy-MM",
         "value-format": "yyyy-MM",
         dateType: "month",
-        comment: '',
+        comment: "",
         filterable: false,
         multiple: false,
       },
@@ -315,7 +315,7 @@ export const otherComponents = [
         format: "yyyy-MM",
         "value-format": "yyyy-MM",
         dateType: "month",
-        comment: '',
+        comment: "",
         filterable: false,
         multiple: false,
       },
@@ -342,7 +342,7 @@ export const otherComponents = [
         format: "yyyy-MM",
         "value-format": "yyyy-MM",
         dateType: "month",
-        comment: '',
+        comment: "",
         filterable: false,
         multiple: false,
       },
@@ -363,4 +363,3 @@ export const layoutComponents = [
     fontSize: 16,
   },
 ];
-

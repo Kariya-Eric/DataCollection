@@ -27,6 +27,9 @@
           align="center"
           fixed="left"
         />
+        <el-table-column type="index" width="55" align="center">
+          <template slot="header"> # </template>
+        </el-table-column>
         <el-table-column
           v-for="(col, index) in columns"
           :key="index"

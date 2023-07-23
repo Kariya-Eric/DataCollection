@@ -19,13 +19,7 @@ export const DataCollectionMixin = {
       loading: false,
       // table选中keys
       selectedRowKeys: [],
-      // 筛选参数
-      filters: {},
-      // 排序参数
-      sorter: {
-        column: "createTime",
-        order: "desc",
-      },
+      sorter: [],
     };
   },
 
@@ -75,7 +69,11 @@ export const DataCollectionMixin = {
         pageSize: this.ipagination.pageSize,
         showTotal: true,
       };
-      return { params: Object.assign(this.queryParam), pageBean };
+      return {
+        params: Object.assign(this.queryParam),
+        pageBean,
+        sorter: this.sorter,
+      };
     },
 
     onSelectChange(selectedRowKeys) {

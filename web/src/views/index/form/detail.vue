@@ -110,6 +110,7 @@
               v-model="scope.row.enabledFlag"
               :inactive-value="0"
               :active-value="1"
+              @change="(val) => enableFormCollection(val, scope.row)"
             />
           </template>
         </el-table-column>
@@ -279,6 +280,10 @@ export default {
     },
     goBack() {
       this.$router.go(-1);
+    },
+
+    enableFormCollection(val, row) {
+      let param = { id: row.id, enabledFlag: val };
     },
   },
 };

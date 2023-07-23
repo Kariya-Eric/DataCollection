@@ -1,7 +1,7 @@
 import { postAction } from "./api";
 import request from "@/utils/request";
 
-const login = (params) => postAction("/uc/login", params);
+const login = (params) => postAction("/uc/api/login", params);
 
 export function getUserInfo() {
   return request.get("/auth/userinfo");

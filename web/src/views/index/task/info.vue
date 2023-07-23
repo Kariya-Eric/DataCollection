@@ -69,8 +69,13 @@
         size="small"
         :border="true"
         v-loading="loading"
+        :span-method="objectSpanMethod"
       >
-        <el-table-column label="表单大类" align="center" />
+        <el-table-column
+          label="表单大类"
+          align="center"
+          prop="formCategories"
+        />
         <el-table-column label="表单名称" align="center" prop="formName" />
         <el-table-column
           label="负责部门"
@@ -106,6 +111,7 @@ export default {
       formList: [],
       loading: false,
       tagList: [],
+      indexArray: [],
     };
   },
   watch: {
@@ -152,10 +158,50 @@ export default {
       getTaskFormList(query)
         .then((res) => {
           if (res.state) {
-            this.formList = res.value;
+            this.formList = res.value.sort((v1, v2) =>
+              v1.formCategories < v2.formCategories
+                ? -1
+                : v1.formCategories == v2.formCategories
+                ? 0
+                : 1
+            );
+            this.getIndexArray();
           }
         })
         .finally(() => (this.loading = false));
+    },
+
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) {
+        let rowCount = 0;
+        if (this.indexArray.includes(rowIndex)) {
+          rowCount = this.getRows(rowIndex, row.formCategories);
+          return { rowspan: rowCount, colspan: 1 };
+        } else {
+          return { rowspan: 0, colspan: 0 };
+        }
+      }
+    },
+
+    getRows(rowIndex, formCategories) {
+      let count = 0;
+      for (let i = rowIndex; i < this.formList.length; i++) {
+        if (this.formList[i].formCategories === formCategories) {
+          count++;
+        } else {
+          break;
+        }
+      }
+      return count;
+    },
+
+    getIndexArray() {
+      let count = 0;
+      for (let rowIndex = 0; rowIndex < this.formList.length; ) {
+        this.indexArray.push(rowIndex);
+        count = this.getRows(rowIndex, this.formList[rowIndex].formCategories);
+        rowIndex += count;
+      }
     },
   },
 };

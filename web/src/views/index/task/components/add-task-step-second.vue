@@ -15,7 +15,6 @@
           type="primary"
           size="small"
           style="float: right"
-          v-if="selectedRowKeys.length > 0"
           @click="applyDeadline(true)"
           >批量配置统计截止时间</el-button
         >
@@ -53,6 +52,7 @@
         prop="statisticsEndTime"
         align="center"
         width="150"
+        sortable
       />
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
@@ -60,7 +60,10 @@
             >配置统计截止时间</a
           >
           <el-divider direction="vertical" />
-          <a href="javascript:;" v-if="scope.row.isCanFill" @click="apply"
+          <a
+            href="javascript:;"
+            v-if="scope.row.isCanFill"
+            @click="apply(scope.row)"
             >申请不可填报</a
           >
           <el-popconfirm
@@ -84,7 +87,7 @@
       >
       <el-button @click="back" size="small">返回</el-button>
     </div>
-    <unfill-dialog ref="unfillDialog" />
+    <unfill-dialog ref="unfillDialog" @refresh="refresh" />
     <count-deadline-dialog
       ref="countDeadlineDialog"
       :taskId="taskId"
@@ -97,7 +100,12 @@
 import CountDeadlineDialog from "./count-deadline-dialog";
 import UnfillDialog from "./unfill-dialog";
 import { formCollectionList } from "@/api/form";
-import { getTask, updateTask, getTaskFormList } from "@/api/task";
+import {
+  getTask,
+  updateTask,
+  getTaskFormList,
+  configFillStatus,
+} from "@/api/task";
 export default {
   components: { UnfillDialog, CountDeadlineDialog },
   props: ["taskId"],
@@ -147,7 +155,12 @@ export default {
         getTaskFormList(query)
           .then((res) => {
             if (res.state) {
-              this.formList = res.value;
+              this.formList = res.value.map((val) => {
+                if (!val.statisticsEndTime) {
+                  val.statisticsEndTime = this.taskInfo.statisticsEndTime;
+                }
+                return val;
+              });
             }
           })
           .finally(() => (this.loading = false));
@@ -158,8 +171,8 @@ export default {
     onSelectChange(selectedRowKeys, _) {
       this.selectedRowKeys = selectedRowKeys;
     },
-    apply() {
-      this.$refs.unfillDialog.show();
+    apply(row) {
+      this.$refs.unfillDialog.show(row);
     },
     refresh() {
       //TODO 配置完成的回显
@@ -172,7 +185,7 @@ export default {
       updateTask(params)
         .then((res) => {
           if (res.state) {
-            this.$message.success(res.message);
+            //this.$message.success(res.message);
             let query = {
               taskId: this.taskInfo.id,
               formCollectionId: this.selectFormCollection,
@@ -191,15 +204,25 @@ export default {
 
     applyDeadline(isBatch, row) {
       if (isBatch) {
+        if (this.selectedRowKeys.length <= 0) {
+          this.$message.warning("请至少选择一行");
+          return;
+        }
         this.$refs.countDeadlineDialog.show(
           isBatch,
           this.selectedRowKeys,
-          this.formList
+          this.formList,
+          this.taskInfo.statisticsEndTime
         );
       } else {
         let formList = [];
         formList.push(row);
-        this.$refs.countDeadlineDialog.show(isBatch, formList, this.formList);
+        this.$refs.countDeadlineDialog.show(
+          isBatch,
+          formList,
+          this.formList,
+          this.taskInfo.statisticsEndTime
+        );
       }
     },
 
@@ -242,7 +265,19 @@ export default {
       this.$emit("back");
     },
 
-    redoCanfill(row) {},
+    redoCanfill(row) {
+      const { taskId, formId, isCanFill } = row;
+      configFillStatus({ taskId, formId, isCanFill: !isCanFill }).then(
+        (res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.refresh();
+          } else {
+            this.$message.error(res.message);
+          }
+        }
+      );
+    },
   },
 };
 </script>

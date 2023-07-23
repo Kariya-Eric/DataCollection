@@ -243,6 +243,33 @@ export default {
   },
   methods: {
     show(formInfo) {
+      if (formInfo.type == "浮动表单") {
+        this.leftComponents = [
+          {
+            title: "其他组件",
+            list: otherComponents,
+          },
+        ];
+      } else {
+        this.leftComponents = [
+          {
+            title: "输入型组件",
+            list: inputComponents,
+          },
+          {
+            title: "选择型组件",
+            list: selectComponents,
+          },
+          {
+            title: "其他组件",
+            list: otherComponents,
+          },
+          {
+            title: "布局型组件",
+            list: layoutComponents,
+          },
+        ];
+      }
       this.activeTab = 0;
       this.info = JSON.parse(JSON.stringify(formInfo));
       this.visible = true;

@@ -19,13 +19,16 @@ import "@/utils/filter"; // global filters
 import Storage from "vue-ls";
 import config from "./defaultSettings";
 
-import Plugin from 'v-fit-columns';
+import Plugin from "v-fit-columns";
 Vue.use(Plugin);
 
+import VXETable from "vxe-table";
+import "vxe-table/lib/style.css";
 
+Vue.use(VXETable);
 
-import CustomComponent from './form/form-generator/custom_components'
-Vue.use(CustomComponent)
+import CustomComponent from "./form/form-generator/custom_components";
+Vue.use(CustomComponent);
 
 Vue.use(ElementUI, {
   locale,
