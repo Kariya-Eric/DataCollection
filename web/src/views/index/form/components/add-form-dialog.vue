@@ -69,6 +69,7 @@
         <el-input-number
           v-model="addFormForm.sort"
           :precision="0"
+          :min="0"
           :disabled="addFormForm.enabledFlag == 1"
         />
       </el-form-item>

@@ -18,14 +18,11 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import MenuItem from "./MenuItem";
 export default {
   name: "HeadMenu",
   components: { MenuItem },
-  computed: {
-    ...mapState("permission", ["routers"]),
-  },
+  props: ["routers"],
 };
 </script>
 

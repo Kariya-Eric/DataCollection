@@ -16,8 +16,11 @@
             formInfo.statisticsEndTime
           }}</el-descriptions-item>
           <el-descriptions-item label="审核人" :span="3"></el-descriptions-item>
-          <el-descriptions-item label="整体提交进度" 
-            ><el-progress :percentage="50" style="display: inline-flex;width: 20%;" />
+          <el-descriptions-item label="整体提交进度"
+            ><el-progress
+              :percentage="50"
+              style="display: inline-flex; width: 20%"
+            />
           </el-descriptions-item>
         </el-descriptions>
         <el-divider />
@@ -34,8 +37,11 @@
             align="center"
           />
           <el-table-column label="填报人" prop="fillUserName" align="center" />
-          <el-table-column label="最新提交时间" prop="type" align="center" />
-          <el-table-column label="最新提交时间" prop="type" align="center" />
+          <el-table-column
+            label="最新提交时间"
+            prop="statisticsEndTime"
+            align="center"
+          />
           <el-table-column label="审核状态" prop="status" align="center">
             <template slot-scope="scope">
               <el-tag v-if="scope.row.status === 0" type="info" size="small"
@@ -50,7 +56,13 @@
               >
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center"></el-table-column>
+          <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+              <a href="javascript:;">查看</a>
+              <el-divider direction="vertical" />
+              <a href="javascript:;">催办</a>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </el-drawer>

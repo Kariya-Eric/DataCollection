@@ -145,14 +145,14 @@
                 >
                 <el-divider direction="vertical" />
                 <a href="javascript:;" @click="showForm(scope.row)">查看</a>
-                <el-divider direction="vertical" v-if="scope.row.status == 1" />
+                <el-divider direction="vertical" v-if="scope.row.status == 1||scope.row.status == 0" />
                 <el-popconfirm
                   @confirm="authForm(scope.row)"
                   @cancel="authFormBack(scope.row)"
                   confirm-button-text="通过"
                   cancel-button-text="驳回"
                   title="如何操作该表？"
-                  v-if="scope.row.status == 1"
+                  v-if="scope.row.status == 1||scope.row.status == 0"
                 >
                   <a href="javascript:;" slot="reference">审核</a>
                 </el-popconfirm>

@@ -1,7 +1,17 @@
 <template>
   <div class="notice">
-    <el-badge :value="12">
-      <i class="el-icon-bell" style="font-size: 18px; padding: 4px" />
+    <i
+      v-if="noticeNumber == 0"
+      class="el-icon-bell"
+      style="font-size: 18px; padding: 4px"
+      @click="showNotice"
+    />
+    <el-badge v-else :value="noticeNumber">
+      <i
+        class="el-icon-bell"
+        style="font-size: 18px; padding: 4px"
+        @click="showNotice"
+      />
     </el-badge>
     <el-dropdown class="avatar-container" trigger="hover" size="medium">
       <span class="action action-full">
@@ -17,18 +27,40 @@
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
+    <notice-dialog ref="noticeDialog" :number="noticeNumber" />
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import NoticeDialog from "./components/notice-dialog.vue";
+import { getNumber } from "@/api/notice";
 export default {
   name: "HeadNotice",
-  computed: {
-    ...mapState("user", ["userInfo", "roles"]),
+  props: ["userInfo"],
+  components: { NoticeDialog },
+
+  data() {
+    return {
+      noticeNumber: 0,
+    };
   },
+
+  created() {
+    this.init();
+  },
+
   methods: {
-    ...mapActions("user", ["LogOut"]),
+    showNotice() {
+      this.$refs.noticeDialog.show();
+    },
+
+    init() {
+      getNumber().then((res) => {
+        if (res.state) {
+          this.noticeNumber = res.value;
+        }
+      });
+    },
   },
 };
 </script>
@@ -38,8 +70,8 @@ export default {
   margin-top: 12px;
 }
 .notice {
-  float: right;
-  height: 100%;
+  //   float: right;
+  //   height: 100%;
   color: #fff;
   padding: 0 14px;
   cursor: pointer;

@@ -2,8 +2,8 @@
   <div>
     <div class="navbar">
       <logo />
-      <head-menu />
-      <head-notice />
+      <head-menu :routers="routers" />
+      <head-notice :userInfo="userInfo" />
     </div>
     <page-header-layout />
   </div>
@@ -15,6 +15,8 @@ import HeadMenu from "./HeadMenu";
 import { mapActions, mapState } from "vuex";
 import HeadNotice from "./HeadNotice";
 import PageHeaderLayout from "../PageHeaderLayout";
+import { constantRouterMap } from "@/router";
+
 export default {
   components: {
     HeadNotice,
@@ -24,6 +26,11 @@ export default {
   },
   computed: {
     ...mapState("user", ["userInfo", "roles"]),
+  },
+  data() {
+    return {
+      routers: constantRouterMap,
+    };
   },
   methods: {
     ...mapActions("user", ["LogOut"]),
