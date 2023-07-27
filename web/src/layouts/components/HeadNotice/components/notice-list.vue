@@ -10,15 +10,19 @@
 </template>
 
 <script>
+import { read } from "@/api/notice";
 export default {
   name: "NoticeList",
   props: ["notice"],
   methods: {
     showTask() {
-      let after = this.notice.targetLink.substring(20);
-      this.$emit("close");
-      this.$router.push({
-        path: after,
+      read(this.notice.id).then((res) => {
+        if (res.state) {
+          this.$emit("close");
+          this.$router.push({
+            path: this.notice.targetLink,
+          });
+        }
       });
     },
   },

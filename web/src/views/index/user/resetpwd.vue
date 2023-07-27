@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { resetAccountPwdWithToken } from '@/api/account';
+// import { resetAccountPwdWithToken } from '@/api/account';
 
 export default {
   name: 'ResetPwd',

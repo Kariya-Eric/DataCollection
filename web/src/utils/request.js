@@ -1,6 +1,6 @@
 import Vue from "vue";
 import axios from "axios";
-import { Notification } from "element-ui";
+import { Notification, MessageBox } from "element-ui";
 import store from "../store";
 import { ACCESS_TOKEN } from "@/store/mutation-types";
 
@@ -25,76 +25,48 @@ service.interceptors.request.use(
 );
 
 const err = (error) => {
+  console.log("resp", error.response.status);
   if (error.response) {
-    let data = error.response.data
+    let data = error.response.data;
     switch (error.response.status) {
       case 404:
         Notification.error({
-          title: '系统提示',
-          message: '很抱歉,资源未找到！',
+          title: "系统提示",
+          message: "很抱歉,资源未找到！",
           duration: 3000,
+        });
+        break;
+      case 401:
+        console.log("--------------------");
+        MessageBox.alert("登陆信息已失效，请重新登录", "确定", {
+          confirmButtonText: "重新登录",
+          type: "warning",
+          callback: (action) => {
+            store.dispatch("LogOut").then(() => {
+              location.reload(); // 为了重新实例化vue-router对象 避免bug
+            });
+          },
         });
         break;
       default:
         Notification.error({
-          title: '系统提示',
-          message: data.message,
+          title: "系统提示",
+          message: data.msg,
           duration: 3000,
         });
         break;
     }
   } else if (error.message) {
     Notification.error({
-      title: '系统提示',
-      message: error.message,
+      title: "系统提示",
+      message: error.msg,
       duration: 3000,
     });
   }
-  return Promise.reject(error)
-}
+  return Promise.reject(error);
+};
 
 // response 拦截器
 service.interceptors.response.use((response) => response.data, err);
 
 export default service;
-
-// if (response.status !== 200) {
-//     if (response.status === 204) {
-//       // 204: NoContent
-//       Message({
-//         message: "未找到相关信息，请重新输入",
-//         type: "error",
-//         duration: 5 * 1000,
-//       });
-//     } else if (response.status === 401) {
-//       // 401:Token 过期
-//       MessageBox.confirm("你已被登出，请重新登录", "确定登出", {
-//         confirmButtonText: "重新登录",
-//         cancelButtonText: "取消",
-//         type: "warning",
-//       }).then(() => {
-//         store.dispatch("user/FedLogOut").then(() => {
-//           location.reload(); // 为了重新实例化vue-router对象 避免bug
-//         });
-//       });
-//     } else {
-//       console.log("error in response.");
-//       Message({
-//         message: response.status,
-//         type: "error",
-//         duration: 5 * 1000,
-//       });
-//     }
-//     return Promise.reject("error");
-//   } else {
-//     var data = response.data;
-//     if (data && !data.isSuccess) {
-//       // Message({
-//       //   message: data.message,
-//       //   type: 'error',
-//       //   duration: 3000
-//       // });
-//       return Promise.reject(data);
-//     }
-//     return data;
-//   }

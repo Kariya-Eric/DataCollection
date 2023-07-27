@@ -55,12 +55,13 @@
             style="width: 100%"
           />
         </el-form-item>
-        <el-form-item prop="role" label="角色">
+        <el-form-item prop="roleIds" label="角色">
           <el-select
-            v-model="userForm.role"
+            v-model="userForm.roleIds"
             placeholder="请选择角色"
             clearable
             style="width: 100%"
+            multiple=""
             :readonly="!addFlag && !updateFlag"
           >
             <el-option
@@ -150,7 +151,9 @@ export default {
             trigger: ["blur", "change"],
           },
         ],
-        role: [{ required: true, message: "请选择角色", trigger: "blur" }],
+        roleIds: [
+          { required: true, message: "请至少选择一个角色", trigger: "blur" },
+        ],
         comfirmPwd: [
           {
             validator: (rule, value, callback) => {

@@ -3,7 +3,7 @@
     <div class="navbar">
       <logo />
       <head-menu :routers="routers" />
-      <head-notice :userInfo="userInfo" />
+      <head-notice :userInfo="userInfo" @logout="logout" />
     </div>
     <page-header-layout />
   </div>
@@ -15,7 +15,6 @@ import HeadMenu from "./HeadMenu";
 import { mapActions, mapState } from "vuex";
 import HeadNotice from "./HeadNotice";
 import PageHeaderLayout from "../PageHeaderLayout";
-import { constantRouterMap } from "@/router";
 
 export default {
   components: {
@@ -25,15 +24,16 @@ export default {
     HeadMenu,
   },
   computed: {
-    ...mapState("user", ["userInfo", "roles"]),
+    ...mapState({
+      userInfo: (state) => state.user.userInfo,
+      routers: (state) => state.permission.addRouters,
+    }),
   },
-  data() {
-    return {
-      routers: constantRouterMap,
-    };
+  mounted() {
+    console.log("navbar", this.routers);
   },
   methods: {
-    ...mapActions("user", ["LogOut"]),
+    ...mapActions(["LogOut"]),
     logout() {
       this.LogOut().then(() => {
         location.reload(); // 为了重新实例化vue-router对象 避免bug

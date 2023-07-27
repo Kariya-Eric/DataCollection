@@ -1,13 +1,8 @@
 import Vue from "vue";
-import { login, logout, getUserInfo } from "@/api/login";
+import { login, logout } from "@/api/login";
+import { getMenuList, getButtonList } from "@/api/system";
 
-import {
-  SET_TOKEN,
-  SET_ROLES,
-  SET_USERINFO,
-  ACCESS_TOKEN,
-  USER_INFO,
-} from "../mutation-types";
+import { ACCESS_TOKEN, USER_INFO } from "../mutation-types";
 import Storage from "vue-ls";
 import config from "@/views/index/defaultSettings";
 Vue.use(Storage, config.storageOptions);
@@ -15,40 +10,27 @@ Vue.use(Storage, config.storageOptions);
 const user = {
   state: {
     token: Vue.ls.get(ACCESS_TOKEN),
-    roles: [],
     userInfo: Vue.ls.get(USER_INFO),
+    permissionList: [],
+    buttonList: [],
   },
 
   mutations: {
-    [SET_TOKEN]: (state, token) => {
+    SET_TOKEN: (state, token) => {
       state.token = token;
     },
-    [SET_ROLES]: (state, roles) => {
-      state.roles = roles;
-    },
-    [SET_USERINFO]: (state, userInfo) => {
+    SET_USERINFO: (state, userInfo) => {
       state.userInfo = userInfo;
+    },
+    SET_PERMISSIONLIST: (state, permissionList) => {
+      state.permissionList = permissionList;
+    },
+    SET_BUTTONLIST: (state, buttonList) => {
+      state.buttonList = buttonList;
     },
   },
 
   actions: {
-    //临时用于登录的窗口
-    TempLogin({ commit }) {
-      return new Promise((resolve, reject) => {
-        const data = {
-          "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY3Mjk3MTYwNywiaWF0IjoxNjcyODg1MjA3fQ.PWXv7f6xWDjZGCyFJGFTOu2qOHVFvTyYVcnPz3KOVT4nd-3t2qu5EMBMiR5GUfW_1lAJ6auaD7ecP8DJyLbCQQ",
-          "username": "测试账号",
-          "account": "test",
-          "userId": "1"
-        };
-        Vue.ls.set(ACCESS_TOKEN, data.token, 7 * 24 * 60 * 60 * 1000);
-        Vue.ls.set(USER_INFO, data);
-        commit(SET_TOKEN, data.token);
-        commit(SET_USERINFO, data);
-        resolve();
-      })
-    },
-
     // 登录
     Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
@@ -57,31 +39,9 @@ const user = {
             const data = response.data;
             Vue.ls.set(ACCESS_TOKEN, data.token, 7 * 24 * 60 * 60 * 1000);
             Vue.ls.set(USER_INFO, data);
-            commit(SET_TOKEN, data.token);
-            commit(SET_USERINFO, data);
+            commit("SET_TOKEN", data.token);
+            commit("SET_USERINFO", data);
             resolve();
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    },
-
-    // 获取用户信息
-    GetInfo({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        getUserInfo()
-          .then((response) => {
-            console.log(response);
-            const data = response.data;
-            if (data.roles != null && data.roles.length > 0) {
-              // 验证返回的roles是否是一个非空数组
-              commit(SET_ROLES, data.roles);
-            } else {
-              reject("getInfo: roles must be a non-null array!");
-            }
-            commit(SET_USERINFO, data.userInfo);
-            resolve(response);
           })
           .catch((error) => {
             reject(error);
@@ -94,7 +54,8 @@ const user = {
       return new Promise((resolve, reject) => {
         logout(state.token)
           .then(() => {
-            commit(SET_ROLES, []);
+            commit("SET_PERMISSIONLIST", []);
+            commit("SET_BUTTONLIST", []);
             Vue.ls.remove(ACCESS_TOKEN);
             Vue.ls.remove(USER_INFO);
             resolve();
@@ -105,16 +66,33 @@ const user = {
       });
     },
 
-    // 前端 登出
-    FedLogOut({ commit, state }) {
+    //获取菜单信息
+    GetPermissionList({ commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token)
-          .then(() => {
-            console.log("clearing cache...");
-            commit(SET_TOKEN, "");
-            commit(SET_ROLES, []);
-            removeToken();
-            resolve();
+        getMenuList()
+          .then((response) => {
+            const menuData = response.value[0].children;
+            if (menuData && menuData.length > 0) {
+              commit("SET_PERMISSIONLIST", menuData);
+            } else {
+              reject(
+                "getPermissionList: permissions must be a non-null array !"
+              );
+            }
+            resolve(menuData);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+
+    //获取按钮信息
+    GetButtonList({ commit }) {
+      return new Promise((resolve, reject) => {
+        getButtonList()
+          .then((response) => {
+            resolve(response);
           })
           .catch((error) => {
             reject(error);

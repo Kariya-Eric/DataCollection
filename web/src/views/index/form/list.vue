@@ -6,10 +6,12 @@
         <el-col :span="20">
           <div class="filter-container">
             <el-form label-width="80px" size="small" :inline="true">
-              <el-form-item label="合集名称">
-                <el-input
-                  v-model="queryParam.name"
-                  placeholder="请输入合集名称"
+              <el-form-item label="年份">
+                <el-date-picker
+                  v-model="queryParam.year"
+                  type="year"
+                  value-format="yyyy"
+                  placeholder="请选择年份"
                 />
               </el-form-item>
               <el-form-item label="合集类型">
@@ -25,9 +27,9 @@
                   <el-option label="其他数据" value="其他数据" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="年份">
+              <el-form-item label="合集名称">
                 <el-input
-                  v-model="queryParam.year"
+                  v-model="queryParam.name"
                   placeholder="请输入合集名称"
                 />
               </el-form-item>
@@ -153,9 +155,7 @@ export default {
             this.$message.error(res.message);
           }
         })
-        .finally(() => {
-          this.loading = false;
-        });
+        .finally(() => (this.loading = false));
     },
 
     showCollectionDetail(row) {

@@ -20,51 +20,24 @@ Vue.use(Router);
 import BasicLayout from "@/layouts/BasicLayout";
 import UserLayout from "@/layouts/UserLayout";
 
-/**
-* hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
-* alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
-*                                if not set alwaysShow, only more than one route under the children
-*                                will it become nested mode, otherwise it will not show the root menu
-* redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
-* name:'router-name'             the name is used by <keep-alive> (must set!!!)
-* meta : {
-    title: 'title'               the name show in submenu and breadcrumb (recommend set)
-    icon: 'svg-name'             the icon show in the sidebar,
-  }
-**/
 export const constantRouterMap = [
   {
     path: "/user",
     component: UserLayout,
     redirect: "/user/login",
-    name: "User",
+    name: "Login",
     hidden: true,
-    // meta: {
-    //   title: 'User',
-    //   icon: 'dashboard'
-    // },
     children: [
       {
         path: "login",
         name: "Login",
         component: () => import("@/views/index/user/login"),
       },
-      {
-        path: "recover",
-        name: "recover",
-        // component: () => import('@/views/index/user/login'),
-      },
     ],
   },
   {
-    path: "/404",
-    component: () => import("@/views/index/exception/404"),
-    hidden: true,
-  },
-  {
-    path: "/home",
+    path: "/",
     name: "Home",
-    redirect: "/home/home",
     component: BasicLayout,
     meta: {
       title: "首页",
@@ -72,234 +45,11 @@ export const constantRouterMap = [
     },
     children: [
       {
-        path: "home",
+        path: "/home",
         name: "HomePage",
         component: () => import("@/views/index/home/home"),
         meta: {
           title: "首页",
-        },
-      },
-    ],
-  },
-  {
-    path: "/task",
-    component: BasicLayout,
-    name: "task",
-    alwaysShow: true,
-    meta: {
-      title: "数据采集",
-      icon: "数据采集-white",
-    },
-    children: [
-      {
-        path: "/task/list",
-        name: "taskList",
-        component: () => import("@/views/index/task/list"),
-        meta: {
-          title: "任务列表",
-        },
-      },
-      {
-        path: "/task/detail",
-        name: "taskDetail",
-        hidden: true,
-        component: () => import("@/views/index/task/detail"),
-        meta: {
-          title: "任务详情",
-        },
-      },
-      {
-        path: "/task/info",
-        name: "taskInfo",
-        hidden: true,
-        component: () => import("@/views/index/task/info"),
-        meta: {
-          title: "任务概览",
-        },
-      },
-    ],
-  },
-  {
-    path: "/form",
-    component: BasicLayout,
-    name: "form",
-    alwaysShow: true,
-    meta: {
-      title: "表单管理",
-      icon: "表单管理-white",
-    },
-    children: [
-      {
-        path: "/form/list",
-        name: "formList",
-        component: () => import("@/views/index/form/list"),
-        meta: {
-          title: "表单列表",
-        },
-      },
-      {
-        path: "/form/detail",
-        name: "formDetail",
-        component: () => import("@/views/index/form/detail"),
-        hidden: true,
-        meta: {
-          title: "表单详情",
-        },
-      },
-    ],
-  },
-  {
-    path: "/sys",
-    component: BasicLayout,
-    name: "system",
-    alwaysShow: true,
-    meta: {
-      title: "系统管理",
-      icon: "系统管理-white",
-    },
-    children: [
-      {
-        path: "/sys/user",
-        name: "userList",
-        component: () => import("@/views/index/system/user/list"),
-        meta: {
-          title: "用户管理",
-        },
-      },
-      {
-        path: "/sys/role",
-        name: "roleList",
-        component: () => import("@/views/index/system/role/list"),
-        meta: {
-          title: "角色管理",
-        },
-      },
-      {
-        path: "/sys/menu",
-        name: "menuList",
-        component: () => import("@/views/index/system/menu/list"),
-        meta: {
-          title: "菜单管理",
-        },
-      },
-      {
-        path: "/sys/depart",
-        name: "departList",
-        component: () => import("@/views/index/system/depart/list"),
-        meta: {
-          title: "组织管理",
-          icon: "list",
-        },
-      },
-    ],
-  },
-  {
-    path: "/analyze",
-    component: BasicLayout,
-    name: "analyze",
-    alwaysShow: true,
-    meta: {
-      title: "分析报告",
-    },
-    children: [
-      {
-        path: "/analyze/list",
-        name: "analyzeList",
-        component: () => import("@/views/index/analyze/list"),
-        meta: {
-          title: "分析报告",
-        },
-      },
-      {
-        path: "/analyze/detail",
-        name: "detail",
-        hidden: true,
-        component: () => import("@/views/index/analyze/detail"),
-        meta: {
-          title: "报告详情",
-        },
-      },
-    ],
-  },
-  {
-    path: "/dashboard",
-    component: BasicLayout,
-    name: "Dashboard",
-    alwaysShow: true,
-    meta: {
-      title: "仪表板",
-    },
-    children: [
-      {
-        path: "analysis",
-        name: "Analysis",
-        component: () => import("@/views/index/dashboard/analysis"),
-        meta: {
-          title: "分析页",
-          // permission: ['analysis']
-        },
-      },
-      {
-        path: "monitor",
-        name: "Monitor",
-        component: () => import("@/views/index/dashboard/monitor"),
-        meta: {
-          title: "监控页",
-          // permission: ['monitor']
-        },
-      },
-      {
-        path: "workplace",
-        name: "WorkPlace",
-        component: () => import("@/views/index/dashboard/workplace"),
-        meta: {
-          title: "工作台",
-          // permission: ['workplace']
-        },
-      },
-    ],
-  },
-];
-
-export const asyncRouterMap = [
-  // Dashboard
-  {
-    path: "/dashboard",
-    component: BasicLayout,
-    redirect: "/dashboard/workplace",
-    name: "Dashboard",
-    alwaysShow: true,
-    meta: {
-      title: "Dashboard",
-      icon: "dashboard",
-      // permission: ['monitorcenter', 'taskcenter']
-    },
-    children: [
-      {
-        path: "analysis",
-        name: "Analysis",
-        component: () => import("@/views/index/dashboard/analysis"),
-        meta: {
-          title: "分析页",
-          // permission: ['analysis']
-        },
-      },
-      {
-        path: "monitor",
-        name: "Monitor",
-        component: () => import("@/views/index/dashboard/monitor"),
-        meta: {
-          title: "监控页",
-          // permission: ['monitor']
-        },
-      },
-      {
-        path: "workplace",
-        name: "WorkPlace",
-        component: () => import("@/views/index/dashboard/workplace"),
-        meta: {
-          title: "工作台",
-          // permission: ['workplace']
         },
       },
     ],

@@ -511,7 +511,7 @@
 
       <!-- 表单属性 -->
       <el-form v-show="currentTab === 'form'" size="small" label-width="100px">
-        <el-form-item label="表单名">
+        <el-form-item label="表单名称">
           <el-input v-model="baseInfo.name" />
         </el-form-item>
         <el-form-item label="表单大类">
@@ -557,9 +557,6 @@
             :marks="{ 120: '' }"
             @change="labelChange"
           ></el-slider>
-        </el-form-item>
-        <el-form-item label="禁用表单">
-          <el-switch v-model="formConf.disabled" />
         </el-form-item>
         <el-divider>表单显隐规则</el-divider>
         <div

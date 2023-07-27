@@ -145,14 +145,17 @@
                 >
                 <el-divider direction="vertical" />
                 <a href="javascript:;" @click="showForm(scope.row)">查看</a>
-                <el-divider direction="vertical" v-if="scope.row.status == 1||scope.row.status == 0" />
+                <el-divider
+                  direction="vertical"
+                  v-if="scope.row.status == 1 || scope.row.status == 0"
+                />
                 <el-popconfirm
                   @confirm="authForm(scope.row)"
                   @cancel="authFormBack(scope.row)"
                   confirm-button-text="通过"
                   cancel-button-text="驳回"
                   title="如何操作该表？"
-                  v-if="scope.row.status == 1||scope.row.status == 0"
+                  v-if="scope.row.status == 1 || scope.row.status == 0"
                 >
                   <a href="javascript:;" slot="reference">审核</a>
                 </el-popconfirm>
@@ -160,7 +163,12 @@
                   direction="vertical"
                   v-if="scope.row.status !== 2"
                 />
-                <a href="javascript:;" v-if="scope.row.status !== 2">催办</a>
+                <a
+                  href="javascript:;"
+                  v-if="scope.row.status !== 2"
+                  @click="pushNotice(scope.row)"
+                  >催办</a
+                >
                 <el-divider direction="vertical" v-if="scope.row.status == 1" />
                 <el-popconfirm
                   @confirm="redoForm(scope.row)"
@@ -193,10 +201,13 @@ import {
   approveForm,
   recallForm,
 } from "@/api/task";
+import { pushNotice } from "@/api/notice";
 import FormDrawer from "./components/fom-drawer";
 import ProgressDrawer from "./components/progress-drawer";
 import Pagination from "components/Pagination";
 import ConfigUserDialog from "./components/config-user-dialog";
+import Vue from "vue";
+import { USER_INFO } from "@/store/mutation-types";
 export default {
   name: "TaskDetail",
   components: { Pagination, FormDrawer, ConfigUserDialog, ProgressDrawer },
@@ -337,6 +348,27 @@ export default {
 
     showProgress(row) {
       this.$refs.progressDrawer.show(row);
+    },
+
+    pushNotice(row) {
+      let userInfo = Vue.ls.get(USER_INFO);
+      let param = {
+        messageType: "PC",
+        content: `您有一个数据采集任务 “${row.formName}” 待完成`,
+        userId: userInfo.userId,
+        targetLink: `/task/detail?taskId=${this.taskId}`,
+      };
+      this.loading = true;
+      pushNotice(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.getTaskDetail();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };

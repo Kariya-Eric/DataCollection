@@ -48,6 +48,20 @@
                 placeholder="请输入表单名称"
               />
             </el-form-item>
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-search"
+              @click="getFormList"
+              >搜索</el-button
+            >
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-refresh-right"
+              @click="searchReset"
+              >重置</el-button
+            >
           </el-form>
         </el-col>
         <el-col :span="8">
@@ -147,7 +161,6 @@ import {
   delForm,
   updateForm,
   listFormCategories,
-  getFormCategories,
 } from "@/api/form";
 export default {
   name: "FormDetail",
@@ -188,15 +201,9 @@ export default {
 
   methods: {
     loadCategories() {
-      let pageBean = {
-        page: 1,
-        pageSize: 1000,
-        showTotal: true,
-      };
-      const param = { id: this.collectionDetail.id, pageBean };
-      getFormCategories(param).then((res) => {
+      listFormCategories(this.collectionDetail.id).then((res) => {
         if (res.state) {
-          this.listCategories = res.value.rows;
+          this.listCategories = res.value;
         }
       });
     },
@@ -215,7 +222,8 @@ export default {
         pageSize: this.ipagination.pageSize,
         showTotal: true,
       };
-      const param = { id: this.collectionDetail.id, pageBean };
+      let searchParam = { pageBean, params: this.queryParam };
+      const param = { id: this.collectionDetail.id, searchParam };
       this.loading = true;
       getFormList(param)
         .then((res) => {
@@ -284,6 +292,11 @@ export default {
 
     enableFormCollection(val, row) {
       let param = { id: row.id, enabledFlag: val };
+    },
+
+    searchReset() {
+      this.queryParam = {};
+      this.getFormList(1);
     },
   },
 };

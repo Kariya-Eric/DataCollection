@@ -1,5 +1,4 @@
-import { asyncRouterMap, constantRouterMap } from '@/router';
-import { SET_ROUTERS } from '../mutation-types';
+import { constantRouterMap } from "@/router";
 
 /**
  * 通过meta.permission判断是否与当前用户权限匹配
@@ -28,7 +27,7 @@ function hasPermission(roles, route) {
  * @param roles
  */
 function filterAsyncRouter(routes, roles) {
-  const accessedRouters = routes.filter(route => {
+  const accessedRouters = routes.filter((route) => {
     if (hasPermission(roles, route)) {
       if (route.children && route.children.length) {
         route.children = filterAsyncRouter(route.children, roles);
@@ -43,24 +42,24 @@ function filterAsyncRouter(routes, roles) {
 const permission = {
   state: {
     routers: constantRouterMap,
-    addRouters: []
+    addRouters: [],
   },
   mutations: {
-    [SET_ROUTERS]: (state, routers) => {
-      state.addRouters = routers;
-      state.routers = constantRouterMap.concat(routers);
-    }
+    SET_ROUTERS: (state, data) => {
+      state.addRouters = data;
+      state.routers = constantRouterMap.concat(data);
+    },
   },
   actions: {
-    GenerateRoutes({ commit }, data) {
-      return new Promise(resolve => {
-        const roles = [...data];
-        const accessedRouters = filterAsyncRouter(asyncRouterMap, roles);
-        commit(SET_ROUTERS, accessedRouters);
+    // 动态添加主界面路由，需要缓存
+    UpdateRouter({ commit }, routes) {
+      return new Promise((resolve) => {
+        let routelist = routes.constRouters;
+        commit("SET_ROUTERS", routelist);
         resolve();
       });
-    }
-  }
+    },
+  },
 };
 
 export default permission;

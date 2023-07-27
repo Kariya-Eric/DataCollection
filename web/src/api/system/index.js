@@ -49,6 +49,12 @@ const getRoleList = (params) => postAction("/uc/api/role/getRolePage", params);
 const updateOrg = (params) => putAction("/uc/api/org/updateOrg", params);
 const addOrg = (params) => postAction("/uc/api/org/addOrg", params);
 const delMenu = (params) => deleteAction("/uc/api/sysMenu/remove", params);
+
+const getMenuList = (params) =>
+  getAction("/uc/api/sysMenu/getUserMenu", params);
+const getButtonList = (params) =>
+  getAction("/uc/api/sysMenu/getUserMethod", params);
+  
 export {
   addUser,
   updateUser,
@@ -73,4 +79,6 @@ export {
   updateOrg,
   addOrg,
   delMenu,
+  getMenuList,
+  getButtonList,
 };

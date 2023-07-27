@@ -4,68 +4,43 @@ import store from "@/store";
 import NProgress from "nprogress"; // progress bar
 import { ACCESS_TOKEN } from "@/store/mutation-types";
 import "nprogress/nprogress.css"; // progress bar style
+import { buildRouters } from "@/utils/router";
 
 NProgress.configure({
   showSpinner: false,
 }); // NProgress Configuration
 
-const whiteList = ["/portal", "/user/login"]; // no redirect whitelist
+const whiteList = ["/user/login"]; // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   NProgress.start(); // start progress bar
-  if (to.path === "/") {
-    next({
-      path: "/home",
-    });
-    NProgress.done();
-  } else {
-    // has token
-    if (Vue.ls.get(ACCESS_TOKEN)) {
-      if (to.path === "/user/login") {
-        next({
-          path: "/home",
-        });
-        NProgress.done(); // if current page is dashboard will not trigger	afterEach hook, so manually handle it
-      } else {
-        next();
-        // if (store.state.user.roles.length === 0) {
-        //   // check if user state ok (refresh will discard the state)
-        //   store
-        //     .dispatch("user/GetInfo")
-        //     .then((res) => {
-        //       // 拉取user_info
-        //       const roles = [...res.data.roles]; // note: roles must be a array! such as: ['admin','editor']
-        //       store.dispatch("permission/GenerateRoutes", roles).then(() => {
-        //         // 根据roles权限生成可访问的路由表
-        //         router.addRoutes(store.state.permission.addRouters); // 动态添加可访问路由表
-        //         next({
-        //           ...to,
-        //           replace: true,
-        //         }); // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-        //       });
-        //     })
-        //     .catch((err) => {
-        //       console.log("Error in permission...", err);
-        //       store.dispatch("user/FedLogOut").then(() => {
-        //         Message.error("验证失败，请重新登录");
-        //         next({
-        //           path: "/accountcenter",
-        //         });
-        //       });
-        //     });
-        // } else {
-        //   next();
-        // }
-      }
+  // has token
+  if (Vue.ls.get(ACCESS_TOKEN)) {
+    if (to.path === "/user/login") {
+      next({ path: "/" });
+      NProgress.done(); // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
-      // no token, need login
-      if (whiteList.indexOf(to.path) !== -1) {
-        // 在免登录白名单，直接进入
-        next();
+      if (store.getters.permissionList.length == 0) {
+        store
+          .dispatch("GetPermissionList")
+          .then((res) => {
+            let constRouters = buildRouters(res);
+            store.dispatch("UpdateRouter", { constRouters }).then(() => {
+              router.addRoutes(store.getters.addRouters);
+              next({ ...to, replace: true });
+            });
+          })
+          .catch(() => console.log("请求用户信息失败，请重试！"));
       } else {
-        next(`/user/login?redirect=${to.path}`); // 否则全部重定向到登录页
-        NProgress.done();
+        next();
       }
+    }
+  } else {
+    if (whiteList.indexOf(to.path) !== -1) {
+      next();
+    } else {
+      next(`/user/login?redirect=${to.path}`); // 否则全部重定向到登录页
+      NProgress.done();
     }
   }
 });

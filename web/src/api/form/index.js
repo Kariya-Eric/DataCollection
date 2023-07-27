@@ -11,7 +11,7 @@ const delFormCollection = (params) =>
   deleteAction("/uc/api/formCollection/delete", params);
 //根据id获取表单列表
 const getFormList = (params) =>
-  postAction(`/uc/api/form/listByCollection/${params.id}`, params.pageBean);
+  postAction(`/uc/api/form/listByCollection/${params.id}`, params.searchParam);
 //根据id获取表单大类
 const getFormCategories = (params) =>
   postAction(

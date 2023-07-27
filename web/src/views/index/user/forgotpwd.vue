@@ -49,7 +49,7 @@
 
 <script>
 import { validateMinLength, validateEmail } from '@/utils/validate';
-import { sentResetPwdLink } from '@/api/account';
+// import { sentResetPwdLink } from '@/api/account';
 
 export default {
   name: 'ForgotPwd',

@@ -71,7 +71,7 @@
       <el-table :data="menuDetail.sysMethods" :border="true" size="small">
         <el-table-column label="别名" align="center" prop="alias">
           <template slot-scope="scope">
-            <template v-if="!scope.row.editFlag">{{ scope.row.name }}</template>
+            <template v-if="!scope.row.editFlag">{{ scope.row.alias }}</template>
             <template v-else>
               <el-form-item
                 class="innerFormItem"
@@ -103,7 +103,7 @@
         </el-table-column>
         <el-table-column label="请求地址" align="center" prop="requestUrl">
           <template slot-scope="scope">
-            <template v-if="!scope.row.editFlag">{{ scope.row.name }}</template>
+            <template v-if="!scope.row.editFlag">{{ scope.row.requestUrl }}</template>
             <template v-else>
               <el-form-item
                 class="innerFormItem"

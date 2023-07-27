@@ -13,13 +13,18 @@
         @click="showNotice"
       />
     </el-badge>
-    <el-dropdown class="avatar-container" trigger="hover" size="medium">
+    <el-dropdown
+      class="avatar-container"
+      trigger="hover"
+      size="medium"
+      @command="handleCommand"
+    >
       <span class="action action-full">
         <el-avatar class="avatar" src="@/assets/images/avatar.jpg" />
         <span>{{ userInfo.username }}</span>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>
+        <el-dropdown-item command="quit">
           <span>
             <svg-icon icon-class="user" />
           </span>
@@ -60,6 +65,13 @@ export default {
           this.noticeNumber = res.value;
         }
       });
+    },
+
+    handleCommand(command) {
+      console.log(command);
+      if (command == "quit") {
+        this.$emit("logout");
+      }
     },
   },
 };
