@@ -16,6 +16,10 @@ router.beforeEach((to, from, next) => {
   NProgress.start(); // start progress bar
   // has token
   if (Vue.ls.get(ACCESS_TOKEN)) {
+    if (to.path === "/test") {
+      next();
+      NProgress.done();
+    }
     if (to.path === "/user/login") {
       next({ path: "/" });
       NProgress.done(); // if current page is dashboard will not trigger	afterEach hook, so manually handle it
@@ -26,6 +30,7 @@ router.beforeEach((to, from, next) => {
           .then((res) => {
             let constRouters = buildRouters(res);
             store.dispatch("UpdateRouter", { constRouters }).then(() => {
+              console.log(store.getters.addRouters);
               router.addRoutes(store.getters.addRouters);
               store.dispatch("GetButtonList").then(() => {
                 next({ ...to, replace: true });

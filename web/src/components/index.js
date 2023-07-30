@@ -8,6 +8,8 @@ import Tinymce from "./Tinymce";
 import MenuLink from "./MenuLink";
 import Button from "./Button";
 import Status from "./Status";
+import FormGenerator from "./FormGenerator";
+import CustomComponents from "./FormGenerator/layouts";
 
 export default {
   install(Vue) {
@@ -21,5 +23,7 @@ export default {
     Vue.component("menuLink", MenuLink);
     Vue.component("Mbutton", Button);
     Vue.component("status", Status);
+    Vue.component("formGenerator", FormGenerator);
+    Vue.use(CustomComponents);
   },
 };

@@ -40,6 +40,21 @@ export const constantRouterMap = [
     name: "Home",
     redirect: "/home",
   },
+  {
+    path: "/test",
+    component: BasicLayout,
+    name: "Test",
+    children: [
+      {
+        path: "test",
+        name: "TestForm",
+        component: () => import("@/views/index/test"),
+        meta: {
+          title: "Test",
+        },
+      },
+    ],
+  },
 ];
 
 export default new Router({
