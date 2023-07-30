@@ -2,7 +2,7 @@ import Vue from "vue";
 import { login, logout } from "@/api/login";
 import { getMenuList, getButtonList } from "@/api/system";
 
-import { ACCESS_TOKEN, USER_INFO } from "../mutation-types";
+import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST } from "../mutation-types";
 import Storage from "vue-ls";
 import config from "@/views/index/defaultSettings";
 Vue.use(Storage, config.storageOptions);
@@ -12,7 +12,6 @@ const user = {
     token: Vue.ls.get(ACCESS_TOKEN),
     userInfo: Vue.ls.get(USER_INFO),
     permissionList: [],
-    buttonList: [],
   },
 
   mutations: {
@@ -24,9 +23,6 @@ const user = {
     },
     SET_PERMISSIONLIST: (state, permissionList) => {
       state.permissionList = permissionList;
-    },
-    SET_BUTTONLIST: (state, buttonList) => {
-      state.buttonList = buttonList;
     },
   },
 
@@ -55,9 +51,9 @@ const user = {
         logout(state.token)
           .then(() => {
             commit("SET_PERMISSIONLIST", []);
-            commit("SET_BUTTONLIST", []);
             Vue.ls.remove(ACCESS_TOKEN);
             Vue.ls.remove(USER_INFO);
+            Vue.ls.remove(BUTTON_LIST);
             resolve();
           })
           .catch((error) => {
@@ -92,7 +88,9 @@ const user = {
       return new Promise((resolve, reject) => {
         getButtonList()
           .then((response) => {
-            resolve(response);
+            const buttons = response.value.curUserMethod;
+            Vue.ls.set(BUTTON_LIST, buttons);
+            resolve();
           })
           .catch((error) => {
             reject(error);

@@ -1,192 +1,176 @@
 <template>
   <div>
-    <el-card shadow="always" style="margin-bottom: 8px">
-      <!-- Query Start -->
-      <el-row class="search-row" style="margin-bottom: 0px">
-        <el-col :span="22">
-          <div class="filter-container">
-            <el-form label-width="70px" size="small" :inline="true">
-              <el-form-item label="任务名称">
-                <el-select
-                  v-model="queryParam.name"
-                  placeholder="请选择"
-                  @change="searchQuery"
-                >
-                  <el-option
-                    label="2022年状态数据填报"
-                    value="2022年状态数据填报"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="表单大类">
-                <el-select
-                  v-model="queryParam.type"
-                  placeholder="请选择"
-                  @change="searchQuery"
-                >
-                  <el-option label="全部" value="全部" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="状态">
-                <el-select
-                  v-model="queryParam.type"
-                  placeholder="请选择"
-                  @change="searchQuery"
-                >
-                  <el-option label="全部" value="全部" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="表单名称">
-                <el-input
-                  v-model="queryParam.formName"
-                  placeholder="请输入表单名称"
-                  @input="searchQuery"
-                />
-              </el-form-item>
-              <el-button type="primary" size="small" icon="el-icon-search"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-refresh-right"
-                >重置</el-button
-              >
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <div class="search-button-admin">
-            <el-button type="primary" size="small">一键催办</el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </el-card>
-    <el-card shadow="always">
-      <el-tabs v-model="activeName" @tab-click="getTaskDetail">
-        <el-tab-pane
-          :label="item.name"
-          :name="item.type"
-          v-for="item in typeList"
-          :key="item.type"
-        >
-          <el-table
-            v-loading="loading"
-            :data="taskFormDataSource"
-            size="small"
-            row-key="id"
-            default-expand-all
-            :border="true"
-            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+    <span class="cardTitle">任务名称：&nbsp;&nbsp;{{ taskName }}</span>
+    <el-card shadow="always" style="margin-top: 16px">
+      <el-form
+        label-width="70px"
+        size="small"
+        :inline="true"
+        class="headerForm"
+      >
+        <el-form-item label="任务名称">
+          <el-select
+            v-model="queryParam.name"
+            placeholder="请选择"
+            @change="searchQuery"
           >
-            <el-table-column label="表单名称" prop="formName" align="center" />
-            <el-table-column
-              label="类型"
-              prop="type"
-              align="center"
-              width="100"
+            <el-option label="2022年状态数据填报" value="2022年状态数据填报" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="表单大类">
+          <el-select
+            v-model="queryParam.type"
+            placeholder="请选择"
+            @change="searchQuery"
+          >
+            <el-option label="全部" value="全部" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select
+            v-model="queryParam.type"
+            placeholder="请选择"
+            @change="searchQuery"
+          >
+            <el-option label="全部" value="全部" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="表单名称">
+          <el-input
+            v-model="queryParam.formName"
+            placeholder="请输入表单名称"
+            @input="searchQuery"
+          />
+        </el-form-item>
+        <el-button type="primary" size="small" icon="el-icon-search"
+          >搜索</el-button
+        >
+        <el-button type="primary" size="small" icon="el-icon-refresh-right"
+          >重置</el-button
+        >
+      </el-form>
+
+      <div class="listHeader">
+        <el-button-group class="buttonGroup">
+          <Mbutton
+            :class="{ active: activeName == 'ALL' }"
+            name="全部"
+            @click="() => (activeName = 'ALL')"
+          />
+          <Mbutton
+            :class="{ active: activeName == 'FILL' }"
+            name="我填报的"
+            @click="() => (activeName = 'FILL')"
+          />
+          <Mbutton
+            :class="{ active: activeName == 'APPROVE' }"
+            name="我审核的"
+            @click="() => (activeName = 'APPROVE')"
+          />
+        </el-button-group>
+        <div class="listHeaderButton">
+          <Mbutton type="primary" icon="催办" name="一键催办" />
+        </div>
+      </div>
+
+      <el-table
+        v-loading="loading"
+        :data="taskFormDataSource"
+        row-key="id"
+        default-expand-all
+        class="listTable"
+        :header-cell-style="headerStyle"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      >
+        <el-table-column label="表单名称" prop="formName" align="center">
+          <template slot-scope="scope">
+            <svg-icon icon-class="固定表单" width="16px" height="16px" />
+            <span style="margin-left: 10px">{{ scope.row.formName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="类型" prop="type" align="center" width="100" />
+        <el-table-column
+          label="负责部门"
+          prop="responsibleOrgName"
+          align="center"
+        />
+        <el-table-column
+          label="协作部门"
+          prop="collaborateOrgName"
+          align="center"
+        />
+        <el-table-column
+          label="填报人"
+          prop="fillUserName"
+          align="center"
+          width="120"
+        />
+        <el-table-column
+          label="审核人"
+          prop="responsibleUserName"
+          align="center"
+          width="120"
+        />
+        <el-table-column label="状态" prop="status" align="center">
+          <template slot-scope="scope">
+            <status
+              :status="caculateStatus(scope.row.status).status"
+              :title="caculateStatus(scope.row.status).name"
             />
-            <el-table-column
-              label="负责部门"
-              prop="responsibleOrgName"
-              align="center"
-            />
-            <el-table-column
-              label="协作部门"
-              prop="collaborateOrgName"
-              align="center"
-            />
-            <el-table-column
-              label="填报人"
-              prop="fillUserName"
-              align="center"
-              width="120"
-            />
-            <el-table-column
-              label="审核人"
-              prop="responsibleUserName"
-              align="center"
-              width="120"
-            />
-            <el-table-column
-              label="状态"
-              prop="status"
-              align="center"
-              width="100"
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="统计截止时间"
+          prop="statisticsEndTime"
+          align="center"
+          width="120"
+        >
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="400">
+          <template slot-scope="scope">
+            <menu-link v-has="'taskDetail_apply'">填报</menu-link>
+            <el-popconfirm
+              v-has="'taskDetail_audit'"
+              v-if="scope.row.status == 1"
+              @confirm="authForm(scope.row)"
+              @cancel="authFormBack(scope.row)"
+              confirm-button-text="通过"
+              cancel-button-text="驳回"
+              title="如何操作该表？"
             >
-              <template slot-scope="scope">
-                <el-tag v-if="scope.row.status === 0" type="info" size="small"
-                  >待提交</el-tag
-                >
-                <el-tag v-if="scope.row.status === 1" size="small"
-                  >审核中</el-tag
-                >
-                <el-tag
-                  v-if="scope.row.status === 2"
-                  type="success"
-                  size="small"
-                  >审核通过</el-tag
-                >
-                <el-tag v-if="scope.row.status === 3" type="danger" size="small"
-                  >退回修改</el-tag
-                >
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="统计截止时间"
-              prop="statisticsEndTime"
-              align="center"
-              width="120"
-            />
-            <el-table-column label="操作" align="center" width="360">
-              <template slot-scope="scope">
-                <a href="javascript:;" @click="handleConfig(scope.row)"
-                  >配置人员</a
-                >
-                <el-divider direction="vertical" />
-                <a href="javascript:;" @click="showForm(scope.row)">查看</a>
-                <el-divider
-                  direction="vertical"
-                  v-if="scope.row.status == 1 || scope.row.status == 0"
-                />
-                <el-popconfirm
-                  @confirm="authForm(scope.row)"
-                  @cancel="authFormBack(scope.row)"
-                  confirm-button-text="通过"
-                  cancel-button-text="驳回"
-                  title="如何操作该表？"
-                  v-if="scope.row.status == 1 || scope.row.status == 0"
-                >
-                  <a href="javascript:;" slot="reference">审核</a>
-                </el-popconfirm>
-                <el-divider
-                  direction="vertical"
-                  v-if="scope.row.status !== 2"
-                />
-                <a
-                  href="javascript:;"
-                  v-if="scope.row.status !== 2"
-                  @click="pushNotice(scope.row)"
-                  >催办</a
-                >
-                <el-divider direction="vertical" v-if="scope.row.status == 1" />
-                <el-popconfirm
-                  @confirm="redoForm(scope.row)"
-                  title="确认要撤回该表吗"
-                  v-if="scope.row.status == 1"
-                >
-                  <a href="javascript:;" slot="reference">撤回</a>
-                </el-popconfirm>
-                <el-divider direction="vertical" />
-                <a href="javascript:;" @click="showProgress(scope.row)"
-                  >填报进度</a
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-          <!-- <pagination :pagination="ipagination" @change="loadData" /> -->
-        </el-tab-pane>
-      </el-tabs>
+              <menu-link slot="reference">审核</menu-link>
+            </el-popconfirm>
+            <menu-link @click="showForm(scope.row)" v-has="'taskDetail_show'"
+              >查看</menu-link
+            >
+            <el-popconfirm
+              v-has="'taskDetail_redo'"
+              v-if="scope.row.status == 1"
+              @confirm="redoForm(scope.row)"
+              title="确认要撤回该表吗"
+            >
+              <menu-link slot="reference">撤回</menu-link>
+            </el-popconfirm>
+            <menu-link
+              @click="pushNotice(scope.row)"
+              v-has="'taskDetail_remind'"
+              v-if="scope.row.status != 2"
+              >催办</menu-link
+            >
+            <menu-link
+              @click="showProgress(scope.row)"
+              v-has="'taskDetail_progress'"
+              >填报进度</menu-link
+            >
+            <menu-link
+              @click="handleConfig(scope.row)"
+              v-has="'taskDetail_config'"
+              no-divider
+              >配置人员</menu-link
+            >
+          </template>
+        </el-table-column>
+      </el-table>
     </el-card>
     <config-user-dialog ref="configUserDialog" @refresh="getTaskDetail" />
     <form-drawer ref="formDrawer" />
@@ -204,20 +188,15 @@ import {
 import { pushNotice } from "@/api/notice";
 import FormDrawer from "./components/fom-drawer";
 import ProgressDrawer from "./components/progress-drawer";
-import Pagination from "components/Pagination";
 import ConfigUserDialog from "./components/config-user-dialog";
 import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 export default {
   name: "TaskDetail",
-  components: { Pagination, FormDrawer, ConfigUserDialog, ProgressDrawer },
+  components: { FormDrawer, ConfigUserDialog, ProgressDrawer },
   data() {
     return {
-      typeList: [
-        { type: "ALL", name: "全部" },
-        { type: "FILL", name: "我填报的" },
-        { type: "APPROVE", name: "我审核的" },
-      ],
+      taskName: "",
       activeName: "ALL",
       taskId: "",
       queryParam: {},
@@ -230,6 +209,9 @@ export default {
         pageSizeOptions: [10, 20, 30],
         total: 0,
       },
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
     };
   },
 
@@ -238,10 +220,15 @@ export default {
       handler(newRoute) {
         if (newRoute.name == "taskDetail") {
           this.taskId = newRoute.query.taskId;
+          this.taskName = newRoute.query.taskName;
           this.getTaskDetail();
         }
       },
       immediate: true,
+    },
+
+    activeName() {
+      this.getTaskDetail();
     },
   },
 
@@ -370,8 +357,33 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+
+    caculateStatus(status) {
+      if (status == 0) {
+        return { status: 2, name: "待提交" };
+      } else if (status == 1) {
+        return { status: 1, name: "审核中" };
+      } else if (status == 2) {
+        return { status: 3, name: "审核通过" };
+      } else if (status == 3) {
+        return { status: 0, name: "退回修改" };
+      } else {
+        return { status: 2, name: "待配置人员" };
+      }
+    },
   },
 };
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.buttonGroup {
+  .el-button {
+    min-width: 92px;
+    border: 1px solid #d9d9d9;
+  }
+}
+.active {
+  color: #ffffff;
+  background: linear-gradient(180deg, #76a8f4 0%, #2f68bd 100%);
+}
+</style>

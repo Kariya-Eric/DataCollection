@@ -2,72 +2,54 @@
   <div>
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
-      <el-row class="search-row">
-        <el-col :span="20">
-          <div class="filter-container">
-            <el-form label-width="80px" size="small" :inline="true">
-              <el-form-item label="年份">
-                <el-date-picker
-                  v-model="queryParam.year"
-                  type="year"
-                  value-format="yyyy"
-                  placeholder="请选择年份"
-                />
-              </el-form-item>
-              <el-form-item label="合集类型">
-                <el-select
-                  v-model="queryParam.type"
-                  placeholder="请选择合集类型"
-                  clearable
-                >
-                  <el-option
-                    label="教学基本状态数据"
-                    value="教学基本状态数据"
-                  />
-                  <el-option label="其他数据" value="其他数据" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="合集名称">
-                <el-input
-                  v-model="queryParam.name"
-                  placeholder="请输入合集名称"
-                />
-              </el-form-item>
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-search"
-                @click="searchQuery"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-refresh-right"
-                @click="searchReset"
-                >重置</el-button
-              >
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="search-button-admin">
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-plus"
-              @click="addCollection"
-              >新建合集</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+      <el-form
+        label-width="80px"
+        size="small"
+        :inline="true"
+        class="headerForm"
+      >
+        <el-form-item label="年份">
+          <el-date-picker
+            v-model="queryParam.year"
+            type="year"
+            value-format="yyyy"
+            placeholder="请选择年份"
+          />
+        </el-form-item>
+        <el-form-item label="合集类型">
+          <el-select
+            v-model="queryParam.type"
+            placeholder="请选择合集类型"
+            clearable
+          >
+            <el-option label="教学基本状态数据" value="教学基本状态数据" />
+            <el-option label="其他数据" value="其他数据" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="合集名称">
+          <el-input v-model="queryParam.name" placeholder="请输入合集名称" />
+        </el-form-item>
+        <Mbutton type="primary" name="搜索" @click="searchQuery" />
+        <Mbutton type="primary" name="重置" @click="searchReset" />
+      </el-form>
+      <div class="listHeader">
+        <span>合集列表</span>
+        <div class="listHeaderButton">
+          <Mbutton
+            @click="addCollection"
+            icon="新建"
+            type="primary"
+            name="新建合集"
+          />
+        </div>
+      </div>
+
       <!-- Table Start -->
       <el-table
         v-loading="loading"
         :data="dataSource"
-        size="small"
-        :border="true"
+        class="listTable"
+        :header-cell-style="headerStyle"
         @sort-change="sortChange"
       >
         <el-table-column label="合集名称" prop="name" align="center" />
@@ -79,6 +61,8 @@
           sortable="custom"
           width="150"
         />
+        <el-table-column label="填报指南" prop="zhinan" align="center" />
+        <el-table-column label="合集模板" prop="muban" align="center" />
         <el-table-column label="启用" prop="enabled" align="center" width="100">
           <template slot-scope="scope">
             <el-switch
@@ -91,20 +75,32 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="280">
           <template slot-scope="scope">
-            <a href="javascript:;" @click="showCollectionDetail(scope.row)"
-              >合集详情</a
+            <menu-link @click="showCollectionDetail(scope.row)"
+              >合集详情</menu-link
             >
-            <el-divider direction="vertical" />
-            <a href="javascript:;" @click="updateCollection(scope.row)"
-              >合集属性</a
+            <menu-link @click="updateCollection(scope.row)">合集属性</menu-link>
+            <el-dropdown
+              @command="(command) => handleCommand(command, scope.row)"
+              trigger="click"
+              :hide-on-click="false"
+              placement="bottom"
             >
-            <el-divider direction="vertical" />
-            <el-popconfirm
-              @confirm="delCollection(scope.row)"
-              title="合集删除后不可恢复，是否确认删除？"
-            >
-              <a href="javascript:;" slot="reference">删除</a>
-            </el-popconfirm>
+              <a> 更多<i class="el-icon-arrow-down el-icon--right"></i> </a>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="a">上传指南</el-dropdown-item>
+                <el-dropdown-item command="b">删除指南</el-dropdown-item>
+                <el-dropdown-item command="c">上传模板</el-dropdown-item>
+                <el-dropdown-item command="d">删除模板</el-dropdown-item>
+                <el-popconfirm
+                  @confirm="handleCommand('e', scope.row)"
+                  title="合集删除后不可恢复，是否确认删除？"
+                >
+                  <el-dropdown-item slot="reference" style="color: #e23322"
+                    >删除合集</el-dropdown-item
+                  >
+                </el-popconfirm>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -115,14 +111,13 @@
   </div>
 </template>
 <script>
-import Pagination from "components/Pagination";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import AddCollectionDialog from "./components/add-collection-dialog";
 import { delFormCollection, enableForm } from "@/api/form";
 export default {
   name: "FormList",
   mixins: [DataCollectionMixin],
-  components: { Pagination, AddCollectionDialog },
+  components: { AddCollectionDialog },
   data() {
     return {
       url: {
@@ -189,8 +184,13 @@ export default {
       } else {
         this.sorter = [{ property: prop, direction: "DESC" }];
       }
-
       this.loadData();
+    },
+
+    handleCommand(command, row) {
+      if (command == "e") {
+        this.delCollection(row);
+      }
     },
   },
 };

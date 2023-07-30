@@ -38,21 +38,7 @@ export const constantRouterMap = [
   {
     path: "/",
     name: "Home",
-    component: BasicLayout,
-    meta: {
-      title: "首页",
-      icon: "首页-white",
-    },
-    children: [
-      {
-        path: "/home",
-        name: "HomePage",
-        component: () => import("@/views/index/home/home"),
-        meta: {
-          title: "首页",
-        },
-      },
-    ],
+    redirect: "/home",
   },
 ];
 

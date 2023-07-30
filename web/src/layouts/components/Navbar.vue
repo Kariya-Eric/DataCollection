@@ -29,9 +29,6 @@ export default {
       routers: (state) => state.permission.addRouters,
     }),
   },
-  mounted() {
-    console.log("navbar", this.routers);
-  },
   methods: {
     ...mapActions(["LogOut"]),
     logout() {

@@ -63,11 +63,9 @@
 
 <script>
 import { configAuthority } from "@/api/task";
-import SelectTree from "components/SelectTree";
 export default {
   name: "PermissionDialog",
   props: ["taskId"],
-  components: { SelectTree },
   data() {
     return {
       isBatch: false,

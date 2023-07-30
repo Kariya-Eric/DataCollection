@@ -4,77 +4,64 @@
     :visible="visible"
     :show-close="false"
     @opened="drawerOpen"
-    size="65%"
+    :size="1200"
   >
-    <div slot="title">
-      <el-row>
-        <el-col :span="12">资源授权</el-col>
-        <el-col :span="12">
-          <div class="search-button-admin">
-            <el-button type="primary" size="small" @click="savePermission"
-              >保存</el-button
-            >
-            <el-button href="javascript:;" @click="close" size="small"
-              >返回</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+    <div slot="title" class="titleSlot">
+      <span>资源授权</span>
+      <div class="titleButton">
+        <Mbutton type="primary" name="保存" @click="savePermission" />
+        <Mbutton name="返回" icon="返回" @click="close" />
+      </div>
     </div>
-    <div class="mainContent">
-      <el-row :gutter="24">
-        <el-col :span="6">
-          <el-input
-            placeholder="输入关键字进行过滤"
-            v-model="menuFilter"
-            clearable
-            size="small"
-            prefix-icon="el-icon-search"
-            style="margin-bottom: 12px"
-          >
-          </el-input>
-          <el-tree
-            v-loading="loading"
-            show-checkbox
-            node-key="id"
-            class="filter-tree"
-            :data="menuList"
-            :props="menuProps"
-            :filter-node-method="filterNode"
-            default-expand-all
-            :expand-on-click-node="false"
-            :check-strictly="true"
-            @node-click="nodeClick"
-            highlight-current
-            ref="menuTree"
-          ></el-tree>
-        </el-col>
-        <el-col :span="18">
-          <el-table
-            size="small"
-            :data="sysMethodDataSource"
-            :border="true"
-            :loading="tableLoading"
-          >
-            <el-table-column type="selection" width="55" align="center">
-              <template slot-scope="scope">
-                <el-checkbox
-                  :value="scope.row.isSelected == '1'"
-                  @change="(val) => changeChecked(scope.row, val)"
-                />
-              </template>
-            </el-table-column>
-            <el-table-column label="别名" align="center" prop="alias" />
-            <el-table-column label="名称" align="center" prop="name" />
-            <el-table-column
-              label="请求地址"
-              align="center"
-              prop="requestUrl"
-            />
-          </el-table>
-        </el-col>
-      </el-row>
-    </div>
+
+    <el-row :gutter="24">
+      <el-col :span="6">
+        <el-input
+          placeholder="输入关键字进行过滤"
+          v-model="menuFilter"
+          clearable
+          size="small"
+          prefix-icon="el-icon-search"
+          style="margin-bottom: 12px"
+        >
+        </el-input>
+        <el-tree
+          v-loading="loading"
+          show-checkbox
+          node-key="id"
+          class="filter-tree"
+          :data="menuList"
+          :props="menuProps"
+          :filter-node-method="filterNode"
+          default-expand-all
+          :expand-on-click-node="false"
+          :check-strictly="true"
+          @node-click="nodeClick"
+          highlight-current
+          ref="menuTree"
+        ></el-tree>
+      </el-col>
+      <el-col :span="18">
+        <el-table
+          size="small"
+          :data="sysMethodDataSource"
+          :border="true"
+          :loading="tableLoading"
+        >
+          <el-table-column type="selection" width="55" align="center">
+            <template slot-scope="scope">
+              <el-checkbox
+                :value="scope.row.isSelected == '1'"
+                @change="(val) => changeChecked(scope.row, val)"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="别名" align="center" prop="alias" />
+          <el-table-column label="名称" align="center" prop="name" />
+          <el-table-column label="请求地址" align="center" prop="requestUrl" />
+        </el-table>
+      </el-col>
+    </el-row>
   </el-drawer>
 </template>
 
@@ -217,19 +204,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-::v-deep .el-drawer__header {
-  font-weight: bold;
-  font-size: 18px;
-  letter-spacing: 0ch;
-  padding-bottom: 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-}
-.mainContent {
-  width: 90%;
-  margin: auto;
-}
-</style>
+<style lang="scss" scoped></style>

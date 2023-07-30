@@ -54,11 +54,9 @@
 </template>
 
 <script>
-import Pagination from "components/Pagination";
 import { getUserList, addOrgUser } from "@/api/system";
 export default {
   name: "AddDepartUserDialog",
-  components: { Pagination },
   data() {
     return {
       visible: false,

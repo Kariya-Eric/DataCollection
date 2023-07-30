@@ -6,9 +6,15 @@
       v-on="$listeners"
       :visible="visible"
       @close="onClose"
+      :show-close="false"
       size="80%"
-      title="表单预览"
     >
+      <div slot="title" class="titleSlot">
+        <span>表单预览</span>
+        <div class="titleButton">
+          <Mbutton name="返回" icon="返回" @click="onClose" />
+        </div>
+      </div>
       <div class="right-preview">
         <iframe
           v-show="isIframeLoaded"

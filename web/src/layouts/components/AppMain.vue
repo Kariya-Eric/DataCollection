@@ -36,6 +36,6 @@ export default {
   position: relative;
   overflow: hidden;
   background-color: rgb(240, 242, 245);
-  padding: 12px;
+  padding: 20px;
 }
 </style>

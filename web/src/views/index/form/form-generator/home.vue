@@ -6,45 +6,31 @@
     :show-close="false"
     :append-to-body="true"
   >
-    <div slot="title">
-      <el-row>
-        <el-col :span="10">
-          <el-tag type="warning" style="margin-right: 24px">{{
-            info.type
-          }}</el-tag>
-          <span style="font-weight: bold; font-size: 18px"
-            >{{ info.name }}（{{ info.collectTimeType }}）</span
-          >
-        </el-col>
-        <el-col :span="10">
-          <el-button
-            :round="activeTab == 0"
-            :type="activeTab == 0 ? 'primary' : 'text'"
-            @click="() => (activeTab = 0)"
-            >表单设计</el-button
-          >
-          <el-button
-            :round="activeTab == 1"
-            :type="activeTab == 1 ? 'primary' : 'text'"
-            @click="() => (activeTab = 1)"
-            >校验规则</el-button
-          >
-        </el-col>
-        <el-col :span="4">
-          <div class="search-button-admin">
-            <el-button
-              icon="el-icon-document-checked"
-              type="primary"
-              size="small"
-              @click="save"
-              >保存</el-button
-            >
-            <el-button icon="el-icon-back" size="small" @click="close"
-              >返回</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+    <div slot="title" class="titleSlot">
+      <span
+        ><el-tag type="warning" style="margin-right: 24px">{{
+          info.type
+        }}</el-tag>
+        {{ info.name }}（{{ info.collectTimeType }}）</span
+      >
+      <div style="display: inline-block; margin-left: 30%">
+        <el-button
+          :round="activeTab == 0"
+          :type="activeTab == 0 ? 'primary' : 'text'"
+          @click="() => (activeTab = 0)"
+          >表单设计</el-button
+        >
+        <el-button
+          :round="activeTab == 1"
+          :type="activeTab == 1 ? 'primary' : 'text'"
+          @click="() => (activeTab = 1)"
+          >校验规则</el-button
+        >
+      </div>
+      <div class="titleButton">
+        <Mbutton type="primary" name="保存" @click="save" />
+        <Mbutton name="返回" icon="返回" @click="close" />
+      </div>
     </div>
 
     <div class="container" v-if="activeTab === 0">
@@ -430,18 +416,14 @@ export default {
 
 <style lang="scss" scoped>
 @import "./styles/home";
+
 ::v-deep .el-dialog__body {
   padding: 8px;
 }
 ::v-deep .el-dialog__header {
-  font-weight: bold;
-  font-size: 18px;
-  letter-spacing: 0ch;
-  padding-bottom: 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-  border-left: none;
-  border-right: none;
+  min-height: 62px;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 0;
 }
 .tinymceDiv {
   margin-left: 12px;

@@ -1,4 +1,6 @@
 import { postAction } from "@/api/api";
+import Vue from "vue";
+import { BUTTON_LIST } from "@/store/mutation-types";
 
 // 用于简化展示表格的mixins
 export const DataCollectionMixin = {
@@ -20,6 +22,9 @@ export const DataCollectionMixin = {
       // table选中keys
       selectedRowKeys: [],
       sorter: [],
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
     };
   },
 
@@ -82,6 +87,16 @@ export const DataCollectionMixin = {
 
     onSelectClear() {
       this.selectedRowKeys = [];
+    },
+
+    check(value) {
+      const buttonList = Vue.ls.get(BUTTON_LIST) || [];
+      for (let i = 0; i < buttonList.length; i++) {
+        if (buttonList[i] == value) {
+          return true;
+        }
+      }
+      return false;
     },
   },
 };

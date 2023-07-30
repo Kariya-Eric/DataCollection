@@ -2,69 +2,55 @@
   <div>
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
-      <el-row class="search-row">
-        <el-col :span="18">
-          <div class="filter-container">
-            <el-form
-              label-width="70px"
-              size="small"
-              :inline="true"
-              label-position="left"
-            >
-              <el-form-item label="角色名称">
-                <el-input
-                  v-model="queryParam.name"
-                  placeholder="请输入角色名称"
-                />
-              </el-form-item>
-              <el-form-item label="角色状态">
-                <el-select
-                  v-model="queryParam.enabled"
-                  clearable
-                  style="width: 100%"
-                  placeholder="请选择"
-                >
-                  <el-option label="启用" :value="1" />
-                  <el-option label="禁用" :value="0" />
-                </el-select>
-              </el-form-item>
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-search"
-                @click="searchQuery"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-refresh-right"
-                @click="searchReset"
-                >重置</el-button
-              >
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="search-button-admin">
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-plus"
-              @click="addRole"
-              >添加角色</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+      <el-form
+        label-width="70px"
+        size="small"
+        :inline="true"
+        class="headerForm"
+      >
+        <el-form-item label="角色名称">
+          <el-input v-model="queryParam.name" placeholder="请输入角色名称" />
+        </el-form-item>
+        <el-form-item label="角色状态">
+          <el-select
+            v-model="queryParam.enabled"
+            clearable
+            placeholder="请选择"
+          >
+            <el-option label="启用" :value="1" />
+            <el-option label="禁用" :value="0" />
+          </el-select>
+        </el-form-item>
+        <Mbutton type="primary" @click="searchQuery" name="搜索" />
+        <Mbutton type="primary" @click="searchReset" name="重置" />
+      </el-form>
       <!-- Query End -->
+
+      <div class="listHeader">
+        <span>角色管理</span>
+        <div class="listHeaderButton">
+          <Mbutton
+            type="danger"
+            v-if="selectedRowKeys.length > 0"
+            @click="delBatch"
+            name="批量删除"
+          />
+          <Mbutton
+            @click="addRole"
+            type="primary"
+            name="添加角色"
+            icon="新建"
+          />
+        </div>
+      </div>
 
       <!-- Table Start -->
       <el-table
         v-loading="loading"
         :data="dataSource"
-        size="small"
         :border="true"
+        class="listTable"
+        :header-cell-style="headerStyle"
       >
         <el-table-column label="角色名称" prop="name" align="center" />
         <el-table-column label="角色编码" prop="code" align="center" />
@@ -100,14 +86,12 @@
 
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
-import Pagination from "components/Pagination";
 import RoleDialog from "./components/role-dialog";
 import RolePermissionDrawer from "./components/role-permission-drawer";
 export default {
   name: "RoleList",
   mixins: [DataCollectionMixin],
   components: {
-    Pagination,
     RoleDialog,
     RolePermissionDrawer,
   },

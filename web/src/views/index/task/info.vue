@@ -1,17 +1,21 @@
 <template>
   <el-card shadow="always" class="app-card">
     <div class="mainContent">
-      <el-descriptions title="基础信息" :column="4">
+      <el-descriptions :column="4">
+        <template slot="title">
+          <svg-icon icon-class="基础信息" />
+          <span style="margin-left: 8px">基础信息</span>
+        </template>
         <template slot="extra">
-          <el-button
+          <Mbutton
             type="primary"
-            size="small"
+            icon="编辑"
             v-if="!taskInfo.enabledFlag"
+            v-has="'taskInfo_edit'"
             @click="editTask"
-            >编辑</el-button
-          >
-          <el-button type="primary" size="small">导出</el-button>
-          <el-button size="small" @click="goBack">返回</el-button>
+            name="编辑"
+          />
+          <Mbutton name="返回" icon="返回" @click="goBack" />
         </template>
         <el-descriptions-item label="任务名称"
           >{{ taskInfo.name }}
@@ -19,12 +23,13 @@
         <el-descriptions-item label="任务类型">{{
           taskInfo.type
         }}</el-descriptions-item>
-        <el-descriptions-item label="统计开始时间"
+        <el-descriptions-item label="填报开始时间"
           >{{ taskInfo.statisticsStartTime }}
         </el-descriptions-item>
-        <el-descriptions-item label="统计截止时间">
+        <el-descriptions-item label="填报截止时间">
           {{ taskInfo.statisticsEndTime }}
         </el-descriptions-item>
+        <el-descriptions-item label="统计时间"> ？？ </el-descriptions-item>
         <el-descriptions-item label="学年">
           {{ taskInfo.schoolYear }}
         </el-descriptions-item>
@@ -35,39 +40,40 @@
           <div class="tagDiv">
             <el-tag
               v-for="(item, index) in tagList"
+              size="medium"
               :key="index"
-              size="small"
               >{{ item }}</el-tag
             >
           </div>
         </el-descriptions-item>
+        <el-descriptions-item label="合集名称"> ？？ </el-descriptions-item>
+        <el-descriptions-item label="合集年份"> ？？ </el-descriptions-item>
         <el-descriptions-item label="任务状态">
-          <div>
-            <el-tag v-if="taskInfo.enabledFlag === 0" type="info" size="small"
-              >未启用</el-tag
-            >
-            <el-tag v-if="taskInfo.enabledFlag === 1" size="small"
-              >启用中</el-tag
-            >
-          </div>
+          <status :status="taskInfo.status" />
         </el-descriptions-item>
         <el-descriptions-item label="任务进度">
           <el-progress
             :percentage="taskInfo.percentage"
             style="
               display: inline-flex;
-              width: 20%;
+              width: 60%;
               margin-top: 14px;
               margin-left: 12px;
             "
           />
         </el-descriptions-item>
       </el-descriptions>
-      <el-descriptions title="表单分配" style="margin-top: 24px" />
+      <el-descriptions style="margin-top: 24px">
+        <template slot="title">
+          <svg-icon icon-class="表单分配" />
+          <span style="margin-left: 8px">表单分配</span>
+        </template>
+      </el-descriptions>
       <el-table
         :data="formList"
-        size="small"
         :border="true"
+        class="listTable"
+        :header-cell-style="headerStyle"
         v-loading="loading"
         :span-method="objectSpanMethod"
       >
@@ -107,11 +113,16 @@ export default {
   data() {
     return {
       taskId: undefined,
-      taskInfo: {},
+      taskInfo: {
+        status: 0,
+      },
       formList: [],
       loading: false,
       tagList: [],
       indexArray: [],
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
     };
   },
   watch: {
@@ -209,21 +220,16 @@ export default {
 
 <style lang="scss" scoped>
 .mainContent {
-  padding: 12px 24px 24px 24px;
-}
-/deep/ .el-descriptions-item__container {
-  .el-descriptions-item__label {
-    line-height: 32px;
+  margin: 4px 0px 20px 0px;
+  .el-tag {
+    margin-left: 10px;
+    border-radius: 13px;
+    color: #ef722e;
+    background-color: #fff1ea;
+    border-color: #ef722e;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
   }
-  .el-descriptions-item__content {
-    line-height: 32px;
-    .progress {
-      margin-top: 14px;
-      margin-left: 12px;
-    }
-  }
-}
-.tagDiv .el-tag {
-  margin-right: 4px;
 }
 </style>

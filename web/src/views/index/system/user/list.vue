@@ -2,83 +2,57 @@
   <div>
     <el-card shadow="always" class="app-card">
       <!-- Query Start -->
-      <el-row class="search-row">
-        <el-col :span="12">
-          <div class="filter-container">
-            <el-form
-              label-width="50px"
-              size="small"
-              :inline="true"
-              label-position="left"
-            >
-              <el-form-item label="部门">
-                <el-select
-                  v-model="queryParam.orgId"
-                  clearable
-                  style="width: 100%"
-                  placeholder="请选择部门"
-                >
-                  <!-- TODO -->
-                </el-select>
-              </el-form-item>
-              <el-form-item>
-                <el-input
-                  v-model="queryParam.queryWord"
-                  placeholder="请输入姓名,帐号,手机"
-                />
-              </el-form-item>
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-search"
-                @click="searchQuery"
-                >搜索</el-button
-              >
-              <el-button
-                type="primary"
-                size="small"
-                icon="el-icon-refresh-right"
-                @click="searchReset"
-                >重置</el-button
-              >
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div class="search-button-admin">
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-plus"
-              @click="addUser"
-              >添加用户</el-button
-            >
-            <el-button
-              type="danger"
-              size="small"
-              icon="el-icon-delete"
-              v-if="selectedRowKeys.length > 0"
-              @click="delBatch"
-              >批量删除</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-upload2"
-              >导入</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-download"
-              >导出</el-button
-            >
-            <a>下载导入模板</a>
-          </div>
-        </el-col>
-      </el-row>
+      <el-form
+        label-width="50px"
+        size="small"
+        :inline="true"
+        class="headerForm"
+      >
+        <el-form-item label="部门">
+          <el-select
+            v-model="queryParam.orgId"
+            clearable
+            placeholder="请选择部门"
+          >
+            <!-- TODO -->
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="queryParam.queryWord"
+            placeholder="请输入姓名,帐号,手机"
+          />
+        </el-form-item>
+        <Mbutton type="primary" @click="searchQuery" name="搜索" />
+        <Mbutton type="primary" @click="searchReset" name="重置" />
+      </el-form>
 
-      <!-- Query End -->
+      <div class="listHeader">
+        <span>用户管理</span>
+        <div class="listHeaderButton">
+          <Mbutton
+            type="danger"
+            v-if="selectedRowKeys.length > 0"
+            @click="delBatch"
+            name="批量删除"
+          />
+          <Mbutton
+            @click="addUser"
+            type="primary"
+            name="添加用户"
+            icon="新建"
+          />
+          <Mbutton type="primary" name="导入" />
+          <Mbutton type="primary" name="导出" />
+        </div>
+      </div>
 
       <!-- Table Start -->
       <el-table
         v-loading="loading"
         :data="dataSource"
-        size="small"
+        class="listTable"
+        :header-cell-style="headerStyle"
         :border="true"
         @selection-change="onSelectChange"
       >
@@ -117,13 +91,12 @@
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import UserDrawer from "./components/user-drawer";
-import Pagination from "components/Pagination";
 import ResetPasswordDialog from "./components/reset-password-dialog";
 import { delUserBatch } from "@/api/system";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
-  components: { Pagination, UserDrawer, ResetPasswordDialog },
+  components: { UserDrawer, ResetPasswordDialog },
   data() {
     return {
       url: {

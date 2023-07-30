@@ -5,51 +5,50 @@
     @close="close"
     width="25%"
   >
-    <div class="formDiv">
-      <el-form
-        ref="addCollectionForm"
-        :model="addCollectionForm"
-        label-width="80px"
-        size="small"
-        :rules="rules"
-        v-loading="loading"
-      >
-        <el-form-item prop="name" label="合集名称">
-          <el-input
-            v-model="addCollectionForm.name"
-            clearable
-            placeholder="请输入合集名称"
-            style="width: 100%"
-            :disabled="updateFlag"
-          />
-        </el-form-item>
-        <el-form-item prop="type" label="合集类型">
-          <el-select
-            v-model="addCollectionForm.type"
-            placeholder="请选择合集类型"
-            style="width: 100%"
-            :disabled="updateFlag"
-          >
-            <el-option
-              label="教学基本状态数据"
-              value="教学基本状态数据"
-            ></el-option>
-            <el-option label="其他数据" value="其他数据"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="year" label="年份">
-          <el-date-picker
-            v-model="addCollectionForm.year"
-            value-format="yyyy"
-            type="year"
-            format="yyyy"
-            placeholder="请选择年份"
-            style="width: 100%"
-          />
-        </el-form-item>
-      </el-form>
-    </div>
-    <div slot="footer" class="dialog-footer">
+    <el-form
+      ref="addCollectionForm"
+      :model="addCollectionForm"
+      label-width="80px"
+      size="small"
+      :rules="rules"
+      v-loading="loading"
+    >
+      <el-form-item prop="name" label="合集名称">
+        <el-input
+          v-model="addCollectionForm.name"
+          clearable
+          placeholder="请输入合集名称"
+          style="width: 100%"
+          :disabled="updateFlag"
+        />
+      </el-form-item>
+      <el-form-item prop="type" label="合集类型">
+        <el-select
+          v-model="addCollectionForm.type"
+          placeholder="请选择合集类型"
+          style="width: 100%"
+          :disabled="updateFlag"
+        >
+          <el-option
+            label="教学基本状态数据"
+            value="教学基本状态数据"
+          ></el-option>
+          <el-option label="其他数据" value="其他数据"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="year" label="年份">
+        <el-date-picker
+          v-model="addCollectionForm.year"
+          value-format="yyyy"
+          type="year"
+          format="yyyy"
+          placeholder="请选择年份"
+          style="width: 100%"
+        />
+      </el-form-item>
+    </el-form>
+
+    <div slot="footer">
       <el-button size="small" @click="close">取 消</el-button>
       <el-button type="primary" size="small" @click="handleSubmit"
         >确 定</el-button
@@ -137,5 +136,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

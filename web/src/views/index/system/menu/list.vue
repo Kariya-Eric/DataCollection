@@ -52,27 +52,13 @@
           <el-empty description="请选择菜单查看详细信息"></el-empty>
         </el-card>
         <el-card v-else>
-          <div slot="header">
-            <span style="font-weight: bold; font-size: 16px">菜单详情</span>
-            <div class="search-button-admin">
+          <div slot="header" class="cardTitleSlot">
+            <span>菜单详情</span>
+            <div class="titleButton">
               <el-popconfirm @confirm="delMenu" title="确认要删除该菜单吗？">
-                <el-button
-                  icon="el-icon-delete"
-                  type="danger"
-                  :loading="treeLoading"
-                  size="small"
-                  slot="reference"
-                  >删除</el-button
-                >
+                <Mbutton slot="reference" type="danger" name="删除" />
               </el-popconfirm>
-              <el-button
-                icon="el-icon-document-checked"
-                type="primary"
-                :loading="treeLoading"
-                size="small"
-                @click="saveMenu"
-                >保存</el-button
-              >
+              <Mbutton @click="saveMenu" type="primary" name="保存" />
             </div>
           </div>
           <right-menu ref="rightMenu" />
@@ -134,14 +120,8 @@ export default {
     },
 
     saveMenu() {
-      this.$refs.rightMenu.updateMenuDetail().then((res) => {
-        if (res !== undefined) {
-          res.sysMethods.forEach((method) => {
-            delete method.editFlag;
-            if (method.id.length < 32) {
-              delete method.id;
-            }
-          });
+      this.$refs.rightMenu.updateMenu().then((res) => {
+        if (res) {
           saveMenu(res).then((res) => {
             if (res.state) {
               this.$message.success(res.message);

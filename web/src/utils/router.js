@@ -2,7 +2,7 @@ import BasicLayout from "@/layouts/BasicLayout";
 
 //菜单item生成路由页面
 function loadView(item) {
-  let flag = item.children.length > 0;
+  let flag = item.alias == "home" ? true : item.children.length > 0;
   return {
     path: item.menuUrl,
     name: item.alias,

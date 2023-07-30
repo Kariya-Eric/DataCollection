@@ -36,11 +36,9 @@
 </template>
 
 <script>
-import SelectTree from "components/SelectTree";
 import { addOrg } from "@/api/system";
 export default {
   name: "AddDepartDialog",
-  components: { SelectTree },
   data() {
     return {
       visible: false,

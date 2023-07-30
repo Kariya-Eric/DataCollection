@@ -54,10 +54,8 @@
 
 <script>
 import { saveMenu } from "@/api/system";
-import SelectTree from "components/SelectTree";
 export default {
   name: "AddMenuDialog",
-  components: { SelectTree },
   data() {
     return {
       visible: false,

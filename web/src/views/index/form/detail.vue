@@ -1,93 +1,69 @@
 <template>
   <div>
-    <el-card shadow="always" class="app-card">
-      <el-row>
-        <el-col :span="12">
-          <el-descriptions
-            style="margin-top: 12px; margin-left: 12px"
-            :column="2"
-          >
-            <el-descriptions-item label="合集名称">{{
-              collectionDetail.name
-            }}</el-descriptions-item>
-            <el-descriptions-item label="年份">{{
-              collectionDetail.year
-            }}</el-descriptions-item>
-          </el-descriptions>
-        </el-col>
-      </el-row>
-      <el-row style="margin-top: 12px; margin-bottom: 12px">
-        <el-col :span="16">
-          <el-form label-width="80px" size="small" :inline="true">
-            <el-form-item label="表单大类">
-              <el-select
-                v-model="queryParam.listCategory"
-                placeholder="请选择表单大类"
-                clearable
-              >
-                <el-option
-                  v-for="item in listCategories"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="前置表单">
-              <el-select
-                v-model="queryParam.type"
-                placeholder="请选择前置表单"
-                clearable
-              >
-                <el-option label="全部" value="全部" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="表单名称">
-              <el-input
-                v-model="queryParam.name"
-                placeholder="请输入表单名称"
-              />
-            </el-form-item>
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-search"
-              @click="getFormList"
-              >搜索</el-button
-            >
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-refresh-right"
-              @click="searchReset"
-              >重置</el-button
-            >
-          </el-form>
-        </el-col>
-        <el-col :span="8">
-          <div style="float: right; margin-right: 12px">
-            <el-button size="small" @click="updateFormCategory" type="primary"
-              >配置表单大类</el-button
-            >
-            <el-button size="small" type="primary" icon="el-icon-document-copy"
-              >复制表单</el-button
-            >
-            <el-button
-              type="primary"
-              size="small"
-              @click="addForm"
-              icon="el-icon-plus"
-              >新建表单</el-button
-            >
-            <el-button size="small" @click="goBack">返回</el-button>
-          </div>
-        </el-col>
-      </el-row>
-      <el-table
-        style="margin-top: 12px"
-        :loading="loading"
+    <span class="cardTitle">
+      <span class="titleYear">&nbsp;&nbsp;{{ collectionDetail.year }}</span>
+      {{ collectionDetail.name }}
+    </span>
+    <el-card shadow="always" class="app-card" style="margin-top: 16px">
+      <el-form
+        label-width="80px"
         size="small"
-        :border="true"
+        :inline="true"
+        class="headerForm"
+      >
+        <el-form-item label="表单大类">
+          <el-select
+            v-model="queryParam.listCategory"
+            placeholder="请选择表单大类"
+            clearable
+          >
+            <el-option
+              v-for="item in listCategories"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="前置表单">
+          <el-select
+            v-model="queryParam.type"
+            placeholder="请选择前置表单"
+            clearable
+          >
+            <el-option label="全部" value="全部" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="表单名称">
+          <el-input v-model="queryParam.name" placeholder="请输入表单名称" />
+        </el-form-item>
+        <Mbutton type="primary" name="搜索" @click="getFormList" />
+        <Mbutton type="primary" name="重置" @click="searchReset" />
+      </el-form>
+
+      <div class="listHeader">
+        <span>合集详情</span>
+        <div class="listHeaderButton">
+          <Mbutton
+            @click="updateFormCategory"
+            type="primary"
+            icon="配置大类"
+            name="配置表单大类"
+          />
+          <Mbutton type="primary" icon="复制" name="复制表单" />
+          <Mbutton
+            @click="addForm"
+            icon="新建"
+            type="primary"
+            name="新建表单"
+          />
+        </div>
+      </div>
+      
+      <el-table
+        :loading="loading"
+        class="listTable"
+        :header-cell-style="headerStyle"
         :data="dataSource"
       >
         <el-table-column label="表单名称" prop="name" align="center" />
@@ -101,7 +77,15 @@
           prop="collectTimeType"
           align="center"
         />
-        <el-table-column label="表单类型" prop="type" align="center" />
+        <el-table-column label="表单类型" prop="type" align="center">
+          <template slot-scope="scope">
+            <el-tag
+              size="medium"
+              :class="`tag${scope.row.type === '固定表单' ? 'Fix' : 'Float'}`"
+              >{{ scope.row.type }}</el-tag
+            >
+          </template>
+        </el-table-column>
         <el-table-column
           label="是否必填"
           prop="required"
@@ -113,6 +97,7 @@
           </template>
         </el-table-column>
         <el-table-column label="前置表单" align="center" />
+        <el-table-column label="表单模板" align="center" />
         <el-table-column
           label="启用"
           prop="enabledFlag"
@@ -130,16 +115,28 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="250px">
           <template slot-scope="scope">
-            <a href="javascript:;" @click="showForm(scope.row)">表单详情</a>
-            <el-divider direction="vertical" />
-            <a href="javascript:;" @click="formDetail(scope.row)">表单属性</a>
-            <el-divider direction="vertical" />
-            <el-popconfirm
-              title="表单删除后不可恢复，是否确认删除？"
-              @confirm="delForm(scope.row)"
+            <menu-link @click="showForm(scope.row)">表单详情</menu-link>
+            <menu-link @click="formDetail(scope.row)">表单属性</menu-link>
+            <el-dropdown
+              @command="(command) => handleCommand(command, scope.row)"
+              trigger="click"
+              :hide-on-click="false"
+              placement="bottom"
             >
-              <a href="javascript:;" slot="reference">删除</a>
-            </el-popconfirm>
+              <a> 更多<i class="el-icon-arrow-down el-icon--right"></i> </a>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="a">上传模板</el-dropdown-item>
+                <el-dropdown-item command="b">删除模板</el-dropdown-item>
+                <el-popconfirm
+                  @confirm="handleCommand('c', scope.row)"
+                  title="表单删除后不可恢复，是否确认删除？"
+                >
+                  <el-dropdown-item slot="reference" style="color: #e23322"
+                    >删除表单</el-dropdown-item
+                  >
+                </el-popconfirm>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -152,7 +149,6 @@
 </template>
 
 <script>
-import Pagination from "components/Pagination";
 import AddFormDialog from "./components/add-form-dialog";
 import UpdateFormCategory from "./components/update-form-category";
 import FormGenerator from "./form-generator/home";
@@ -165,13 +161,15 @@ import {
 export default {
   name: "FormDetail",
   components: {
-    Pagination,
     AddFormDialog,
     UpdateFormCategory,
     FormGenerator,
   },
   data() {
     return {
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
       collectionDetail: {},
       loading: false,
       queryParam: {},
@@ -298,8 +296,44 @@ export default {
       this.queryParam = {};
       this.getFormList(1);
     },
+
+    handleCommand(command, row) {
+      if (command == "c") {
+        this.delForm(row);
+      }
+    },
   },
 };
 </script>
+<style lang="scss" scoped>
+.el-tag {
+  border-radius: 13px;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: center;
+}
+.tagFloat {
+  color: #2f68bd;
+  background-color: #e7f2ff;
+  border-color: #2f68bd;
+}
+.tagFix {
+  color: #2b9e77;
+  background-color: #e7f7ec;
+  border-color: #2b9e77;
+}
 
-<style></style>
+.titleYear {
+  display: inline-block;
+  width: 54px;
+  height: 22px;
+  background: linear-gradient(360deg, #2f68bd 0%, #76a8f4 100%);
+  border-radius: 40px 2px 40px 2px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 22px;
+  margin-right: 10px;
+}
+</style>

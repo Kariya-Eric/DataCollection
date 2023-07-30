@@ -1,105 +1,107 @@
 <template>
-  <el-drawer
-    :title="addFlag ? '新增用户' : updateFlag ? '修改用户' : '查看用户'"
-    :visible="visible"
-    @close="close"
-  >
-    <div class="formDiv">
-      <el-form
-        ref="userForm"
-        :model="userForm"
-        label-width="120px"
-        size="small"
-        :rules="rules"
-        v-loading="loading"
-      >
-        <el-form-item prop="account" label="帐号">
-          <el-input
-            :readonly="!addFlag && !updateFlag"
-            v-model="userForm.account"
-            placeholder="请输入帐号"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item prop="name" label="姓名">
-          <el-input
-            v-model="userForm.name"
-            :readonly="!addFlag && !updateFlag"
-            placeholder="请输入姓名"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item prop="password" label="密码" v-if="addFlag">
-          <el-input
-            v-model="userForm.password"
-            placeholder="请输入密码"
-            clearable
-            show-password
-          />
-        </el-form-item>
-        <el-form-item prop="comfirmPwd" label="确认密码" v-if="addFlag">
-          <el-input
-            v-model="userForm.comfirmPwd"
-            placeholder="请再次输入密码"
-            clearable
-            show-password
-          />
-        </el-form-item>
-        <el-form-item prop="orgId" label="所属部门">
-          <select-tree
-            :options="departList"
-            :readonly="!addFlag && !updateFlag"
-            placeholder="请选择部门"
-            :value="userForm.orgId"
-            @getValue="getSelectedValue"
-            style="width: 100%"
-          />
-        </el-form-item>
-        <el-form-item prop="roleIds" label="角色">
-          <el-select
-            v-model="userForm.roleIds"
-            placeholder="请选择角色"
-            clearable
-            style="width: 100%"
-            multiple=""
-            :readonly="!addFlag && !updateFlag"
-          >
-            <el-option
-              v-for="item in roleList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="email" label="邮箱">
-          <el-input
-            :readonly="!addFlag && !updateFlag"
-            v-model="userForm.email"
-            placeholder="请输入邮箱"
-            prefix-icon="el-icon-message"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item prop="mobile" label="手机">
-          <el-input
-            :readonly="!addFlag && !updateFlag"
-            v-model="userForm.mobile"
-            placeholder="请输入手机号"
-            prefix-icon="el-icon-mobile"
-            maxlength="11"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-switch
-            v-model="userForm.status"
-            :active-value="1"
-            :inactive-value="0"
-          />
-        </el-form-item>
-      </el-form>
+  <el-drawer :visible="visible" @close="close" :show-close="false">
+    <div slot="title" class="titleSlot">
+      <span>{{
+        addFlag ? "新增用户" : updateFlag ? "修改用户" : "查看用户"
+      }}</span>
+      <div class="titleButton">
+        <Mbutton name="返回" icon="返回" @click="close" />
+      </div>
     </div>
+    <el-form
+      ref="userForm"
+      :model="userForm"
+      label-width="120px"
+      size="small"
+      :rules="rules"
+      v-loading="loading"
+    >
+      <el-form-item prop="account" label="帐号">
+        <el-input
+          :readonly="!addFlag && !updateFlag"
+          v-model="userForm.account"
+          placeholder="请输入帐号"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item prop="name" label="姓名">
+        <el-input
+          v-model="userForm.name"
+          :readonly="!addFlag && !updateFlag"
+          placeholder="请输入姓名"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item prop="password" label="密码" v-if="addFlag">
+        <el-input
+          v-model="userForm.password"
+          placeholder="请输入密码"
+          clearable
+          show-password
+        />
+      </el-form-item>
+      <el-form-item prop="comfirmPwd" label="确认密码" v-if="addFlag">
+        <el-input
+          v-model="userForm.comfirmPwd"
+          placeholder="请再次输入密码"
+          clearable
+          show-password
+        />
+      </el-form-item>
+      <el-form-item prop="orgId" label="所属部门">
+        <select-tree
+          :options="departList"
+          :readonly="!addFlag && !updateFlag"
+          placeholder="请选择部门"
+          :value="userForm.orgId"
+          @getValue="getSelectedValue"
+          style="width: 100%"
+        />
+      </el-form-item>
+      <el-form-item prop="roleIds" label="角色">
+        <el-select
+          v-model="userForm.roleIds"
+          placeholder="请选择角色"
+          clearable
+          style="width: 100%"
+          multiple=""
+          :readonly="!addFlag && !updateFlag"
+        >
+          <el-option
+            v-for="item in roleList"
+            :key="item.id"
+            :value="item.id"
+            :label="item.name"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="email" label="邮箱">
+        <el-input
+          :readonly="!addFlag && !updateFlag"
+          v-model="userForm.email"
+          placeholder="请输入邮箱"
+          prefix-icon="el-icon-message"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item prop="mobile" label="手机">
+        <el-input
+          :readonly="!addFlag && !updateFlag"
+          v-model="userForm.mobile"
+          placeholder="请输入手机号"
+          prefix-icon="el-icon-mobile"
+          maxlength="11"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-switch
+          v-model="userForm.status"
+          :active-value="1"
+          :inactive-value="0"
+        />
+      </el-form-item>
+    </el-form>
     <div class="drawer-bottom" v-if="addFlag || updateFlag">
       <el-button size="small" @click="close">取 消</el-button>
       <el-button
@@ -117,10 +119,8 @@
 import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 import { addUser, updateUser, initDeptTree, getRoleList } from "@/api/system";
-import SelectTree from "components/SelectTree";
 export default {
   name: "UserDrawer",
-  components: { SelectTree },
   data() {
     return {
       addFlag: false,
@@ -286,12 +286,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.formDiv {
-  margin-right: 60px;
-  /deep/ .el-form-item {
-    margin-bottom: 32px;
-  }
-}
 .drawer-bottom {
   position: absolute;
   bottom: -8px;

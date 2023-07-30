@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="配置表单大类" :visible="visible" @close="close" width="40%">
+  <el-dialog
+    title="配置表单大类"
+    :visible="visible"
+    @close="close"
+    width="40%"
+    @open="open"
+  >
     <div class="formDiv">
       <el-form
         ref="formCategoryForm"
@@ -17,96 +23,62 @@
         <el-form-item prop="year" label="年份">
           <el-input v-model="formCategoryForm.year" :disabled="true" />
         </el-form-item>
-        <el-form-item label="表单大类">
-          <vxe-toolbar>
-            <template #buttons>
-              <vxe-button icon="vxe-icon-square-plus" @click="insertRow()"
-                >添加大类</vxe-button
-              >
-            </template>
-          </vxe-toolbar>
-          <vxe-table
-            border
-            resizable
-            size="small"
-            show-overflow
-            ref="xTable"
-            max-height="400"
-            :row-config="{ isHover: true }"
-            :data="formCategoryForm.dataSource"
-            align="center"
-          >
-            <vxe-column field="index" width="60">
-              <template #default="{ row }">
-                <span>{{ row.index + 1 }}</span>
-              </template>
-            </vxe-column>
-            <vxe-column field="name" title="表单大类名称"></vxe-column>
-            <vxe-column title="操作" width="220" show-overflow>
-              <template #default="{ row }">
-                <a href="javascript:;" @click="editRow(row)">编辑</a>
-                <el-divider direction="vertical" />
-                <el-popconfirm
-                  @confirm="removeRow(row)"
-                  title="确认删除该条数据吗"
-                >
-                  <a href="javascript:;" slot="reference">删除</a>
-                </el-popconfirm>
-                <el-divider direction="vertical" v-if="row.index != 0" />
-                <a href="javascript:;" @click="upRow(row)" v-if="row.index != 0"
-                  >上移</a
-                >
-                <el-divider
-                  direction="vertical"
-                  v-if="row.index != formCategoryForm.dataSource.length - 1"
-                />
-                <a
-                  href="javascript:;"
-                  @click="downRow(row)"
-                  v-if="row.index != formCategoryForm.dataSource.length - 1"
-                  >下移</a
-                >
-              </template>
-            </vxe-column>
-          </vxe-table>
-          <vxe-modal
-            v-model="showEdit"
-            :title="selectRow ? '编辑表单大类' : '新增表单大类'"
-            width="600"
-            :loading="submitLoading"
-            resize
-            destroy-on-close
-          >
-            <template #default>
-              <vxe-form
-                :data="formData"
-                :rules="formRules"
-                @submit="submitEvent"
-              >
-                <vxe-form-item
-                  field="name"
-                  :span="24"
-                  title="表单大类名称"
-                  :item-render="{}"
-                >
-                  <template #default="{ data }">
-                    <vxe-input
-                      v-model="data.name"
-                      placeholder="请输入表单大类名称"
-                    ></vxe-input>
-                  </template>
-                </vxe-form-item>
-                <vxe-form-item align="center" title-align="left" :span="24">
-                  <template #default>
-                    <vxe-button type="submit">提交</vxe-button>
-                    <vxe-button type="reset">重置</vxe-button>
-                  </template>
-                </vxe-form-item>
-              </vxe-form>
-            </template>
-          </vxe-modal>
-        </el-form-item>
       </el-form>
+      <el-row style="margin-bottom: 8px"
+        ><span style="margin-left: 12px">表单大类</span
+        ><Mbutton
+          type="primary"
+          icon="el-icon-plus"
+          style="margin-left: 12px"
+          @click="insertRow"
+          name="添加"
+        />
+      </el-row>
+      <vxe-table
+        border
+        ref="xTable"
+        align="center"
+        size="medium"
+        resizable
+        keep-source
+        show-overflow
+        max-height="400"
+        :edit-rules="tableRules"
+        :edit-config="{ trigger: 'click', mode: 'cell' }"
+        :data="formCategoryForm.dataSource"
+      >
+        <vxe-column width="60">
+          <template #default>
+            <span class="drag-btn"><i class="el-icon-s-operation"></i></span>
+          </template>
+          <template #header>
+            <el-tooltip
+              content="按住后可以上下拖动排序！"
+              effect="dark"
+              placement="right"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </template>
+        </vxe-column>
+        <vxe-column type="seq" width="60"></vxe-column>
+        <vxe-column
+          field="name"
+          title="表单大类名称"
+          :edit-render="{ autofocus: '.el-input__inner' }"
+        >
+          <template #edit="scope">
+            <el-input v-model="scope.row.name"></el-input>
+          </template>
+        </vxe-column>
+        <vxe-column title="操作" width="100" show-overflow>
+          <template #default="{ row }">
+            <el-popconfirm title="确认删除该行吗？" @confirm="deleteRow(row)">
+              <a href="javascript:;" slot="reference">删除</a>
+            </el-popconfirm>
+          </template>
+        </vxe-column>
+      </vxe-table>
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="close">取 消</el-button>
@@ -122,22 +94,13 @@
 </template>
 
 <script>
-import {
-  getFormCategories,
-  updateFormCategory,
-  addFormCategory,
-  delFormCategory,
-  saveFormCategories,
-} from "@/api/form";
+import Sortable from "sortablejs";
+import { getFormCategories, saveFormCategories } from "@/api/form";
 export default {
   name: "UpdateFormCategory",
   data() {
     return {
-      showEdit: false,
-      selectRow: null,
       submitLoading: false,
-      tableData: [],
-      showFlag: false,
       loading: false,
       visible: false,
       formCategoryForm: {
@@ -148,15 +111,39 @@ export default {
         type: [{ required: true, message: "请选择合集类型" }],
         year: [{ required: true, message: "请选择年份" }],
       },
-      formData: {
-        name: "",
-      },
-      formRules: {
-        name: [{ required: true, message: "请输入表单大类名称" }],
+
+      tableRules: {
+        name: [{ required: true, message: "表单大类名不能为空" }],
       },
     };
   },
+
   methods: {
+    open() {
+      this.rowDrop();
+    },
+
+    rowDrop() {
+      this.$nextTick(() => {
+        const xTable = this.$refs.xTable;
+        this.sortable = Sortable.create(
+          xTable.$el.querySelector(".body--wrapper>.vxe-table--body tbody"),
+          {
+            handle: ".drag-btn",
+            onEnd: ({ newIndex, oldIndex }) => {
+              const tableData = xTable.getTableData().tableData;
+              const currRow = tableData.splice(oldIndex, 1)[0];
+              tableData.splice(newIndex, 0, currRow);
+              this.formCategoryForm.dataSource = [];
+              this.$nextTick(
+                () => (this.formCategoryForm.dataSource = tableData)
+              );
+            },
+          }
+        );
+      });
+    },
+
     show(formCategory) {
       this.formCategoryForm = { ...formCategory, ...this.formCategoryForm };
       this.loadFormCategory();
@@ -165,7 +152,6 @@ export default {
 
     close() {
       this.visible = false;
-      this.showFlag = false;
       this.formCategoryForm = { dataSource: [] };
     },
 
@@ -180,117 +166,25 @@ export default {
       getFormCategories(param)
         .then((res) => {
           if (res.state) {
-            this.formCategoryForm.dataSource = [];
-            for (let i = 0; i < res.value.rows.length; i++) {
-              let row = res.value.rows[i];
-              let data = { ...row, index: i };
-              this.formCategoryForm.dataSource.push(data);
-            }
+            this.formCategoryForm.dataSource = res.value.rows;
           }
         })
         .finally(() => (this.loading = false));
     },
 
-    editRow(row) {
-      this.formData = {
-        id: row.id,
-        name: row.name,
-        sort: row.sort,
-      };
-      this.selectRow = row;
-      this.showEdit = true;
-    },
-
-    removeRow(row) {
-      this.loading = true;
-      let param = "id=" + row.id;
-      delFormCategory(param)
-        .then((res) => {
-          if (res.state) {
-            this.$message.success(res.message);
-            this.loadFormCategory();
-          } else {
-            this.$message.error(res.message);
-          }
-        })
-        .finally(() => (this.loading = false));
-    },
-    upRow(row) {
-      let before = this.formCategoryForm.dataSource.slice(0, row.index - 1);
-      let after = this.formCategoryForm.dataSource.slice(
-        row.index + 1,
-        this.formCategoryForm.dataSource.length
-      );
-      let rowBefore = this.formCategoryForm.dataSource.filter(
-        (data) => data.index == row.index - 1
-      )[0];
-      row.index = row.index - 1;
-      rowBefore.index = rowBefore.index + 1;
-      this.formCategoryForm.dataSource = [...before, row, rowBefore, ...after];
-    },
-    downRow(row) {
-      let before = this.formCategoryForm.dataSource.slice(0, row.index);
-      let after = this.formCategoryForm.dataSource.slice(
-        row.index + 2,
-        this.formCategoryForm.dataSource.length
-      );
-      let rowAfter = this.formCategoryForm.dataSource.filter(
-        (data) => data.index == row.index + 1
-      )[0];
-      row.index = row.index + 1;
-      rowAfter.index = rowAfter.index - 1;
-      this.formCategoryForm.dataSource = [...before, rowAfter, row, ...after];
-    },
-    insertRow() {
-      this.formData = {
-        name: "",
-        sort: this.formCategoryForm.dataSource.length + 1,
-      };
-      this.selectRow = null;
-      this.showEdit = true;
-    },
-    submitEvent() {
-      this.submitLoading = true;
-      this.showEdit = false;
-      if (!this.selectRow) {
-        let param = {
-          name: this.formData.name,
-          formCollectionId: this.formCategoryForm.id,
-          sort: this.formData.sort,
-        };
-        addFormCategory(param)
-          .then((res) => {
-            if (res.state) {
-              this.$message.success(res.message);
-              this.loadFormCategory();
-            } else {
-              this.$message.error(res.message);
-            }
-          })
-          .finally(() => (this.submitLoading = false));
-      } else {
-        updateFormCategory(this.formData)
-          .then((res) => {
-            if (res.state) {
-              this.$message.success(res.message);
-              this.loadFormCategory();
-            } else {
-              this.$message.error(res.message);
-            }
-          })
-          .finally(() => (this.submitLoading = false));
+    async handleSubmit() {
+      const $table = this.$refs.xTable;
+      const errMap = await $table.validate().catch((errMap) => errMap);
+      if (errMap) {
+        return;
       }
-    },
-
-    handleSubmit() {
-      this.loading = true;
+      let data = $table.getTableData().tableData;
+      for (let i = 0; i < data.length; i++) {
+        data[i].sort = i;
+      }
       let param = {
         formCollectionId: this.formCategoryForm.id,
-        categories: this.formCategoryForm.dataSource.map((data) => {
-          data.sort = data.index;
-          delete data.index;
-          return data;
-        }),
+        categories: data,
       };
       saveFormCategories(param)
         .then((res) => {
@@ -302,6 +196,22 @@ export default {
           }
         })
         .finally(() => (this.loading = false));
+    },
+
+    async insertRow() {
+      const $table = this.$refs.xTable;
+      const errMap = await $table.validate().catch((errMap) => errMap);
+      if (errMap) {
+        return;
+      }
+      const newRecord = {};
+      const { row: newRow } = await $table.insertAt(newRecord, -1);
+      await $table.setActiveRow(newRow);
+    },
+
+    async deleteRow(row) {
+      const $table = this.$refs.xTable;
+      await $table.remove(row);
     },
   },
 };

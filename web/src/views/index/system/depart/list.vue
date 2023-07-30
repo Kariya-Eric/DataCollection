@@ -210,7 +210,6 @@
 
 <script>
 import Vue from "vue";
-import SelectTree from "components/SelectTree";
 import { USER_INFO } from "@/store/mutation-types";
 import AddDepartUserDialog from "./components/add-depart-user-dialog";
 import AddDepartDialog from "./components/add-depart-dialog";
@@ -224,7 +223,7 @@ import {
 } from "@/api/system";
 export default {
   name: "DepartList",
-  components: { SelectTree, AddDepartUserDialog, AddDepartDialog },
+  components: { AddDepartUserDialog, AddDepartDialog },
   data() {
     return {
       departProps: {

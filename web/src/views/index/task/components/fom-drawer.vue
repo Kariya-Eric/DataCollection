@@ -6,22 +6,17 @@
     :show-close="false"
   >
     <div slot="title">
-      <el-row>
-        <el-col :span="12">{{ formInfo.formName }}</el-col>
-        <el-col :span="12">
-          <div class="search-button-admin">
-            <a href="javascript:;">下载导入模板</a>
-            <el-button type="primary" size="small">导入</el-button>
-            <el-button type="primary" size="small">导出</el-button>
-            <el-button type="primary" size="small">导出数据</el-button>
-            <el-button type="primary" size="small">保存</el-button>
-            <el-button type="primary" size="small" @click="submit"
-              >提交</el-button
-            >
-            <el-button @click="close" size="small">返回</el-button>
-          </div>
-        </el-col>
-      </el-row>
+      <div slot="title" class="titleSlot">
+        <span>{{ formInfo.formName }}</span>
+        <div class="titleButton">
+          <Mbutton name="下载导入模板" />
+          <Mbutton type="primary" name="导入" />
+          <Mbutton type="primary" name="导出数据" />
+          <Mbutton type="primary" name="保存" />
+          <Mbutton type="primary" name="提交" @click="submit" />
+          <Mbutton name="返回" icon="返回" @click="close" />
+        </div>
+      </div>
     </div>
     <el-scrollbar wrap-class="scrollbar-wrapper" style="height: 100%">
       <div class="right-preview">

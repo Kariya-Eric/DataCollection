@@ -63,88 +63,67 @@
         type="primary"
         icon="el-icon-plus"
         style="margin-left: 24px"
-        @click="addSysMethods"
+        @click="insertSysMethods"
         >添加</el-button
       ></el-row
     >
-    <el-form ref="sysMethodForm" :model="menuDetail">
-      <el-table :data="menuDetail.sysMethods" :border="true" size="small">
-        <el-table-column label="别名" align="center" prop="alias">
-          <template slot-scope="scope">
-            <template v-if="!scope.row.editFlag">{{ scope.row.alias }}</template>
-            <template v-else>
-              <el-form-item
-                class="innerFormItem"
-                :prop="'sysMethods.' + scope.$index + '.alias'"
-                :rules="[{ required: true, message: '别名不能为空' }]"
-              >
-                <el-input v-model="scope.row.alias" size="small" />
-              </el-form-item>
-            </template>
-          </template>
-        </el-table-column>
-        <el-table-column label="请求方法名" align="center" prop="name">
-          <template slot-scope="scope">
-            <template v-if="!scope.row.editFlag">{{ scope.row.name }}</template>
-            <template v-else>
-              <el-form-item
-                class="innerFormItem"
-                :prop="'sysMethods.' + scope.$index + '.name'"
-                :rules="[{ required: true, message: '请求方法名不能为空' }]"
-              >
-                <el-input
-                  v-model="scope.row.name"
-                  size="small"
-                  :disabled="!scope.row.editFlag"
-                />
-              </el-form-item>
-            </template>
-          </template>
-        </el-table-column>
-        <el-table-column label="请求地址" align="center" prop="requestUrl">
-          <template slot-scope="scope">
-            <template v-if="!scope.row.editFlag">{{ scope.row.requestUrl }}</template>
-            <template v-else>
-              <el-form-item
-                class="innerFormItem"
-                :prop="'sysMethods.' + scope.$index + '.requestUrl'"
-                :rules="[{ required: true, message: '请求地址不能为空' }]"
-              >
-                <el-input
-                  v-model="scope.row.requestUrl"
-                  size="small"
-                  :disabled="!scope.row.editFlag"
-                />
-              </el-form-item>
-            </template>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" width="120">
-          <template slot-scope="scope">
-            <a
-              href="javascript:;"
-              v-if="scope.row.editFlag"
-              @click="saveRow(scope)"
-              >保存</a
-            >
-            <a href="javascript:;" v-else @click="editRow(scope.row)">修改</a>
-            <el-divider direction="vertical" />
-            <el-popconfirm
-              title="确认要删该条功能资源吗?"
-              @confirm="delRow(scope.row)"
-            >
-              <a href="javascript:;" slot="reference">删除</a>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-form>
+    <vxe-table
+      border
+      ref="xTable"
+      align="center"
+      size="medium"
+      resizable
+      keep-source
+      show-overflow
+      :data="menuDetail.sysMethods"
+      :edit-rules="tableRules"
+      :edit-config="{ trigger: 'click', mode: 'cell' }"
+    >
+      <vxe-column type="seq" width="60"></vxe-column>
+      <vxe-column
+        field="alias"
+        title="别名"
+        :edit-render="{ autofocus: '.el-input__inner' }"
+      >
+        <template #edit="scope">
+          <el-input v-model="scope.row.alias"></el-input>
+        </template>
+      </vxe-column>
+      <vxe-column
+        field="name"
+        title="请求方法名"
+        :edit-render="{ autofocus: '.el-input__inner' }"
+      >
+        <template #edit="scope">
+          <el-input v-model="scope.row.name"></el-input>
+        </template>
+      </vxe-column>
+      <vxe-column
+        field="requestUrl"
+        title="请求地址"
+        :edit-render="{ autofocus: '.el-input__inner' }"
+      >
+        <template #edit="scope">
+          <el-input v-model="scope.row.requestUrl"></el-input>
+        </template>
+      </vxe-column>
+      <vxe-column title="操作" width="100" show-overflow>
+        <template #default="{ row }">
+          <el-popconfirm
+            @confirm="deleteSysMethod(row)"
+            title="确认删除该行吗？"
+          >
+            <a href="javascript:;" slot="reference">删除</a>
+          </el-popconfirm>
+        </template>
+      </vxe-column>
+    </vxe-table>
   </div>
 </template>
 
 <script>
 import { getMenu } from "@/api/system";
-import { nanoid } from "nanoid";
+
 export default {
   name: "RightMenu",
   data() {
@@ -159,6 +138,11 @@ export default {
         menuUrl: [{ required: true, message: "Url不能为空" }],
         templateUrl: [{ required: true, message: "模板Url不能为空" }],
         sn: [{ required: true, message: "排序不能为空" }],
+      },
+      tableRules: {
+        alias: [{ required: true, message: "别名不能为空" }],
+        name: [{ required: true, message: "请求地址不能为空" }],
+        requestUrl: [{ required: true, message: "请求地址不能为空" }],
       },
     };
   },
@@ -177,76 +161,36 @@ export default {
         });
     },
 
-    addSysMethods() {
-      let sysMethod = {
-        id: nanoid(),
-        alias: "",
-        name: "",
-        requestUrl: "",
-        editFlag: true,
-      };
-      if (!this.menuDetail.hasOwnProperty("sysMethods")) {
-        this.menuDetail.sysMethods = [];
+    async insertSysMethods() {
+      const $table = this.$refs.xTable;
+      const errMap = await $table.validate().catch((errMap) => errMap);
+      if (errMap) {
+        return;
       }
-      this.menuDetail.sysMethods.push(sysMethod);
+      const newRecord = {};
+      const { row: newRow } = await $table.insertAt(newRecord, -1);
+      await $table.setActiveRow(newRow);
     },
 
-    saveRow(scope) {
-      let flag = true;
-      this.$refs.sysMethodForm.validateField(
-        "sysMethods." + scope.$index + ".alias",
-        (valid) => {
-          if (valid && valid.length) {
-            flag = false;
-          }
-        }
-      );
-      this.$refs.sysMethodForm.validateField(
-        "sysMethods." + scope.$index + ".name",
-        (valid) => {
-          if (valid && valid.length) {
-            flag = false;
-          }
-        }
-      );
-      this.$refs.sysMethodForm.validateField(
-        "sysMethods." + scope.$index + ".requestUrl",
-        (valid) => {
-          if (valid && valid.length) {
-            flag = false;
-          }
-        }
-      );
-      if (flag) {
-        scope.row.editFlag = false;
-      }
-    },
-    editRow(row) {
-      row.editFlag = true;
-    },
-    delRow(row) {
-      this.menuDetail.sysMethods = this.menuDetail.sysMethods.filter(
-        (data) => data.id != row.id
-      );
+    async deleteSysMethod(row) {
+      const $table = this.$refs.xTable;
+      await $table.remove(row);
     },
 
-    updateMenuDetail() {
-      return new Promise((resolve, reject) => {
-        this.$refs.baseForm.validate((valid) => {
-          if (valid) {
-            this.$refs.sysMethodForm.validate((valid) => {
-              if (valid) {
-                this.menuDetail.sysMethods.forEach((sysMethod) => {
-                  sysMethod.editFlag = false;
-                });
-                resolve(this.menuDetail);
-              }
-              resolve(undefined);
-            });
-          }
-          resolve(undefined);
-        });
-      });
+    async updateMenu() {
+      try {
+        await this.$refs.baseForm.validate();
+        const $table = this.$refs.xTable;
+        const errMap = await $table.validate().catch((errMap) => errMap);
+        if (errMap) {
+          return undefined;
+        }
+        const data = $table.getTableData();
+        this.menuDetail.sysMethods = data.tableData;
+        return this.menuDetail;
+      } catch (error) {
+        return undefined;
+      }
     },
   },
 };

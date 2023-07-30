@@ -3,68 +3,74 @@
     <el-drawer
       :append-to-body="true"
       :visible="visible"
-      @close="onClose"
-      size="50%"
-      title="协作进度"
+      :show-close="false"
+      :size="1000"
     >
-      <div class="innerDrawer">
-        <el-descriptions>
-          <el-descriptions-item label="表单名称" :span="3">{{
-            formInfo.formName
-          }}</el-descriptions-item>
-          <el-descriptions-item label="统计时间" :span="3">{{
-            formInfo.statisticsEndTime
-          }}</el-descriptions-item>
-          <el-descriptions-item label="审核人" :span="3"></el-descriptions-item>
-          <el-descriptions-item label="整体提交进度"
-            ><el-progress
-              :percentage="50"
-              style="display: inline-flex; width: 20%"
-            />
-          </el-descriptions-item>
-        </el-descriptions>
-        <el-divider />
-        <el-table
-          v-loading="loading"
-          :data="dataSource"
-          size="small"
-          row-key="id"
-          :border="true"
-        >
-          <el-table-column
-            label="部门"
-            prop="collaborateOrgName"
-            align="center"
-          />
-          <el-table-column label="填报人" prop="fillUserName" align="center" />
-          <el-table-column
-            label="最新提交时间"
-            prop="statisticsEndTime"
-            align="center"
-          />
-          <el-table-column label="审核状态" prop="status" align="center">
-            <template slot-scope="scope">
-              <el-tag v-if="scope.row.status === 0" type="info" size="small"
-                >待提交</el-tag
-              >
-              <el-tag v-if="scope.row.status === 1" size="small">审核中</el-tag>
-              <el-tag v-if="scope.row.status === 2" type="success" size="small"
-                >审核通过</el-tag
-              >
-              <el-tag v-if="scope.row.status === 3" type="danger" size="small"
-                >退回修改</el-tag
-              >
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center">
-            <template slot-scope="scope">
-              <a href="javascript:;">查看</a>
-              <el-divider direction="vertical" />
-              <a href="javascript:;">催办</a>
-            </template>
-          </el-table-column>
-        </el-table>
+      <div slot="title" class="titleSlot">
+        <span>协作进度</span>
+        <div class="titleButton">
+          <Mbutton type="primary" icon="催办" name="一键催办" />
+          <Mbutton type="primary" icon="查看表单" name="查看表单" />
+          <Mbutton name="返回" icon="返回" @click="onClose" />
+        </div>
       </div>
+      <el-descriptions :column="2">
+        <el-descriptions-item label="表单名称">{{
+          formInfo.formName
+        }}</el-descriptions-item>
+        <el-descriptions-item label="填报时间">
+          {{ formInfo.statisticsEndTime }}至{{
+            formInfo.statisticsEndTime
+          }}</el-descriptions-item
+        >
+        <el-descriptions-item label="审核人"></el-descriptions-item>
+        <el-descriptions-item label="整体提交进度"
+          ><el-progress
+            :percentage="50"
+            style="display: inline-flex; width: 50%; margin-top: 8px"
+          />
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-divider />
+      <div class="tooltip">
+        <svg-icon icon-class="部门备份3" />
+        <span style="margin-left: 8px">负责部门</span>
+        <svg-icon icon-class="部门" style="margin-left: 50px" />
+        <span style="margin-left: 8px">协作部门</span>
+      </div>
+      <el-table
+        v-loading="loading"
+        :data="dataSource"
+        class="listTable"
+        :header-cell-style="headerStyle"
+        row-key="id"
+      >
+        <el-table-column
+          label="部门"
+          prop="collaborateOrgName"
+          align="center"
+        />
+        <el-table-column label="填报人" prop="fillUserName" align="center" />
+        <el-table-column
+          label="最新提交时间"
+          prop="statisticsEndTime"
+          align="center"
+        />
+        <el-table-column label="审核状态" prop="status" align="center">
+          <template slot-scope="scope">
+            <status
+              :status="caculateStatus(scope.row.status).status"
+              :title="caculateStatus(scope.row.status).name"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <menu-link>查看</menu-link>
+            <menu-link no-divider>催办</menu-link>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-drawer>
   </div>
 </template>
@@ -79,6 +85,9 @@ export default {
       loading: false,
       formInfo: {},
       dataSource: [],
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
     };
   },
   methods: {
@@ -97,12 +106,30 @@ export default {
         .finally(() => (this.loading = false));
       this.visible = true;
     },
+
+    caculateStatus(status) {
+      if (status == 0) {
+        return { status: 2, name: "待提交" };
+      } else if (status == 1) {
+        return { status: 1, name: "审核中" };
+      } else if (status == 2) {
+        return { status: 3, name: "审核通过" };
+      } else if (status == 3) {
+        return { status: 0, name: "退回修改" };
+      } else {
+        return { status: 2, name: "待配置人员" };
+      }
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
-.innerDrawer {
-  margin: 24px;
+.tooltip {
+  margin-bottom: 12px;
+}
+/deep/ .el-divider--horizontal {
+  background: 0 0;
+  border-top: 1px dashed #e8eaec;
 }
 </style>
