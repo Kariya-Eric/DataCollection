@@ -30,7 +30,6 @@ router.beforeEach((to, from, next) => {
           .then((res) => {
             let constRouters = buildRouters(res);
             store.dispatch("UpdateRouter", { constRouters }).then(() => {
-              console.log(store.getters.addRouters);
               router.addRoutes(store.getters.addRouters);
               store.dispatch("GetButtonList").then(() => {
                 next({ ...to, replace: true });

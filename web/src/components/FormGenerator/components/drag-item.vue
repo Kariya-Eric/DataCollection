@@ -69,30 +69,6 @@ const layouts = {
     );
   },
 
-  customItem(h, currentItem, index, list) {
-    const { activeItem } = this.$listeners;
-    const config = currentItem.__config__;
-    let child = renderChildren.apply(this, arguments);
-    let className =
-      this.activeId === config.formId
-        ? "drawing-other-item active-from-item"
-        : "drawing-other-item";
-    return (
-      <el-col
-        class={className}
-        nativeOnClick={(event) => {
-          activeItem(currentItem);
-          event.stopPropagation();
-        }}
-      >
-        <render key={config.renderKey} conf={currentItem}>
-          {child}
-        </render>
-        {components.itemBtns.apply(this, arguments)}
-      </el-col>
-    );
-  },
-
   customTable(h, currentItem, index, list) {
     const { activeItem } = this.$listeners;
     const config = currentItem.__config__;
@@ -173,3 +149,12 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+/deep/ .el-input__inner::placeholder {
+  text-align: left;
+}
+/deep/ .el-input-number.is-controls-right .el-input__inner {
+  text-align: left;
+}
+</style>

@@ -128,10 +128,11 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="400">
           <template slot-scope="scope">
-            <menu-link v-has="'taskDetail_apply'">填报</menu-link>
+            <menu-link v-if="judgeApply(scope.row, currentUser)"
+              >填报</menu-link
+            >
             <el-popconfirm
-              v-has="'taskDetail_audit'"
-              v-if="scope.row.status == 1"
+              v-if="judgeAudit(scope.row, currentUser)"
               @confirm="authForm(scope.row)"
               @cancel="authFormBack(scope.row)"
               confirm-button-text="通过"
@@ -140,12 +141,13 @@
             >
               <menu-link slot="reference">审核</menu-link>
             </el-popconfirm>
-            <menu-link @click="showForm(scope.row)" v-has="'taskDetail_show'"
+            <menu-link
+              @click="showForm(scope.row)"
+              v-if="judgeShow(scope.row, currentUser, isAdmin)"
               >查看</menu-link
             >
             <el-popconfirm
-              v-has="'taskDetail_redo'"
-              v-if="scope.row.status == 1"
+              v-if="judgeRedo(scope.row, currentUser)"
               @confirm="redoForm(scope.row)"
               title="确认要撤回该表吗"
             >
@@ -153,19 +155,18 @@
             </el-popconfirm>
             <menu-link
               @click="pushNotice(scope.row)"
-              v-has="'taskDetail_remind'"
-              v-if="scope.row.status != 2"
+              v-if="judgeRemind(scope.row, currentUser, isAdmin)"
               >催办</menu-link
             >
             <menu-link
               @click="showProgress(scope.row)"
-              v-has="'taskDetail_progress'"
+              v-if="judgeProgress(scope.row, currentUser, isAdmin)"
               >填报进度</menu-link
             >
             <menu-link
               @click="handleConfig(scope.row)"
-              v-has="'taskDetail_config'"
               no-divider
+              v-if="judgeConfig(scope.row, currentUser)"
               >配置人员</menu-link
             >
           </template>
@@ -185,17 +186,33 @@ import {
   approveForm,
   recallForm,
 } from "@/api/task";
+import {
+  judgeApply,
+  judgeAudit,
+  judgeShow,
+  judgeRedo,
+  judgeRemind,
+  judgeProgress,
+  judgeConfig,
+} from "./utils/auth";
 import { pushNotice } from "@/api/notice";
 import FormDrawer from "./components/fom-drawer";
 import ProgressDrawer from "./components/progress-drawer";
 import ConfigUserDialog from "./components/config-user-dialog";
-import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 export default {
   name: "TaskDetail",
   components: { FormDrawer, ConfigUserDialog, ProgressDrawer },
   data() {
     return {
+      judgeApply,
+      judgeAudit,
+      judgeShow,
+      judgeRedo,
+      judgeRemind,
+      judgeProgress,
+      judgeConfig,
+      currentUser: this.$ls.get(USER_INFO),
       taskName: "",
       activeName: "ALL",
       taskId: "",
@@ -214,7 +231,11 @@ export default {
       },
     };
   },
-
+  computed: {
+    isAdmin() {
+      return this.currentUser.account == "admin";
+    },
+  },
   watch: {
     $route: {
       handler(newRoute) {
@@ -338,11 +359,11 @@ export default {
     },
 
     pushNotice(row) {
-      let userInfo = Vue.ls.get(USER_INFO);
+      let userId = this.currentUser.userId;
       let param = {
         messageType: "PC",
         content: `您有一个数据采集任务 “${row.formName}” 待完成`,
-        userId: userInfo.userId,
+        userId,
         targetLink: `/task/detail?taskId=${this.taskId}`,
       };
       this.loading = true;

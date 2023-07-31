@@ -8,7 +8,7 @@
     <div class="field-box">
       <!-- 组件属性 -->
       <el-form
-        v-show="currentTab === 'field' && showField"
+        v-if="currentTab === 'field' && showField"
         size="small"
         label-width="90px"
       >
@@ -40,13 +40,16 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          v-if="activeData.__config__.componentName !== undefined"
+          v-if="activeData.__config__.tag == 'formDivider'"
           label="组件名"
         >
-          {{ activeData.__config__.componentName }}
+          {{ activeData.__config__.label }}
         </el-form-item>
         <el-form-item
-          v-if="activeData.__config__.label !== undefined"
+          v-if="
+            activeData.__config__.label !== undefined &&
+            activeData.__config__.tag !== 'formDivider'
+          "
           label="标题"
         >
           <el-input
@@ -75,7 +78,10 @@
         </el-form-item>
 
         <el-form-item
-          v-if="activeData.__config__.span !== undefined"
+          v-if="
+            activeData.__config__.span !== undefined &&
+            activeData.__config__.tag !== 'formDivider'
+          "
           label="组件宽度"
         >
           <el-slider
@@ -94,7 +100,7 @@
         </el-form-item>
 
         <el-form-item
-          v-if="activeData.__config__.tag === 'customNumber'"
+          v-if="activeData.__config__.tag === 'el-input-number'"
           label="小数位数"
         >
           <el-input-number
@@ -104,13 +110,13 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="activeData.__config__.tag === 'customNumber'"
+          v-if="activeData.__config__.tag === 'el-input-number'"
           label="最小值"
         >
           <el-input-number v-model="activeData.min" placeholder="最小值" />
         </el-form-item>
         <el-form-item
-          v-if="activeData.__config__.tag === 'customNumber'"
+          v-if="activeData.__config__.tag === 'el-input-number'"
           label="最大值"
         >
           <el-input-number v-model="activeData.max" placeholder="最大值" />
@@ -140,7 +146,7 @@
         </el-form-item>
 
         <el-form-item
-          v-if="activeData.__config__.tag === 'customAddress'"
+          v-if="activeData.__config__.tag === 'formAddress'"
           label="地址格式"
         >
           <el-select v-model="activeData.type" style="width: 100%">
@@ -220,7 +226,7 @@
         </template>
 
         <el-form-item
-          v-if="activeData.__config__.tag === 'customPhone'"
+          v-if="activeData.__config__.tag === 'formPhone'"
           label="支持固话"
         >
           <el-switch v-model="activeData.isMobile" />
@@ -234,7 +240,10 @@
         </el-form-item>
 
         <el-form-item
-          v-if="activeData.__config__.showLabel !== undefined"
+          v-if="
+            activeData.__config__.showLabel !== undefined &&
+            activeData.__config__.tag !== 'formDivider'
+          "
           label="显示标签"
         >
           <el-switch v-model="activeData.__config__.showLabel" />
@@ -260,7 +269,7 @@
         </el-form-item>
 
         <!-- 自定义组件start -->
-        <template v-if="activeData.__config__.tag === 'customDivider'">
+        <template v-if="activeData.__config__.tag === 'formDivider'">
           <el-divider>分割线设置</el-divider>
           <el-form-item label="标题">
             <el-input v-model="activeData.title" />
@@ -558,42 +567,18 @@
             @change="labelChange"
           ></el-slider>
         </el-form-item>
-        <el-divider>表单显隐规则</el-divider>
-        <div
-          v-for="(item, index) in formConf.componentsVisible"
-          :key="index"
-          class="reg-item"
-        >
-          <span class="close-btn">
-            <i class="el-icon-close" @click="delRule(index)" />
-          </span>
-          <a @click="editRule(index)">表单显隐藏规则-第{{ index + 1 }}条</a>
-        </div>
-        <div style="margin-left: 20px">
-          <el-button
-            icon="el-icon-circle-plus-outline"
-            type="text"
-            @click="addRule"
-          >
-            添加规则
-          </el-button>
-        </div>
       </el-form>
     </div>
-    <logic-dialog ref="logicdialog" :form-conf="formConf" />
   </div>
 </template>
 
 <script>
 import draggable from "vuedraggable";
-// import { saveFormConf } from "../utils/db";
-import LogicDialog from "./logic-dialog";
-// import { inputComponents, selectComponents } from "../generator/config";
+import { inputComponentsFix, selectComponentsFix } from "../config/config_fix";
 export default {
   name: "RightPanel",
   components: {
     draggable,
-    LogicDialog,
   },
   props: ["showField", "activeData", "formConf", "baseInfo"],
   data() {
@@ -617,166 +602,17 @@ export default {
       return [
         {
           label: "输入型组件",
-          options: inputComponents,
+          options: inputComponentsFix,
         },
         {
           label: "选择型组件",
-          options: selectComponents,
+          options: selectComponentsFix,
         },
       ];
     },
   },
-  watch: {
-    formConf: {
-      handler(val) {
-        saveFormConf(val);
-      },
-      deep: true,
-    },
-  },
+
   methods: {
-    // ==============自定义Start==============
-    addCol() {
-      for (let i = 0; i < this.activeData.columns.length; i++) {
-        this.activeData.columns[i].index = i + 1;
-        this.activeData.columns[i].props = "col" + (i + 1);
-      }
-      this.activeData.columns.push({
-        index: this.activeData.col + 1,
-        label: "列" + (this.activeData.col + 1),
-        props: "col" + (this.activeData.col + 1),
-        type: "input",
-        required: true,
-        options: [
-          {
-            label: "选项一",
-            value: 1,
-          },
-          {
-            label: "选项二",
-            value: 2,
-          },
-        ],
-        allowChar: false,
-        precision: 0,
-        min: undefined,
-        max: undefined,
-        isMobile: false,
-        format: "yyyy-MM",
-        "value-format": "yyyy-MM",
-        dateType: "month",
-        comment: "",
-        filterable: false,
-        multiple: false,
-      });
-      this.activeData.col++;
-    },
-
-    delCol(index) {
-      this.activeData.selectedCol = -1;
-      this.activeData.columns.splice(index, 1);
-      this.activeData.col--;
-      for (let i = 0; i < this.activeData.columns.length; i++) {
-        this.activeData.columns[i].index = i + 1;
-        this.activeData.columns[i].props = "col" + (i + 1);
-      }
-    },
-    addTableOption() {
-      for (
-        let i = 0;
-        i <
-        this.activeData.columns[this.activeData.selectedCol - 1].options.length;
-        i++
-      ) {
-        this.activeData.columns[this.activeData.selectedCol - 1].options[
-          i
-        ].value = i + 1;
-      }
-      this.activeData.columns[this.activeData.selectedCol - 1].options.push({
-        label: "选项",
-        value:
-          this.activeData.columns[this.activeData.selectedCol - 1].options
-            .length + 1,
-      });
-    },
-    delTableOption(index) {
-      this.activeData.columns[this.activeData.selectedCol - 1].options.splice(
-        index,
-        1
-      );
-      for (
-        let i = 0;
-        i <
-        this.activeData.columns[this.activeData.selectedCol - 1].options.length;
-        i++
-      ) {
-        this.activeData.columns[this.activeData.selectedCol - 1].options[
-          i
-        ].value = i + 1;
-      }
-    },
-
-    addRule() {
-      this.$refs.logicdialog.show();
-    },
-
-    delRule(index) {
-      this.formConf.componentsVisible.splice(index, 1);
-    },
-
-    editRule(index) {
-      this.$refs.logicdialog.show(index);
-    },
-
-    changeTimeFormat(val) {
-      if (val === "yyyy-MM") {
-        this.$set(this.activeData, "value-format", "yyyy-MM");
-        this.$set(this.activeData, "type", "month");
-      } else if (val === "yyyyMM") {
-        this.$set(this.activeData, "value-format", "yyyyMM");
-        this.$set(this.activeData, "type", "month");
-      } else {
-        this.$set(this.activeData, "type", "yyyy");
-        this.$set(this.activeData, "type", "year");
-      }
-    },
-
-    changeColTimeFormat(val) {
-      let selectedCol = this.activeData.selectedCol;
-      if (val === "yyyy-MM") {
-        this.$set(
-          this.activeData.columns[selectedCol - 1],
-          "value-format",
-          "yyyy-MM"
-        );
-        this.$set(
-          this.activeData.columns[selectedCol - 1],
-          "dateType",
-          "month"
-        );
-      } else if (val === "yyyyMM") {
-        this.$set(
-          this.activeData.columns[selectedCol - 1],
-          "value-format",
-          "yyyyMM"
-        );
-        this.$set(
-          this.activeData.columns[selectedCol - 1],
-          "dateType",
-          "month"
-        );
-      } else {
-        this.$set(
-          this.activeData.columns[selectedCol - 1],
-          "value-format",
-          "yyyy"
-        );
-        this.$set(this.activeData.columns[selectedCol - 1], "dateType", "year");
-      }
-    },
-
-    // ==============自定义END==============
-
     addSelectItem() {
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
         this.activeData.__slot__.options[i].value = i + 1;
@@ -808,11 +644,11 @@ export default {
     },
 
     tagChange(tagIcon) {
-      let target = inputComponents.find(
+      let target = inputComponentsFix.find(
         (item) => item.__config__.tagIcon === tagIcon
       );
       if (!target)
-        target = selectComponents.find(
+        target = selectComponentsFix.find(
           (item) => item.__config__.tagIcon === tagIcon
         );
       this.$emit("tag-change", target);

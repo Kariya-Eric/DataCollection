@@ -7,7 +7,7 @@
       fullscreen
       :append-to-body="true"
     >
-      <form-generator :formInfo="info" />
+      <form-generator :formInfo="info" :drawingList="drawingList" />
     </el-dialog>
   </div>
 </template>
@@ -19,8 +19,9 @@ export default {
     return {
       visible: false,
       info: {
-        type: "固定表单",
+        type: "浮动表单",
       },
+      drawingList: [],
     };
   },
 

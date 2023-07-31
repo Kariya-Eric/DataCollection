@@ -49,7 +49,7 @@
               :animation="340"
               group="componentsGroup"
             >
-              <draggable-item
+              <drag-item
                 v-for="(item, index) in drawingList"
                 :key="item.renderKey"
                 :drawing-list="drawingList"
@@ -70,13 +70,13 @@
       </el-scrollbar>
     </div>
 
-    <!-- <right-panel
+    <right-panel
       :active-data="activeData"
       :form-conf="formConf"
-      :show-field="!!drawingList.length"
-      :base-info="info"
+      :show-field="drawingList.length != 0"
+      :base-info="formInfo"
       @tag-change="tagChange"
-    /> -->
+    />
   </div>
 </template>
 
@@ -90,7 +90,7 @@ import {
 } from "./config/config_fix";
 import { otherComponentsFloat } from "./config/config_float";
 import { formConf } from "./config/default";
-import DraggableItem from "./components/draggable-item.vue";
+import DragItem from "./components/drag-item.vue";
 import RightPanel from "./components/right-panel.vue";
 import { deepClone } from "./utils";
 
@@ -99,7 +99,7 @@ const idGlobal = 100;
 
 export default {
   name: "FormGenerator",
-  components: { DraggableItem, draggable, RightPanel },
+  components: { DragItem, draggable, RightPanel },
   data() {
     return {
       idGlobal,
@@ -109,10 +109,12 @@ export default {
       layoutComponentsFix,
       otherComponentsFix,
       otherComponentsFloat,
-      drawingList: [],
+      activeId:
+        this.drawingList.length == 0 ? 100 : this.this.drawingList[0].formId,
+      activeData: this.drawingList[0],
     };
   },
-  props: ["formInfo"],
+  props: ["formInfo", "drawingList"],
   computed: {
     leftComponents() {
       if (this.formInfo.type == "固定表单") {
@@ -138,7 +140,7 @@ export default {
         return [
           {
             title: "其他组件",
-            list: otherComponentsFix,
+            list: otherComponentsFloat,
           },
         ];
       }
@@ -173,10 +175,6 @@ export default {
       config.renderKey = `${config.formId}${+new Date()}`; // 改变renderKey后可以实现强制更新组件
       if (config.layout === "colFormItem" || config.layout === "customTable") {
         item.__vModel__ = `field${this.idGlobal}`;
-      } else if (config.layout === "customItem") {
-        config.componentName = config.label;
-        delete config.label;
-        delete config.span;
       }
       return item;
     },
