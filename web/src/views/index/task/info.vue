@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import addTaskDialog from "./components/add-task.dialog";
+import addTaskDialog from "./components/add-task-dialog";
 import { getTaskFormList, getTaskInfo } from "@/api/task";
 export default {
   components: { addTaskDialog },

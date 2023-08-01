@@ -3,14 +3,23 @@
     <table class="table">
       <tbody class="table-body">
         <tr class="table-list">
-          <th>1</th>
-          <th>1</th>
-          <th>1</th>
+          <th v-for="(col, index) in columns.length" :key="index">
+            {{ col.label }}
+          </th>
         </tr>
         <tr class="table-list">
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
+          <td
+            v-for="(col, index) in columns.length"
+            :key="index"
+            :class="{
+              selected: selectedCells.includes(
+                (col - 1) * columns.length + col - 1
+              ),
+            }"
+            @mousedown="handleCellMousedown(col)"
+          >
+            <table-cell :column="columns[index]" />
+          </td>
         </tr>
       </tbody>
     </table>
@@ -18,15 +27,38 @@
 </template>
 
 <script>
+import TableCell from "./table-cell";
 // 浮动表单设计组件
 export default {
   name: "FixedTable",
-  data() {
-    return {};
+  props: ["selectedCol", "columns"],
+  components: {
+    TableCell,
   },
-  created() {},
-  mounted() {},
-  methods: {},
+  data() {
+    return {
+      selectedCells: [],
+    };
+  },
+  watch: {
+    selectedCol(val) {
+      this.selectedCells = [];
+      for (let i = 0; i < this.columns.length; i++) {
+        let cellIndex = i * this.columns.length + val - 1;
+        this.selectedCells.push(cellIndex);
+      }
+    },
+  },
+  methods: {
+    handleCellMousedown(col) {
+      this.$emit("select", col);
+      this.selectedCells = [];
+      for (let i = 0; i < this.columns.length; i++) {
+        let cellIndex = i * this.columns.length + col - 1;
+        this.selectedCells.push(cellIndex);
+      }
+    },
+  },
 };
 </script>
 

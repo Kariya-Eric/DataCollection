@@ -167,7 +167,7 @@
 
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
-import AddTaskDialog from "./components/add-task.dialog.vue";
+import AddTaskDialog from "./components/add-task-dialog.vue";
 import { enableTask, delTask } from "@/api/task";
 export default {
   name: "TaskList",

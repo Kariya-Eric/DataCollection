@@ -285,236 +285,10 @@
           </el-form-item>
         </template>
 
-        <template v-if="activeData.__config__.tag === 'customEditTable'">
-          <el-divider>列名 - 属性</el-divider>
-          <draggable
-            :list="activeData.columns"
-            :animation="340"
-            group="selectItem"
-            handle=".option-drag"
-            @end="dragEnd"
-          >
-            <div
-              v-for="(item, index) in activeData.columns"
-              :key="index"
-              class="select-item"
-            >
-              <div class="select-line-icon option-drag">
-                <i class="el-icon-s-operation" />
-              </div>
-              <el-input size="small" v-model="item.label" />
-              <div class="close-btn select-line-icon">
-                <i class="el-icon-remove-outline" @click="delCol(index)" />
-              </div>
-            </div>
-          </draggable>
-          <div style="margin-left: 20px">
-            <el-button
-              style="padding-bottom: 0"
-              icon="el-icon-circle-plus-outline"
-              type="text"
-              @click="addCol"
-            >
-              添加列
-            </el-button>
-          </div>
-
-          <template v-if="activeData.selectedCol !== -1">
-            <el-divider>已选中 : 第{{ activeData.selectedCol }}列</el-divider>
-            <el-form-item label="类型">
-              <el-select
-                v-model="activeData.columns[activeData.selectedCol - 1].type"
-                style="width: 100%"
-              >
-                <el-option label="单行文本" value="input" />
-                <el-option label="多行文本" value="inputarea" />
-                <el-option label="数字" value="inputnumber" />
-                <el-option label="邮箱" value="mail" />
-                <el-option label="电话" value="phone" />
-                <el-option label="地址" value="address" />
-                <el-option label="下拉选择" value="select" />
-                <el-option label="日期选择" value="datepick" />
-              </el-select>
-            </el-form-item>
-
-            <el-form-item label="注释">
-              <el-input
-                type="textarea"
-                :rows="4"
-                placeholder="请输入组件注释"
-                size="small"
-                v-model="activeData.columns[activeData.selectedCol - 1].comment"
-              />
-            </el-form-item>
-
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type === 'phone'
-              "
-              label="支持固话"
-            >
-              <el-switch
-                v-model="
-                  activeData.columns[activeData.selectedCol - 1].isMobile
-                "
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                  'input' ||
-                activeData.columns[activeData.selectedCol - 1].type ===
-                  'inputarea'
-              "
-              label="禁止汉字"
-            >
-              <el-switch
-                v-model="
-                  activeData.columns[activeData.selectedCol - 1].allowChar
-                "
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                'inputnumber'
-              "
-              label="小数位数"
-            >
-              <el-input-number
-                v-model="
-                  activeData.columns[activeData.selectedCol - 1].precision
-                "
-                :min="0"
-                placeholder="小数位数"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                'inputnumber'
-              "
-              label="最小值"
-            >
-              <el-input-number
-                v-model="activeData.columns[activeData.selectedCol - 1].min"
-                placeholder="最小值"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                'inputnumber'
-              "
-              label="最大值"
-            >
-              <el-input-number
-                v-model="activeData.columns[activeData.selectedCol - 1].max"
-                placeholder="最大值"
-              />
-            </el-form-item>
-
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type ===
-                'datepick'
-              "
-              label="时间格式"
-            >
-              <el-select
-                style="width: 100%"
-                v-model="activeData.columns[activeData.selectedCol - 1].format"
-                @change="changeColTimeFormat"
-              >
-                <el-option label="年（yyyy）" value="yyyy" />
-                <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
-                <el-option label="年月（yyyyMM）" value="yyyyMM" />
-              </el-select>
-            </el-form-item>
-
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type === 'select'
-              "
-              label="能否搜索"
-            >
-              <el-switch
-                v-model="
-                  activeData.columns[activeData.selectedCol - 1].filterable
-                "
-              />
-            </el-form-item>
-
-            <el-form-item
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type === 'select'
-              "
-              label="能否多选"
-            >
-              <el-switch
-                v-model="
-                  activeData.columns[activeData.selectedCol - 1].multiple
-                "
-              />
-            </el-form-item>
-
-            <el-form-item label="是否必填">
-              <el-switch
-                v-model="
-                  activeData.columns[activeData.selectedCol - 1].required
-                "
-              />
-            </el-form-item>
-            <template
-              v-if="
-                activeData.columns[activeData.selectedCol - 1].type === 'select'
-              "
-            >
-              <el-divider>选项</el-divider>
-              <draggable
-                :list="activeData.columns[activeData.selectedCol - 1].options"
-                :animation="340"
-                group="selectItem"
-                handle=".option-drag"
-              >
-                <div
-                  v-for="(item, index) in activeData.columns[
-                    activeData.selectedCol - 1
-                  ].options"
-                  :key="index"
-                  class="select-item"
-                >
-                  <div class="select-line-icon option-drag">
-                    <i class="el-icon-s-operation" />
-                  </div>
-                  <el-input
-                    v-model="item.label"
-                    placeholder="选项名"
-                    size="small"
-                  />
-                  <div class="close-btn select-line-icon">
-                    <i
-                      class="el-icon-remove-outline"
-                      @click="delTableOption(index)"
-                    />
-                  </div>
-                </div>
-              </draggable>
-              <div style="margin-left: 20px">
-                <el-button
-                  style="padding-bottom: 0"
-                  icon="el-icon-circle-plus-outline"
-                  type="text"
-                  @click="addTableOption"
-                >
-                  添加选项
-                </el-button>
-                <a style="margin-left: 96px">设置选项来源</a>
-              </div>
-            </template>
-          </template>
-        </template>
-
+        <right-panel-table
+          v-if="activeData.__config__.layout === 'tableLayout'"
+          :activeData="activeData"
+        />
         <!-- 自定义组件end -->
       </el-form>
 
@@ -575,10 +349,12 @@
 <script>
 import draggable from "vuedraggable";
 import { inputComponentsFix, selectComponentsFix } from "../config/config_fix";
+import RightPanelTable from "./right-panel-table.vue";
 export default {
   name: "RightPanel",
   components: {
     draggable,
+    RightPanelTable,
   },
   props: ["showField", "activeData", "formConf", "baseInfo"],
   data() {
@@ -613,6 +389,18 @@ export default {
   },
 
   methods: {
+    // start
+    changeTimeFormat(val) {
+      this.activeData["value-format"] = val;
+      if (val === "yyyy-MM") {
+        this.$set(this.activeData, "dateType", "month");
+      } else if (val === "yyyyMM") {
+        this.$set(this.activeData, "dateType", "month");
+      } else {
+        this.$set(this.activeData, "dateType", "year");
+      }
+    },
+    // end
     addSelectItem() {
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
         this.activeData.__slot__.options[i].value = i + 1;
@@ -698,14 +486,6 @@ export default {
 }
 .option-drag {
   cursor: move;
-}
-.time-range {
-  .el-date-editor {
-    width: 227px;
-  }
-  ::v-deep .el-icon-time {
-    display: none;
-  }
 }
 .node-label {
   font-size: 14px;

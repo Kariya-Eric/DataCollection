@@ -25,7 +25,6 @@ service.interceptors.request.use(
 );
 
 const err = (error) => {
-  console.log("resp", error.response.status);
   if (error.response) {
     let data = error.response.data;
     switch (error.response.status) {

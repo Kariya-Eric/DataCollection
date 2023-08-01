@@ -1,12 +1,20 @@
 <template>
   <div>
     <el-dialog
-      title="测试"
       :visible="visible"
-      @close="close"
+      :show-close="false"
       fullscreen
       :append-to-body="true"
     >
+      <div slot="title" class="titleSlot">
+        <span>测试</span>
+        <div class="titleButton">
+          <Mbutton type="danger" name="清空" />
+          <Mbutton type="primary" @click="view" name="预览" />
+          <Mbutton type="primary" name="保存" />
+          <Mbutton name="返回" icon="返回" @click="close" />
+        </div>
+      </div>
       <form-generator :formInfo="info" :drawingList="drawingList" />
     </el-dialog>
   </div>
@@ -19,7 +27,7 @@ export default {
     return {
       visible: false,
       info: {
-        type: "浮动表单",
+        type: "固定表单",
       },
       drawingList: [],
     };
@@ -31,6 +39,10 @@ export default {
     },
     show() {
       this.visible = true;
+    },
+
+    view() {
+      console.log(this.drawingList);
     },
   },
 };

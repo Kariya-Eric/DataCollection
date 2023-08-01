@@ -69,7 +69,7 @@ const layouts = {
     );
   },
 
-  customTable(h, currentItem, index, list) {
+  tableLayout(h, currentItem, index, list) {
     const { activeItem } = this.$listeners;
     const config = currentItem.__config__;
     const child = renderChildren.apply(this, arguments);
@@ -96,9 +96,6 @@ const layouts = {
           <render
             key={config.renderKey}
             conf={currentItem}
-            onInput={(event) => {
-              this.$set(config, "defaultValue", event);
-            }}
             onSelect={(event) => {
               this.$set(currentItem, "selectedCol", event);
             }}

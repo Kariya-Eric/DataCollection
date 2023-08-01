@@ -10,16 +10,12 @@ NProgress.configure({
   showSpinner: false,
 }); // NProgress Configuration
 
-const whiteList = ["/user/login"]; // no redirect whitelist
+const whiteList = ["/user/login", "/test/test"]; // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   NProgress.start(); // start progress bar
   // has token
   if (Vue.ls.get(ACCESS_TOKEN)) {
-    if (to.path === "/test") {
-      next();
-      NProgress.done();
-    }
     if (to.path === "/user/login") {
       next({ path: "/" });
       NProgress.done(); // if current page is dashboard will not trigger	afterEach hook, so manually handle it

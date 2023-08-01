@@ -1,148 +1,14 @@
 // 固定表单配置文件
+import { input, textarea, number, link, mail, phone, select, date, address } from "./config_common"
 
 // 输入型组件 【左面板】
 export const inputComponentsFix = [
-  {
-    // 组件的自定义配置
-    __config__: {
-      label: "单行文本",
-      changeTag: true,
-      showLabel: true,
-      tag: "el-input",
-      tagIcon: "单行文本",
-      defaultValue: undefined,
-      required: true,
-      layout: "colFormItem",
-      span: 24,
-    },
-    style: { width: "100%" },
-    // 其余的为可直接写在组件标签上的属性
-    placeholder: "请输入",
-    comment: "",
-    allowChar: false,
-  },
-  {
-    __config__: {
-      label: "多行文本",
-      changeTag: true,
-      showLabel: true,
-      tag: "el-input",
-      tagIcon: "多行文本",
-      defaultValue: undefined,
-      required: true,
-      layout: "colFormItem",
-      span: 24,
-    },
-    type: "textarea",
-    placeholder: "请输入",
-    style: { width: "100%" },
-    comment: "",
-    allowChar: false,
-  },
-  {
-    __config__: {
-      label: "数字",
-      changeTag: true,
-      showLabel: true,
-      tag: "el-input-number",
-      defaultValue: undefined,
-      tagIcon: "数组",
-      required: true,
-      layout: "colFormItem",
-      span: 24,
-    },
-    style: { width: "100%" },
-    placeholder: "请输入",
-    precision: 0,
-    min: undefined,
-    max: undefined,
-    "controls-position": "right",
-    comment: "",
-  },
-  {
-    __config__: {
-      label: "链接",
-      changeTag: true,
-      showLabel: true,
-      tag: "formLink",
-      defaultValue: undefined,
-      tagIcon: "链接",
-      required: true,
-      layout: "colFormItem",
-      span: 24,
-    },
-    style: { width: "100%" },
-    placeholder: "请输入",
-    comment: "",
-  },
-  {
-    __config__: {
-      label: "邮箱",
-      changeTag: true,
-      showLabel: true,
-      defaultValue: undefined,
-      tag: "formMail",
-      tagIcon: "邮箱",
-      required: true,
-      layout: "colFormItem",
-      span: 24,
-    },
-    style: { width: "100%" },
-    placeholder: "请输入",
-    comment: "",
-  },
-  {
-    __config__: {
-      label: "电话",
-      changeTag: true,
-      showLabel: true,
-      defaultValue: undefined,
-      tag: "formPhone",
-      tagIcon: "手机",
-      required: true,
-      layout: "colFormItem",
-      span: 24,
-    },
-    isMobile: false,
-    style: { width: "100%" },
-    placeholder: "请输入",
-    comment: "",
-  },
+  input, textarea, number, link, mail, phone
 ];
 
 // 选择型组件 【左面板】
 export const selectComponentsFix = [
-  {
-    __config__: {
-      label: "下拉选择",
-      changeTag: true,
-      showLabel: true,
-      tag: "el-select",
-      tagIcon: "下拉选择",
-      layout: "colFormItem",
-      span: 24,
-      defaultValue: undefined,
-      required: true,
-    },
-    __slot__: {
-      options: [
-        {
-          label: "选项一",
-          value: 1,
-        },
-        {
-          label: "选项二",
-          value: 2,
-        },
-      ],
-    },
-    placeholder: "请选择",
-    style: { width: "100%" },
-    clearable: true,
-    filterable: true,
-    multiple: false,
-    comment: "",
-  },
+  select, date, address,
   {
     __config__: {
       label: "单项选择",
@@ -198,142 +64,41 @@ export const selectComponentsFix = [
     disabled: false,
     comment: "",
   },
-  {
-    __config__: {
-      label: "日期选择",
-      tag: "el-date-picker",
-      changeTag: true,
-      tagIcon: "日期选择",
-      showLabel: true,
-      layout: "colFormItem",
-      required: true,
-      span: 24,
-      defaultValue: undefined,
-    },
-    placeholder: "请选择",
-    style: { width: "100%" },
-    type: "month",
-    clearable: true,
-    format: "yyyy-MM",
-    "value-format": "yyyy-MM",
-    comment: "",
-  },
-  {
-    __config__: {
-      label: "地址",
-      changeTag: true,
-      showLabel: true,
-      tag: "formAddress",
-      tagIcon: "地址",
-      required: true,
-      layout: "colFormItem",
-      span: 24,
-    },
-    style: { width: "100%" },
-    placeholder: "请输入",
-    type: "省（直辖市、自治区）/市/区-详细地址",
-    comment: "",
-  },
 ];
 
 export const otherComponentsFix = [
   {
     __config__: {
       tagIcon: "表格",
-      layout: "customTable",
+      layout: "tableLayout",
       label: "表格",
       tag: "fixedTable",
       showLabel: true,
       span: 24,
       required: true,
     },
-    row: 1,
-    col: 3,
     selectedCol: -1,
-    comment: "",
     columns: [
       {
+        key: 1,
         label: "列1",
         props: "col1",
-        type: "input",
-        required: true,
-        options: [
-          {
-            label: "选项一",
-            value: 1,
-          },
-          {
-            label: "选项二",
-            value: 2,
-          },
-        ],
-        allowChar: false,
-        precision: 0,
-        min: undefined,
-        max: undefined,
-        isMobile: false,
-        format: "yyyy-MM",
-        "value-format": "yyyy-MM",
-        dateType: "month",
-        comment: "",
-        filterable: false,
-        multiple: false,
+        type: input
       },
       {
+        key: 2,
         label: "列2",
         props: "col2",
-        type: "input",
-        required: true,
-        options: [
-          {
-            label: "选项一",
-            value: 1,
-          },
-          {
-            label: "选项二",
-            value: 2,
-          },
-        ],
-        allowChar: false,
-        precision: 0,
-        min: undefined,
-        max: undefined,
-        isMobile: false,
-        format: "yyyy-MM",
-        "value-format": "yyyy-MM",
-        dateType: "month",
-        comment: "",
-        filterable: false,
-        multiple: false,
+        type: input
       },
       {
+        key: 3,
         label: "列3",
         props: "col3",
-        type: "input",
-        required: true,
-        options: [
-          {
-            label: "选项一",
-            value: 1,
-          },
-          {
-            label: "选项二",
-            value: 2,
-          },
-        ],
-        allowChar: false,
-        precision: 0,
-        min: undefined,
-        max: undefined,
-        isMobile: false,
-        format: "yyyy-MM",
-        "value-format": "yyyy-MM",
-        dateType: "month",
-        comment: "",
-        filterable: false,
-        multiple: false,
+        type: input
       },
     ],
+    comment: "",
   },
 ];
 
