@@ -9,5 +9,4 @@ export const formConf = {
   gutter: 15,
   span: 24,
   formAlert: "",
-  componentsVisible: [],
 };

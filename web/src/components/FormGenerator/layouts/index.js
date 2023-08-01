@@ -5,6 +5,8 @@ import FormMail from "./form-mail";
 import FormPhone from "./form-phone";
 import FloatTable from "./float-table";
 import FixedTable from "./fixed-table";
+import FormView from "./form-view";
+import FormTable from "./form-table";
 
 export default {
   install(Vue) {
@@ -15,5 +17,7 @@ export default {
     Vue.component("formPhone", FormPhone);
     Vue.component("floatTable", FloatTable);
     Vue.component("fixedTable", FixedTable);
+    Vue.component("formView", FormView);
+    Vue.component("formTable", FormTable);
   },
 };

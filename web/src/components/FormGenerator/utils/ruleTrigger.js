@@ -4,14 +4,15 @@
  */
 export default {
   'el-input': 'blur',
+  'el-input-number': 'blur',
   'el-select': 'change',
   'el-radio-group': 'change',
   'el-checkbox-group': 'change',
   'el-time-picker': 'change',
   'el-date-picker': 'change',
-  'customMail': 'blur',
-  'customPhone': 'blur',
-  'customAddress': 'blur',
-  'customNumber':'blur',
-  'customLink':'blur'
+  'formMail': 'blur',
+  'formPhone': 'blur',
+  'formAddress': 'blur',
+  'formNumber':'blur',
+  'formLink':'blur'
 }

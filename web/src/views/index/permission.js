@@ -24,13 +24,18 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch("GetPermissionList")
           .then((res) => {
-            let constRouters = buildRouters(res);
-            store.dispatch("UpdateRouter", { constRouters }).then(() => {
-              router.addRoutes(store.getters.addRouters);
-              store.dispatch("GetButtonList").then(() => {
-                next({ ...to, replace: true });
+            if (res.length == 0) {
+              next({ path: "/home/home" });
+              NProgress.done();
+            } else {
+              let constRouters = buildRouters(res);
+              store.dispatch("UpdateRouter", { constRouters }).then(() => {
+                router.addRoutes(store.getters.addRouters);
+                store.dispatch("GetButtonList").then(() => {
+                  next({ ...to, replace: true });
+                });
               });
-            });
+            }
           })
           .catch(() => console.log("请求用户信息失败，请重试！"));
       } else {

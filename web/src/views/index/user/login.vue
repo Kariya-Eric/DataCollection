@@ -92,7 +92,7 @@ export default {
       loginRules: {
         account: [
           { required: true, message: "用户名不能为空", trigger: "blur" },
-          { min: 3, message: "用户名不少3个字符", trigger: "blur" },
+          { min: 1, message: "用户名不少1个字符", trigger: "blur" },
         ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },

@@ -1,6 +1,3 @@
-import { formConf } from "./config";
-// import { getDrawingList } from "../utils/db";
-import { isNumberStr } from "../utils";
 let confGlobal;
 let someSpanIsNot24;
 
@@ -64,73 +61,6 @@ function colWrapper(scheme, str) {
   return str;
 }
 
-function vif(scheme) {
-  let vif = "";
-  formConf.componentsVisible.forEach((vis) => {
-    vis.hiddenList.forEach((hide) => {
-      if (hide == scheme.__config__.formId) {
-        vis.termList.forEach((term) => {
-          let formId = term.termOption.split(",")[0];
-          getDrawingList().forEach((item) => {
-            if (item.__config__.formId == formId) {
-              let termValueInput = isNumberStr(term.termValueInput)
-                ? `${term.termValueInput}`
-                : `'${term.termValueInput}'`;
-              if (term.equalTerm === 0) {
-                vif +=
-                  vis.equalTerm === "or"
-                    ? `${formConf.formModel}.${item.__vModel__}==${termValueInput}||`
-                    : `${formConf.formModel}.${item.__vModel__}==${termValueInput}&&`;
-              } else if (term.equalTerm === 1) {
-                vif +=
-                  vis.equalTerm === "or"
-                    ? `${formConf.formModel}.${item.__vModel__}!=${termValueInput}||`
-                    : `${formConf.formModel}.${item.__vModel__}!=${termValueInput}&&`;
-              } else if (term.equalTerm === 4) {
-                vif +=
-                  vis.equalTerm === "or"
-                    ? `${formConf.formModel}.${item.__vModel__}>${termValueInput}||`
-                    : `${formConf.formModel}.${item.__vModel__}>${termValueInput}&&`;
-              } else if (term.equalTerm === 5) {
-                vif +=
-                  vis.equalTerm === "or"
-                    ? `${formConf.formModel}.${item.__vModel__}<${termValueInput}||`
-                    : `${formConf.formModel}.${item.__vModel__}<${termValueInput}&&`;
-              } else if (term.equalTerm === 2) {
-                term.termValueOption.forEach((val) => {
-                  let termVal = isNumberStr(val) ? `${val}` : `'${val}'`;
-                  vif += `${formConf.formModel}.${item.__vModel__}==${termVal}||`;
-                });
-                if (vis.equalTerm === "or") {
-                  vif = vif.substring(0, vif.length - 2) + "||";
-                } else {
-                  vif = vif.substring(0, vif.length - 2) + "&&";
-                }
-              } else if (term.equalTerm === 3) {
-                term.termValueOption.forEach((val) => {
-                  let termVal = isNumberStr(val) ? `${val}` : `'${val}'`;
-                  vif += `${formConf.formModel}.${item.__vModel__}!=${termVal}&&`;
-                });
-                if (vis.equalTerm === "or") {
-                  vif = vif.substring(0, vif.length - 2) + "||";
-                } else {
-                  vif = vif.substring(0, vif.length - 2) + "&&";
-                }
-              }
-            }
-          });
-        });
-      }
-    });
-  });
-  let str = "";
-  if (vif !== "") {
-    vif = vif.substring(0, vif.length - 2);
-    str = `v-if="${vif}"`;
-  }
-  return str;
-}
-
 function labelTooltip(scheme) {
   const comment = scheme.comment;
   if (comment === "") {
@@ -158,22 +88,15 @@ const layouts = {
       labelWidth = 'label-width="0"';
       label = "";
     }
-    const hide = vif(scheme);
     const tooltip = labelTooltip(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
           ${tooltip}${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
   },
-  customItem(scheme) {
-    const config = scheme.__config__;
-    const hide = vif(scheme);
-    const tagDom = tags[config.tag] ? tags[config.tag](scheme, hide) : null;
-    let str = `<el-col>${tagDom}</el-col>`;
-    return str;
-  },
-  customTable(scheme) {
+
+  tableLayout(scheme) {
     const config = scheme.__config__;
     let labelWidth = "";
     let label = `label="${config.label}"`;
@@ -184,10 +107,9 @@ const layouts = {
       labelWidth = 'label-width="0"';
       label = "";
     }
-    const hide = vif(scheme);
     const tooltip = labelTooltip(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${hide}>
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
           ${tooltip}${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
@@ -196,18 +118,24 @@ const layouts = {
 
 const tags = {
   "el-input": (el) => {
-    const { tag, vModel, clearable, placeholder, width } = attrBuilder(el);
+    const { tag, vModel, placeholder, width } = attrBuilder(el);
     const type = el.type ? `type="${el.type}"` : "";
-    return `<${tag} ${vModel} ${type} ${placeholder} ${clearable} ${width}></${tag}>`;
+    return `<${tag} ${vModel} ${type} ${placeholder} ${width}></${tag}>`;
+  },
+  "el-input-number": (el) => {
+    const { tag, vModel, placeholder, width } = attrBuilder(el);
+    const min = el.min ? `:min="${el.min}"` : "";
+    const max = el.max ? `:max="${el.max}"` : "";
+    const precision = el.precision ? `:precision="${el.precision}"` : "";
+    return `<${tag} ${vModel} ${type} ${placeholder} ${width} ${min} ${max} ${precision} controls-position="right"/>`;
   },
   "el-select": (el) => {
-    const { tag, vModel, clearable, placeholder, width } = attrBuilder(el);
+    const { tag, vModel, placeholder, width } = attrBuilder(el);
     const filterable = el.filterable ? "filterable" : "";
     const multiple = el.multiple ? "multiple" : "";
     let child = buildElSelectChild(el);
-
     if (child) child = `\n${child}\n`; // 换行
-    return `<${tag} ${vModel} ${placeholder} ${multiple} ${filterable} ${clearable} ${width}>${child}</${tag}>`;
+    return `<${tag} ${vModel} ${placeholder} ${multiple} ${filterable} ${width}>${child}</${tag}>`;
   },
   "el-radio-group": (el) => {
     const { tag, vModel } = attrBuilder(el);
@@ -224,53 +152,44 @@ const tags = {
     return `<${tag} ${vModel} ${min} ${max}>${child}</${tag}>`;
   },
   "el-date-picker": (el) => {
-    const { tag, vModel, clearable, placeholder, width } = attrBuilder(el);
+    const { tag, vModel, placeholder, width } = attrBuilder(el);
     const format = el.format ? `format="${el.format}"` : "";
     const valueFormat = el["value-format"]
       ? `value-format="${el["value-format"]}"`
       : "";
     const type = el.type ? `type=${el.type}` : `type="date"`;
-    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${clearable} ></${tag}>`;
+    return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ></${tag}>`;
   },
   // ============自定义组件=============================
-  customDivider: (el, hide) => {
+  formDivider: (el) => {
     const title = `title="${el.title}"`;
-    const titlePosition = `titlePosition="${el.titlePosition}"`;
     const fontSize = `:fontSize="${el.fontSize}"`;
-    const letterSpacing = `:letterSpacing="${el.letterSpacing}"`;
-    const color = `color="${el.color}"`;
-    return `<custom-divider ${title} ${titlePosition} ${fontSize} ${letterSpacing} ${color} ${hide}/>`;
+    return `<form-divider ${title} ${fontSize} />`;
   },
-  customPhone: (el) => {
+  formPhone: (el) => {
     const { vModel, placeholder, width } = attrBuilder(el);
     const isMobile = `:isMobile="${el.isMobile}"`;
-    return `<custom-phone ${vModel} ${placeholder} ${width} ${isMobile} />`;
+    return `<form-phone ${vModel} ${placeholder} ${width} ${isMobile} />`;
   },
-  customLink: (el) => {
+  formLink: (el) => {
     const { vModel, placeholder, width } = attrBuilder(el);
-    return `<custom-link ${vModel} ${placeholder} ${width}  />`;
+    return `<form-link ${vModel} ${placeholder} ${width}  />`;
   },
-  customMail: (el) => {
+  formMail: (el) => {
     const { vModel, placeholder, width } = attrBuilder(el);
-    return `<custom-mail ${vModel} ${placeholder} ${width} />`;
+    return `<form-mail ${vModel} ${placeholder} ${width} />`;
   },
-  customNumber: (el) => {
+  formAddress: (el) => {
     const { vModel, placeholder, width } = attrBuilder(el);
-    const precision = `:precision="${el.precision}"`;
-    const min = el.min ? `:min="${el.min}"` : "";
-    const max = el.max ? `:max="${el.max}"` : "";
-    return `<custom-number ${vModel} ${placeholder} ${precision} ${max} ${min} ${width}/>`;
+    return `<form-address ${vModel} ${placeholder} ${width} />`;
   },
-  customAddress: (el) => {
-    const { vModel, placeholder, width } = attrBuilder(el);
-    return `<custom-address ${vModel} ${placeholder} ${width} />`;
+  floatTable: (el) => {
+    return <div>123</div>;
   },
-  customEditTable: (el) => {
-    const ref = `ref='customTable_${el.__config__.formId}'`;
+  fixedTable: (el) => {
+    const { vModel } = attrBuilder(el);
     const columns = `:columns='${JSON.stringify(el.columns)}'`;
-    const dataSource = `v-model="${confGlobal.formModel}.${el.__vModel__}"`;
-    const required = `:required="${el.__config__.required}"`;
-    return `<render-table ${ref} ${columns} ${dataSource} ${required}/>`;
+    return `<form-table ${columns} ${vModel} />`;
   },
   // ============自定义组件=============================
 };
@@ -279,12 +198,9 @@ function attrBuilder(el) {
   return {
     tag: el.__config__.tag,
     vModel: `v-model="${confGlobal.formModel}.${el.__vModel__}"`,
-    clearable: el.clearable ? "clearable" : "",
     placeholder: el.placeholder ? `placeholder="${el.placeholder}"` : "",
-    // width: el.style && el.style.width ? ':style="{width: \'100%\'}"' : '',
     width:
       el.style && el.style.width ? `:style="{width: '${el.style.width}'}"` : "",
-    disabled: el.disabled ? ":disabled='true'" : "",
   };
 }
 
@@ -332,7 +248,6 @@ function buildElCheckboxGroupChild(scheme) {
  * @param {String} type 生成类型，文件或弹窗等
  */
 export function makeUpHtml(formConfig) {
-  formConf.componentsVisible = formConfig.componentsVisible;
   const htmlList = [];
   confGlobal = formConfig;
   // 判断布局是否都沾满了24个栅格，以备后续简化代码结构

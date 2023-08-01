@@ -231,6 +231,14 @@ export default {
         list.splice(index, 1, newTag);
       }
     },
+
+    view() {
+      let formData = {
+        fields: deepClone(this.drawingList),
+        ...this.formConf,
+      };
+      this.$emit("view", formData);
+    },
   },
 };
 </script>

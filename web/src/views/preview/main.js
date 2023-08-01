@@ -10,6 +10,14 @@ Vue.use(ElementUI, {
 import CustomComponent from "@/views/index/form/form-generator/custom_components";
 Vue.use(CustomComponent);
 
+import Components from "@/components";
+Vue.use(Components);
+
+import VXETable from "vxe-table";
+import "vxe-table/lib/style.css";
+
+Vue.use(VXETable);
+
 const $previewApp = document.getElementById("previewApp");
 
 window.addEventListener("message", init, false);

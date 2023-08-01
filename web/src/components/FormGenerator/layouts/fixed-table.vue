@@ -3,7 +3,7 @@
     <table class="table">
       <tbody class="table-body">
         <tr class="table-list">
-          <th v-for="(col, index) in columns.length" :key="index">
+          <th v-for="(col, index) in columns" :key="index">
             {{ col.label }}
           </th>
         </tr>

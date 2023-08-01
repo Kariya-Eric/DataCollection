@@ -1,39 +1,22 @@
 <template>
-  <div>
-    <el-drawer
-      :append-to-body="true"
-      v-bind="$attrs"
-      v-on="$listeners"
-      :visible="visible"
-      @close="onClose"
-      :show-close="false"
-      size="80%"
-    >
-      <div slot="title" class="titleSlot">
-        <span>表单预览</span>
-        <div class="titleButton">
-          <Mbutton name="返回" icon="返回" @click="onClose" />
-        </div>
-      </div>
-      <div class="right-preview">
-        <iframe
-          v-show="isIframeLoaded"
-          ref="previewPage"
-          class="result-wrapper"
-          frameborder="0"
-          :src="previewURL"
-          @load="iframeLoad"
-        />
-        <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
-      </div>
-    </el-drawer>
+  <div class="right-preview">
+    <iframe
+      v-show="isIframeLoaded"
+      ref="previewPage"
+      class="result-wrapper"
+      frameborder="0"
+      :src="previewURL"
+      @load="iframeLoad"
+    />
+    <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
   </div>
 </template>
 
 <script>
-import { makeUpHtml } from "../generator/html";
-import { makeUpJs } from "../generator/js";
-import { makeUpCss } from "../generator/css";
+// 表单预览页面
+import { makeUpHtml } from "../utils/html";
+import { makeUpJs } from "../utils/js";
+import { makeUpCss } from "../utils/css";
 import { parse } from "@babel/parser";
 import { exportDefault } from "../utils/index";
 
@@ -42,45 +25,33 @@ const editorObj = {
   js: null,
   css: null,
 };
+
 export default {
-  name: "FormDrawer",
+  name: "FormView",
+  props: ["formConf"],
   data() {
     return {
       editorObj,
-      visible: false,
-      formData: {},
-      generateConf: null,
       isIframeLoaded: false,
       isInitcode: false, // 保证open后两个异步只执行一次runcode
-      isRefreshCode: false, // 每次打开都需要重新刷新代码
       previewURL: "",
     };
   },
+
+  watch: {
+    formConf: {
+      handler(newVal) {
+        this.isInitcode = false;
+        this.previewURL =
+          process.env.BASE_URL + ":" + process.env.BASE_PORT + "/preview.html";
+        this.editorObj.html = makeUpHtml(newVal);
+        this.editorObj.js = makeUpJs(newVal);
+        this.editorObj.css = makeUpCss(newVal);
+      },
+      immediate: true,
+    },
+  },
   methods: {
-    show(formData, formConf) {
-      this.generateConf = formConf;
-      this.formData = formData;
-      this.onOpen();
-      this.visible = true;
-    },
-
-    onClose() {
-      this.visible = false;
-      this.isInitcode = false;
-      this.isRefreshCode = false;
-    },
-
-    onOpen() {
-      this.previewURL =
-        process.env.BASE_URL + ":" + process.env.BASE_PORT + "/preview.html";
-      this.htmlCode = makeUpHtml(this.formData, this.generateConf);
-      this.jsCode = makeUpJs(this.formData);
-      this.cssCode = makeUpCss(this.formData);
-      this.editorObj.html = this.htmlCode;
-      this.editorObj.js = this.jsCode;
-      this.editorObj.css = this.cssCode;
-    },
-
     iframeLoad() {
       if (!this.isInitcode) {
         this.isIframeLoaded = true;
@@ -133,7 +104,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .right-preview {
   margin-left: 36px;
   margin-right: 36px;

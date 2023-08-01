@@ -67,15 +67,14 @@ const user = {
       return new Promise((resolve, reject) => {
         getMenuList()
           .then((response) => {
-            const menuData = response.value[0].children;
-            if (menuData && menuData.length > 0) {
-              commit("SET_PERMISSIONLIST", menuData);
+            if (response.value.length == 0) {
+              commit("SET_PERMISSIONLIST", [{ path: "/home" }]);
+              resolve([]);
             } else {
-              reject(
-                "getPermissionList: permissions must be a non-null array !"
-              );
+              const menuData = response.value[0].children;
+              commit("SET_PERMISSIONLIST", menuData);
+              resolve(menuData);
             }
-            resolve(menuData);
           })
           .catch((error) => {
             reject(error);

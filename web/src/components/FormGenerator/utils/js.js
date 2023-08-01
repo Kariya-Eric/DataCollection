@@ -99,7 +99,6 @@ function callInCreated(methodName, created) {
 // 混入处理函数
 function mixinMethod() {
   const list = [];
-  let hasTable = false;
   const methods = {
     submitForm: `submitForm() {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
@@ -125,7 +124,8 @@ function mixinMethod() {
 // 构建data
 function buildData(scheme, dataList) {
   if (scheme.__vModel__ === undefined) return;
-  const vmodel = scheme.__config__.tag === "el-checkbox-group" ? `[]` : `undefined`
+  const vmodel =
+    scheme.__config__.tag === "el-checkbox-group" ? `[]` : `undefined`;
   dataList.push(`${scheme.__vModel__}: ${vmodel},`);
 }
 
@@ -142,7 +142,8 @@ function buildRules(scheme, ruleList) {
         : scheme.placeholder;
       if (message === undefined) message = `${config.label}不能为空`;
       rules.push(
-        `{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]
+        `{ required: true, ${type} message: '${message}', trigger: '${
+          ruleTrigger[config.tag]
         }' }`
       );
     }
@@ -153,12 +154,12 @@ function buildRules(scheme, ruleList) {
         );
       }
     }
-    if (config.tag === "customLink") {
+    if (config.tag === "formLink") {
       rules.push(
         `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '请输入正确的${config.label}' , trigger : 'blur' }`
       );
     }
-    if (config.tag === "customPhone") {
+    if (config.tag === "formPhone") {
       if (scheme.isMobile) {
         rules.push(
           `{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : 'blur' }`
@@ -169,23 +170,11 @@ function buildRules(scheme, ruleList) {
         );
       }
     }
-    if (config.tag === "customMail") {
+    if (config.tag === "formMail") {
       rules.push(
         `{ type: 'email' , message : '请输入正确的邮箱' , trigger : 'blur' }`
       );
     }
-    ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
-  }
-  if (config.tag === "customEditTable") {
-    rules.push(`{ validator : (rule,value,callback) => {
-      let result=this.$refs.customTable_${config.formId}.validateTable();
-      if(result===0){
-        callback();
-      }else{
-        let errorMsg=result===1?'${config.label}至少需要一条数据':'${config.label}中存在不合法数据'
-        callback(new Error(errorMsg));
-      }
-    }}`);
     ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
   }
 }
@@ -193,7 +182,6 @@ function buildRules(scheme, ruleList) {
 // 构建options
 function buildOptions(scheme, optionsList) {
   if (scheme.__vModel__ === undefined) return;
-  // el-cascader直接有options属性，其他组件都是定义在slot中，所以有两处判断
   let { options } = scheme;
   if (!options) options = scheme.__slot__.options;
   if (scheme.__config__.dataType === "dynamic") {
@@ -249,8 +237,6 @@ function buildexport(
     }
   },
   created () {
-    //处理多选的表单验证问题
-    this.$nextTick(()=>this.resetForm());
     ${created}
   },
   methods: {

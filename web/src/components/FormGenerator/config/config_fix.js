@@ -1,14 +1,24 @@
 // 固定表单配置文件
-import { input, textarea, number, link, mail, phone, select, date, address } from "./config_common"
+import {
+  input,
+  textarea,
+  number,
+  link,
+  mail,
+  phone,
+  select,
+  date,
+  address,
+} from "./config_common";
 
 // 输入型组件 【左面板】
-export const inputComponentsFix = [
-  input, textarea, number, link, mail, phone
-];
+export const inputComponentsFix = [input, textarea, number, link, mail, phone];
 
 // 选择型组件 【左面板】
 export const selectComponentsFix = [
-  select, date, address,
+  select,
+  date,
+  address,
   {
     __config__: {
       label: "单项选择",
@@ -61,7 +71,6 @@ export const selectComponentsFix = [
     },
     min: null,
     max: null,
-    disabled: false,
     comment: "",
   },
 ];
@@ -83,19 +92,19 @@ export const otherComponentsFix = [
         key: 1,
         label: "列1",
         props: "col1",
-        type: input
+        type: input,
       },
       {
         key: 2,
         label: "列2",
         props: "col2",
-        type: input
+        type: input,
       },
       {
         key: 3,
         label: "列3",
         props: "col3",
-        type: input
+        type: input,
       },
     ],
     comment: "",
