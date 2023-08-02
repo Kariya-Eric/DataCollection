@@ -217,7 +217,10 @@
 
       <el-form-item label="是否必填">
         <el-switch
-          v-model="activeData.columns[activeData.selectedCol - 1].type.required"
+          v-model="
+            activeData.columns[activeData.selectedCol - 1].type.__config__
+              .required
+          "
         />
       </el-form-item>
 

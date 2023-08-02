@@ -12,9 +12,8 @@
       ref="xTable"
       align="center"
       size="medium"
-      resizable
-      keep-source
-      show-overflow
+      min-height="550"
+      :data="dataSource"
       :edit-rules="rules"
       :edit-config="{ trigger: 'click', mode: 'cell' }"
     >
@@ -24,8 +23,19 @@
         :key="col.key"
         :field="col.props"
         :title="col.label"
-        :edit-render="{}"
+        :edit-render="col.autofocus"
       >
+        <template #header="{ column }">
+          <span>{{ column.title }}</span>
+          <el-tooltip
+            v-if="col.comment.length > 0"
+            :content="col.comment"
+            effect="dark"
+            placement="right"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
         <template #edit="scope">
           <template v-if="col.component == 'input'">
             <el-input
@@ -34,11 +44,13 @@
             />
           </template>
           <template v-if="col.component == 'inputarea'">
-            <el-input
-              type="textarea"
-              v-model="scope.row[col.props]"
-              :placeholder="col.placeholder"
-            />
+            <div style="margin: 8px 0 8px 0">
+              <el-input
+                type="textarea"
+                v-model="scope.row[col.props]"
+                :placeholder="col.placeholder"
+              />
+            </div>
           </template>
           <template v-if="col.component == 'number'">
             <el-input-number
@@ -67,8 +79,9 @@
               :isMobile="columns[index].type.isMobile"
           /></template>
           <template v-if="col.component == 'address'">
-            <form-address v-model="scope.row[col.props]"
-          /></template>
+            <div style="margin: 8px 0 8px 0">
+              <form-address v-model="scope.row[col.props]" /></div
+          ></template>
           <template v-if="col.component == 'select'">
             <el-select
               v-model="scope.row[col.props]"
@@ -93,9 +106,13 @@
             />
           </template>
         </template>
-        <template #default="{ row }" v-if="col.component == 'select'">
-          {{ getSelectLabel(row[col.props], columns[index].type) }}
-        </template>
+        <template
+          #default="{ row }"
+          v-if="col.component == 'select' || col.component == 'number'"
+          >{{
+            getLabel(col.component, row[col.props], columns[index].type)
+          }}</template
+        >
       </vxe-column>
       <vxe-column title="操作" width="100" show-overflow>
         <template #default="{ row }">
@@ -109,16 +126,65 @@
 </template>
 
 <script>
-import formAddress from "./form-address.vue";
 // 用于渲染的vxe表格
 export default {
-  components: { formAddress },
   name: "FormTable",
   props: ["columns", "value", "required"],
+  data() {
+    return {
+      dataSource: this.value,
+    };
+  },
 
   computed: {
     rules() {
-      return {};
+      let rule = {};
+      this.columns.map((column) => {
+        let ruleList = [];
+        if (column.type.__config__.required) {
+          ruleList.push({
+            required: true,
+            message: `${column.label}为必输项！`,
+          });
+        }
+        if (
+          column.type.__config__.label == "单行文本" ||
+          column.type.__config__.label == "多行文本"
+        ) {
+          if (column.type.allowChar) {
+            ruleList.push({
+              pattern: /^[^\u4E00-\u9FA5]+$/,
+              message: `${column.label}中不能包含汉字`,
+            });
+          }
+        } else if (column.type.__config__.label == "链接") {
+          ruleList.push({
+            pattern: /^[^\u4E00-\u9FA5]+$/,
+            message: `${column.label}中不能包含汉字`,
+          });
+        } else if (column.type.__config__.label == "邮箱") {
+          ruleList.push({
+            pattern: /\w[-.\w]*@[-a-z0-9]+(\.[-a-z0-9]+)*\.(com|cn)/,
+            message: "请输入正确的邮箱",
+          });
+        } else if (column.type.__config__.label == "电话") {
+          if (column.type.isMobile) {
+            ruleList.push({
+              pattern: /^(\+\d{2}-)?0\d{2,3}-\d{7,8}$/,
+              message: "请输入正确的电话号码",
+            });
+          } else {
+            ruleList.push({
+              pattern: /^(\+\d{2}-)?(\d{2,3}-)?([1][3,4,5,7,8][0-9]\d{8})$/,
+              message: "请输入正确的手机号",
+            });
+          }
+        }
+        if (ruleList.length != 0) {
+          rule[column.props] = ruleList;
+        }
+      });
+      return rule;
     },
     renderColumns() {
       return this.columns.map((column) => {
@@ -129,7 +195,7 @@ export default {
           autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "多行文本") {
           component = "inputarea";
-          autofocus = { autofocus: ".el-input__inner" };
+          autofocus = { autofocus: ".el-textarea__inner" };
         } else if (column.type.__config__.label == "数字") {
           component = "number";
           autofocus = { autofocus: ".el-input__inner" };
@@ -171,7 +237,26 @@ export default {
     },
   },
   methods: {
-    deleteRow(row) {},
+    async validate() {
+      console.log("校验中...");
+      const $table = this.$refs.xTable;
+      if (this.required) {
+        if ($table.getTableData().tableData.length == 0) {
+          return "请至少添加一条数据！";
+        }
+      }
+      const errMap = await $table.validate().catch((errMap) => errMap);
+      if (errMap) {
+        return "请确认数据是否正确";
+      }
+      this.$emit("input", $table.getTableData().tableData);
+      return undefined;
+    },
+
+    async deleteRow(row) {
+      const $table = this.$refs.xTable;
+      await $table.remove(row);
+    },
 
     async insertRow() {
       const $table = this.$refs.xTable;
@@ -184,26 +269,57 @@ export default {
       await $table.setActiveRow(newRow);
     },
 
-    // 处理选择的回显
-    getSelectLabel(value, type, valueProp = "value", labelField = "label") {
-      if (type.multiple) {
-        return value
-          .map((val) => {
-            const item = type.__slot__.options.find(
-              (item) => item[valueProp] === val
-            );
-            return item ? item[labelField] : null;
-          })
-          .join(", ");
+    // 处理选择和数字的回显
+    getLabel(
+      component,
+      value,
+      type,
+      valueProp = "value",
+      labelField = "label"
+    ) {
+      if (component == "select") {
+        if (type.multiple) {
+          if (!value) {
+            return null;
+          }
+          return value
+            .map((val) => {
+              const item = type.__slot__.options.find(
+                (item) => item[valueProp] === val
+              );
+              return item ? item[labelField] : null;
+            })
+            .join(", ");
+        } else {
+          const item = type.__slot__.options.find(
+            (item) => item[valueProp] === value
+          );
+          return item ? item[labelField] : null;
+        }
       } else {
-        const item = type.__slot__.options.find(
-          (item) => item[valueProp] === value
-        );
-        return item ? item[labelField] : null;
+        if (value == null) {
+          return null;
+        }
+        let nums = value.toString().split(".");
+        if (nums.length == 1) {
+          let ret = value + ".";
+          for (let i = 0; i < type.precision; i++) {
+            ret += "0";
+          }
+          if (ret.endsWith(".")) {
+            return ret.substring(0, ret.length - 1);
+          }
+          return ret;
+        }
+        let append = type.precision - nums[1].length;
+        for (let i = 0; i < append; i++) {
+          value += "0";
+        }
+        return value;
       }
     },
   },
 };
 </script>
 
-<style lang="sass" scoped></style>
+<style lang="scss" scoped></style>

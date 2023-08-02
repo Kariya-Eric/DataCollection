@@ -127,7 +127,7 @@ const tags = {
     const min = el.min ? `:min="${el.min}"` : "";
     const max = el.max ? `:max="${el.max}"` : "";
     const precision = el.precision ? `:precision="${el.precision}"` : "";
-    return `<${tag} ${vModel} ${type} ${placeholder} ${width} ${min} ${max} ${precision} controls-position="right"/>`;
+    return `<${tag} ${vModel} ${placeholder} ${width} ${min} ${max} ${precision} controls-position="right" />`;
   },
   "el-select": (el) => {
     const { tag, vModel, placeholder, width } = attrBuilder(el);
@@ -184,12 +184,14 @@ const tags = {
     return `<form-address ${vModel} ${placeholder} ${width} />`;
   },
   floatTable: (el) => {
-    return <div>123</div>;
+    return `<div>123</div>`;
   },
   fixedTable: (el) => {
     const { vModel } = attrBuilder(el);
+    const ref = `ref='table_${el.__config__.formId}'`;
     const columns = `:columns='${JSON.stringify(el.columns)}'`;
-    return `<form-table ${columns} ${vModel} />`;
+    const required = `:required="${el.__config__.required}"`;
+    return `<form-table ${ref} ${columns} ${vModel} ${required} />`;
   },
   // ============自定义组件=============================
 };

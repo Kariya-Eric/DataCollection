@@ -1,29 +1,6 @@
 <template>
   <el-dialog title="表头设置" :visible="visible" @close="close" append-to-body>
-    <el-button type="primary" @click="addRow">增加行</el-button>
-    <div class="tableDiv">
-      <table class="table">
-        <tbody class="table-body">
-          <tr
-            v-for="(header, index) in theaders"
-            :key="index"
-            class="table-list"
-          >
-            <td v-for="(item, i) in header" :key="i">
-              <div class="tdiv">
-                <div class="rightIcon">
-                  <i class="el-icon-right"></i>
-                </div>
-                <el-input v-model="header[i]" size="small" />
-                <div class="bottomIcon">
-                  <i class="el-icon-bottom"></i>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="dynamic-table-wapper"></div>
   </el-dialog>
 </template>
 
@@ -47,49 +24,83 @@ export default {
     close() {
       this.visible = false;
     },
-
-    addRow() {
-      let row = this.theaders[this.theaders.length - 1];
-      this.theaders = [row, ...this.theaders];
-    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.table {
-  border-collapse: collapse;
-  width: 100%;
-  .table-body {
-    .table-list {
-      height: 46px;
-      line-height: 46px;
-      td {
-        padding: 0 10px;
-        border: 1px solid #dfe6ec;
-        min-width: 220px;
+select{
+  background:#FAF0DE !important;
+}
+.isedit{
+  background-color:#f2faf3 !important;
+}
+.dynamic-table-wapper{
+  // padding:20px;
+  // min-height: 200px;
+  border-radius: 5px;
+  overflow: hidden;
+  // border:1px solid #dfe6ec;
+  table-layout:fixed;
+  .isPreview{
+    user-select: auto !important;
+  }
+  .noPreview{
+    user-select: none !important;
+  }
+  .dynamic-table{
+    width:100%;
+    border-collapse: collapse;
+    &:first-child tr{
+      th{
+        border-top:none !important;
       }
+    }
+    tr{
+      &:first-child th{
+        border-top:none !important;
+        border-left:none !important;
+      }
+      th:first-child,td:first-child{
+        border-left:none !important;
+      }
+      th:last-child,td:last-child{
+        border-right:none !important;
+      }
+      &:last-child td{
+        border-bottom:none !important;
+      }
+    }
+    th{
+      // background-color: #F9FAFB;
+      font-weight: 300;
+    }
+    td{
+      font-size:14px;
+      color:#222222;
+      // background-color: #ffffff;
+    }
+    td,th{
+      word-wrap:break-word;
+      border-spacing: 0;
+      // border:1px solid #dfe6ec;
+      box-sizing:border-box;
+      padding:5px;
+      overflow-x: auto;
     }
   }
 }
-
-.tableDiv {
-  margin-top: 12px;
-  // overflow-x: auto;
-  // overflow-y: auto;
+.brder-right-none{
+    border-right:none !important;
 }
-.tdiv {
-  padding: 6px 6px 6px 0px;
-  position: relative;
+.brder-bottom-none{
+    border-bottom:none !important;
 }
-.rightIcon {
-  position: absolute;
-  right: -10px;
-  top: -10px;
+.table-title{
+  text-align:center;
+  padding:10px 0;
+  font-size:16px;
+  font-weight:600;
 }
-.bottomIcon {
-  position: absolute;
-  right: -10px;
-  bottom: -10px;
-}
+</style
 </style>

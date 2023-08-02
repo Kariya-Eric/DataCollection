@@ -1,5 +1,5 @@
 import { isArray } from "util";
-import { exportDefault, titleCase, deepClone } from "../utils/index";
+import { exportDefault, deepClone } from "../utils/index";
 import ruleTrigger from "./ruleTrigger";
 
 let confGlobal;
@@ -14,20 +14,10 @@ export function makeUpJs(formConfig) {
   const dataList = [];
   const ruleList = [];
   const optionsList = [];
-  const propsList = [];
   const methodList = mixinMethod();
-  const created = [];
 
   formConfig.fields.forEach((el) => {
-    buildAttributes(
-      el,
-      dataList,
-      ruleList,
-      optionsList,
-      methodList,
-      propsList,
-      created
-    );
+    buildAttributes(el, dataList, ruleList, optionsList, methodList);
   });
 
   const script = buildexport(
@@ -35,24 +25,14 @@ export function makeUpJs(formConfig) {
     dataList.join("\n"),
     ruleList.join("\n"),
     optionsList.join("\n"),
-    propsList.join("\n"),
-    methodList.join("\n"),
-    created.join("\n")
+    methodList.join("\n")
   );
   confGlobal = null;
   return script;
 }
 
 // 构建组件属性
-function buildAttributes(
-  scheme,
-  dataList,
-  ruleList,
-  optionsList,
-  methodList,
-  propsList,
-  created
-) {
+function buildAttributes(scheme, dataList, ruleList, optionsList, methodList) {
   const config = scheme.__config__;
   const slot = scheme.__slot__;
   buildData(scheme, dataList);
@@ -61,39 +41,14 @@ function buildAttributes(
   // 特殊处理options属性
   if (scheme.options || (slot && slot.options && slot.options.length)) {
     buildOptions(scheme, optionsList);
-    if (config.dataType === "dynamic") {
-      const model = `${scheme.__vModel__}Options`;
-      const options = titleCase(model);
-      const methodName = `get${options}`;
-      buildOptionMethod(methodName, model, methodList, scheme);
-      callInCreated(methodName, created);
-    }
-  }
-
-  // 处理props
-  if (scheme.props && scheme.props.props) {
-    buildProps(scheme, propsList);
   }
 
   // 构建子级组件属性
   if (config.children) {
     config.children.forEach((item) => {
-      buildAttributes(
-        item,
-        dataList,
-        ruleList,
-        optionsList,
-        methodList,
-        propsList,
-        created
-      );
+      buildAttributes(item, dataList, ruleList, optionsList, methodList);
     });
   }
-}
-
-// 在Created调用函数
-function callInCreated(methodName, created) {
-  created.push(`this.${methodName}()`);
 }
 
 // 混入处理函数
@@ -124,8 +79,16 @@ function mixinMethod() {
 // 构建data
 function buildData(scheme, dataList) {
   if (scheme.__vModel__ === undefined) return;
-  const vmodel =
-    scheme.__config__.tag === "el-checkbox-group" ? `[]` : `undefined`;
+  let vmodel;
+  if (scheme.__config__.tag === "el-checkbox-group") {
+    vmodel = `[]`;
+  } else if (scheme.__config__.tag === "el-select" && scheme.multiple) {
+    vmodel = `[]`;
+  } else if (scheme.__config__.layout === "tableLayout") {
+    vmodel = `[]`;
+  } else {
+    vmodel = `undefined`;
+  }
   dataList.push(`${scheme.__vModel__}: ${vmodel},`);
 }
 
@@ -150,33 +113,54 @@ function buildRules(scheme, ruleList) {
     if (config.tag === "el-input") {
       if (scheme.allowChar) {
         rules.push(
-          `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '${config.label}中不能包含汉字' , trigger : 'blur' }`
+          `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '${
+            config.label
+          }中不能包含汉字' , trigger : '${ruleTrigger[config.tag]}' }`
         );
       }
     }
     if (config.tag === "formLink") {
       rules.push(
-        `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '请输入正确的${config.label}' , trigger : 'blur' }`
+        `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '请输入正确的${
+          config.label
+        }' , trigger : '${ruleTrigger[config.tag]}' }`
       );
     }
     if (config.tag === "formPhone") {
       if (scheme.isMobile) {
         rules.push(
-          `{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : 'blur' }`
+          `{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : '${
+            ruleTrigger[config.tag]
+          }' }`
         );
       } else {
         rules.push(
-          `{ pattern:  /^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/ , message : '请输入正确的手机号' , trigger : 'blur' }`
+          `{ pattern:  /^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/ , message : '请输入正确的手机号' , trigger : '${
+            ruleTrigger[config.tag]
+          }' }`
         );
       }
     }
     if (config.tag === "formMail") {
       rules.push(
-        `{ type: 'email' , message : '请输入正确的邮箱' , trigger : 'blur' }`
+        `{ type: 'email' , message : '请输入正确的邮箱' , trigger : '${
+          ruleTrigger[config.tag]
+        }' }`
       );
     }
     ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
   }
+  if (config.layout === "tableLayout") {
+    rules.push(`{ validator : async (rule,value,callback) => {
+            let result=await this.$refs.table_${config.formId}.validate();
+            if(result){
+                callback(new Error(result));
+            }
+            callback();
+          }}`);
+    ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
+  }
+  console.log(ruleList);
 }
 
 // 构建options
@@ -184,45 +168,12 @@ function buildOptions(scheme, optionsList) {
   if (scheme.__vModel__ === undefined) return;
   let { options } = scheme;
   if (!options) options = scheme.__slot__.options;
-  if (scheme.__config__.dataType === "dynamic") {
-    options = [];
-  }
   const str = `${scheme.__vModel__}Options: ${JSON.stringify(options)},`;
   optionsList.push(str);
 }
 
-function buildProps(scheme, propsList) {
-  const str = `${scheme.__vModel__}Props: ${JSON.stringify(
-    scheme.props.props
-  )},`;
-  propsList.push(str);
-}
-
-function buildOptionMethod(methodName, model, methodList, scheme) {
-  const config = scheme.__config__;
-  const str = `${methodName}() {
-    // 注意：this.$axios是通过Vue.prototype.$axios = axios挂载产生的
-    this.$axios({
-      method: '${config.method}',
-      url: '${config.url}'
-    }).then(resp => {
-      var { data } = resp
-      this.${model} = data.${config.dataKey}
-    })
-  },`;
-  methodList.push(str);
-}
-
 // js整体拼接
-function buildexport(
-  conf,
-  data,
-  rules,
-  selectOptions,
-  props,
-  methods,
-  created
-) {
+function buildexport(conf, data, rules, selectOptions, methods) {
   const str = `${exportDefault}{
   data () {
     return {
@@ -233,11 +184,7 @@ function buildexport(
         ${rules}
       },
       ${selectOptions}
-      ${props}
     }
-  },
-  created () {
-    ${created}
   },
   methods: {
     ${methods}

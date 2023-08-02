@@ -8,7 +8,6 @@ export default {
   'el-select': 'change',
   'el-radio-group': 'change',
   'el-checkbox-group': 'change',
-  'el-time-picker': 'change',
   'el-date-picker': 'change',
   'formMail': 'blur',
   'formPhone': 'blur',

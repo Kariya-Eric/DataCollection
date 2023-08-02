@@ -173,7 +173,7 @@ export default {
       const config = item.__config__;
       config.formId = ++this.idGlobal;
       config.renderKey = `${config.formId}${+new Date()}`; // 改变renderKey后可以实现强制更新组件
-      if (config.layout === "colFormItem" || config.layout === "customTable") {
+      if (config.layout === "colFormItem" || config.layout === "tableLayout") {
         item.__vModel__ = `field${this.idGlobal}`;
       }
       return item;

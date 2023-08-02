@@ -4,7 +4,7 @@
       v-show="isIframeLoaded"
       ref="previewPage"
       id="iFrame"
-      style="width: 100%; scrolling: yes,;height:100%"
+      style="width: 100%; scrolling: yes; height: 100%"
       frameborder="0"
       :src="previewURL"
       @load="iframeLoad"
@@ -117,5 +117,11 @@ export default {
   //   padding: 12px;
   //   box-sizing: border-box;
   // }
+}
+/deep/ .el-input__inner::placeholder {
+  text-align: left;
+}
+/deep/ .el-input-number.is-controls-right .el-input__inner {
+  text-align: left;
 }
 </style>
