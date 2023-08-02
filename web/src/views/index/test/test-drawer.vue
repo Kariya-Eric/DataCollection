@@ -1,6 +1,12 @@
 <template>
   <div>
-    <el-drawer :visible="visible" @close="close" size="80%" title="预览">
+    <el-drawer
+      :visible="visible"
+      @close="close"
+      size="80%"
+      title="预览"
+      v-if="visible"
+    >
       <form-view :formConf="formConf" />
     </el-drawer>
   </div>

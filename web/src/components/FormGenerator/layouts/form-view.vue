@@ -3,12 +3,13 @@
     <iframe
       v-show="isIframeLoaded"
       ref="previewPage"
-      class="result-wrapper"
+      id="iFrame"
+      style="width: 100%; scrolling: yes,;height:100%"
       frameborder="0"
       :src="previewURL"
       @load="iframeLoad"
     />
-    <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
+    <!-- <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" /> -->
   </div>
 </template>
 
@@ -106,14 +107,15 @@ export default {
 
 <style scoped lang="scss">
 .right-preview {
-  margin-left: 36px;
-  margin-right: 36px;
+  width: 100%;
   height: 100%;
-  .result-wrapper {
-    height: calc(100vh - 33px);
-    width: 100%;
-    overflow: auto;
-    padding: 12px;
-  }
+  overflow: auto;
+  // .result-wrapper {
+  //   height: calc(100vh - 33px);
+  //   width: 100%;
+  //   overflow: auto;
+  //   padding: 12px;
+  //   box-sizing: border-box;
+  // }
 }
 </style>

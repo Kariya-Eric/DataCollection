@@ -93,6 +93,9 @@
             />
           </template>
         </template>
+        <template #default="{ row }" v-if="col.component == 'select'">
+          {{ getSelectLabel(row[col.props], columns[index].type) }}
+        </template>
       </vxe-column>
       <vxe-column title="操作" width="100" show-overflow>
         <template #default="{ row }">
@@ -179,6 +182,25 @@ export default {
       const newRecord = {};
       const { row: newRow } = await $table.insertAt(newRecord, -1);
       await $table.setActiveRow(newRow);
+    },
+
+    // 处理选择的回显
+    getSelectLabel(value, type, valueProp = "value", labelField = "label") {
+      if (type.multiple) {
+        return value
+          .map((val) => {
+            const item = type.__slot__.options.find(
+              (item) => item[valueProp] === val
+            );
+            return item ? item[labelField] : null;
+          })
+          .join(", ");
+      } else {
+        const item = type.__slot__.options.find(
+          (item) => item[valueProp] === value
+        );
+        return item ? item[labelField] : null;
+      }
     },
   },
 };

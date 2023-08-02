@@ -15,6 +15,10 @@ Vue.use(Components);
 
 import VXETable from "vxe-table";
 import "vxe-table/lib/style.css";
+import VXETablePluginElement from 'vxe-table-plugin-element'
+import 'vxe-table-plugin-element/dist/style.css'
+Vue.use(VXETable);
+VXETable.use(VXETablePluginElement)
 
 Vue.use(VXETable);
 
@@ -42,7 +46,7 @@ function init(event) {
 
 function newVue(main, html) {
   main = eval(`(${main})`);
-  main.template = `<div style="overflow-y:auto">${html}</div>`;
+  main.template = `<div>${html}</div>`;
   const vm = new Vue({
     components: {
       child: main,

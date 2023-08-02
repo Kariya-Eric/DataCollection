@@ -34,7 +34,6 @@
     "script-loader": "^0.7.2",
     "sortablejs": "^1.15.0",
     "throttle-debounce": "^5.0.0",
-    "v-fit-columns": "^0.2.0",
     "vue": "2.6.10",
     "vue-ls": "^4.2.0",
     "vue-router": "3.1.2",
@@ -42,6 +41,7 @@
     "vuedraggable": "^2.24.3",
     "vuex": "3.1.1",
     "vxe-table": "^3.6.13",
+    "vxe-table-plugin-element": "^1.11.4",
     "xe-utils": "^3.5.11",
     "xlsx": "^0.15.0"
   },

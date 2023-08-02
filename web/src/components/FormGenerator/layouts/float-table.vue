@@ -2,9 +2,9 @@
   <div class="tableDiv">
     <table class="table">
       <tbody class="table-body">
-        <tr class="table-list">
-          <th v-for="(col, index) in columns" :key="index">
-            {{ col.label }}
+        <tr class="table-list" v-for="(head, index) in headers" :key="index">
+          <th v-for="(label, index) in head" :key="index">
+            {{ label }}
           </th>
         </tr>
         <tr class="table-list">
@@ -18,7 +18,10 @@
             }"
             @mousedown="handleCellMousedown(col)"
           >
-            <table-cell :column="columns[index]" />
+            <table-cell
+              :column="columns[index]"
+              :placeholder="headers[headers.length - 1][index]"
+            />
           </td>
         </tr>
       </tbody>
@@ -31,7 +34,7 @@ import TableCell from "./table-cell";
 // 浮动表单设计组件
 export default {
   name: "FloatTable",
-  props: ["selectedCol", "columns"],
+  props: ["selectedCol", "columns", "headers"],
   components: {
     TableCell,
   },

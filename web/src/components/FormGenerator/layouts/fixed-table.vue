@@ -18,7 +18,10 @@
             }"
             @mousedown="handleCellMousedown(col)"
           >
-            <table-cell :column="columns[index]" />
+            <table-cell
+              :column="columns[index]"
+              :placeholder="columns[index].label"
+            />
           </td>
         </tr>
       </tbody>

@@ -13,22 +13,22 @@ export const otherComponentsFloat = [
       required: true,
     },
     selectedCol: -1,
+    headers: [
+      ["列1", "列2", "列3"],
+    ],
     columns: [
       {
         key: 1,
-        label: "列1",
         props: "col1",
         type: input
       },
       {
         key: 2,
-        label: "列2",
         props: "col2",
         type: input
       },
       {
         key: 3,
-        label: "列3",
         props: "col3",
         type: input
       },

@@ -708,7 +708,7 @@ export default {
     },
 
     handleSubmit() {
-      //console.log(this.ruleForm);
+      console.log(this.ruleForm);
       this.$message.warning("等待后端接口");
       this.close();
     },
