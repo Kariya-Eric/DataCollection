@@ -370,8 +370,7 @@
             <logic-dialog
               ref="logicDialog"
               :drawing-list="drawingList"
-              @add="addLogic"
-              @update="updateLogic"
+              :form-conf="formConf"
             />
           </template>
         </el-form>
@@ -446,20 +445,8 @@ export default {
     },
 
     editRule(index) {
-      this.$refs.logicDialog.show(
-        this.formConf.componentsVisible[index],
-        index
-      );
+      this.$refs.logicDialog.show(index);
     },
-
-    addLogic(logicForm) {
-      this.formConf.componentsVisible.push(logicForm);
-    },
-
-    updateLogic(logicForm, index) {
-      this.formConf.componentsVisible[index] = logicForm;
-    },
-
     // end
     addSelectItem() {
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {

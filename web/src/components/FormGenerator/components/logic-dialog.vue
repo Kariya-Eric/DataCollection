@@ -2,6 +2,7 @@
   <el-dialog
     :title="updateFlag ? '添加显隐规则' : '修改显隐规则'"
     :visible="visible"
+    v-if="visible"
     append-to-body
     @close="close"
   >
@@ -58,9 +59,10 @@
 
 <script>
 import LogicItem from "./logic-item";
+
 export default {
   name: "LogicDialog",
-  props: ["drawingList"],
+  props: ["drawingList", "formConf"],
   components: { LogicItem },
   computed: {
     showOptions() {
@@ -94,7 +96,7 @@ export default {
               }
               if (value.termVal instanceof Array && value.termVal.length == 0) {
                 callback(new Error("请正确构建条件！"));
-              } else if (value.termVal == "") {
+              } else if (value.termVal === "") {
                 callback(new Error("请正确构建条件！"));
               }
               callback();
@@ -105,9 +107,11 @@ export default {
     };
   },
   methods: {
-    show(form, index) {
-      if (form) {
-        this.logicForm = form;
+    show(index) {
+      if (index != undefined) {
+        this.logicForm = JSON.parse(
+          JSON.stringify(this.formConf.componentsVisible[index])
+        );
         this.index = index;
         this.updateFlag = true;
       } else {
@@ -115,6 +119,7 @@ export default {
       }
       this.visible = true;
     },
+
     close() {
       this.visible = false;
       this.$refs.logicForm.resetFields();
@@ -126,19 +131,30 @@ export default {
     },
 
     handleSubmit() {
+      for (let i = 0; i < this.logicForm.showList.length; i++) {
+        let show = this.logicForm.showList[i];
+        if (this.logicForm.termList.map((term) => term.term).includes(show)) {
+          this.$message.warning("条件字段中请不要包含显示字段！");
+          return;
+        }
+      }
       this.$refs.logicForm.validate((valid) => {
         if (valid) {
+          let logic = JSON.parse(JSON.stringify(this.logicForm));
           if (this.updateFlag) {
-            this.$emit("update", this.logicForm, index);
+            this.formConf.componentsVisible[this.index] = logic;
           } else {
-            this.$emit("add", this.logicForm);
+            this.formConf.componentsVisible.push(logic);
           }
+          this.close();
         }
       });
     },
 
     delTerm(index) {
-      this.logicForm.termList.splice(index, 1);
+      this.logicForm.termList = this.logicForm.termList.filter(
+        (item, i) => i != index
+      );
     },
 
     addTerm() {

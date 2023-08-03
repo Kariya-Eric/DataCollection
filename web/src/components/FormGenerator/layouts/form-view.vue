@@ -1,15 +1,19 @@
 <template>
-  <div class="right-preview">
-    <iframe
-      v-show="isIframeLoaded"
-      ref="previewPage"
-      id="iFrame"
-      style="width: 100%; scrolling: yes; height: 100%"
-      frameborder="0"
-      :src="previewURL"
-      @load="iframeLoad"
-    />
-    <!-- <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" /> -->
+  <div style="height: 100%">
+    <div style="height: 100%; overflow: auto">
+      <div class="right-preview">
+        <iframe
+          v-show="isIframeLoaded"
+          ref="previewPage"
+          id="myIframe"
+          class="result-wrapper"
+          frameborder="0"
+          :src="previewURL"
+          @load="iframeLoad"
+        />
+        <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -55,6 +59,14 @@ export default {
   methods: {
     iframeLoad() {
       if (!this.isInitcode) {
+        var iframe = document.getElementById("myIframe");
+        // 延时加载，处理iframe高度
+        setTimeout(function () {
+          var innerDoc =
+            iframe.contentDocument || iframe.contentWindow.document;
+          var innerHeight = innerDoc.body.scrollHeight;
+          iframe.style.height = innerHeight + "px";
+        }, 500);
         this.isIframeLoaded = true;
         this.isInitcode = true;
         this.runCode();
@@ -80,12 +92,9 @@ export default {
           const postData = {
             type: "refreshFrame",
             data: {
-              generateConf: this.generateConf,
               html: editorObj.html,
               js: jsCodeStr.replace(exportDefault, ""),
               css: editorObj.css,
-              scripts: this.scripts,
-              links: this.links,
             },
           };
 
@@ -107,16 +116,10 @@ export default {
 
 <style scoped lang="scss">
 .right-preview {
-  width: 100%;
   height: 100%;
-  overflow: auto;
-  // .result-wrapper {
-  //   height: calc(100vh - 33px);
-  //   width: 100%;
-  //   overflow: auto;
-  //   padding: 12px;
-  //   box-sizing: border-box;
-  // }
+  .result-wrapper {
+    width: 100%;
+  }
 }
 /deep/ .el-input__inner::placeholder {
   text-align: left;

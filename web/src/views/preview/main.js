@@ -51,11 +51,6 @@ function newVue(main, html) {
     components: {
       child: main,
     },
-    data() {
-      return {
-        visible: true,
-      };
-    },
     template: `<div><child ref='child'/></div>`,
   }).$mount("#app");
   window.vm = vm;

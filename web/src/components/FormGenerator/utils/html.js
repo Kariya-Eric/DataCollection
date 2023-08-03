@@ -1,3 +1,5 @@
+import { buildRules } from "./vif";
+
 let confGlobal;
 let someSpanIsNot24;
 
@@ -62,6 +64,9 @@ function colWrapper(scheme, str) {
 }
 
 function labelTooltip(scheme) {
+  if (scheme.__config__.tag == "formDivider") {
+    return "";
+  }
   const comment = scheme.comment;
   if (comment === "") {
     return "";
@@ -78,6 +83,7 @@ function labelTooltip(scheme) {
 
 const layouts = {
   colFormItem(scheme) {
+    const vif = buildRules(confGlobal, scheme);
     const config = scheme.__config__;
     let labelWidth = "";
     let label = `label="${config.label}"`;
@@ -90,13 +96,14 @@ const layouts = {
     }
     const tooltip = labelTooltip(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${vif}>
           ${tooltip}${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);
   },
 
   tableLayout(scheme) {
+    const vif = buildRules(confGlobal, scheme);
     const config = scheme.__config__;
     let labelWidth = "";
     let label = `label="${config.label}"`;
@@ -109,7 +116,7 @@ const layouts = {
     }
     const tooltip = labelTooltip(scheme);
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null;
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}">
+    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${vif}>
           ${tooltip}${tagDom}
       </el-form-item>`;
     return colWrapper(scheme, str);

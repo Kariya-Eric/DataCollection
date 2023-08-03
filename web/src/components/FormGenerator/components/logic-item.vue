@@ -85,28 +85,55 @@ export default {
     value: {
       handler(val) {
         this.term = val.term;
-        this.calFlag = val.calFlag;
-        if (val.termVal instanceof Array) {
-          this.termVals = val.termVal;
-        } else {
-          this.termVal = val.termVal;
-        }
+        this.initOptions(val.term);
+        this.$nextTick(() => {
+          if (val.termVal instanceof Array) {
+            this.termVals = val.termVal;
+          } else {
+            this.termVal = val.termVal;
+          }
+          this.calFlag = val.calFlag;
+        });
       },
       immediate: true,
     },
-    term(newVal, oldVal) {
+    term(newVal) {
       this.resetTerm();
-      if (newVal == "") {
+      this.initOptions(newVal);
+    },
+  },
+  computed: {
+    options() {
+      let optionList = [];
+      this.drawingList.forEach((item) => {
+        if (
+          item.__config__.tag != "formDivider" &&
+          item.__config__.layout != "tableLayout"
+        ) {
+          optionList.push({
+            label: item.__config__.label,
+            value: item.__config__.formId,
+          });
+        }
+      });
+      return optionList;
+    },
+  },
+
+  methods: {
+    initOptions(val) {
+      if (val == "") {
         return;
       }
       let component = this.drawingList.filter(
-        (item) => item.__config__.formId == newVal
+        (item) => item.__config__.formId == val
       )[0];
       if (
         component.__config__.tag == "el-input" ||
         component.__config__.tag == "formLink" ||
         component.__config__.tag == "formMail" ||
-        component.__config__.tag == "formAddress"
+        component.__config__.tag == "formAddress" ||
+        component.__config__.tag == "formPhone"
       ) {
         this.calFlagList = [
           { label: "等于", value: "==" },
@@ -135,26 +162,6 @@ export default {
         this.inputType = 3;
       }
     },
-  },
-  computed: {
-    options() {
-      let optionList = [];
-      this.drawingList.forEach((item) => {
-        if (
-          item.__config__.tag != "formDivider" &&
-          item.__config__.layout != "tableLayout"
-        ) {
-          optionList.push({
-            label: item.__config__.label,
-            value: item.__config__.formId,
-          });
-        }
-      });
-      return optionList;
-    },
-  },
-
-  methods: {
     resetTerm() {
       this.calFlag = "";
       this.calFlagList = [];
@@ -173,11 +180,7 @@ export default {
     },
 
     changeTermVal(val) {
-      if (this.inputType != 3) {
-        this.termVals = val;
-      } else {
-        this.termVal = val;
-      }
+      this.termVal = val;
       this.handlerVal();
     },
 
@@ -186,13 +189,13 @@ export default {
         this.$emit("input", {
           term: this.term,
           calFlag: this.calFlag,
-          termVal: this.termVals,
+          termVal: this.termVal,
         });
       } else {
         this.$emit("input", {
           term: this.term,
           calFlag: this.calFlag,
-          termVal: this.termVal,
+          termVal: this.termVals,
         });
       }
     },
@@ -200,5 +203,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

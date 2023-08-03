@@ -252,6 +252,7 @@ export default {
     async deleteRow(row) {
       const $table = this.$refs.xTable;
       await $table.remove(row);
+      this.$emit("input", $table.getTableData().tableData);
     },
 
     async insertRow() {
