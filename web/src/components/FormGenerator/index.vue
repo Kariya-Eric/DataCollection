@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <div class="center-board" style="overflow: hidden">
+    <div class="center-board">
       <el-scrollbar class="center-scrollbar">
         <div class="tinymceDiv">
           <h4>填报提示</h4>
@@ -75,6 +75,7 @@
       :form-conf="formConf"
       :show-field="drawingList.length != 0"
       :base-info="formInfo"
+      :drawing-list="drawingList"
       @tag-change="tagChange"
     />
   </div>
@@ -246,7 +247,7 @@ export default {
 <style lang="scss" scoped>
 @import "./styles/home";
 .tinymceDiv {
-  margin-left: 12px;
+  margin-left: 24px;
   margin-bottom: 12px;
   width: 97%;
 }

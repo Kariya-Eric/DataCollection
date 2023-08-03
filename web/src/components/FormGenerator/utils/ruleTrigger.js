@@ -12,6 +12,8 @@ export default {
   'formMail': 'blur',
   'formPhone': 'blur',
   'formAddress': 'blur',
-  'formNumber':'blur',
-  'formLink':'blur'
+  'formNumber': 'blur',
+  'formLink': 'blur',
+  'fixedTable': 'change',
+  'floatTable': 'change',
 }

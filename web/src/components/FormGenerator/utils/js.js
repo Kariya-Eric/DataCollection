@@ -98,69 +98,64 @@ function buildRules(scheme, ruleList) {
   if (scheme.__vModel__ === undefined) return;
   const rules = [];
   if (ruleTrigger[config.tag]) {
-    if (config.required) {
+    if (config.required && config.layout != "tableLayout") {
       const type = isArray(config.defaultValue) ? "type: 'array'," : "";
       let message = isArray(config.defaultValue)
         ? `请至少选择一个${config.label}`
         : scheme.placeholder;
       if (message === undefined) message = `${config.label}不能为空`;
       rules.push(
-        `{ required: true, ${type} message: '${message}', trigger: '${
-          ruleTrigger[config.tag]
+        `{ required: true, ${type} message: '${message}', trigger: '${ruleTrigger[config.tag]
         }' }`
       );
     }
     if (config.tag === "el-input") {
       if (scheme.allowChar) {
         rules.push(
-          `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '${
-            config.label
+          `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '${config.label
           }中不能包含汉字' , trigger : '${ruleTrigger[config.tag]}' }`
         );
       }
     }
     if (config.tag === "formLink") {
       rules.push(
-        `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '请输入正确的${
-          config.label
+        `{ pattern: /^[^\\u4E00-\\u9FA5]+$/, message : '请输入正确的${config.label
         }' , trigger : '${ruleTrigger[config.tag]}' }`
       );
     }
     if (config.tag === "formPhone") {
       if (scheme.isMobile) {
         rules.push(
-          `{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : '${
-            ruleTrigger[config.tag]
+          `{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : '${ruleTrigger[config.tag]
           }' }`
         );
       } else {
         rules.push(
-          `{ pattern:  /^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/ , message : '请输入正确的手机号' , trigger : '${
-            ruleTrigger[config.tag]
+          `{ pattern:  /^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/ , message : '请输入正确的手机号' , trigger : '${ruleTrigger[config.tag]
           }' }`
         );
       }
     }
     if (config.tag === "formMail") {
       rules.push(
-        `{ type: 'email' , message : '请输入正确的邮箱' , trigger : '${
-          ruleTrigger[config.tag]
+        `{ type: 'email' , message : '请输入正确的邮箱' , trigger : '${ruleTrigger[config.tag]
         }' }`
       );
     }
+    if (config.layout === "tableLayout") {
+      rules.push(`{ validator : async (rule,value,callback) => {
+        let result=await this.$refs.table_${config.formId}.validate();
+        if(result){
+            callback(new Error(result));
+        }
+        if(${config.required}&&value.length==0){
+          callback(new Error("请至少输入一条数据！"));
+        }
+        callback();
+      }}`);
+    }
     ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
   }
-  if (config.layout === "tableLayout") {
-    rules.push(`{ validator : async (rule,value,callback) => {
-            let result=await this.$refs.table_${config.formId}.validate();
-            if(result){
-                callback(new Error(result));
-            }
-            callback();
-          }}`);
-    ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
-  }
-  console.log(ruleList);
 }
 
 // 构建options

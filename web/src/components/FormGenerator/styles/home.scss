@@ -2,9 +2,10 @@ $selectedColor: #f6f7ff;
 $lighterBlue: #409eff;
 
 .container {
-  position: relative;
+  display: flex;
   width: 100%;
   height: 100%;
+  background-color: #F2F3F6;
 }
 
 .components-list {
@@ -22,8 +23,10 @@ $lighterBlue: #409eff;
 
 .center-scrollbar {
   height: calc(100vh - 42px);
-  overflow: hidden;
-  box-sizing: border-box;
+
+  /deep/ .el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
 }
 
 .components-draggable {
@@ -65,18 +68,15 @@ $lighterBlue: #409eff;
 }
 
 .left-board {
-  width: 260px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100vh;
+  flex: 0 1 288px;
+  background-color: #fff;
 }
 
 .center-board {
-  height: 100vh;
-  width: auto;
-  margin: 0 350px 0 260px;
-  box-sizing: border-box;
+  flex: 1;
+  margin: 16px 16px 22px 16px;
+  background-color: #fff;
+  padding: 8px;
 }
 
 /deep/ .action-bar {
@@ -95,7 +95,7 @@ $lighterBlue: #409eff;
     color: #f56c6c;
   }
 
-  & .el-button + .el-button {
+  & .el-button+.el-button {
     margin-left: 15px;
   }
 
@@ -122,7 +122,7 @@ $lighterBlue: #409eff;
   padding: 12px 12px 15px 12px;
   box-sizing: border-box;
 
-  & > .el-form {
+  &>.el-form {
     // 69 = 12+15+42
     height: calc(80vh - 69px);
   }
@@ -166,27 +166,28 @@ $lighterBlue: #409eff;
   }
 
   .active-from-item {
-    & > .el-form-item {
+    &>.el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
-    & > .drawing-item-copy {
+
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
+    &>.drawing-item-delete {
       display: initial;
     }
 
-    & > .component-name {
+    &>.component-name {
       color: $lighterBlue;
     }
 
-    & > .drawing-item-row {
+    &>.drawing-item-row {
       display: initial;
     }
 
-    & > .drawing-item-col {
+    &>.drawing-item-col {
       display: initial;
     }
   }
@@ -200,7 +201,7 @@ $lighterBlue: #409eff;
   position: relative;
   cursor: move;
 
-  &.unfocus-bordered:not(.active-from-item) > div:first-child {
+  &.unfocus-bordered:not(.active-from-item)>div:first-child {
     border: 1px dashed #ccc;
   }
 }
@@ -222,27 +223,27 @@ $lighterBlue: #409eff;
     background: $selectedColor;
     border-radius: 6px;
 
-    & > .drawing-item-copy {
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
+    &>.drawing-item-delete {
       display: initial;
     }
 
-    & > .drawing-item-row {
+    &>.drawing-item-row {
       display: initial;
     }
 
-    & > .drawing-item-col {
+    &>.drawing-item-col {
       display: initial;
     }
   }
 
-  & > .drawing-item-copy,
-  & > .drawing-item-delete,
-  & > .drawing-item-col,
-  & > .drawing-item-row {
+  &>.drawing-item-copy,
+  &>.drawing-item-delete,
+  &>.drawing-item-col,
+  &>.drawing-item-row {
     display: none;
     position: absolute;
     top: -10px;
@@ -257,7 +258,7 @@ $lighterBlue: #409eff;
     z-index: 1;
   }
 
-  & > .drawing-item-copy {
+  &>.drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -269,7 +270,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-row {
+  &>.drawing-item-row {
     right: 88px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -281,7 +282,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-col {
+  &>.drawing-item-col {
     right: 120px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -293,7 +294,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-delete {
+  &>.drawing-item-delete {
     right: 24px;
     border-color: #f56c6c;
     color: #f56c6c;
@@ -348,22 +349,22 @@ $lighterBlue: #409eff;
 
 /deep/ .drawing-row-item {
   &:hover {
-    & > .el-form-item {
+    &>.el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
 
-    & > .drawing-item-copy {
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
+    &>.drawing-item-delete {
       display: initial;
     }
   }
 
-  & > .drawing-item-copy,
-  & > .drawing-item-delete {
+  &>.drawing-item-copy,
+  &>.drawing-item-delete {
     display: none;
     position: absolute;
     top: -10px;
@@ -378,7 +379,7 @@ $lighterBlue: #409eff;
     z-index: 1;
   }
 
-  & > .drawing-item-copy {
+  &>.drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -390,7 +391,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-delete {
+  &>.drawing-item-delete {
     right: 24px;
     border-color: #f56c6c;
     color: #f56c6c;
@@ -405,32 +406,32 @@ $lighterBlue: #409eff;
 
 /deep/ .drawing-item {
   &:hover {
-    & > .el-form-item {
+    &>.el-form-item {
       background: $selectedColor;
       border-radius: 6px;
     }
 
-    & > .drawing-item-copy {
+    &>.drawing-item-copy {
       display: initial;
     }
 
-    & > .drawing-item-delete {
+    &>.drawing-item-delete {
       display: initial;
     }
 
-    & > .drawing-item-row {
+    &>.drawing-item-row {
       display: initial;
     }
 
-    & > .drawing-item-col {
+    &>.drawing-item-col {
       display: initial;
     }
   }
 
-  & > .drawing-item-copy,
-  & > .drawing-item-delete,
-  & > .drawing-item-row,
-  & > .drawing-item-col {
+  &>.drawing-item-copy,
+  &>.drawing-item-delete,
+  &>.drawing-item-row,
+  &>.drawing-item-col {
     display: none;
     position: absolute;
     top: -10px;
@@ -445,7 +446,7 @@ $lighterBlue: #409eff;
     z-index: 1;
   }
 
-  & > .drawing-item-copy {
+  &>.drawing-item-copy {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -457,7 +458,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-row {
+  &>.drawing-item-row {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -469,7 +470,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-col {
+  &>.drawing-item-col {
     right: 56px;
     border-color: $lighterBlue;
     color: $lighterBlue;
@@ -481,7 +482,7 @@ $lighterBlue: #409eff;
     }
   }
 
-  & > .drawing-item-delete {
+  &>.drawing-item-delete {
     right: 24px;
     border-color: #f56c6c;
     color: #f56c6c;

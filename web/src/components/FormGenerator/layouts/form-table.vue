@@ -3,7 +3,7 @@
     <Mbutton
       type="primary"
       icon="el-icon-plus"
-      style="margin-left: 12px"
+      style="margin-bottom: 12px"
       @click="insertRow"
       name="添加"
     />
@@ -13,6 +13,7 @@
       align="center"
       size="medium"
       min-height="550"
+      :scroll-y="{ enabled: false }"
       :data="dataSource"
       :edit-rules="rules"
       :edit-config="{ trigger: 'click', mode: 'cell' }"
@@ -23,6 +24,7 @@
         :key="col.key"
         :field="col.props"
         :title="col.label"
+        :min-width="220"
         :edit-render="col.autofocus"
       >
         <template #header="{ column }">
@@ -238,13 +240,7 @@ export default {
   },
   methods: {
     async validate() {
-      console.log("校验中...");
       const $table = this.$refs.xTable;
-      if (this.required) {
-        if ($table.getTableData().tableData.length == 0) {
-          return "请至少添加一条数据！";
-        }
-      }
       const errMap = await $table.validate().catch((errMap) => errMap);
       if (errMap) {
         return "请确认数据是否正确";

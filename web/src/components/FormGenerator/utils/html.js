@@ -126,7 +126,7 @@ const tags = {
     const { tag, vModel, placeholder, width } = attrBuilder(el);
     const min = el.min ? `:min="${el.min}"` : "";
     const max = el.max ? `:max="${el.max}"` : "";
-    const precision = el.precision ? `:precision="${el.precision}"` : "";
+    const precision = `:precision="${el.precision}"`;
     return `<${tag} ${vModel} ${placeholder} ${width} ${min} ${max} ${precision} controls-position="right" />`;
   },
   "el-select": (el) => {
