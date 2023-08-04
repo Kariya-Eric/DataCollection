@@ -2,9 +2,9 @@
   <div class="tableDiv">
     <table class="table">
       <tbody class="table-body">
-        <tr class="table-list" v-for="(head, index) in headers" :key="index">
-          <th v-for="(label, index) in head" :key="index">
-            {{ label }}
+        <tr class="table-list">
+          <th v-for="(col, index) in columns" :key="index">
+            {{ col.label }}
           </th>
         </tr>
         <tr class="table-list">
@@ -18,10 +18,7 @@
             }"
             @mousedown="handleCellMousedown(col)"
           >
-            <table-cell
-              :column="columns[index]"
-              :placeholder="headers[headers.length - 1][index]"
-            />
+            <table-cell :column="columns[index]" />
           </td>
         </tr>
       </tbody>
@@ -97,6 +94,7 @@ export default {
 }
 
 .tableDiv {
+  width: 1120px;
   overflow-x: auto;
   overflow-y: hidden;
 }

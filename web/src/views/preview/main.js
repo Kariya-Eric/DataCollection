@@ -37,6 +37,7 @@ function init(event) {
   }
   if (event.data.type === "submitForm") {
     this.vm.$refs.child.submitForm().then((res) => {
+      console.log('form', res)
       if (res != undefined) {
         parent.getMessageFromFrame(res);
       }
@@ -51,7 +52,12 @@ function newVue(main, html) {
     components: {
       child: main,
     },
-    template: `<div><child ref='child'/></div>`,
+    methods: {
+      resize() {
+        parent.getMessageFromFrame({ resize: true })
+      }
+    },
+    template: `<div><child ref='child' @resize="resize"/></div>`,
   }).$mount("#app");
   window.vm = vm;
 }

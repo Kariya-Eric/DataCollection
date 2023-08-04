@@ -56,11 +56,14 @@ function mixinMethod() {
   const list = [];
   const methods = {
     submitForm: `submitForm() {
-        this.$refs['${confGlobal.formRef}'].validate(valid => {
-          if(!valid) return
-          // TODO 提交表单
-          this.$message.success('表单验证OK')
-          console.log('form',this.${confGlobal.formModel})
+        return new Promise((resolve)=>{
+          this.$refs['${confGlobal.formRef}'].validate(valid => {
+            if(!valid){
+              resolve(undefined)
+            }else{
+              resolve(this.${confGlobal.formModel})
+            }
+          })
         })
       },`,
     resetForm: `resetForm() {
@@ -179,6 +182,15 @@ function buildexport(conf, data, rules, selectOptions, methods) {
         ${rules}
       },
       ${selectOptions}
+    }
+  },
+  watch:{
+    ${conf.formModel}:{
+      handler(newVal){
+        //表单数据变化时通知组件变更size
+        this.$emit('resize')
+      },
+      deep:true
     }
   },
   methods: {

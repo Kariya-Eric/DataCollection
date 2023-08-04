@@ -35,7 +35,7 @@ export default {
     return {
       visible: false,
       info: {
-        type: "固定表单",
+        type: "浮动表单",
       },
       drawingList: [],
     };
@@ -65,5 +65,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 </style>

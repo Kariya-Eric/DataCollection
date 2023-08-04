@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="activeData.__config__.tag == 'fixedTable'">
+    <div>
       <el-divider>列名 - 属性</el-divider>
       <draggable
         :list="activeData.columns"
@@ -33,22 +33,12 @@
           添加列
         </el-button>
       </div>
-    </div>
-
-    <div v-if="activeData.__config__.tag == 'floatTable'">
-      <el-divider>表格设置</el-divider>
-      <el-form-item label="列数">
-        <el-input-number
-          v-model="cols"
-          :min="1"
-          :precision="0"
-          placeholder="请选择列数"
-          @change="changeFloatCol"
-        />
-      </el-form-item>
-      <div style="margin-left: 20px">
-        <el-button type="text" @click="showHeader"> 设置表头 </el-button>
-      </div>
+      <template v-if="activeData.__config__.tag == 'floatTable'">
+        <el-divider />
+        <div style="margin-left: 20px">
+          <el-button type="text" @click="showHeader"> 设置表头 </el-button>
+        </div>
+      </template>
     </div>
 
     <template v-if="activeData.selectedCol !== -1">
@@ -278,7 +268,11 @@
         </div>
       </template>
     </template>
-    <float-table-header ref="floatTableHeader" :headers="activeData.headers" />
+    <float-table-header
+      ref="floatTableHeader"
+      :headers="activeData.headers"
+      :cols="activeData.columns.length"
+    />
   </div>
 </template>
 

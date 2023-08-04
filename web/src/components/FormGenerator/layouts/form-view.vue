@@ -56,16 +56,17 @@ export default {
       immediate: true,
     },
   },
+
+  created() {
+    window.getMessageFromFrame = this.getMessageFromFrame;
+  },
+
   methods: {
     iframeLoad() {
       if (!this.isInitcode) {
-        var iframe = document.getElementById("myIframe");
         // 延时加载，处理iframe高度
-        setTimeout(function () {
-          var innerDoc =
-            iframe.contentDocument || iframe.contentWindow.document;
-          var innerHeight = innerDoc.body.scrollHeight;
-          iframe.style.height = innerHeight + "px";
+        setTimeout(() => {
+          this.resizeIframe();
         }, 500);
         this.isIframeLoaded = true;
         this.isInitcode = true;
@@ -109,6 +110,28 @@ export default {
         this.$message.error(`js错误：${err}`);
         console.error(err);
       }
+    },
+
+    getMessageFromFrame(value) {
+      //this.$emit("getMsg", value);
+      if (value.hasOwnProperty("resize")) {
+        this.resizeIframe();
+      }
+    },
+
+    post(type) {
+      let iframe = this.$refs.previewPage.contentWindow;
+      iframe.postMessage(type);
+    },
+
+    //设置frame高度
+    resizeIframe() {
+      var iframe = document.getElementById("myIframe");
+      this.$nextTick(() => {
+        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+        var innerHeight = innerDoc.body.scrollHeight;
+        iframe.style.height = innerHeight + "px";
+      });
     },
   },
 };

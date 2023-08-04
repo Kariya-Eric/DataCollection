@@ -11,7 +11,11 @@
 import testDialog from "./test-dialog";
 export default {
   components: { testDialog },
-
+  data() {
+    return {
+      value: "",
+    };
+  },
   methods: {
     show() {
       this.$refs.testDialog.show();
