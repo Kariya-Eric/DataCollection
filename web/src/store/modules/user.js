@@ -1,15 +1,11 @@
 import Vue from "vue";
 import { login, logout } from "@/api/login";
-
 import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST } from "../mutation-types";
-import Storage from "vue-ls";
-import config from "@/views/index/defaultSettings";
-Vue.use(Storage, config.storageOptions);
 
 const user = {
   state: {
-    token: Vue.ls.get(ACCESS_TOKEN),
-    userInfo: Vue.ls.get(USER_INFO),
+    token: "",
+    userInfo: {},
   },
 
   mutations: {

@@ -11,7 +11,7 @@
             type="primary"
             icon="编辑"
             v-if="!taskInfo.enabledFlag"
-            v-has="'taskInfo_edit'"
+    
             @click="editTask"
             name="编辑"
           />

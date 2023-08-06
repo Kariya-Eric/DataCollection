@@ -42,19 +42,13 @@
       <div class="listHeader">
         <span>任务列表</span>
         <div class="listHeaderButton">
-          <Mbutton v-has="'tasklist_download'" name="下载导入模板" />
-          <Mbutton
-            type="primary"
-            icon="导入"
-            name="导入"
-            v-has="'tasklist_upload'"
-          />
+          <Mbutton name="下载导入模板" />
+          <Mbutton type="primary" icon="导入" name="导入" />
           <Mbutton
             type="primary"
             icon="新建"
             name="添加任务"
             @click="addTask"
-            v-has="'tasklist_add'"
           />
         </div>
       </div>
@@ -117,15 +111,10 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="280">
           <template slot-scope="scope">
-            <menu-link
-              @click="showTaskInfo(scope.row)"
-              v-has="'tasklist_detail'"
-              >任务概览</menu-link
-            >
+            <menu-link @click="showTaskInfo(scope.row)">任务概览</menu-link>
             <menu-link
               @click="showTaskDetail(scope.row)"
               v-if="scope.row.enabled !== 0"
-              v-has="'tasklist_info'"
               >任务详情</menu-link
             >
             <el-dropdown
@@ -138,14 +127,9 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="a">指南下载</el-dropdown-item>
                 <el-dropdown-item command="b">模板下载</el-dropdown-item>
-                <el-dropdown-item command="c" v-has="'tasklist_view'"
-                  >预览报告</el-dropdown-item
-                >
-                <el-dropdown-item command="d" v-has="'tasklist_export'"
-                  >导出数据</el-dropdown-item
-                >
+                <el-dropdown-item command="c">预览报告</el-dropdown-item>
+                <el-dropdown-item command="d">导出数据</el-dropdown-item>
                 <el-popconfirm
-                  v-has="'tasklist_delete'"
                   @confirm="handleCommand('e', scope.row)"
                   title="确认删除任务吗？"
                 >

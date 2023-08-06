@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      // console.log('emitting...' + val);
       this.pagination.pageSize = val;
       this.$emit("change", this.pagination);
     },

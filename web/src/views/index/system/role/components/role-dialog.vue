@@ -3,6 +3,7 @@
     :title="addFlag ? '新增角色' : '修改角色'"
     :visible="visible"
     @close="close"
+    v-if="visible"
     width="30%"
   >
     <div class="formDiv">
@@ -30,10 +31,8 @@
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
-        >确 定</el-button
-      >
+      <Mbutton @click="close" name="取消" />
+      <Mbutton type="primary" @click="handleSubmit" name="确定" />
     </div>
   </el-dialog>
 </template>
@@ -47,6 +46,8 @@ export default {
       loading: false,
       visible: false,
       roleForm: {
+        code: "",
+        name: "",
         enabled: 0,
       },
       addFlag: false,
@@ -70,7 +71,11 @@ export default {
     close() {
       this.visible = false;
       this.$refs.roleForm.resetFields();
-      this.roleForm = { enabled: 0 };
+      this.roleForm = {
+        code: "",
+        name: "",
+        enabled: 0,
+      };
     },
 
     handleSubmit() {
