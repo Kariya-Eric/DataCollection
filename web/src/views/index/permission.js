@@ -10,7 +10,7 @@ NProgress.configure({
   showSpinner: false,
 }); // NProgress Configuration
 
-const whiteList = ["/user/login", "/test/test"]; // no redirect whitelist
+const whiteList = ["/user/login"]; // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   NProgress.start(); // start progress bar
@@ -24,18 +24,13 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch("GetPermissionList")
           .then((res) => {
-            if (res.length == 0) {
-              next({ path: "/home/home" });
-              NProgress.done();
-            } else {
-              let constRouters = buildRouters(res);
-              store.dispatch("UpdateRouter", { constRouters }).then(() => {
-                router.addRoutes(store.getters.addRouters);
-                store.dispatch("GetButtonList").then(() => {
-                  next({ ...to, replace: true });
-                });
+            let constRouters = buildRouters(res);
+            store.dispatch("UpdateRouter", { constRouters }).then(() => {
+              router.addRoutes(store.getters.permissionList);
+              store.dispatch("GetButtonList").then(() => {
+                next({ ...to, replace: true });
               });
-            }
+            });
           })
           .catch(() => console.log("请求用户信息失败，请重试！"));
       } else {

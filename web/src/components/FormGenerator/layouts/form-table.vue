@@ -2,7 +2,6 @@
   <div>
     <Mbutton
       type="primary"
-      icon="el-icon-plus"
       style="margin-bottom: 12px"
       @click="insertRow"
       name="添加"

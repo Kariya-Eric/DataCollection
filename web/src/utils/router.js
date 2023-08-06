@@ -2,7 +2,7 @@ import BasicLayout from "@/layouts/BasicLayout";
 
 //菜单item生成路由页面
 function loadView(item) {
-  let flag = item.alias == "home" ? true : item.children.length > 0;
+  let flag = item.children.length > 0;
   return {
     path: item.menuUrl,
     name: item.alias,
@@ -12,6 +12,7 @@ function loadView(item) {
       : () => import(`@/views/index${item.templateUrl}`),
     meta: {
       title: item.name,
+      icon: item.icon ? item.icon : null,
     },
     children: [],
   };
@@ -28,8 +29,35 @@ function menuRecrusive(menus, routers) {
   });
 }
 
+function loadPageView(item) {
+  return {
+    path: "/",
+    name: "Base",
+    component: BasicLayout,
+    children: [
+      {
+        path: item.menuUrl,
+        name: item.alias,
+        hidden: item.enableMenu == 0,
+        component: () => import(`@/views/index${item.templateUrl}`),
+        meta: {
+          title: item.name,
+          icon: item.icon ? item.icon : null,
+        },
+      },
+    ],
+  };
+}
+
 export function buildRouters(menus) {
+  //多级菜单
+  let subMenus = menus.filter((menu) => menu.children.length > 0);
+  let singleMenus = menus.filter((menu) => menu.children.length == 0);
   const routers = [];
-  menuRecrusive(menus, routers);
+  menuRecrusive(subMenus, routers);
+  singleMenus.forEach((singleMenu) => {
+    const route = loadPageView(singleMenu);
+    routers.push(route);
+  });
   return routers;
 }

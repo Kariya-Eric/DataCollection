@@ -104,18 +104,21 @@ export default {
   data() {
     return {
       idGlobal,
-      formConf,
+      formConf: this.formConfig == null ? formConf : this.formConfig,
       inputComponentsFix,
       selectComponentsFix,
       layoutComponentsFix,
       otherComponentsFix,
       otherComponentsFloat,
-      activeId:
-        this.drawingList.length == 0 ? 100 : this.this.drawingList[0].formId,
+      activeId: this.drawingList.length == 0 ? 100 : this.drawingList[0].formId,
       activeData: this.drawingList[0],
     };
   },
-  props: ["formInfo", "drawingList"],
+  props: {
+    formInfo: { type: Object },
+    drawingList: { type: Array },
+    formConfig: { type: Object },
+  },
   computed: {
     leftComponents() {
       if (this.formInfo.type == "固定表单") {
@@ -239,6 +242,14 @@ export default {
         ...this.formConf,
       };
       this.$emit("view", formData);
+    },
+
+    save() {
+      let formData = {
+        fields: deepClone(this.drawingList),
+        ...this.formConf,
+      };
+      this.$emit("save", formData);
     },
   },
 };

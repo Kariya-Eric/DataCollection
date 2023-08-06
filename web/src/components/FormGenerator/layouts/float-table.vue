@@ -2,6 +2,17 @@
   <div class="tableDiv">
     <table class="table">
       <tbody class="table-body">
+        <tr class="table-list" v-for="(row, index) in theaders" :key="index">
+          <th
+            :rowspan="head.rowspan"
+            :colspan="head.colspan"
+            v-for="(head, index) in row"
+            :key="index"
+          >
+            {{ head.title }}
+          </th>
+        </tr>
+        <!-- 标题列 -->
         <tr class="table-list">
           <th v-for="(col, index) in columns" :key="index">
             {{ col.label }}
@@ -28,10 +39,11 @@
 
 <script>
 import TableCell from "./table-cell";
+import { buildFloatHeader } from "../utils/float";
 // 浮动表单设计组件
 export default {
   name: "FloatTable",
-  props: ["selectedCol", "columns", "headers"],
+  props: ["selectedCol", "columns", "extra", "mergeCells"],
   components: {
     TableCell,
   },
@@ -49,6 +61,11 @@ export default {
           this.selectedCells.push(cellIndex);
         }
       }
+    },
+  },
+  computed: {
+    theaders() {
+      return buildFloatHeader(this.extra, this.mergeCells);
     },
   },
   methods: {
@@ -94,7 +111,8 @@ export default {
 }
 
 .tableDiv {
-  width: 1120px;
+  //width: 1120px;
+  width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
 }

@@ -31,8 +31,6 @@ Vue.use(Directive);
 import Components from "@/components";
 Vue.use(Components);
 
-import CustomComponent from "./form/form-generator/custom_components";
-Vue.use(CustomComponent);
 
 Vue.use(ElementUI, {
   locale,

@@ -43,7 +43,7 @@
     <template v-if="column.type.__config__.label === '地址'">
       <form-address
         :style="column.type.style"
-        :placeholder="`请输入${placehcolumn.labelolder}`"
+        :placeholder="`请输入${column.label}`"
       />
     </template>
     <template v-if="column.type.__config__.label === '下拉选择'">

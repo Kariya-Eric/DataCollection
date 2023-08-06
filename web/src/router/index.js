@@ -35,37 +35,36 @@ export const constantRouterMap = [
       },
     ],
   },
+
   {
     path: "/",
-    name: "Home",
-    redirect: "/home/home",
-  },
-  {
-    path: "/home",
+    name: "Base",
     component: BasicLayout,
-    name: "HomePage",
+    redirect: "/home",
     children: [
       {
-        path: "home",
-        name: "HomeIndex",
+        path: "/home",
+        name: "Home",
         component: () => import("@/views/index/home/home"),
         meta: {
           title: "首页",
+          icon: "首页",
         },
       },
     ],
   },
   {
-    path: "/test",
+    path: "/",
+    name: "Base",
     component: BasicLayout,
-    name: "Test",
+    hidden: true,
     children: [
       {
-        path: "test",
-        name: "TestForm",
+        path: "/test",
+        name: "Test",
         component: () => import("@/views/index/test"),
         meta: {
-          title: "Test",
+          title: "测试页",
         },
       },
     ],

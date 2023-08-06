@@ -196,7 +196,7 @@ import {
   judgeConfig,
 } from "./utils/auth";
 import { pushNotice } from "@/api/notice";
-import FormDrawer from "./components/fom-drawer";
+import FormDrawer from "./components/form-drawer";
 import ProgressDrawer from "./components/progress-drawer";
 import ConfigUserDialog from "./components/config-user-dialog";
 import { USER_INFO } from "@/store/mutation-types";
@@ -277,7 +277,7 @@ export default {
               res.value.componentProperties
             );
             let formData = { ...formProperties, fields: componentProperties };
-            this.$refs.formDrawer.show(formData, formProperties, res.value);
+            this.$refs.formDrawer.show(formData, res.value.formName);
           } else {
             this.$message.error("未根据id查询到表单");
           }

@@ -1,6 +1,5 @@
 import Vue from "vue";
 import { login, logout } from "@/api/login";
-import { getMenuList, getButtonList } from "@/api/system";
 
 import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST } from "../mutation-types";
 import Storage from "vue-ls";
@@ -11,7 +10,6 @@ const user = {
   state: {
     token: Vue.ls.get(ACCESS_TOKEN),
     userInfo: Vue.ls.get(USER_INFO),
-    permissionList: [],
   },
 
   mutations: {
@@ -20,9 +18,6 @@ const user = {
     },
     SET_USERINFO: (state, userInfo) => {
       state.userInfo = userInfo;
-    },
-    SET_PERMISSIONLIST: (state, permissionList) => {
-      state.permissionList = permissionList;
     },
   },
 
@@ -50,45 +45,9 @@ const user = {
       return new Promise((resolve, reject) => {
         logout(state.token)
           .then(() => {
-            commit("SET_PERMISSIONLIST", []);
             Vue.ls.remove(ACCESS_TOKEN);
             Vue.ls.remove(USER_INFO);
             Vue.ls.remove(BUTTON_LIST);
-            resolve();
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    },
-
-    //获取菜单信息
-    GetPermissionList({ commit }) {
-      return new Promise((resolve, reject) => {
-        getMenuList()
-          .then((response) => {
-            if (response.value.length == 0) {
-              commit("SET_PERMISSIONLIST", [{ path: "/home" }]);
-              resolve([]);
-            } else {
-              const menuData = response.value[0].children;
-              commit("SET_PERMISSIONLIST", menuData);
-              resolve(menuData);
-            }
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
-    },
-
-    //获取按钮信息
-    GetButtonList({ commit }) {
-      return new Promise((resolve, reject) => {
-        getButtonList()
-          .then((response) => {
-            const buttons = response.value.curUserMethod;
-            Vue.ls.set(BUTTON_LIST, buttons);
             resolve();
           })
           .catch((error) => {

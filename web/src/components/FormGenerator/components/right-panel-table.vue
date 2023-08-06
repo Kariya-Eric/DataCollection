@@ -268,11 +268,7 @@
         </div>
       </template>
     </template>
-    <float-table-header
-      ref="floatTableHeader"
-      :headers="activeData.headers"
-      :cols="activeData.columns.length"
-    />
+    <float-table-header ref="floatTableHeader" :active-data="activeData" />
   </div>
 </template>
 
@@ -419,6 +415,10 @@ export default {
 
     showHeader() {
       this.$refs.floatTableHeader.show();
+    },
+
+    updateHeader(tableData, mergeCells) {
+      console.log(tableData, mergeCells);
     },
   },
 };

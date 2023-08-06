@@ -143,27 +143,27 @@
       <pagination :pagination="ipagination" @change="getFormList" />
     </el-card>
     <add-form-dialog ref="addFormDialog" @refresh="getFormList" />
-    <update-form-category ref="updateFormCategory" />
-    <form-generator ref="formGenerator" @saveForm="saveForm" />
+    <update-form-category ref="updateFormCategory" @refresh="loadCategories" />
+    <form-generator-dialog ref="formGeneratorDialog" @refresh="getFormList" />
   </div>
 </template>
 
 <script>
 import AddFormDialog from "./components/add-form-dialog";
 import UpdateFormCategory from "./components/update-form-category";
-import FormGenerator from "./form-generator/home";
 import {
   getFormList,
   delForm,
   updateForm,
   listFormCategories,
 } from "@/api/form";
+import FormGeneratorDialog from "./components/form-generator-dialog.vue";
 export default {
   name: "FormDetail",
   components: {
     AddFormDialog,
     UpdateFormCategory,
-    FormGenerator,
+    FormGeneratorDialog,
   },
   data() {
     return {
@@ -181,6 +181,8 @@ export default {
         pageSizeOptions: [10, 20, 30],
         total: 0,
       },
+      formInfo: {},
+      drawingList: [],
     };
   },
 
@@ -201,7 +203,12 @@ export default {
     loadCategories() {
       listFormCategories(this.collectionDetail.id).then((res) => {
         if (res.state) {
-          this.listCategories = res.value;
+          this.listCategories = res.value
+            .sort((a, b) => a.sort - b.sort)
+            .map((item) => ({
+              ...item,
+              name: item.sort + 1 + "." + item.name,
+            }));
         }
       });
     },
@@ -258,7 +265,7 @@ export default {
       listFormCategories(this.collectionDetail.id).then((res) => {
         if (res.state) {
           row.listCategories = res.value;
-          this.$refs.formGenerator.show(row);
+          this.$refs.formGeneratorDialog.show(row);
         }
       });
     },

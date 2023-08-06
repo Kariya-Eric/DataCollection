@@ -15,7 +15,7 @@ export default {
 
 <style lang="scss" scoped>
 .logo {
-  width: 250px;
+  flex: 0 1 250px;
   height: 54px;
   padding-left: 30px;
   transition: all 0.3s;

@@ -1,64 +1,40 @@
 <template>
-  <div v-if="!item.hidden && item.children">
-    <template
-      v-if="
-        hasOneShowingChild(item.children, item) &&
-        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        !item.alwaysShow
-      "
-    >
-      <app-link :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)">
-          <item
-            v-if="onlyOneChild.meta"
-            :icon="onlyOneChild.meta.icon || item.meta.icon"
-            :title="onlyOneChild.meta.title"
-          />
-        </el-menu-item>
-      </app-link>
+  <el-submenu
+    ref="menu"
+    v-if="isSubMenu"
+    :index="resolvePath(item.path)"
+    :popper-append-to-body="false"
+  >
+    <template slot="title">
+      <item :icon="buildIcon(item.meta.icon)" :title="item.meta.title" />
     </template>
-
-    <el-submenu v-else :index="resolvePath(item.path)">
-      <template slot="title">
-        <item
-          v-if="item.meta"
-          :icon="item.meta.icon"
-          :title="item.meta.title"
-        />
-      </template>
-
-      <template v-for="child in item.children">
-        <template v-if="!child.hidden">
-          <menu-item
-            v-if="child.children && child.children.length > 0"
-            :key="child.path"
-            :item="child"
-            :base-path="resolvePath(child.path)"
-          />
-          <app-link v-else :key="child.name" :to="resolvePath(child.path)">
-            <el-menu-item :index="resolvePath(child.path)">
-              <item
-                v-if="child.meta"
-                :icon="child.meta.icon"
-                :title="child.meta.title"
-              />
-            </el-menu-item>
-          </app-link>
-        </template>
-      </template>
-    </el-submenu>
-  </div>
+    <el-menu-item
+      v-for="(sub, index) in item.children.filter((item) => !item.hidden)"
+      :key="index"
+      :index="resolvePath(sub.path)"
+    >
+      <item :title="sub.meta.title" />
+    </el-menu-item>
+  </el-submenu>
+  <el-menu-item
+    ref="menu"
+    v-else-if="!item.hidden"
+    :index="resolvePath(item.children[0].path)"
+  >
+    <item
+      :icon="buildIcon(item.children[0].meta.icon)"
+      :title="item.children[0].meta.title"
+    />
+  </el-menu-item>
 </template>
 
 <script>
+import Item from "./Item";
 import path from "path";
 import { validateURL } from "@/utils/validate";
-import Item from "./Item";
-import AppLink from "./Link";
-
 export default {
-  name: "MenuItem",
-  components: { Item, AppLink },
+  name: "MenuRender",
+  components: { Item },
   props: {
     item: {
       type: Object,
@@ -69,41 +45,44 @@ export default {
       default: "",
     },
   },
+  watch: {
+    $route: {
+      handler(newVal) {
+        this.$nextTick(() => {
+          if (!this.item.hidden) {
+            this.isActive = this.$refs.menu.active;
+          }
+        });
+      },
+      immediate: true,
+    },
+  },
+  computed: {
+    isSubMenu() {
+      return this.item.name != "Base" && !this.item.hidden;
+    },
+  },
   data() {
     return {
-      onlyOneChild: null,
+      isActive: false,
     };
   },
   methods: {
-    hasOneShowingChild(children, parent) {
-      const showingChildren = children.filter((item) => {
-        if (item.hidden) {
-          return false;
-        } else {
-          this.onlyOneChild = item;
-          return true;
-        }
-      });
-      if (showingChildren.length === 1) {
-        return true;
-      }
-
-      if (showingChildren.length === 0) {
-        this.onlyOneChild = { ...parent, path: "", noShowingChildren: true };
-        return true;
-      }
-      return false;
-    },
     resolvePath(routePath) {
-      if (this.isExternalLink(routePath)) {
+      if (validateURL(routePath)) {
         return routePath;
       }
       return path.resolve(this.basePath, routePath);
     },
-    isExternalLink(routePath) {
-      return validateURL(routePath);
+
+    buildIcon(icon) {
+      if (icon) {
+        return icon + (this.isActive ? "-blue" : "-white");
+      }
+      return icon;
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+
+<style scoped lang="scss"></style>

@@ -2,12 +2,11 @@
   <div @blur="onBlur">
     <el-cascader
       placeholder="请选择地址"
-      :options="options"
       filterable
-      clearable
       style="width: 100%"
       v-model="selectOption"
       @change="changeOption"
+      :props="cascaderProps"
     />
     <el-input
       type="textarea"
@@ -20,6 +19,8 @@
 </template>
 
 <script>
+import { cityList } from "@/api/common";
+
 export default {
   name: "FormAddress",
   props: ["value"],
@@ -41,36 +42,33 @@ export default {
   },
   data() {
     return {
-      options: [
-        {
-          value: "上海市",
-          label: "上海市",
-          children: [
-            { value: "浦东新区", label: "浦东新区" },
-            { value: "虹口区", label: "虹口区" },
-            { value: "黄浦区", label: "黄浦区" },
-          ],
-        },
-        {
-          value: "安徽省",
-          label: "安徽省",
-          children: [
-            {
-              value: "马鞍山市",
-              label: "马鞍山市",
-              children: [
-                { value: "花山区", label: "花山区" },
-                { value: "雨山区", label: "雨山区" },
-                { value: "向山区", label: "向山区" },
-              ],
-            },
-            { value: "芜湖市", label: "芜湖市" },
-            { value: "合肥市", label: "合肥市" },
-          ],
-        },
-      ],
       textarea: "",
       selectOption: [],
+      cascaderProps: {
+        lazy: true,
+        lazyLoad(node, resolve) {
+          const { level } = node;
+          if (level === 0) {
+            //获取省份
+            cityList("100000").then((res) => {
+              let arr = res.value.map((item) => ({
+                value: item.id,
+                label: item.simpleName,
+              }));
+              resolve(arr);
+            });
+          } else {
+            const { value } = node;
+            cityList(value).then((res) => {
+              let arr = res.value.map((item) => ({
+                value: item.id,
+                label: item.simpleName,
+              }));
+              resolve(arr);
+            });
+          }
+        },
+      },
     };
   },
 

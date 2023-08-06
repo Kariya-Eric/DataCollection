@@ -35,9 +35,17 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="图标">
-            <!-- <span>
-              <svg-icon :icon-class="menuDetail.menuIcon" />
-            </span> -->
+            <el-input
+              v-model="menuDetail.menuIcon"
+              style="width: 40%"
+              @focus="showIcon"
+            >
+              <el-button
+                slot="append"
+                icon="el-icon-setting"
+                @click="showIcon"
+              />
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -118,13 +126,16 @@
         </template>
       </vxe-column>
     </vxe-table>
+    <icon-dialog ref="iconDialog" @choose="chooseIcon" />
   </div>
 </template>
 
 <script>
 import { getMenu } from "@/api/system";
+import IconDialog from "./icon-dialog.vue";
 
 export default {
+  components: { IconDialog },
   name: "RightMenu",
   data() {
     return {
@@ -191,6 +202,14 @@ export default {
       } catch (error) {
         return undefined;
       }
+    },
+
+    showIcon() {
+      this.$refs.iconDialog.show();
+    },
+
+    chooseIcon(icon) {
+      this.menuDetail.menuIcon = icon;
     },
   },
 };

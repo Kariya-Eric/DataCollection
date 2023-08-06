@@ -1,53 +1,15 @@
+import Vue from "vue";
 import { constantRouterMap } from "@/router";
-
-/**
- * 通过meta.permission判断是否与当前用户权限匹配
- * @param roles
- * @param route
- */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.permission) {
-    for (let i = 0; i < roles.length; i++) {
-      var role = roles[i];
-      for (let j = 0; j < role.permissions.length; j++) {
-        var perm = role.permissions[j].permission;
-        if (route.meta.permission.includes(perm.value)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-  return true;
-}
-
-/**
- * 递归过滤异步路由表，返回符合用户角色权限的路由表
- * @param routes asyncRouterMap
- * @param roles
- */
-function filterAsyncRouter(routes, roles) {
-  const accessedRouters = routes.filter((route) => {
-    if (hasPermission(roles, route)) {
-      if (route.children && route.children.length) {
-        route.children = filterAsyncRouter(route.children, roles);
-      }
-      return true;
-    }
-    return false;
-  });
-  return accessedRouters;
-}
+import { getMenuList, getButtonList } from "@/api/system";
+import { BUTTON_LIST } from "../mutation-types";
 
 const permission = {
   state: {
-    routers: constantRouterMap,
-    addRouters: [],
+    permissionList: [],
   },
   mutations: {
-    SET_ROUTERS: (state, data) => {
-      state.addRouters = data;
-      state.routers = constantRouterMap.concat(data);
+    SET_PERMISSIONLIST: (state, permissionList) => {
+      state.permissionList = permissionList;
     },
   },
   actions: {
@@ -55,8 +17,38 @@ const permission = {
     UpdateRouter({ commit }, routes) {
       return new Promise((resolve) => {
         let routelist = routes.constRouters;
-        commit("SET_ROUTERS", routelist);
+        commit("SET_PERMISSIONLIST", constantRouterMap.concat(routelist));
         resolve();
+      });
+    },
+
+    //获取菜单信息
+    GetPermissionList({ commit }) {
+      return new Promise((resolve, reject) => {
+        getMenuList()
+          .then((response) => {
+            const menuData =
+              response.value.length == 0 ? [] : response.value[0].children;
+            resolve(menuData);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+
+    //获取按钮信息
+    GetButtonList({ commit }) {
+      return new Promise((resolve, reject) => {
+        getButtonList()
+          .then((response) => {
+            const buttons = response.value.curUserMethod;
+            Vue.ls.set(BUTTON_LIST, buttons);
+            resolve();
+          })
+          .catch((error) => {
+            reject(error);
+          });
       });
     },
   },

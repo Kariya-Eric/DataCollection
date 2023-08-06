@@ -153,7 +153,7 @@ export default {
           this.formCategoryList = res.value
             .sort((a, b) => a.sort - b.sort)
             .map((val) => {
-              val.name = val.sort + 1 + "、" + val.name;
+              val.name = val.sort + 1 + "." + val.name;
               return val;
             });
         }

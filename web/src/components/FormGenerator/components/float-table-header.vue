@@ -1,10 +1,16 @@
 <template>
-  <el-dialog title="表头设置" :visible="visible" @close="close" append-to-body>
+  <el-dialog
+    title="表头设置"
+    :visible="visible"
+    @close="close"
+    append-to-body
+    v-if="visible"
+  >
     <div style="margin-bottom: 12px">
       <Mbutton @click="add" name="增加行" />
-      <Mbutton @click="mergeRight" name="向右合并" v-if="mergeRightVisible" />
-      <Mbutton @click="mergeDown" name="向下合并" v-if="mergeDownVisible" />
-      <Mbutton @click="split" name="拆分单元格" v-if="splitVisible" />
+      <Mbutton @click="mergeRight" name="向右合并" />
+      <Mbutton @click="mergeDown" name="向下合并" />
+      <Mbutton @click="split" name="拆分单元格" />
     </div>
     <vxe-table
       border
@@ -17,12 +23,21 @@
       :edit-config="{ trigger: 'dblclick', mode: 'cell' }"
       @cell-click="clickCell"
     >
-      <vxe-column v-for="i in cols" :key="i" :field="`$${i}`" :edit-render="{}">
+      <vxe-column
+        v-for="i in cols"
+        :key="i"
+        :field="`$${i}`"
+        :edit-render="{ autofocus: '.el-input__inner' }"
+      >
         <template #edit="{ row }">
           <el-input size="small" v-model="row[`$${i}`]" />
         </template>
       </vxe-column>
     </vxe-table>
+    <div slot="footer">
+      <Mbutton name="取消" @click="close" />
+      <Mbutton type="primary" name="确定" @click="handleSubmit" />
+    </div>
   </el-dialog>
 </template>
 
@@ -30,75 +45,31 @@
 // 浮动表单表头
 export default {
   name: "FloatTableHeader",
-  props: ["headers", "cols"],
+  props: ["activeData"],
   data() {
     return {
       visible: false,
       tableData: [],
+      cols: 0,
       mergeCells: [],
       selectedRow: -1,
       selectedCol: -1,
     };
   },
-  computed: {
-    mergeDownVisible() {
-      if (
-        this.selectedRow == -1 ||
-        this.selectedRow == this.tableData.length - 1
-      ) {
-        return false;
-      }
-      if (
-        this.mergeCells.filter(
-          (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
-        ).length > 0
-      ) {
-        let cell = this.mergeCells.filter(
-          (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
-        )[0];
-        if (cell.rowspan == this.tableData.length) {
-          return false;
-        }
-      }
-      return true;
-    },
-    mergeRightVisible() {
-      if (this.selectedCol == -1 || this.selectedCol == this.cols - 1) {
-        return false;
-      }
-      if (
-        this.mergeCells.filter(
-          (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
-        ).length > 0
-      ) {
-        let cell = this.mergeCells.filter(
-          (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
-        )[0];
-        if (cell.colspan == this.cols) {
-          return false;
-        }
-      }
-      return true;
-    },
-    splitVisible() {
-      if (
-        this.mergeCells.filter(
-          (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
-        ).length > 0
-      ) {
-        return true;
-      }
-      return false;
-    },
-  },
-
   methods: {
     show() {
+      this.tableData = JSON.parse(JSON.stringify(this.activeData.extra));
+      this.mergeCells = JSON.parse(JSON.stringify(this.activeData.mergeCells));
+      this.cols = this.activeData.columns.length;
       this.visible = true;
     },
 
     close() {
       this.visible = false;
+      this.tableData = [];
+      this.mergeCells = [];
+      this.selectedRow = -1;
+      this.selectedCol = -1;
     },
 
     async add() {
@@ -106,6 +77,7 @@ export default {
       const newRecord = {};
       await $table.insertAt(newRecord, -1);
       this.tableData = $table.getTableData().tableData;
+      this.mergeCells = JSON.parse(JSON.stringify(this.mergeCells));
     },
 
     //处理选中的单元格
@@ -122,9 +94,22 @@ export default {
       return null;
     },
 
-    split() {},
+    split() {
+      let checked = this.checkSplit();
+      if (!checked.flag) {
+        this.$message.warning(checked.msg);
+        return;
+      }
+      let cell = checked.selectedCel;
+      this.mergeCells = this.mergeCells.filter((c) => c != cell);
+    },
 
     mergeRight() {
+      let checked = this.checkMergeRight();
+      if (!checked.flag) {
+        this.$message.warning(checked.msg);
+        return;
+      }
       let flag = false;
       this.mergeCells.forEach((cell) => {
         if (cell.row == this.selectedRow && cell.col == this.selectedCol) {
@@ -142,10 +127,14 @@ export default {
         };
         this.mergeCells.push(merge);
       }
-      console.log("1", this.mergeCells);
     },
 
     mergeDown() {
+      let checked = this.checkMergeDown();
+      if (!checked.flag) {
+        this.$message.warning(checked.msg);
+        return;
+      }
       let flag = false;
       this.mergeCells.forEach((cell) => {
         if (cell.row == this.selectedRow && cell.col == this.selectedCol) {
@@ -163,7 +152,61 @@ export default {
         };
         this.mergeCells.push(merge);
       }
-      console.log("1", this.mergeCells);
+    },
+
+    //点击向右合并后的校验
+    checkMergeDown() {
+      if (this.selectedRow == -1) {
+        return { flag: false, msg: "请选择一个单元格！" };
+      }
+      if (this.selectedRow == this.tableData.length - 1) {
+        return { flag: false, msg: "已经为最后一行，无法合并！" };
+      }
+      let selectCel = this.mergeCells.filter(
+        (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
+      );
+      if (selectCel.length > 0) {
+        //mergecell中包含
+      } else {
+        //mergeCells中不包含，点击的一个未合并过的单元格,判断点击的单元格下方单元格是否合并
+      }
+      return { flag: true, msg: "" };
+    },
+
+    //点击向右合并后的校验
+    checkMergeRight() {
+      if (this.selectedRow == -1) {
+        return { flag: false, msg: "请选择一个单元格！" };
+      }
+      if (this.selectedCol == this.cols - 1) {
+        return { flag: false, msg: "已经为最后一列，无法合并" };
+      }
+      let selectCel = this.mergeCells.filter(
+        (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
+      );
+      if (selectCel.length > 0) {
+        //mergecell中包含
+      } else {
+        //mergeCells中不包含，点击的一个未合并过的单元格,判断点击的单元格下方单元格是否合并
+      }
+      return { flag: true, msg: "" };
+    },
+
+    checkSplit() {
+      let selectCel = this.mergeCells.filter(
+        (cell) => cell.row == this.selectedRow && cell.col == this.selectedCol
+      );
+      if (selectCel.length > 0) {
+        return { flag: true, selectedCel: selectCel[0] };
+      } else {
+        return { flag: false, msg: "已是最小单元格，无法继续拆分！" };
+      }
+    },
+
+    handleSubmit() {
+      this.activeData.extra = this.tableData;
+      this.activeData.mergeCells = this.mergeCells;
+      this.close();
     },
   },
 };

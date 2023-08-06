@@ -82,8 +82,7 @@ export default {
   margin-top: 12px;
 }
 .notice {
-  //   float: right;
-  //   height: 100%;
+  flex: 0 1 220px;
   color: #fff;
   padding: 0 14px;
   cursor: pointer;

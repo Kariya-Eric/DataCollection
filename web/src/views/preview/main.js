@@ -7,8 +7,6 @@ Vue.use(ElementUI, {
   locale,
 });
 
-import CustomComponent from "@/views/index/form/form-generator/custom_components";
-Vue.use(CustomComponent);
 
 import Components from "@/components";
 Vue.use(Components);

@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapState({
       userInfo: (state) => state.user.userInfo,
-      routers: (state) => state.permission.addRouters,
+      routers: (state) => state.permission.permissionList,
     }),
   },
   methods: {
@@ -44,6 +44,7 @@ export default {
 .navbar {
   display: flex;
   height: 54px;
+  width: 100%;
   line-height: 54px;
   border-radius: 0px !important;
   background: url("~@/assets/head/head.png") repeat-x;

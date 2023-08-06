@@ -95,7 +95,6 @@ export default {
 }
 
 .tableDiv {
-  width: 1000px;
   overflow-x: auto;
   overflow-y: hidden;
 }

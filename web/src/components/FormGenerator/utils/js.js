@@ -61,6 +61,7 @@ function mixinMethod() {
             if(!valid){
               resolve(undefined)
             }else{
+              console.log(this.${confGlobal.formModel})
               resolve(this.${confGlobal.formModel})
             }
           })

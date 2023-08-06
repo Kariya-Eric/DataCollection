@@ -190,6 +190,7 @@ export default {
         .then((res) => {
           if (res.state) {
             this.$message.success(res.message);
+            this.$emit("refresh");
             this.close();
           } else {
             this.$message.error(res.message);
