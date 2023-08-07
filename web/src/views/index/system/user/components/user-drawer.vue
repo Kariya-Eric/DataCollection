@@ -1,17 +1,22 @@
 <template>
-  <el-drawer :visible="visible" @close="close" :show-close="false">
+  <el-drawer
+    :visible="visible"
+    @close="close"
+    :show-close="false"
+    v-if="visible"
+  >
     <div slot="title" class="titleSlot">
       <span>{{
         addFlag ? "新增用户" : updateFlag ? "修改用户" : "查看用户"
       }}</span>
       <div class="titleButton">
-        <Mbutton name="返回" icon="返回" @click="close" />
+        <mbutton name="返回" icon="返回" @click="close" />
       </div>
     </div>
     <el-form
       ref="userForm"
       :model="userForm"
-      label-width="120px"
+      label-width="100px"
       size="small"
       :rules="rules"
       v-loading="loading"
@@ -103,14 +108,8 @@
       </el-form-item>
     </el-form>
     <div class="drawer-bottom" v-if="addFlag || updateFlag">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click="handleSubmit"
-        :loading="loading"
-        >提 交</el-button
-      >
+      <mbutton @click="close" name="取消" />
+      <mbutton type="primary" name="提交" @click="handleSubmit" />
     </div>
   </el-drawer>
 </template>
@@ -127,7 +126,16 @@ export default {
       updateFlag: false,
       visible: false,
       loading: false,
-      userForm: {},
+      userForm: {
+        account: "",
+        name: "",
+        password: "",
+        orgId: "",
+        roleIds: [],
+        comfirmPwd: "",
+        email: "",
+        mobile: "",
+      },
       roleList: [],
       departList: [],
       rules: {
@@ -192,9 +200,7 @@ export default {
       },
     };
   },
-  created() {
-    this.initDepart();
-  },
+
   methods: {
     initDepart() {
       let userInfo = Vue.ls.get(USER_INFO);
@@ -206,15 +212,7 @@ export default {
       });
     },
     initRole() {
-      let param = {
-        pageBean: {
-          page: 1,
-          pageSize: 10000,
-          showTotal: true,
-        },
-        params: {},
-      };
-      getRoleList(param).then((res) => {
+      getRoleList({}).then((res) => {
         if (res.state) {
           this.roleList = res.value.rows;
         }
@@ -228,9 +226,9 @@ export default {
     show(addFlag, updateFlag, info) {
       this.visible = true;
       if (info) {
-        //TODO建议发个请求
         this.userForm = JSON.parse(JSON.stringify(info));
       }
+      this.initDepart();
       this.addFlag = addFlag;
       this.updateFlag = updateFlag;
     },
@@ -238,7 +236,17 @@ export default {
     close() {
       this.visible = false;
       this.$refs.userForm.resetFields();
-      this.userForm = {};
+      this.roleList = [];
+      this.userForm = {
+        account: "",
+        name: "",
+        password: "",
+        orgId: "",
+        roleIds: [],
+        comfirmPwd: "",
+        email: "",
+        mobile: "",
+      };
     },
 
     handleSubmit() {

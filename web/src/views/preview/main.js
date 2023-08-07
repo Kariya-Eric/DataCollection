@@ -7,16 +7,15 @@ Vue.use(ElementUI, {
   locale,
 });
 
-
 import Components from "@/components";
 Vue.use(Components);
 
 import VXETable from "vxe-table";
 import "vxe-table/lib/style.css";
-import VXETablePluginElement from 'vxe-table-plugin-element'
-import 'vxe-table-plugin-element/dist/style.css'
+import VXETablePluginElement from "vxe-table-plugin-element";
+import "vxe-table-plugin-element/dist/style.css";
 Vue.use(VXETable);
-VXETable.use(VXETablePluginElement)
+VXETable.use(VXETablePluginElement);
 
 Vue.use(VXETable);
 
@@ -35,9 +34,8 @@ function init(event) {
   }
   if (event.data.type === "submitForm") {
     this.vm.$refs.child.submitForm().then((res) => {
-      console.log('form', res)
       if (res != undefined) {
-        parent.getMessageFromFrame(res);
+        parent.getMessageFromFrame({ submit: res });
       }
     });
   }
@@ -52,8 +50,8 @@ function newVue(main, html) {
     },
     methods: {
       resize() {
-        parent.getMessageFromFrame({ resize: true })
-      }
+        parent.getMessageFromFrame({ resize: true });
+      },
     },
     template: `<div><child ref='child' @resize="resize"/></div>`,
   }).$mount("#app");

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Mbutton
+    <mbutton
       type="primary"
       style="margin-bottom: 12px"
       @click="insertRow"

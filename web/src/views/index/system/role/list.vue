@@ -21,21 +21,21 @@
             <el-option label="禁用" :value="0" />
           </el-select>
         </el-form-item>
-        <Mbutton type="primary" @click="searchQuery" name="搜索" />
-        <Mbutton type="primary" @click="searchReset" name="重置" />
+        <mbutton type="primary" @click="searchQuery" name="搜索" />
+        <mbutton type="primary" @click="searchReset" name="重置" />
       </el-form>
       <!-- Query End -->
 
       <div class="listHeader">
         <span>角色管理</span>
         <div class="listHeaderButton">
-          <Mbutton
+          <mbutton
             type="danger"
             v-if="selectedRowKeys.length > 0"
             @click="delBatch"
             name="批量删除"
           />
-          <Mbutton
+          <mbutton
             @click="addRole"
             type="primary"
             name="添加角色"
@@ -51,7 +51,9 @@
         :border="true"
         class="listTable"
         :header-cell-style="headerStyle"
+        @selection-change="onSelectChange"
       >
+        <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="角色名称" prop="name" align="center" />
         <el-table-column label="角色编码" prop="code" align="center" />
         <el-table-column label="状态" prop="enabled" align="center">
@@ -99,6 +101,7 @@ export default {
     return {
       url: {
         list: "/uc/api/role/getRolePage",
+        delBatch: "/uc/api/role/deleteRoleByIds",
       },
     };
   },

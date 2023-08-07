@@ -32,13 +32,13 @@
             <el-option label="本科教学质量报告" value="本科教学质量报告" />
           </el-select>
         </el-form-item>
-        <Mbutton type="primary" name="搜索" />
-        <Mbutton type="primary" name="重置" />
+        <mbutton type="primary" name="搜索" />
+        <mbutton type="primary" name="重置" />
       </el-form>
       <div class="listHeader">
         <span>分析报告</span>
         <div class="listHeaderButton">
-          <Mbutton type="primary" name="导出" />
+          <mbutton type="primary" name="导出" />
         </div>
       </div>
     </el-card>

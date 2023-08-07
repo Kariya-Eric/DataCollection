@@ -113,9 +113,11 @@ export default {
     },
 
     getMessageFromFrame(value) {
-      //this.$emit("getMsg", value);
       if (value.hasOwnProperty("resize")) {
         this.resizeIframe();
+      }
+      if (value.hasOwnProperty("submit")) {
+        this.$emit("submit", value);
       }
     },
 
@@ -132,6 +134,16 @@ export default {
         var innerHeight = innerDoc.body.scrollHeight;
         iframe.style.height = innerHeight + "px";
       });
+    },
+
+    submit() {
+      let iframe = this.$refs.previewPage.contentWindow;
+      iframe.postMessage({ type: "submitForm" });
+    },
+
+    reset() {
+      let iframe = this.$refs.previewPage.contentWindow;
+      iframe.postMessage({ type: "resetForm" });
     },
   },
 };

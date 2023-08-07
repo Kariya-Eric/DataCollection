@@ -11,7 +11,7 @@
       <div slot="title" class="titleSlot">
         <span>表单预览</span>
         <div class="titleButton">
-          <Mbutton name="返回" icon="返回" @click="onClose" />
+          <mbutton name="返回" icon="返回" @click="onClose" />
         </div>
       </div>
       <form-view :formConf="formConf" />

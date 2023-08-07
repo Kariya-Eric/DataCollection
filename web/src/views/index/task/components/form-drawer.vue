@@ -12,33 +12,36 @@
         <div slot="title" class="titleSlot">
           <span>{{ formName }}</span>
           <div class="titleButton">
-            <Mbutton name="下载导入模板" />
-            <Mbutton type="primary" name="导入" />
-            <Mbutton type="primary" name="导出数据" />
-            <Mbutton type="primary" name="保存" />
-            <Mbutton type="primary" name="提交" @click="submit" />
-            <Mbutton name="返回" icon="返回" @click="onClose" />
+            <mbutton name="下载导入模板" />
+            <mbutton type="primary" name="导入" />
+            <mbutton type="primary" name="导出数据" />
+            <mbutton type="primary" name="保存" />
+            <mbutton type="primary" name="提交" @click="submit" />
+            <mbutton name="返回" icon="返回" @click="onClose" />
           </div>
         </div>
       </div>
-      <form-view :formConf="formConf" />
+      <form-view :formConf="formConf" @submit="getFormValue" ref="formview" />
     </el-drawer>
   </div>
 </template>
 
 <script>
+import { updateTaskFormDetail } from "@/api/task";
 export default {
   data() {
     return {
       visible: false,
       formConf: {},
       formName: "",
+      formId: "",
     };
   },
   methods: {
-    show(formConf, formName) {
+    show(formConf, formName, formId) {
       this.formName = formName;
       this.formConf = formConf;
+      this.formId = formId;
       this.visible = true;
     },
 
@@ -46,7 +49,23 @@ export default {
       this.visible = false;
     },
 
-    submit() {},
+    submit() {
+      this.$refs.formview.submit();
+    },
+
+    getFormValue(value) {
+      updateTaskFormDetail({
+        id: this.formId,
+        formData: JSON.stringify(value),
+      }).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          this.onClose();
+        } else {
+          this.$message.warning(res.message);
+        }
+      });
+    },
   },
 };
 </script>

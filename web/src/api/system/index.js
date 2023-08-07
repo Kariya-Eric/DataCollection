@@ -6,9 +6,6 @@ const addUser = (params) => postAction("/uc/api/user/addUser", params);
 const updateUser = (params) => putAction("/uc/api/user/updateUser", params);
 //重置密码
 const resetPwd = (params) => postAction("/uc/api/user/updateUserPsw", params);
-//批量删除用户
-const delUserBatch = (params) =>
-  deleteAction("/uc/api/user/deleteUserByIds", params);
 //新增角色
 const addRole = (params) => postAction("/uc/api/role/addRole", params);
 //修改角色
@@ -54,12 +51,11 @@ const getMenuList = (params) =>
   getAction("/uc/api/sysMenu/getUserMenu", params);
 const getButtonList = (params) =>
   getAction("/uc/api/sysMenu/getUserMethod", params);
-  
+
 export {
   addUser,
   updateUser,
   resetPwd,
-  delUserBatch,
   addRole,
   updateRole,
   initMenuTree,

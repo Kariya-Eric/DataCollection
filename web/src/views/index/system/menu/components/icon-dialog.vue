@@ -13,8 +13,8 @@
       </li>
     </ul>
     <div slot="footer" class="dialog-footer">
-      <Mbutton @click="close" name="取消" />
-      <Mbutton type="primary" @click="handleSubmit" name="确定" />
+      <mbutton @click="close" name="取消" />
+      <mbutton type="primary" @click="handleSubmit" name="确定" />
     </div>
   </el-dialog>
 </template>

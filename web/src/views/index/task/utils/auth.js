@@ -79,8 +79,3 @@ export function judgeProgress(row, currentUser, isAdmin) {
     return row.responsibleUserName == currentUser.username;
   }
 }
-
-// 判断配置人员按钮权限
-export function judgeConfig(row, currentUser) {
-  return true;
-}

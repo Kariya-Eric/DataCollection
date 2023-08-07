@@ -8,8 +8,9 @@ import Tinymce from "./Tinymce";
 import MenuLink from "./MenuLink";
 import Button from "./Button";
 import Status from "./Status";
-import Select from './Select'
+import Select from "./Select";
 import FormGenerator from "./FormGenerator";
+import Ellipsis from "./Ellipsis";
 import CustomComponents from "./FormGenerator/layouts";
 
 export default {
@@ -22,10 +23,11 @@ export default {
     Vue.component("svgIcon", SvgIcon);
     Vue.component("tinymce", Tinymce);
     Vue.component("menuLink", MenuLink);
-    Vue.component("Mbutton", Button);
+    Vue.component("mbutton", Button);
     Vue.component("status", Status);
     Vue.component("formGenerator", FormGenerator);
-    Vue.component("Mselect", Select);
+    Vue.component("mselect", Select);
+    Vue.component("ellipsis", Ellipsis);
     Vue.use(CustomComponents);
   },
 };

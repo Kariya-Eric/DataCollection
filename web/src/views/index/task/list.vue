@@ -35,16 +35,16 @@
         <el-form-item label="任务名称">
           <el-input v-model="queryParam.name" placeholder="请输入任务名称" />
         </el-form-item>
-        <Mbutton type="primary" @click="searchQuery" name="搜索" />
-        <Mbutton @click="searchReset" name="重置" />
+        <mbutton type="primary" @click="searchQuery" name="搜索" />
+        <mbutton @click="searchReset" name="重置" />
       </el-form>
 
       <div class="listHeader">
         <span>任务列表</span>
         <div class="listHeaderButton">
-          <Mbutton name="下载导入模板" />
-          <Mbutton type="primary" icon="导入" name="导入" />
-          <Mbutton
+          <mbutton name="下载导入模板" />
+          <mbutton type="primary" icon="导入" name="导入" />
+          <mbutton
             type="primary"
             icon="新建"
             name="添加任务"

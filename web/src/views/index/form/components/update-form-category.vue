@@ -26,7 +26,7 @@
       </el-form>
       <el-row style="margin-bottom: 8px"
         ><span style="margin-left: 12px">表单大类</span
-        ><Mbutton
+        ><mbutton
           type="primary"
           icon="el-icon-plus"
           style="margin-left: 12px"

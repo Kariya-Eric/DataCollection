@@ -46,7 +46,16 @@ const saveFormCategories = (params) =>
   postAction("/uc/api/formCategories/saveList", params);
 
 //复制表单
-const copyForm = (params) => postAction(`/uc/api/form/copyForm?formCollectionId=${params.formCollectionId}&formIds=${params.formIds}`);
+const copyForm = (params) =>
+  postAction(
+    `/uc/api/form/copyForm?formCollectionId=${params.formCollectionId}&formIds=${params.formIds}`
+  );
+//获取校验规则
+const formVerification = (params) =>
+  postAction(`/uc/api/formVerification/list/${params.formId}`, params.body);
+
+const delRule = (params) =>
+  deleteAction("/uc/api/formVerification/delete", params);
 
 export {
   addFormCollection,
@@ -64,5 +73,7 @@ export {
   formCollectionList,
   enableForm,
   saveFormCategories,
-  copyForm
+  copyForm,
+  formVerification,
+  delRule,
 };

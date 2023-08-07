@@ -14,13 +14,13 @@
         {{ info.name }}（{{ info.collectTimeType }}）</span
       >
       <div style="display: inline-block; margin-left: 30%">
-        <Mbutton
+        <mbutton
           type="text"
           name="表单设计"
           @click="() => (this.activeTab = 0)"
           :class="{ active: activeTab == 0, inactive: activeTab == 1 }"
         />
-        <Mbutton
+        <mbutton
           type="text"
           name="校验规则"
           @click="() => (this.activeTab = 1)"
@@ -28,10 +28,10 @@
         />
       </div>
       <div class="titleButton">
-        <Mbutton type="danger" @click="empty" name="清空" />
-        <Mbutton type="primary" @click="view" name="预览" />
-        <Mbutton type="primary" @click="save" name="保存" />
-        <Mbutton name="返回" icon="返回" @click="close" />
+        <mbutton type="danger" @click="empty" name="清空" />
+        <mbutton type="primary" @click="view" name="预览" />
+        <mbutton type="primary" @click="save" name="保存" />
+        <mbutton name="返回" icon="返回" @click="close" />
       </div>
     </div>
 
@@ -46,7 +46,11 @@
       />
     </div>
     <div class="container" v-show="activeTab === 1">
-      <rule-detail :drawingList="drawingList" :rules="rules" />
+      <rule-detail
+        :drawingList="drawingList"
+        :rules="rules"
+        @page="loadRules"
+      />
     </div>
     <form-view-drawer ref="formViewDrawer" />
   </el-dialog>
@@ -55,7 +59,7 @@
 <script>
 import FormViewDrawer from "./form-view-drawer.vue";
 import RuleDetail from "./rule-detail";
-import { updateForm } from "@/api/form";
+import { updateForm, formVerification } from "@/api/form";
 export default {
   name: "FormGeneartorDialog",
   components: { FormViewDrawer, RuleDetail },
@@ -81,6 +85,7 @@ export default {
       if (drawingList != null) {
         this.drawingList = drawingList;
       }
+      this.getRuleList();
       this.visible = true;
     },
 
@@ -131,6 +136,36 @@ export default {
           this.loading = false;
           this.close();
         });
+    },
+
+    getRuleList() {
+      const param = {
+        formId: this.info.id,
+        body: {
+          pageBean: {
+            page: 1,
+            pageSize: 10,
+            showTotal: true,
+          },
+        },
+      };
+      formVerification(param).then((res) => {
+        if (res.state) {
+          this.rules = res.value.rows;
+        }
+      });
+    },
+
+    loadRules(pageBean) {
+      const param = {
+        formId: this.info.id,
+        body: { pageBean },
+      };
+      formVerification(param).then((res) => {
+        if (res.state) {
+          this.rules = res.value.rows;
+        }
+      });
     },
   },
 };

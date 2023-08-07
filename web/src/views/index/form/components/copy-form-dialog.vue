@@ -16,7 +16,7 @@
       size="small"
     >
       <el-form-item label="合集名称" prop="formCollectionId">
-        <Mselect
+        <mselect
           v-model="copyForm.formCollectionId"
           placeholder="请选择合集"
           :options="formCollectionList"
@@ -49,8 +49,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <Mbutton @click="close" name="取消" />
-      <Mbutton type="primary" @click="handleSubmit" name="提交" />
+      <mbutton @click="close" name="取消" />
+      <mbutton type="primary" @click="handleSubmit" name="提交" />
     </div>
   </el-dialog>
 </template>

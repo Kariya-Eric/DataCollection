@@ -29,13 +29,13 @@
         <el-form-item label="合集名称">
           <el-input v-model="queryParam.name" placeholder="请输入合集名称" />
         </el-form-item>
-        <Mbutton type="primary" name="搜索" @click="searchQuery" />
-        <Mbutton type="primary" name="重置" @click="searchReset" />
+        <mbutton type="primary" name="搜索" @click="searchQuery" />
+        <mbutton type="primary" name="重置" @click="searchReset" />
       </el-form>
       <div class="listHeader">
         <span>合集列表</span>
         <div class="listHeaderButton">
-          <Mbutton
+          <mbutton
             @click="addCollection"
             icon="新建"
             type="primary"

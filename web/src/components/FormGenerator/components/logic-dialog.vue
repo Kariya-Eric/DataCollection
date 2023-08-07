@@ -51,8 +51,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer">
-      <Mbutton name="取消" @click="close" />
-      <Mbutton type="primary" name="确定" @click="handleSubmit" />
+      <mbutton name="取消" @click="close" />
+      <mbutton type="primary" name="确定" @click="handleSubmit" />
     </div>
   </el-dialog>
 </template>

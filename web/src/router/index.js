@@ -53,22 +53,6 @@ export const constantRouterMap = [
       },
     ],
   },
-  {
-    path: "/",
-    name: "Base",
-    component: BasicLayout,
-    hidden: true,
-    children: [
-      {
-        path: "/test",
-        name: "Test",
-        component: () => import("@/views/index/test"),
-        meta: {
-          title: "测试页",
-        },
-      },
-    ],
-  },
 ];
 
 export default new Router({

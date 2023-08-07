@@ -9,9 +9,9 @@
       <div slot="title" class="titleSlot">
         <span>协作进度</span>
         <div class="titleButton">
-          <Mbutton type="primary" icon="催办" name="一键催办" />
-          <Mbutton type="primary" icon="查看表单" name="查看表单" />
-          <Mbutton name="返回" icon="返回" @click="onClose" />
+          <mbutton type="primary" icon="催办" name="一键催办" />
+          <mbutton type="primary" icon="查看表单" name="查看表单" />
+          <mbutton name="返回" icon="返回" @click="onClose" />
         </div>
       </div>
       <el-descriptions :column="2">

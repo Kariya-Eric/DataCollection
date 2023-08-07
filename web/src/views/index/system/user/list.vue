@@ -23,27 +23,27 @@
             placeholder="请输入姓名,帐号,手机"
           />
         </el-form-item>
-        <Mbutton type="primary" @click="searchQuery" name="搜索" />
-        <Mbutton type="primary" @click="searchReset" name="重置" />
+        <mbutton type="primary" @click="searchQuery" name="搜索" />
+        <mbutton type="primary" @click="searchReset" name="重置" />
       </el-form>
 
       <div class="listHeader">
         <span>用户管理</span>
         <div class="listHeaderButton">
-          <Mbutton
+          <mbutton
             type="danger"
             v-if="selectedRowKeys.length > 0"
             @click="delBatch"
             name="批量删除"
           />
-          <Mbutton
+          <mbutton
             @click="addUser"
             type="primary"
             name="添加用户"
             icon="新建"
           />
-          <Mbutton type="primary" name="导入" />
-          <Mbutton type="primary" name="导出" />
+          <mbutton type="primary" name="导入" />
+          <mbutton type="primary" name="导出" />
         </div>
       </div>
 
@@ -92,7 +92,6 @@
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import UserDrawer from "./components/user-drawer";
 import ResetPasswordDialog from "./components/reset-password-dialog";
-import { delUserBatch } from "@/api/system";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
@@ -101,6 +100,7 @@ export default {
     return {
       url: {
         list: "/uc/api/user/getUserPage",
+        delBatch: "/uc/api/user/deleteUserByIds",
       },
     };
   },
@@ -117,27 +117,6 @@ export default {
 
     resetPwd(info) {
       this.$refs.resetPasswordDialog.show(info);
-    },
-
-    delBatch() {
-      let ids = "";
-      this.selectedRowKeys.forEach((element) => {
-        ids += element.id + ",";
-      });
-      ids = "ids=" + ids.substring(0, ids.length - 1);
-      this.loading = true;
-      delUserBatch(ids)
-        .then((res) => {
-          if (res.state) {
-            this.$message.success(res.message);
-          } else {
-            this.$message.error(res.message);
-          }
-        })
-        .finally(() => {
-          this.loading = true;
-          this.loadData();
-        });
     },
   },
 };

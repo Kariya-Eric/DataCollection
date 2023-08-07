@@ -1,4 +1,4 @@
-import { postAction } from "@/api/api";
+import { postAction, deleteAction } from "@/api/api";
 import Vue from "vue";
 import { BUTTON_LIST } from "@/store/mutation-types";
 
@@ -97,6 +97,31 @@ export const DataCollectionMixin = {
         }
       }
       return false;
+    },
+
+    delBatch() {
+      if (!this.url || !this.url.delBatch) {
+        this.$message.error("请设置url.delBatch属性!");
+        return;
+      }
+      let ids = "";
+      this.selectedRowKeys.forEach((element) => {
+        ids += element.id + ",";
+      });
+      ids = "ids=" + ids.substring(0, ids.length - 1);
+      this.loading = true;
+      deleteAction(this.url.delBatch, ids)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = true;
+          this.loadData();
+        });
     },
   },
 };

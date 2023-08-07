@@ -7,10 +7,10 @@
     v-if="visible"
   >
     <div style="margin-bottom: 12px">
-      <Mbutton @click="add" name="增加行" />
-      <Mbutton @click="mergeRight" name="向右合并" />
-      <Mbutton @click="mergeDown" name="向下合并" />
-      <Mbutton @click="split" name="拆分单元格" />
+      <mbutton @click="add" name="增加行" />
+      <mbutton @click="mergeRight" name="向右合并" />
+      <mbutton @click="mergeDown" name="向下合并" />
+      <mbutton @click="split" name="拆分单元格" />
     </div>
     <vxe-table
       border
@@ -35,8 +35,8 @@
       </vxe-column>
     </vxe-table>
     <div slot="footer">
-      <Mbutton name="取消" @click="close" />
-      <Mbutton type="primary" name="确定" @click="handleSubmit" />
+      <mbutton name="取消" @click="close" />
+      <mbutton type="primary" name="确定" @click="handleSubmit" />
     </div>
   </el-dialog>
 </template>

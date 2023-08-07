@@ -7,15 +7,15 @@
           <span style="margin-left: 8px">基础信息</span>
         </template>
         <template slot="extra">
-          <Mbutton
+          <mbutton
             type="primary"
             icon="编辑"
             v-if="!taskInfo.enabledFlag"
-    
+            v-has="'taskInfo_edit'"
             @click="editTask"
             name="编辑"
           />
-          <Mbutton name="返回" icon="返回" @click="goBack" />
+          <mbutton name="返回" icon="返回" @click="goBack" />
         </template>
         <el-descriptions-item label="任务名称"
           >{{ taskInfo.name }}

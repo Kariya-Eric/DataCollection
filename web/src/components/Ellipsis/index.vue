@@ -27,8 +27,11 @@ export default {
       default: 25,
     },
   },
+  methods: {
+    cutStr,
+    getStrLength,
+  },
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -37,26 +37,26 @@
         <el-form-item label="表单名称">
           <el-input v-model="queryParam.name" placeholder="请输入表单名称" />
         </el-form-item>
-        <Mbutton type="primary" name="搜索" @click="getFormList" />
-        <Mbutton type="primary" name="重置" @click="searchReset" />
+        <mbutton type="primary" name="搜索" @click="getFormList" />
+        <mbutton type="primary" name="重置" @click="searchReset" />
       </el-form>
 
       <div class="listHeader">
         <span>合集详情</span>
         <div class="listHeaderButton">
-          <Mbutton
+          <mbutton
             @click="updateFormCategory"
             type="primary"
             icon="配置大类"
             name="配置表单大类"
           />
-          <Mbutton
+          <mbutton
             type="primary"
             icon="复制"
             name="复制表单"
             @click="copyForm"
           />
-          <Mbutton
+          <mbutton
             @click="addForm"
             icon="新建"
             type="primary"
@@ -319,7 +319,6 @@ export default {
     },
 
     copyForm() {
-      console.log(this.collectionDetail);
       this.$refs.copyFormDialog.show();
     },
   },

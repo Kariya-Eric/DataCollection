@@ -56,9 +56,9 @@
             <span>菜单详情</span>
             <div class="titleButton">
               <el-popconfirm @confirm="delMenu" title="确认要删除该菜单吗？">
-                <Mbutton slot="reference" type="danger" name="删除" />
+                <mbutton slot="reference" type="danger" name="删除" />
               </el-popconfirm>
-              <Mbutton @click="saveMenu" type="primary" name="保存" />
+              <mbutton @click="saveMenu" type="primary" name="保存" />
             </div>
           </div>
           <right-menu ref="rightMenu" />

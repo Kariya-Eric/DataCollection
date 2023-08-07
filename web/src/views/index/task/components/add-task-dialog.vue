@@ -3,6 +3,7 @@
     fullscreen
     :visible="visible"
     :title="taskId ? '修改任务' : '添加任务'"
+    v-if="visible"
     :append-to-body="true"
     :show-close="false"
   >

@@ -9,8 +9,8 @@
     <div slot="title" class="titleSlot">
       <span>资源授权</span>
       <div class="titleButton">
-        <Mbutton type="primary" name="保存" @click="savePermission" />
-        <Mbutton name="返回" icon="返回" @click="close" />
+        <mbutton type="primary" name="保存" @click="savePermission" />
+        <mbutton name="返回" icon="返回" @click="close" />
       </div>
     </div>
 

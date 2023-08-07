@@ -52,24 +52,24 @@
 
       <div class="listHeader">
         <el-button-group class="buttonGroup">
-          <Mbutton
+          <mbutton
             :class="{ active: activeName == 'ALL' }"
             name="全部"
             @click="() => (activeName = 'ALL')"
           />
-          <Mbutton
+          <mbutton
             :class="{ active: activeName == 'FILL' }"
             name="我填报的"
             @click="() => (activeName = 'FILL')"
           />
-          <Mbutton
+          <mbutton
             :class="{ active: activeName == 'APPROVE' }"
             name="我审核的"
             @click="() => (activeName = 'APPROVE')"
           />
         </el-button-group>
         <div class="listHeaderButton">
-          <Mbutton type="primary" icon="催办" name="一键催办" />
+          <mbutton type="primary" icon="催办" name="一键催办" />
         </div>
       </div>
 
@@ -128,7 +128,9 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="400">
           <template slot-scope="scope">
-            <menu-link v-if="judgeApply(scope.row, currentUser)"
+            <menu-link
+              v-if="judgeApply(scope.row, currentUser)"
+              @click="showForm(scope.row)"
               >填报</menu-link
             >
             <el-popconfirm
@@ -166,7 +168,8 @@
             <menu-link
               @click="handleConfig(scope.row)"
               no-divider
-              v-if="judgeConfig(scope.row, currentUser)"
+              v-has="'taskDetail_config'"
+              v-if="scope.row.status == -1"
               >配置人员</menu-link
             >
           </template>
@@ -193,7 +196,6 @@ import {
   judgeRedo,
   judgeRemind,
   judgeProgress,
-  judgeConfig,
 } from "./utils/auth";
 import { pushNotice } from "@/api/notice";
 import FormDrawer from "./components/form-drawer";
@@ -211,7 +213,6 @@ export default {
       judgeRedo,
       judgeRemind,
       judgeProgress,
-      judgeConfig,
       currentUser: this.$ls.get(USER_INFO),
       taskName: "",
       activeName: "ALL",
@@ -277,7 +278,11 @@ export default {
               res.value.componentProperties
             );
             let formData = { ...formProperties, fields: componentProperties };
-            this.$refs.formDrawer.show(formData, res.value.formName);
+            this.$refs.formDrawer.show(
+              formData,
+              res.value.formName,
+              res.value.id
+            );
           } else {
             this.$message.error("未根据id查询到表单");
           }
