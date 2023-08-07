@@ -2,32 +2,24 @@
   <div>
     <el-breadcrumb class="app-breadcrumb" separator="/">
       <transition-group name="breadcrumb">
-        <el-breadcrumb-item v-for="(item, index) in levelList" :key="item.path">
-          <span
-            v-if="
-              item.meta.title &&
-              (item.redirect === 'noredirect' || index == levelList.length - 1)
-            "
-            class="no-redirect"
-            >{{ item.meta.title }}</span
-          >
-          <router-link v-else :to="item.redirect || item.path">{{
+        <el-breadcrumb-item v-for="(item, index) in breadList" :key="item.path">
+          <span v-if="index == breadList.length - 1">{{
+            item.meta.title
+          }}</span>
+          <router-link v-else :to="item.path">{{
             item.meta.title
           }}</router-link>
         </el-breadcrumb-item>
       </transition-group>
     </el-breadcrumb>
-    <!-- <el-button size="small" class="backbutton">返回</el-button> -->
   </div>
 </template>
 
 <script>
-import pathToRegexp from "path-to-regexp";
-
 export default {
   data() {
     return {
-      levelList: null,
+      breadList: null,
     };
   },
   watch: {
@@ -40,21 +32,7 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      const { params } = this.$route;
-      let matched = this.$route.matched.filter((item) => {
-        if (item.name) {
-          var toPath = pathToRegexp.compile(item.path);
-          item.path = toPath(params);
-          return true;
-        }
-      });
-      const first = matched[0];
-      if (first && first.name !== "Dashboard") {
-        matched = [{ path: "/dashboard", meta: { title: "Dashboard" } }].concat(
-          matched
-        );
-      }
-      this.levelList = matched;
+      this.breadList = this.$route.matched;
     },
   },
 };

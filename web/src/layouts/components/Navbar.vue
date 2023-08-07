@@ -15,6 +15,7 @@ import HeadMenu from "./HeadMenu";
 import { mapActions, mapState } from "vuex";
 import HeadNotice from "./HeadNotice";
 import PageHeaderLayout from "../PageHeaderLayout";
+import { USER_INFO } from "@/store/mutation-types";
 
 export default {
   components: {
@@ -23,9 +24,13 @@ export default {
     Logo,
     HeadMenu,
   },
+  data() {
+    return {
+      userInfo: this.$ls.get(USER_INFO),
+    };
+  },
   computed: {
     ...mapState({
-      userInfo: (state) => state.user.userInfo,
       routers: (state) => state.permission.permissionList,
     }),
   },

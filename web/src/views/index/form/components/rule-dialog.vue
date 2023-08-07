@@ -48,14 +48,14 @@
             :active-value="1"
           />
         </el-form-item>
-        <el-form-item v-if="ruleForm.type == 'dataRange'">
-          <rule-range
-            v-model="ruleForm.verificationFormulas"
-            :drawingList="drawingList"
-          />
+        <el-form-item v-if="ruleForm.type == 'dataRange'" label-width="0">
+          <rule-range v-model="ruleForm.dataRange" :drawingList="drawingList" />
         </el-form-item>
-        <el-form-item v-if="ruleForm.type == 'other'">
-          <rule-other v-model="ruleForm.verificationFormulas" />
+        <el-form-item v-if="ruleForm.type == 'unique'" label-width="0">
+          <rule-unique v-model="ruleForm.unique" :drawingList="drawingList" />
+        </el-form-item>
+        <el-form-item v-if="ruleForm.type == 'other'" label-width="0">
+          <rule-other v-model="ruleForm.other" />
         </el-form-item>
       </el-form>
     </div>
@@ -71,15 +71,32 @@
 <script>
 import RuleOther from "./rule-other";
 import RuleRange from "./rule-range";
+import RuleUnique from "./rule-unique";
 export default {
   name: "RuleDialog",
-  components: { RuleOther, RuleRange },
+  components: { RuleOther, RuleRange, RuleUnique },
   props: ["drawingList"],
   data() {
     return {
       visible: false,
       updateFlag: false,
-      ruleForm: {},
+      ruleForm: {
+        name: "",
+        type: "",
+        verifyMode: "",
+        message: "",
+        enabledFlag: 0,
+        other: "",
+        unique: [""],
+        dataRange: [
+          {
+            left: [{ operator: "", type: "", value: "", field: "" }],
+            operator: "",
+            right: [{ operator: "", type: "", value: "", field: "" }],
+            and_or: undefined,
+          },
+        ],
+      },
       rules: {},
       typeList: [
         { name: "数据范围校验", value: "dataRange" },
