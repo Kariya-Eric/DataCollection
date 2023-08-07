@@ -50,7 +50,12 @@
             icon="配置大类"
             name="配置表单大类"
           />
-          <Mbutton type="primary" icon="复制" name="复制表单" />
+          <Mbutton
+            type="primary"
+            icon="复制"
+            name="复制表单"
+            @click="copyForm"
+          />
           <Mbutton
             @click="addForm"
             icon="新建"
@@ -145,6 +150,7 @@
     <add-form-dialog ref="addFormDialog" @refresh="getFormList" />
     <update-form-category ref="updateFormCategory" @refresh="loadCategories" />
     <form-generator-dialog ref="formGeneratorDialog" @refresh="getFormList" />
+    <copy-form-dialog ref="copyFormDialog" />
   </div>
 </template>
 
@@ -158,12 +164,14 @@ import {
   listFormCategories,
 } from "@/api/form";
 import FormGeneratorDialog from "./components/form-generator-dialog.vue";
+import CopyFormDialog from "./components/copy-form-dialog.vue";
 export default {
   name: "FormDetail",
   components: {
     AddFormDialog,
     UpdateFormCategory,
     FormGeneratorDialog,
+    CopyFormDialog,
   },
   data() {
     return {
@@ -308,6 +316,11 @@ export default {
       if (command == "c") {
         this.delForm(row);
       }
+    },
+
+    copyForm() {
+      console.log(this.collectionDetail);
+      this.$refs.copyFormDialog.show();
     },
   },
 };

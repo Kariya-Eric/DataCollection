@@ -45,6 +45,9 @@ const enableForm = (params) =>
 const saveFormCategories = (params) =>
   postAction("/uc/api/formCategories/saveList", params);
 
+//复制表单
+const copyForm = (params) => postAction(`/uc/api/form/copyForm?formCollectionId=${params.formCollectionId}&formIds=${params.formIds}`);
+
 export {
   addFormCollection,
   updateFormCollection,
@@ -61,4 +64,5 @@ export {
   formCollectionList,
   enableForm,
   saveFormCategories,
+  copyForm
 };

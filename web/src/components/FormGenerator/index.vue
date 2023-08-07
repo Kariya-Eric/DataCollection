@@ -104,7 +104,10 @@ export default {
   data() {
     return {
       idGlobal,
-      formConf: this.formConfig == null ? formConf : this.formConfig,
+      formConf:
+        this.formConfig == null
+          ? JSON.parse(JSON.stringify(formConf))
+          : this.formConfig,
       inputComponentsFix,
       selectComponentsFix,
       layoutComponentsFix,
@@ -114,11 +117,7 @@ export default {
       activeData: this.drawingList[0],
     };
   },
-  props: {
-    formInfo: { type: Object },
-    drawingList: { type: Array },
-    formConfig: { type: Object },
-  },
+  props: ["formInfo", "drawingList", "formConfig"],
   computed: {
     leftComponents() {
       if (this.formInfo.type == "固定表单") {
@@ -150,7 +149,6 @@ export default {
       }
     },
   },
-
   methods: {
     addComponent(item) {
       const clone = this.cloneComponent(item);

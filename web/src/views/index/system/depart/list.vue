@@ -142,7 +142,7 @@
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                      <div class="search-button-admin">
+                      <div class="">
                         <el-popconfirm
                           title="确认要批量解除吗？"
                           @confirm="delOrgUserBatch"

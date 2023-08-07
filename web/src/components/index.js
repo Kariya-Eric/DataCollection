@@ -8,6 +8,7 @@ import Tinymce from "./Tinymce";
 import MenuLink from "./MenuLink";
 import Button from "./Button";
 import Status from "./Status";
+import Select from './Select'
 import FormGenerator from "./FormGenerator";
 import CustomComponents from "./FormGenerator/layouts";
 
@@ -24,6 +25,7 @@ export default {
     Vue.component("Mbutton", Button);
     Vue.component("status", Status);
     Vue.component("formGenerator", FormGenerator);
+    Vue.component("Mselect", Select);
     Vue.use(CustomComponents);
   },
 };

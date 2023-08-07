@@ -93,23 +93,6 @@ a:hover {
   }
 }
 
-.search-button-admin {
-  float: right;
-  margin-right: 12px;
-
-  // margin-top: 12px;
-  // margin-bottom: 18px;
-  .el-button + .el-button {
-    margin-left: 6px;
-  }
-
-  a {
-    font-size: 13px;
-    text-decoration: underline;
-    margin-left: 12px;
-  }
-}
-
 // LIST页面头部搜索表单
 .headerForm {
   margin-top: 5px;

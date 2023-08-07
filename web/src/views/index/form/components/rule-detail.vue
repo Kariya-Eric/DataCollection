@@ -1,20 +1,12 @@
 <template>
   <div style="padding: 0px 24px 12px 24px">
-    <el-row class="search-row">
-      <el-col :span="24">
-        <div class="search-button-admin">
-          <el-button
-            type="primary"
-            size="small"
-            icon="el-icon-plus"
-            @click="addRule"
-            >添加校验</el-button
-          >
-        </div>
-      </el-col>
-    </el-row>
-    <el-table :data="rules">
-      <el-table-column label="校验名称"></el-table-column>
+    <Mbutton type="primary" @click="addRule" name="添加校验" />
+    <el-table
+      :data="dataSource"
+      class="listTable"
+      :header-cell-style="headerStyle"
+    >
+      <el-table-column label="校验名称"  prop="name" align="center" />
       <el-table-column label="校验模式"></el-table-column>
       <el-table-column label="前置表单"></el-table-column>
       <el-table-column label="校验类型"></el-table-column>
@@ -36,7 +28,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <rule-dialog ref="ruleDialog" />
+    <pagination :pagination="ipagination" @change="loadData" />
+    <rule-dialog ref="ruleDialog" :drawingList="drawingList" />
   </div>
 </template>
 
@@ -45,15 +38,32 @@ import RuleDialog from "./rule-dialog";
 export default {
   name: "RuleDetail",
   components: { RuleDialog },
+  props: ["drawingList", "rules"],
+  watch: {
+    rules(newVal) {
+      this.dataSource = newVal;
+    },
+  },
   data() {
     return {
-      rules: [],
+      dataSource: this.rules,
+      ipagination: {
+        current: 1,
+        pageSize: 10,
+        pageSizeOptions: [10, 20, 30],
+        total: 0,
+      },
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
     };
   },
   methods: {
     addRule() {
       this.$refs.ruleDialog.show();
     },
+
+    loadData() {},
   },
 };
 </script>

@@ -24,7 +24,7 @@ const user = {
         login(userInfo)
           .then((response) => {
             const data = response.data;
-            Vue.ls.set(ACCESS_TOKEN, data.token, 7 * 24 * 60 * 60 * 1000);
+            Vue.ls.set(ACCESS_TOKEN, data.token);
             Vue.ls.set(USER_INFO, data);
             commit("SET_TOKEN", data.token);
             commit("SET_USERINFO", data);

@@ -46,7 +46,7 @@
       />
     </div>
     <div class="container" v-show="activeTab === 1">
-      <rule-detail />
+      <rule-detail :drawingList="drawingList" :rules="rules" />
     </div>
     <form-view-drawer ref="formViewDrawer" />
   </el-dialog>
@@ -67,6 +67,7 @@ export default {
       drawerVisible: false,
       drawingList: [],
       formConfig: null,
+      rules: [],
     };
   },
   methods: {
