@@ -31,7 +31,6 @@
                 :value="item.__vModel__"
               />
             </el-select>
-
             <i
               class="el-icon-remove-outline"
               v-if="uniqueValue.length > 1"
@@ -59,9 +58,6 @@ export default {
     },
   },
 
-  mounted() {
-    console.log(this.drawingList);
-  },
   methods: {
     addUnique() {
       this.uniqueValue.push("");
@@ -76,6 +72,24 @@ export default {
     delUnique(index) {
       this.uniqueValue.splice(index, 1);
       this.$emit("input", this.uniqueValue);
+    },
+
+    //校验
+    validate() {
+      let flag = true;
+      for (let i = 0; i < this.uniqueValue.length; i++) {
+        if (this.uniqueValue[i] == "") {
+          flag = false;
+          break;
+        }
+      }
+      return new Promise((resolve, reject) => {
+        if (flag) {
+          resolve(undefined);
+        } else {
+          resolve("唯一性校验组合中不能为空！");
+        }
+      });
     },
   },
 };

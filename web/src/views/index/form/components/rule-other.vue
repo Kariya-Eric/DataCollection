@@ -29,6 +29,16 @@ export default {
       this.otherValue = value;
       this.$emit("input", value);
     },
+
+    validate() {
+      return new Promise((resolve, reject) => {
+        if (this.otherValue != "") {
+          resolve(undefined);
+        } else {
+          resolve("请输入自定义脚本!");
+        }
+      });
+    },
   },
 };
 </script>

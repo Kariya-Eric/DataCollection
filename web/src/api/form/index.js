@@ -57,6 +57,9 @@ const formVerification = (params) =>
 const delRule = (params) =>
   deleteAction("/uc/api/formVerification/delete", params);
 
+const addRule = (params) => postAction("/uc/api/formVerification/add", params)
+
+const updateRule = (params) => putAction("/uc/api/formVerification/update", params)
 export {
   addFormCollection,
   updateFormCollection,
@@ -76,4 +79,6 @@ export {
   copyForm,
   formVerification,
   delRule,
+  addRule,
+  updateRule
 };

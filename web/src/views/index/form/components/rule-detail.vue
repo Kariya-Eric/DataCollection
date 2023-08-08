@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 0px 24px 12px 24px">
+  <div class="ruleDiv">
     <mbutton type="primary" @click="addRule" name="添加校验" />
     <el-table
       v-loading="loading"
@@ -34,18 +34,16 @@
       <el-table-column label="启用">
         <template slot-scope="scope">
           <el-switch
+            disabled
             v-model="scope.row.enabledFlag"
             :inactive-value="0"
             :active-value="1"
           />
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="220px" align="center">
         <template slot-scope="scope">
-          <a href="javascript:;">查看</a>
-          <el-divider direction="vertical" />
-          <a href="javascript:;">编辑</a>
-          <el-divider direction="vertical" />
+          <menu-link @click="updateRule(scope.row)">查看</menu-link>
           <el-popconfirm
             title="确认删除该校验规则吗？"
             @confirm="delRule(scope.row)"
@@ -56,7 +54,12 @@
       </el-table-column>
     </el-table>
     <pagination :pagination="ipagination" @change="loadData" />
-    <rule-dialog ref="ruleDialog" :drawingList="drawingList" />
+    <rule-dialog
+      ref="ruleDialog"
+      :drawingList="drawingList"
+      :formId="formId"
+      @refresh="loadData"
+    />
   </div>
 </template>
 
@@ -66,7 +69,7 @@ import { delRule } from "@/api/form";
 export default {
   name: "RuleDetail",
   components: { RuleDialog },
-  props: ["drawingList", "rules"],
+  props: ["drawingList", "rules", "formId"],
   watch: {
     rules(newVal) {
       this.dataSource = newVal;
@@ -115,8 +118,20 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+
+    updateRule(row) {
+      this.$refs.ruleDialog.show(row);
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.ruleDiv {
+  padding: 24px;
+  .el-button {
+    float: right;
+    margin-bottom: 12px;
+  }
+}
+</style>
