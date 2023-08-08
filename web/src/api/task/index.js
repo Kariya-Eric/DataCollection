@@ -46,7 +46,7 @@ const configFillStatus = (params) =>
   putAction("/uc/api/taskForm/configFillStatus", params);
 
 const configAuthUser = (params) =>
-  putAction("/uc/api/taskForm/configAuthUser", params);
+  putAction("/uc/api/taskFormDetail/configAuthUser", params);
 const approveForm = (params) =>
   putAction("/uc/api/taskFormDetail/approve", params);
 

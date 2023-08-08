@@ -48,7 +48,7 @@
 
 <script>
 import { getUserList } from "@/api/system";
-import{ configAuthUser} from '@/api/task'
+import { configAuthUser } from "@/api/task";
 export default {
   data() {
     return {
@@ -81,15 +81,7 @@ export default {
   },
   methods: {
     getUser() {
-      let param = {
-        pageBean: {
-          page: 1,
-          pageSize: 2000,
-          showTotal: true,
-        },
-        params: {},
-      };
-      getUserList(param).then((res) => {
+      getUserList({}).then((res) => {
         if (res.state) {
           this.userList = res.value.rows;
         }
@@ -101,7 +93,7 @@ export default {
       this.$refs.configForm.resetFields();
     },
     show(info, taskId) {
-      this.configForm.formId = info.formId;
+      this.configForm.id = info.id;
       this.configForm.formName = info.formName;
       this.taskId = taskId;
       this.visible = true;
@@ -116,9 +108,9 @@ export default {
           let responsibleUserName = this.userList.filter(
             (user) => user.id == this.configForm.responsibleUser
           )[0].name;
-          const { formId, fillUser, responsibleUser } = this.configForm;
+          const { id, fillUser, responsibleUser } = this.configForm;
           let param = {
-            formId,
+            id,
             fillUser,
             responsibleUser,
             fillUserName,

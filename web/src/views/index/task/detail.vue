@@ -76,16 +76,22 @@
       <el-table
         v-loading="loading"
         :data="taskFormDataSource"
-        row-key="id"
+        :row-key="(record) => record.id + record.type"
         default-expand-all
         class="listTable"
         :header-cell-style="headerStyle"
+        :row-class-name="tableRowClassName"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
-        <el-table-column label="表单名称" prop="formName" align="center">
+        <el-table-column label="表单名称" prop="name">
           <template slot-scope="scope">
-            <svg-icon icon-class="固定表单" width="16px" height="16px" />
-            <span style="margin-left: 10px">{{ scope.row.formName }}</span>
+            <svg-icon
+              icon-class="固定表单"
+              width="16px"
+              height="16px"
+              v-if="scope.row.name"
+            />
+            <span style="margin-left: 10px">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="类型" prop="type" align="center" width="100" />
@@ -95,7 +101,7 @@
           align="center"
         />
         <el-table-column
-          label="协作部门"
+          label="填报部门"
           prop="collaborateOrgName"
           align="center"
         />
@@ -145,7 +151,7 @@
             </el-popconfirm>
             <menu-link
               @click="showForm(scope.row)"
-              v-if="judgeShow(scope.row, currentUser, isAdmin)"
+              v-if="judgeShow(scope.row, currentUser)"
               >查看</menu-link
             >
             <el-popconfirm
@@ -157,12 +163,12 @@
             </el-popconfirm>
             <menu-link
               @click="pushNotice(scope.row)"
-              v-if="judgeRemind(scope.row, currentUser, isAdmin)"
+              v-if="judgeRemind(scope.row, currentUser)"
               >催办</menu-link
             >
             <menu-link
               @click="showProgress(scope.row)"
-              v-if="judgeProgress(scope.row, currentUser, isAdmin)"
+              v-if="judgeProgress(scope.row, currentUser)"
               >填报进度</menu-link
             >
             <menu-link
@@ -232,11 +238,7 @@ export default {
       },
     };
   },
-  computed: {
-    isAdmin() {
-      return this.currentUser.account == "admin";
-    },
-  },
+
   watch: {
     $route: {
       handler(newRoute) {
@@ -292,20 +294,17 @@ export default {
 
     handlerData(datasource) {
       return datasource.map((ele) => {
-        if (ele.children.length !== 0) {
-          let children = ele.children.slice(1, ele.children.length);
-          ele = ele.children[0];
-          ele.type = "总表";
-          ele.collaborateOrgName = "-";
-          ele.children = children.map((child, index) => {
-            child.type = "子表";
-            child.responsibleOrgName = "-";
-            child.collaborateOrgName =
-              child.collaborateOrgName.split(",")[index];
-            return child;
-          });
-        } else {
+        if (ele.children.length == 0) {
+          ele.name = ele.formName;
           ele.type = "-";
+        } else {
+          ele.name = ele.formName;
+          ele.type = "总表";
+          ele.children.forEach((child) => {
+            child.responsibleOrgName = "";
+            child.type = "子表";
+            child.collaborateOrgName = child.orgName;
+          });
         }
         return ele;
       });
@@ -397,6 +396,13 @@ export default {
         return { status: 2, name: "待配置人员" };
       }
     },
+
+    tableRowClassName({ row, rowIndex }) {
+      if (row.type == "子表") {
+        return "child-row";
+      }
+      return "";
+    },
   },
 };
 </script>
@@ -411,5 +417,8 @@ export default {
 .active {
   color: #ffffff;
   background: linear-gradient(180deg, #76a8f4 0%, #2f68bd 100%);
+}
+/deep/.el-table .child-row {
+  background: #f2f7ff;
 }
 </style>

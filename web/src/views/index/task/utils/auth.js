@@ -27,28 +27,23 @@ export function judgeAudit(row, currentUser) {
 }
 
 // 判断查看按钮权限
-export function judgeShow(row, currentUser, isAdmin) {
-  if (isAdmin) {
-    return true;
-  } else {
-    if (
-      row.responsibleUserName == currentUser.username &&
-      row.fillUserName != currentUser.username
-    ) {
-      return row.status != 1;
-    } else if (
-      row.responsibleUserName != currentUser.username &&
-      row.fillUserName == currentUser.username
-    ) {
-      return row.status != 0 && row.status != 3;
-    } else if (
-      row.responsibleUserName == currentUser.username &&
-      row.fillUserName == currentUser.username
-    ) {
-      return true;
-    }
+export function judgeShow(row, currentUser) {
+  if (
+    row.responsibleUserName == currentUser.username &&
+    row.fillUserName != currentUser.username
+  ) {
+    return row.status != 1;
+  } else if (
+    row.responsibleUserName != currentUser.username &&
+    row.fillUserName == currentUser.username
+  ) {
+    return row.status != 0 && row.status != 3;
+  } else if (
+    row.responsibleUserName == currentUser.username &&
+    row.fillUserName == currentUser.username
+  ) {
+    return row.status != -1;
   }
-  return false;
 }
 
 // 判断撤回按钮权限
@@ -60,22 +55,14 @@ export function judgeRedo(row, currentUser) {
 }
 
 // 判断催办按钮权限
-export function judgeRemind(row, currentUser, isAdmin) {
-  if (isAdmin) {
-    return row.status != 2;
-  } else {
-    if (row.responsibleUserName == currentUser.username) {
-      return row.status != 2 && row.status != 1;
-    }
+export function judgeRemind(row, currentUser) {
+  if (row.responsibleUserName == currentUser.username) {
+    return row.status != 2 && row.status != 1;
   }
   return false;
 }
 
 // 判断填报进度按钮权限
-export function judgeProgress(row, currentUser, isAdmin) {
-  if (isAdmin) {
-    return row.status != -1;
-  } else {
-    return row.responsibleUserName == currentUser.username;
-  }
+export function judgeProgress(row, currentUser) {
+  return row.responsibleUserName == currentUser.username;
 }
