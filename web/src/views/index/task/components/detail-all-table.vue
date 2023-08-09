@@ -165,7 +165,7 @@ export default {
 
   methods: {
     calculateEndTime(date) {
-      return Date.now() - new Date(date).getTime();
+      return new Date(date).getTime();
     },
 
     pageChange() {
@@ -211,7 +211,8 @@ export default {
             this.$refs.formDrawer.show(
               formData,
               res.value.formName,
-              res.value.id
+              res.value.id,
+              res.value.status
             );
           } else {
             this.$message.error("该表单未配置任何组件，请先设计表单！");

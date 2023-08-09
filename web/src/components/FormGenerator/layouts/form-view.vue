@@ -134,7 +134,7 @@ export default {
       var iframe = document.getElementById("myIframe");
       this.$nextTick(() => {
         var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-        var innerHeight = innerDoc.body.scrollHeight;
+        var innerHeight = innerDoc.body.scrollHeight + 32;
         iframe.style.height = innerHeight + "px";
       });
     },
