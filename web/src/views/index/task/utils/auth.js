@@ -9,9 +9,7 @@
 // 判断填报按钮权限
 export function judgeApply(row, currentUser) {
   if (row.status == 0 || row.status == 3) {
-    if (currentUser.username == row.fillUserName) {
-      return true;
-    }
+    return currentUser.username == row.fillUserName
   }
   return false;
 }
@@ -19,9 +17,7 @@ export function judgeApply(row, currentUser) {
 // 判断审核按钮权限
 export function judgeAudit(row, currentUser) {
   if (row.status == 1) {
-    if (currentUser.username == row.responsibleUserName) {
-      return true;
-    }
+    return currentUser.username == row.responsibleUserName
   }
   return false;
 }
@@ -32,18 +28,19 @@ export function judgeShow(row, currentUser) {
     row.responsibleUserName == currentUser.username &&
     row.fillUserName != currentUser.username
   ) {
-    return row.status != 1;
+    return row.status != 1 && row.status != -1;
   } else if (
     row.responsibleUserName != currentUser.username &&
     row.fillUserName == currentUser.username
   ) {
-    return row.status != 0 && row.status != 3;
+    return row.status != 0 && row.status != 3 && row.status != -1;
   } else if (
     row.responsibleUserName == currentUser.username &&
     row.fillUserName == currentUser.username
   ) {
     return row.status != -1;
   }
+  return true;
 }
 
 // 判断撤回按钮权限
@@ -57,7 +54,7 @@ export function judgeRedo(row, currentUser) {
 // 判断催办按钮权限
 export function judgeRemind(row, currentUser) {
   if (row.responsibleUserName == currentUser.username) {
-    return row.status != 2 && row.status != 1;
+    return row.status == 0 || row.status == 3;
   }
   return false;
 }

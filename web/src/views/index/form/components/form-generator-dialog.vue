@@ -49,7 +49,7 @@
       <rule-detail
         :drawingList="drawingList"
         :rules="rules"
-        :formId="info.id "
+        :formId="info.id"
         @page="loadRules"
       />
     </div>

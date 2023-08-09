@@ -29,27 +29,16 @@ function buildFormTemplate(scheme, child) {
     labelPosition = `label-position="${scheme.labelPosition}"`;
   }
   const margin = scheme.formAlert === "" ? "" : `style="margin-top:24px"`;
-  let str = `<el-form ${margin} ref="${scheme.formRef}" :model="${
-    scheme.formModel
-  }" :rules="${scheme.formRules}" size="${scheme.size}" label-width="${
-    scheme.labelWidth
-  }px" ${labelPosition}>
+  let str = `<el-form ${margin} ref="${scheme.formRef}" :model="${scheme.formModel
+    }" :rules="${scheme.formRules}" size="${scheme.size}" label-width="${scheme.labelWidth
+    }px" ${labelPosition}>
       ${child}
-      ${buildFromBtns(scheme)}
     </el-form>`;
   if (someSpanIsNot24) {
     str = `<el-row :gutter="${scheme.gutter}">
         ${str}
       </el-row>`;
   }
-  return str;
-}
-
-function buildFromBtns() {
-  let str = `<el-col><el-form-item size="small">
-          <el-button type="primary" @click="submitForm">提交</el-button>
-          <el-button @click="resetForm">重置</el-button>
-        </el-form-item></el-col>`;
   return str;
 }
 

@@ -117,7 +117,10 @@ export default {
         this.resizeIframe();
       }
       if (value.hasOwnProperty("submit")) {
-        this.$emit("submit", value);
+        this.$emit("submit", value.submit);
+      }
+      if (value.hasOwnProperty("save")) {
+        this.$emit("save", value.save);
       }
     },
 
@@ -144,6 +147,11 @@ export default {
     reset() {
       let iframe = this.$refs.previewPage.contentWindow;
       iframe.postMessage({ type: "resetForm" });
+    },
+
+    save() {
+      let iframe = this.$refs.previewPage.contentWindow;
+      iframe.postMessage({ type: "saveForm" });
     },
   },
 };

@@ -5,6 +5,7 @@
     width="30%"
     :visible="visible"
     :append-to-body="true"
+    v-if="visible"
   >
     <el-form
       size="small"
@@ -13,7 +14,13 @@
       label-width="80px"
       :rules="configFormRules"
     >
-      <el-form-item label="表单名称" prop="formName">
+      <el-form-item v-show="false">
+        <el-input v-model="configForm.responsibleUserName" />
+      </el-form-item>
+      <el-form-item v-show="false">
+        <el-input v-model="configForm.fillUserName" />
+      </el-form-item>
+      <el-form-item label="表单名称">
         <el-input disabled v-model="configForm.formName" />
       </el-form-item>
       <el-form-item label="填报人" prop="fillUser">
@@ -53,11 +60,15 @@ export default {
   data() {
     return {
       visible: false,
-      configForm: {},
-      taskId: "",
+      configForm: {
+        formName: "",
+        fillUser: "",
+        responsibleUser: "",
+        responsibleUserName: "",
+        fillUserName: "",
+      },
       userList: [],
       configFormRules: {
-        formName: [{ required: true, message: "表单名称不能为空" }],
         fillUser: [{ required: true, message: "请选择填报人" }],
         responsibleUser: [
           {
@@ -76,6 +87,23 @@ export default {
       },
     };
   },
+
+  watch: {
+    "configForm.responsibleUser"(newVal) {
+      if (newVal != "") {
+        this.configForm.responsibleUserName = this.userList.find(
+          (item) => item.id == newVal
+        ).name;
+      }
+    },
+    "configForm.fillUser"(newVal) {
+      if (newVal != "") {
+        this.configForm.fillUserName = this.userList.find(
+          (item) => item.id == newVal
+        ).name;
+      }
+    },
+  },
   mounted() {
     this.getUser();
   },
@@ -91,33 +119,24 @@ export default {
     close() {
       this.visible = false;
       this.$refs.configForm.resetFields();
+      this.configForm = {
+        formName: "",
+        fillUser: "",
+        responsibleUser: "",
+        responsibleUserName: "",
+        fillUserName: "",
+      };
     },
-    show(info, taskId) {
+    show(info) {
       this.configForm.id = info.id;
       this.configForm.formName = info.formName;
-      this.taskId = taskId;
       this.visible = true;
     },
 
     handleSubmit() {
       this.$refs.configForm.validate((valid) => {
         if (valid) {
-          let fillUserName = this.userList.filter(
-            (user) => user.id == this.configForm.fillUser
-          )[0].name;
-          let responsibleUserName = this.userList.filter(
-            (user) => user.id == this.configForm.responsibleUser
-          )[0].name;
-          const { id, fillUser, responsibleUser } = this.configForm;
-          let param = {
-            id,
-            fillUser,
-            responsibleUser,
-            fillUserName,
-            responsibleUserName,
-            taskId: this.taskId,
-          };
-          configAuthUser(param).then((res) => {
+          configAuthUser(this.configForm).then((res) => {
             if (res.state) {
               this.close();
               this.$message.success(res.message);

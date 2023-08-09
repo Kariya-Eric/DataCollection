@@ -39,6 +39,13 @@ function init(event) {
       }
     });
   }
+  if (event.data.type === "saveForm") {
+    this.vm.$refs.child.submitForm().then((res) => {
+      if (res != undefined) {
+        parent.getMessageFromFrame({ save: res });
+      }
+    });
+  }
 }
 
 function newVue(main, html) {

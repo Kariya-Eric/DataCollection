@@ -30,7 +30,6 @@ export default {
 
   methods: {
     show(formConf) {
-      console.log("1", formConf);
       this.formConf = formConf;
       this.visible = true;
     },

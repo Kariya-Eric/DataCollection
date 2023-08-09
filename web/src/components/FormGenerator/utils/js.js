@@ -3,7 +3,6 @@ import { exportDefault, deepClone } from "../utils/index";
 import ruleTrigger from "./ruleTrigger";
 
 let confGlobal;
-
 /**
  * 组装js 【入口函数】
  * @param {Object} formConfig 整个表单配置
@@ -61,7 +60,6 @@ function mixinMethod() {
             if(!valid){
               resolve(undefined)
             }else{
-              console.log(this.${confGlobal.formModel})
               resolve(this.${confGlobal.formModel})
             }
           })
@@ -84,16 +82,26 @@ function mixinMethod() {
 function buildData(scheme, dataList) {
   if (scheme.__vModel__ === undefined) return;
   let vmodel;
-  if (scheme.__config__.tag === "el-checkbox-group") {
-    vmodel = `[]`;
-  } else if (scheme.__config__.tag === "el-select" && scheme.multiple) {
-    vmodel = `[]`;
-  } else if (scheme.__config__.layout === "tableLayout") {
-    vmodel = `[]`;
-  } else {
-    vmodel = `undefined`;
+  if (confGlobal.data != null) {
+    Object.keys(confGlobal.data).forEach(key => {
+      if (key == scheme.__vModel__) {
+        vmodel = JSON.stringify(confGlobal.data[key])
+      } else {
+        if (scheme.__config__.tag === "el-checkbox-group") {
+          vmodel = `[]`;
+        } else if (scheme.__config__.tag === "el-select" && scheme.multiple) {
+          vmodel = `[]`;
+        } else if (scheme.__config__.layout === "tableLayout") {
+          vmodel = `[]`;
+        } else {
+          vmodel = `undefined`;
+        }
+      }
+    })
   }
+  console.log('data', vmodel, scheme.__vModel__)
   dataList.push(`${scheme.__vModel__}: ${vmodel},`);
+  console.log('data', dataList)
 }
 
 // 构建校验规则

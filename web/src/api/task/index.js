@@ -57,7 +57,8 @@ const collaborationProgress = (params) =>
   postAction(
     `/uc/api/taskFormDetail/collaborationProgress?taskFormId=${params}`
   );
-  
+
+const submitForm = (params) => getAction(`/uc/api/taskFormDetail/submit/${params}`)
 export {
   initTask,
   updateTask,
@@ -78,4 +79,5 @@ export {
   approveForm,
   recallForm,
   collaborationProgress,
+  submitForm
 };
