@@ -73,3 +73,20 @@ export function downFile(url, parameter, method = "get") {
     });
   }
 }
+
+/**
+ * 文件上传
+ * @param url
+ * @param parameter
+ * @returns {*}
+ */
+export function uploadAction(url, parameter) {
+  return request({
+    url: url,
+    data: parameter,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data", // 文件上传
+    },
+  });
+}

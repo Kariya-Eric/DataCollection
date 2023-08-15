@@ -79,15 +79,26 @@
                 </el-form-item>
                 <el-form-item label="负责人">
                   <el-select
-                    v-model="departForm.directorId"
+                    v-model="departForm.responsibleUser"
                     style="width: 100%"
-                  ></el-select>
+                  >
+                    <el-option
+                      v-for="user in users"
+                      :key="user.id"
+                      :label="user.name"
+                      :value="user.id"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="联系人">
-                  <el-select
-                    v-model="departForm.contacts"
-                    style="width: 100%"
-                  ></el-select>
+                  <el-select v-model="departForm.contactUser" style="width: 100%">
+                    <el-option
+                      v-for="user in users"
+                      :key="user.id"
+                      :label="user.name"
+                      :value="user.id"
+                    />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="状态">
                   <el-switch
@@ -220,6 +231,7 @@ import {
   delOrg,
   delOrgUser,
   updateOrg,
+  getUserList,
 } from "@/api/system";
 export default {
   name: "DepartList",
@@ -230,6 +242,7 @@ export default {
         children: "children",
         label: "name",
       },
+      users: [],
       departList: [],
       departFilter: "",
       activeTable: "first",
@@ -348,6 +361,11 @@ export default {
       initDeptTree(userInfo.userId).then((res) => {
         if (res.state) {
           this.departList = res.value;
+          getUserList({}).then((res) => {
+            if (res.state) {
+              this.users = res.value.rows;
+            }
+          });
         } else {
           this.$message.error(res.message);
         }

@@ -108,6 +108,7 @@
       <!-- Table End -->
     </el-card>
     <add-collection-dialog ref="addCollectionDialog" @refresh="loadData" />
+    <mupload ref="upload" />
   </div>
 </template>
 <script>
@@ -190,6 +191,9 @@ export default {
     handleCommand(command, row) {
       if (command == "e") {
         this.delCollection(row);
+      }
+      if (command == "c" || command == "a") {
+        this.$refs.upload.show();
       }
     },
   },

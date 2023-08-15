@@ -11,6 +11,7 @@ import Status from "./Status";
 import Select from "./Select";
 import FormGenerator from "./FormGenerator";
 import Ellipsis from "./Ellipsis";
+import Upload from "./Upload";
 import CustomComponents from "./FormGenerator/layouts";
 
 export default {
@@ -28,6 +29,7 @@ export default {
     Vue.component("formGenerator", FormGenerator);
     Vue.component("mselect", Select);
     Vue.component("ellipsis", Ellipsis);
+    Vue.component("mupload", Upload);
     Vue.use(CustomComponents);
   },
 };

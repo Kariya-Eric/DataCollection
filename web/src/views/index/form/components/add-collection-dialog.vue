@@ -26,8 +26,8 @@
         <el-select
           v-model="addCollectionForm.type"
           placeholder="请选择合集类型"
-          style="width: 100%"
           :disabled="updateFlag"
+          style="width: 100%"
         >
           <el-option
             label="教学基本状态数据"
@@ -39,6 +39,7 @@
       <el-form-item prop="year" label="年份">
         <el-date-picker
           v-model="addCollectionForm.year"
+          :disabled="addCollectionForm.enabledFlag == 1"
           value-format="yyyy"
           type="year"
           format="yyyy"
