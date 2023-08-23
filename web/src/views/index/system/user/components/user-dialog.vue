@@ -1,22 +1,15 @@
 <template>
-  <el-drawer
+  <el-dialog
+    width="35%"
     :visible="visible"
     @close="close"
-    :show-close="false"
+    :title="addFlag ? '新增用户' : updateFlag ? '修改用户' : '查看用户'"
     v-if="visible"
   >
-    <div slot="title" class="titleSlot">
-      <span>{{
-        addFlag ? "新增用户" : updateFlag ? "修改用户" : "查看用户"
-      }}</span>
-      <div class="titleButton">
-        <mbutton name="返回" icon="返回" @click="close" />
-      </div>
-    </div>
     <el-form
       ref="userForm"
       :model="userForm"
-      label-width="100px"
+      label-width="80px"
       size="small"
       :rules="rules"
       v-loading="loading"
@@ -37,31 +30,30 @@
           clearable
         />
       </el-form-item>
-      <el-form-item prop="password" label="密码" v-if="addFlag">
-        <el-input
-          v-model="userForm.password"
-          placeholder="请输入密码"
-          clearable
-          show-password
-        />
-      </el-form-item>
-      <el-form-item prop="comfirmPwd" label="确认密码" v-if="addFlag">
-        <el-input
-          v-model="userForm.comfirmPwd"
-          placeholder="请再次输入密码"
-          clearable
-          show-password
-        />
-      </el-form-item>
       <el-form-item prop="orgId" label="所属部门">
-        <select-tree
-          :options="departList"
+        <el-select
           :readonly="!addFlag && !updateFlag"
-          placeholder="请选择部门"
-          :value="userForm.orgId"
-          @getValue="getSelectedValue"
           style="width: 100%"
-        />
+          v-model="userForm.orgId"
+          placeholder="请选择"
+          filterable
+          :disabled="orgId != ''"
+          clearable
+        >
+          <el-option-group
+            v-for="group in departList"
+            :key="group.label"
+            :label="group.label"
+          >
+            <el-option
+              v-for="item in group.options"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-option-group>
+        </el-select>
       </el-form-item>
       <el-form-item prop="roleIds" label="角色">
         <el-select
@@ -107,19 +99,25 @@
         />
       </el-form-item>
     </el-form>
-    <div class="drawer-bottom" v-if="addFlag || updateFlag">
+    <div slot="footer" class="dialog-footer" v-if="addFlag || updateFlag">
       <mbutton @click="close" name="取消" />
       <mbutton type="primary" name="提交" @click="handleSubmit" />
     </div>
-  </el-drawer>
+  </el-dialog>
 </template>
 
 <script>
-import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 import { addUser, updateUser, initDeptTree, getRoleList } from "@/api/system";
+import { getUserDetail } from "@/api/system/user";
 export default {
   name: "UserDrawer",
+  props: {
+    orgId: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
       addFlag: false,
@@ -129,22 +127,17 @@ export default {
       userForm: {
         account: "",
         name: "",
-        password: "",
         orgId: "",
         roleIds: [],
-        comfirmPwd: "",
         email: "",
         mobile: "",
+        status: 1,
       },
       roleList: [],
       departList: [],
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "blur" }],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, message: "密码长度不小于6位", trigger: "blur" },
-        ],
         orgId: [
           {
             validator: (rule, value, callback) => {
@@ -161,20 +154,6 @@ export default {
         ],
         roleIds: [
           { required: true, message: "请至少选择一个角色", trigger: "blur" },
-        ],
-        comfirmPwd: [
-          {
-            validator: (rule, value, callback) => {
-              if (value) {
-                if (value !== this.userForm.password) {
-                  callback(new Error("两次密码输入不一致"));
-                }
-                callback();
-              }
-              callback(new Error("请再次输入密码"));
-            },
-            trigger: ["blur", "change"],
-          },
         ],
         email: [
           {
@@ -202,11 +181,30 @@ export default {
   },
 
   methods: {
+    renderDepart(departList) {
+      let options = [];
+      let functionalDepart = departList[0].children.find(
+        (depart) => depart.name == "职能部门"
+      );
+      let teachingDepart = departList[0].children.find(
+        (depart) => depart.name == "教学部门"
+      );
+      options.push({
+        label: "职能部门",
+        options: functionalDepart.children,
+      });
+      options.push({
+        label: "教学部门",
+        options: teachingDepart.children,
+      });
+      return options;
+    },
+
     initDepart() {
-      let userInfo = Vue.ls.get(USER_INFO);
+      let userInfo = this.$ls.get(USER_INFO);
       initDeptTree(userInfo.userId).then((res) => {
         if (res.state) {
-          this.departList = res.value;
+          this.departList = this.renderDepart(res.value);
           this.initRole();
         }
       });
@@ -219,18 +217,24 @@ export default {
       });
     },
 
-    getSelectedValue(val) {
-      this.userForm.orgId = val;
-    },
-
     show(addFlag, updateFlag, info) {
-      this.visible = true;
       if (info) {
-        this.userForm = JSON.parse(JSON.stringify(info));
+        this.loading = true;
+        getUserDetail(info.id)
+          .then((res) => {
+            if (res.state) {
+              this.userForm = res.value;
+            }
+          })
+          .finally(() => (this.loading = false));
       }
       this.initDepart();
       this.addFlag = addFlag;
       this.updateFlag = updateFlag;
+      if (this.orgId != "") {
+        this.userForm.orgId = this.orgId;
+      }
+      this.visible = true;
     },
 
     close() {
@@ -240,12 +244,11 @@ export default {
       this.userForm = {
         account: "",
         name: "",
-        password: "",
         orgId: "",
         roleIds: [],
-        comfirmPwd: "",
         email: "",
         mobile: "",
+        status: 1,
       };
     },
 
@@ -263,7 +266,8 @@ export default {
 
     handleAdd() {
       this.loading = true;
-      addUser(this.userForm)
+      let param = { ...this.userForm, password: "123456" };
+      addUser(param)
         .then((res) => {
           if (res.state) {
             this.$message.success(res.message);
@@ -275,6 +279,7 @@ export default {
         })
         .finally(() => this.close());
     },
+
     handleUpdate() {
       this.loading = true;
       updateUser(this.userForm)
@@ -293,16 +298,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.drawer-bottom {
-  position: absolute;
-  bottom: -8px;
-  width: 100%;
-  border-top: 1px solid #e8e8e8;
-  padding: 12px 16px 20px;
-  text-align: right;
-  left: 0;
-  background: #fff;
-  border-radius: 0 0 2px 2px;
-}
-</style>
+<style lang="scss" scoped></style>

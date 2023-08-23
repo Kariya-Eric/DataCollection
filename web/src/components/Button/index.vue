@@ -1,5 +1,5 @@
 <template>
-  <el-button size="small" @click="click" :type="type">
+  <el-button size="small" :type="type" v-bind="$attrs" v-on="$listeners">
     <svg-icon
       v-if="hasIcon"
       style="margin-right: 4px"
@@ -23,15 +23,15 @@ export default {
     },
   },
   methods: {
-    click(event) {
-      this.$emit("click");
-      //清除focus样式
-      let target = event.target;
-      if (target.nodeName == "SPAN") {
-        target = event.target.parentNode;
-      }
-      target.blur();
-    },
+    // click(event) {
+    //   this.$emit("click");
+    //   //清除focus样式
+    //   let target = event.target;
+    //   if (target.nodeName == "SPAN") {
+    //     target = event.target.parentNode;
+    //   }
+    //   target.blur();
+    // },
   },
 };
 </script>

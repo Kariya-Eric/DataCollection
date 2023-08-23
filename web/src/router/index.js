@@ -43,7 +43,7 @@ export const constantRouterMap = [
     redirect: "/home",
     children: [
       {
-        path: "/home",
+        path: "home",
         name: "Home",
         component: () => import("@/views/index/home/home"),
         meta: {
@@ -53,7 +53,6 @@ export const constantRouterMap = [
       },
     ],
   },
-
 ];
 
 export default new Router({

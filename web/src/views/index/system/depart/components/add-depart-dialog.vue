@@ -4,27 +4,32 @@
       ref="departForm"
       :model="departForm"
       label-width="120px"
-      :rules="rule"
+      :rules="rules"
       size="small"
       v-loading="loading"
     >
-      <el-form-item label="组织名称" prop="name"
+      <el-form-item label="职能类型" prop="type">
+        <el-select v-model="departForm.type" style="width: 100%">
+          <el-option label="职能部门" value="functional" />
+          <el-option label="教学部门" value="teaching" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="部门名称" prop="name"
         ><el-input v-model="departForm.name"
       /></el-form-item>
-      <el-form-item label="上级组织" prop="parentId">
-        <select-tree
-          :options="departList"
-          :value="departForm.parentId"
-          @getValue="getSelectedValue"
-          style="width: 100%"
-        />
-      </el-form-item>
-      <el-form-item label="组织编码" prop="code"
+      <el-form-item label="部门编码" prop="code"
         ><el-input v-model="departForm.code"
       /></el-form-item>
       <el-form-item label="排序" prop="orderNo"
         ><el-input-number v-model="departForm.orderNo"
       /></el-form-item>
+      <el-form-item label="状态">
+        <el-switch
+          v-model="departForm.status"
+          :active-value="1"
+          :inactive-value="0"
+        />
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="close">取 消</el-button>
@@ -36,61 +41,74 @@
 </template>
 
 <script>
-import { addOrg } from "@/api/system";
+import { addOrg } from "@/api/system/depart";
 export default {
   name: "AddDepartDialog",
+  props: ["functionId", "teachingId"],
   data() {
     return {
       visible: false,
       loading: false,
-      departForm: {},
-      departList: [],
-      rule: {
+      departForm: {
+        parentId: "",
+        type: "",
+        name: "",
+        code: "",
+        orderNo: "",
+        status: 1,
+      },
+      rules: {
+        type: [{ required: true, message: "请选择职能类型" }],
         name: [{ required: true, message: "组织名称不能为空" }],
         code: [{ required: true, message: "组织编码不能为空" }],
         orderNo: [{ required: true, message: "排序不能为空" }],
-        parentId: [
-          {
-            validator: (rule, value, callback) => {
-              if (
-                this.departForm.parentId == undefined ||
-                this.departForm.parentId == ""
-              ) {
-                callback(new Error("请选择上级组织"));
-              }
-              callback();
-            },
-            trigger: ["blur", "change"],
-          },
-        ],
       },
     };
   },
+  watch: {
+    "departForm.type"(newVal) {
+      if (newVal == "functional") {
+        this.departForm.parentId = this.functionId;
+      } else if (newVal == "teaching") {
+        this.departForm.parentId = this.teachingId;
+      } else {
+        this.departForm.parentId = "";
+      }
+    },
+  },
   methods: {
-    show(departList) {
-      this.departList = departList;
+    show() {
       this.visible = true;
     },
+
     close() {
       this.visible = false;
       this.$refs.departForm.resetFields();
+      this.departForm = {
+        parentId: "",
+        type: "",
+        name: "",
+        code: "",
+        orderNo: "",
+        status: 1,
+      };
     },
-    getSelectedValue(val) {
-      this.departForm.parentId = val;
-    },
+
     handleSubmit() {
       this.$refs.departForm.validate((valid) => {
         if (valid) {
           this.loading = true;
-          addOrg(this.departForm).then((res) => {
-            if (res.state) {
-              this.$message.success(res.message);
-              this.$emit("refresh");
-              this.close();
-            } else {
-              this.$message.error(res.message);
-            }
-          });
+          addOrg(this.departForm)
+            .then((res) => {
+              if (res.state) {
+                this.$message.success(res.message);
+                this.$emit("refresh");
+                this.close();
+              } else {
+                this.$message.error(res.message);
+              }
+            })
+            .finally(() => (this.loading = false));
         }
       });
     },
@@ -98,4 +116,4 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped lang="less"></style>

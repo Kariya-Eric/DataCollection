@@ -35,7 +35,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="统计开始时间" prop="statisticsStartTime">
+          <el-form-item label="填报开始时间" prop="statisticsStartTime">
             <el-date-picker
               style="width: 100%"
               value-format="yyyy-MM-dd"
@@ -44,7 +44,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="统计截止时间" prop="statisticsEndTime">
+          <el-form-item label="填报截止时间" prop="statisticsEndTime">
             <el-date-picker
               style="width: 100%"
               value-format="yyyy-MM-dd"

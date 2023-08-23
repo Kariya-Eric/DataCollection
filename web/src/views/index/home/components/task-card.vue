@@ -19,7 +19,7 @@
       </ul>
     </div>
     <div style="text-align: right">
-      <el-button type="primary" size="small">进入任务</el-button>
+      <mbutton type="primary" name="进入任务" />
     </div>
   </el-card>
 </template>
@@ -28,12 +28,6 @@
 export default {
   name: "DataCard",
   props: ["task"],
-  data() {
-    return {};
-  },
-  created() {},
-  mounted() {},
-  methods: {},
 };
 </script>
 

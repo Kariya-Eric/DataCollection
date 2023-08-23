@@ -65,19 +65,19 @@
         <el-table-column label="任务类型" prop="type" align="center" />
         <el-table-column label="任务名称" prop="name" align="center" />
         <el-table-column
-          label="统计开始时间"
+          label="填报开始时间"
           prop="statisticsStartTime"
           align="center"
           sortable
         />
         <el-table-column
-          label="统计截止时间"
+          label="填报截止时间"
           prop="statisticsEndTime"
           align="center"
           sortable
         />
         <el-table-column label="学年" prop="schoolYear" align="center" />
-        <el-table-column label="自然年" prop="year" align="center" />
+        <el-table-column label="统计时间" prop="year" align="center" />
         <el-table-column label="任务状态" prop="status" align="center">
           <template slot-scope="scope">
             <status :status="scope.row.status" />

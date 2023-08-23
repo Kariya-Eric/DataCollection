@@ -32,31 +32,63 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="负责部门" prop="responsibleOrgId">
-        <select-tree
-          :options="departList"
-          :value="permissionForm.responsibleOrgId"
-          placeholder="请选择"
-          @getValue="getOrgValue"
+      <el-form-item label="负责部门" prop="responsibleOrg">
+        <el-select
           style="width: 100%"
-        />
+          v-model="permissionForm.responsibleOrg"
+          value-key="id"
+          placeholder="请选择"
+          filterable
+          clearable
+        >
+          <el-option-group
+            v-for="group in departList"
+            :key="group.label"
+            :label="group.label"
+          >
+            <el-option
+              v-for="item in group.options"
+              :key="item.id"
+              :label="item.name"
+              :value="item"
+            >
+            </el-option>
+          </el-option-group>
+        </el-select>
       </el-form-item>
-      <el-form-item label="协作部门" prop="collaborateOrgId">
-        <select-tree
-          :options="departList"
-          :valueMultiple="permissionForm.collaborateOrgId"
-          multiple
-          placeholder="请选择"
-          @getValue="getAssistValue"
+      <el-form-item
+        label="协作部门"
+        prop="collaborateOrg"
+        v-if="showCollaborateOrg"
+      >
+        <el-select
           style="width: 100%"
-        />
+          v-model="permissionForm.collaborateOrg"
+          placeholder="请选择"
+          multiple
+          filterable
+          clearable
+          value-key="id"
+        >
+          <el-option-group
+            v-for="group in departList"
+            :key="group.label"
+            :label="group.label"
+          >
+            <el-option
+              v-for="item in group.options"
+              :key="item.id"
+              :label="item.name"
+              :value="item"
+            >
+            </el-option>
+          </el-option-group>
+        </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
-        >确 定</el-button
-      >
+      <mbutton @click="close" name="取消" />
+      <mbutton type="primary" @click="handleSubmit" name="确定" />
     </div>
   </el-dialog>
 </template>
@@ -71,60 +103,53 @@ export default {
       isBatch: false,
       visible: false,
       permissionForm: {
-        collaborateOrgId: [],
+        formIds: [],
+        collaborateOrg: [],
+        responsibleOrg: {},
       },
       formList: [],
       departList: [],
       loading: false,
       rules: {
         formIds: [{ required: true, message: "请选择表单名称" }],
-        collaborateOrgId: [
+        responsibleOrg: [
           {
             validator: (rule, value, callback) => {
-              if (
-                this.permissionForm.collaborateOrgId == undefined ||
-                this.permissionForm.collaborateOrgId.length == 0
-              ) {
-                callback(new Error("请选协助部门"));
-              }
-              let flag = true;
-              for (
-                let i = 0;
-                i < this.permissionForm.collaborateOrgId.length;
-                i++
-              ) {
-                if (
-                  this.permissionForm.collaborateOrgId[i].id ==
-                  this.permissionForm.responsibleOrgId
-                ) {
-                  flag = false;
-                  break;
-                }
-              }
-              if (!flag) {
-                callback(new Error("协作部门和负责部门不能为同一个"));
+              if (Object.keys(value).length == 0) {
+                callback(new Error("请选择负责部门"));
               }
               callback();
             },
-            trigger: ["blur", "change"],
           },
         ],
-        responsibleOrgId: [
+        collaborateOrg: [
           {
             validator: (rule, value, callback) => {
-              if (
-                this.permissionForm.responsibleOrgId == undefined ||
-                this.permissionForm.responsibleOrgId == ""
-              ) {
-                callback(new Error("请选负责部门"));
+              let val = value.find(
+                (item) => item == this.permissionForm.responsibleOrg
+              );
+              if (val != undefined) {
+                callback(new Error("负责部门和协作部门不能相同！"));
               }
               callback();
             },
-            trigger: ["blur", "change"],
           },
         ],
       },
     };
+  },
+  computed: {
+    showCollaborateOrg() {
+      if (!this.isBatch) {
+        let form = this.formList.find(
+          (form) => form.formId == this.permissionForm.formIds[0]
+        );
+        if (form && form.formType == "固定表单") {
+          return false;
+        }
+      }
+      return true;
+    },
   },
   methods: {
     close() {
@@ -133,31 +158,44 @@ export default {
     },
 
     handleSubmit() {
+      if (this.isBatch) {
+        for (let index in this.permissionForm.formIds) {
+          let form = this.formList.find(
+            (form) => form.formId == this.permissionForm.formIds[index]
+          );
+          console.log(this.formList, form);
+          if (form && form.formType == "固定表单") {
+            this.$message.error(
+              `【${form.formName}】为固定表单，无法配置协作部门`
+            );
+            return;
+          }
+        }
+      }
       this.$refs.permissionForm.validate((valid) => {
         if (valid) {
           this.loading = true;
-
-          let collaborateOrgId = this.permissionForm.collaborateOrgId
-            .map((item) => item.id)
-            .join(",");
-          let collaborateOrgName = this.permissionForm.collaborateOrgId
+          let responsibleOrgName = this.permissionForm.responsibleOrg.name;
+          let responsibleOrgId = this.permissionForm.responsibleOrg.id;
+          let collaborateOrgName = this.permissionForm.collaborateOrg
             .map((item) => item.name)
             .join(",");
-          let responsibleOrgName = this.renderList(this.departList).filter(
-            (depart) => depart.id == this.permissionForm.responsibleOrgId
-          )[0].name;
+          let collaborateOrgId = this.permissionForm.collaborateOrg
+            .map((item) => item.id)
+            .join(",");
           let permissionForm = {
             taskId: this.taskId,
             ...this.permissionForm,
             collaborateOrgId,
             collaborateOrgName,
-            responsibleOrgId: this.permissionForm.responsibleOrgId,
+            responsibleOrgId,
             responsibleOrgName,
           };
           configAuthority(permissionForm)
             .then((res) => {
               if (res.state) {
                 this.$emit("refresh");
+                this.$message.success(res.message);
                 this.close();
               } else {
                 this.$message.error(res.message);
@@ -172,30 +210,27 @@ export default {
       this.isBatch = isBatch;
       this.formList = formList;
       this.permissionForm.formIds = selectedFormList.map((form) => form.formId);
-      this.departList = departList;
+      this.departList = this.renderDepart(departList);
       this.visible = true;
     },
 
-    renderList(list) {
+    renderDepart(departList) {
       let options = [];
-      this.recusive(list, options);
-      return options;
-    },
-
-    recusive(list, options) {
-      list.forEach((item) => {
-        options.push({ name: item.name, id: item.id });
-        if (item.children && item.children.length > 0) {
-          this.recusive(item.children, options);
-        }
+      let functionalDepart = departList[0].children.find(
+        (depart) => depart.name == "职能部门"
+      );
+      let teachingDepart = departList[0].children.find(
+        (depart) => depart.name == "教学部门"
+      );
+      options.push({
+        label: "职能部门",
+        options: functionalDepart.children,
       });
-    },
-
-    getOrgValue(val) {
-      this.permissionForm.responsibleOrgId = val;
-    },
-    getAssistValue(val) {
-      this.permissionForm.collaborateOrgId = val;
+      options.push({
+        label: "教学部门",
+        options: teachingDepart.children,
+      });
+      return options;
     },
   },
 };
