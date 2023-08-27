@@ -24,6 +24,7 @@
         <span>{{ userInfo.username }}</span>
       </span>
       <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="reset"> 重置密码 </el-dropdown-item>
         <el-dropdown-item command="quit">
           <span>
             <svg-icon icon-class="user" />
@@ -68,9 +69,10 @@ export default {
     },
 
     handleCommand(command) {
-      console.log(command);
       if (command == "quit") {
         this.$emit("logout");
+      }
+      if (command == "reset") {
       }
     },
   },
