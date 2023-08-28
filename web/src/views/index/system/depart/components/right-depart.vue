@@ -139,11 +139,8 @@
             <el-table-column label="角色" prop="roleName" align="center" />
             <el-table-column label="状态" prop="status" align="center">
               <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.status"
-                  :active-value="1"
-                  :inactive-value="0"
-                ></el-switch>
+                <status status="3" title="启用" v-if="scope.row.status == 1" />
+                <status status="2" title="禁用" v-else />
               </template>
             </el-table-column>
             <el-table-column label="操作" align="center">
