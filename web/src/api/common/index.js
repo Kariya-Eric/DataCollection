@@ -1,7 +1,7 @@
-import { postAction, uploadAction } from "../api";
+import { postAction, uploadAction, downFile } from "../api";
 
 const cityList = (params) => postAction(`/uc/api/area/list/${params}`);
+const fileUpload = (url, params) => uploadAction(`${url}`, params);
+const downloadTemp = (params) => downFile(`${params}`)
 
-const fileUpload = (params) => uploadAction("/uc/api/file/fileUpload", params);
-
-export { cityList, fileUpload };
+export { cityList, fileUpload, downloadTemp };

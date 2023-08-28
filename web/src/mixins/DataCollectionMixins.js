@@ -123,5 +123,53 @@ export const DataCollectionMixin = {
           this.loadData();
         });
     },
+
+    delRow(id) {
+      if (!this.url || !this.url.delete) {
+        this.$message.error("请设置url.delete!");
+        return;
+      }
+      this.loading = true;
+      deleteAction(this.url.delete, "ids=" + id)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = true;
+          this.loadData();
+        });
+    },
+
+    modalFormOk() {
+      //修改新增成功后的重载列表
+      this.loadData()
+      this.onSelectClear()
+    },
+
+    handleDetail: function (record) {
+      this.$refs.modalForm.edit(record)
+      this.$refs.modalForm.title = "详情"
+      this.$refs.disableSubmit = true
+    },
+
+    handleEdit: function (record) {
+      this.$refs.modalForm.edit(record)
+      this.$refs.modalForm.title = "编辑"
+      this.$refs.disableSubmit = false
+    },
+
+    handleAdd: function () {
+      this.$refs.modalForm.add()
+      this.$refs.modalForm.title = "新增"
+      this.$refs.disableSubmit = false
+    },
+
+    handleUpload: function () {
+      this.$refs.uploadModal.show()
+    }
   },
 };

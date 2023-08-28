@@ -56,22 +56,13 @@ export function deleteAction(url, parameter) {
  * @param parameter
  * @returns {*}
  */
-export function downFile(url, parameter, method = "get") {
-  if (method == "get") {
-    return request({
-      url: url,
-      params: parameter,
-      method: method,
-      responseType: "blob",
-    });
-  } else {
-    return request({
-      url: url,
-      method: method,
-      data: parameter,
-      responseType: "blob",
-    });
-  }
+export function downFile(url, parameter) {
+  return request({
+    url: url,
+    params: parameter,
+    method: "post",
+    responseType: "blob",
+  });
 }
 
 /**

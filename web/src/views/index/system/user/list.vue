@@ -30,19 +30,20 @@
       <div class="listHeader">
         <span>用户管理</span>
         <div class="listHeaderButton">
-          <mbutton
-            type="danger"
+          <el-popconfirm
             v-if="selectedRowKeys.length > 0"
-            @click="delBatch"
-            name="批量删除"
-          />
+            @confirm="delBatch"
+            title="确认批量删除选中用户吗？"
+          >
+            <mbutton type="danger" slot="reference" name="批量删除" />
+          </el-popconfirm>
           <mbutton
             @click="addUser"
             type="primary"
             name="添加用户"
             icon="新建"
           />
-          <mbutton type="primary" name="导入" />
+          <mbutton type="primary" name="导入" @click="handleUpload" />
           <mbutton type="primary" name="导出" />
         </div>
       </div>
@@ -66,30 +67,45 @@
         <el-table-column label="手机号" prop="mobile" align="center" />
         <el-table-column label="状态" prop="status" align="center">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-            ></el-switch>
+            <status status="3" title="启用" v-if="scope.row.status == 1" />
+            <status status="2" title="禁用" v-else />
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="260">
           <template slot-scope="scope">
-            <a href="javascript:;" @click="showUser(scope.row)">查看</a>
-            <el-divider direction="vertical" />
-            <a href="javascript:;" @click="updateUser(scope.row)">编辑</a>
+            <menu-link @click="showUser(scope.row)">查看</menu-link>
+            <menu-link @click="updateUser(scope.row)">编辑</menu-link>
+            <el-popconfirm
+              @confirm="delRow(scope.row.id)"
+              title="确定删除该用户吗？"
+            >
+              <menu-link slot="reference">删除</menu-link>
+            </el-popconfirm>
+            <el-popconfirm
+              @confirm="resetUser(scope.row)"
+              title="确定重置该用户的密码吗？"
+            >
+              <menu-link slot="reference" no-divider>重置密码</menu-link>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
     <user-dialog ref="userDialog" @refresh="loadData" />
+    <mupload
+      ref="uploadModal"
+      :multiple="false"
+      :downTempUrl="url.downloadTemp"
+      :uploadUrl="url.uploadUrl"
+    />
   </div>
 </template>
 
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import UserDialog from "./components/user-dialog";
+import { resetPwd } from "@/api/system/user";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
@@ -99,6 +115,9 @@ export default {
       url: {
         list: "/uc/api/user/getUserPage",
         delBatch: "/uc/api/user/deleteUserByIds",
+        delete: "/uc/api/user/deleteUserByIds",
+        downloadTemp: "/uc/api/user/downloadTemplate",
+        uploadUrl: "/uc/api/user/import",
       },
     };
   },
@@ -106,11 +125,24 @@ export default {
     addUser() {
       this.$refs.userDialog.show(true);
     },
+
     showUser(info) {
       this.$refs.userDialog.show(false, false, info);
     },
+
     updateUser(info) {
       this.$refs.userDialog.show(false, true, info);
+    },
+
+    resetUser(row) {
+      resetPwd({ account: row.account, newPwd: "123456" }).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          this.loadData();
+        } else {
+          this.$message.error(res.message);
+        }
+      });
     },
   },
 };

@@ -16,7 +16,7 @@
               <el-select
                 v-model="departForm.type"
                 style="width: 100%"
-                :disabled="!isEdit"
+                :disabled="true"
               >
                 <el-option label="职能部门" value="functional" />
                 <el-option label="教学部门" value="teaching" />
