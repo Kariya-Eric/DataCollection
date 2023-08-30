@@ -47,9 +47,10 @@
           placeholder="请选择角色"
           clearable
           style="width: 100%"
+          multiple
         >
           <el-option
-            v-for="item in roleList"
+            v-for="item in roles"
             :key="item.id"
             :value="item.id"
             :label="item.name"
@@ -83,34 +84,30 @@
     </el-form>
     <div slot="footer" class="dialog-footer" v-if="!disableSubmit">
       <mbutton @click="close" name="取消" />
-      <mbutton type="primary" name="提交" @click="handleSubmit" />
+      <mbutton
+        type="primary"
+        name="提交"
+        @click="handleSubmit"
+        :loading="loading"
+      />
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { USER_INFO } from "@/store/mutation-types";
-import { addUser, updateUser } from "@/api/system";
-import { initDeptTree } from "@/api/system/depart";
-import { getRoleList } from "@/api/system/role";
-import { getUserDetail } from "@/api/system/user";
+import { getUserDetail, addUser, updateUser } from "@/api/system/user";
 export default {
   name: "UserDrawer",
-  props: {
-    orgId: {
-      type: String,
-      default: "",
-    },
-  },
+  props: ["roles", "depts"],
   data() {
     return {
       visible: false,
       loading: false,
       userForm: {},
-      roleList: [],
-      departList: [],
       disableSubmit: false,
+      addFlag: false,
       title: "",
+      name: "用户",
       rules: {
         account: [{ required: true, message: "请输入账号" }],
         name: [{ required: true, message: "请输入姓名" }],
@@ -135,49 +132,25 @@ export default {
     };
   },
 
-  created() {
-    this.initDepart();
-    this.initRole();
-  },
-
-  methods: {
-    renderDepart(departList) {
+  computed: {
+    departList() {
       let options = [];
-      let functionalDepart = departList[0].children.find(
-        (depart) => depart.name == "职能部门"
-      );
-      let teachingDepart = departList[0].children.find(
-        (depart) => depart.name == "教学部门"
-      );
       options.push({
         label: "职能部门",
-        options: functionalDepart.children,
+        options: this.depts.filter((dept) => dept.type == "functional"),
       });
       options.push({
         label: "教学部门",
-        options: teachingDepart.children,
+        options: this.depts.filter((dept) => dept.type == "teaching"),
       });
       return options;
     },
+  },
 
-    initDepart() {
-      let userInfo = this.$ls.get(USER_INFO);
-      initDeptTree(userInfo.userId).then((res) => {
-        if (res.state) {
-          this.departList = this.renderDepart(res.value);
-        }
-      });
-    },
-    initRole() {
-      getRoleList({}).then((res) => {
-        if (res.state) {
-          this.roleList = res.value.rows;
-        }
-      });
-    },
-
+  methods: {
     add() {
       this.edit({});
+      this.$nextTick(() => this.$refs.userForm.clearValidate());
     },
 
     edit(record) {
@@ -196,28 +169,9 @@ export default {
       this.visible = true;
     },
 
-    show(addFlag, updateFlag, info) {
-      if (info) {
-        this.loading = true;
-        getUserDetail(info.id)
-          .then((res) => {
-            if (res.state) {
-              this.userForm = res.value;
-            }
-          })
-          .finally(() => (this.loading = false));
-      }
-      this.addFlag = addFlag;
-      this.updateFlag = updateFlag;
-      if (this.orgId != "") {
-        this.userForm.orgId = this.orgId;
-      }
-      this.visible = true;
-    },
-
     close() {
       this.visible = false;
-      this.$refs.userForm.resetFields();
+      this.$nextTick(() => this.$refs.userForm.resetFields());
     },
 
     handleSubmit() {
@@ -240,12 +194,12 @@ export default {
           if (res.state) {
             this.$message.success(res.message);
             this.$emit("refresh");
+            this.close();
           } else {
             this.$message.error(res.message);
           }
-          this.loading = false;
         })
-        .finally(() => this.close());
+        .finally(() => (this.loading = false));
     },
 
     handleUpdate() {
@@ -255,12 +209,13 @@ export default {
           if (res.state) {
             this.$message.success(res.message);
             this.$emit("refresh");
+            this.close();
           } else {
             this.$message.error(res.message);
           }
           this.loading = false;
         })
-        .finally(() => this.close());
+        .finally(() => (this.loading = false));
     },
   },
 };

@@ -361,13 +361,13 @@ export default {
     delOption(index) {
       this.activeData.columns[
         this.activeData.selectedCol - 1
-      ].type.options.splice(index, 1);
+      ].type.__slot__.options.splice(index, 1);
     },
 
     addOption() {
       this.activeData.columns[
         this.activeData.selectedCol - 1
-      ].type.options.push({
+      ].type.__slot__.options.push({
         label: "选项",
         value: "",
       });

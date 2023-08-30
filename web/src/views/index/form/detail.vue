@@ -37,7 +37,7 @@
         <el-form-item label="表单名称">
           <el-input v-model="queryParam.name" placeholder="请输入表单名称" />
         </el-form-item>
-        <mbutton type="primary" name="搜索" @click="getFormList" />
+        <mbutton type="primary" name="搜索" @click="searchQuery" />
         <mbutton type="primary" name="重置" @click="searchReset" />
       </el-form>
 
@@ -57,7 +57,7 @@
             @click="copyForm"
           />
           <mbutton
-            @click="addForm"
+            @click="handleAdd"
             icon="新建"
             type="primary"
             name="新建表单"
@@ -71,7 +71,13 @@
         :header-cell-style="headerStyle"
         :data="dataSource"
       >
-        <el-table-column label="表单名称" prop="name" align="center" />
+        <el-table-column label="表单名称" prop="name" align="center">
+          <template slot-scope="scope">
+            <a href="javascript:;" @click="showForm(scope.row)">{{
+              scope.row.name
+            }}</a>
+          </template>
+        </el-table-column>
         <el-table-column
           label="表单大类"
           prop="formCategories"
@@ -102,7 +108,6 @@
           </template>
         </el-table-column>
         <el-table-column label="前置表单" align="center" />
-        <el-table-column label="表单模板" align="center" />
         <el-table-column
           label="启用"
           prop="enabledFlag"
@@ -118,38 +123,32 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="250px">
+        <el-table-column label="操作" align="center" width="330px">
           <template slot-scope="scope">
             <menu-link @click="showForm(scope.row)">表单详情</menu-link>
-            <menu-link @click="formDetail(scope.row)">表单属性</menu-link>
-            <el-dropdown
-              @command="(command) => handleCommand(command, scope.row)"
-              trigger="click"
-              :hide-on-click="false"
-              placement="bottom"
+            <menu-link @click="handleEdit(scope.row)">表单属性</menu-link>
+            <menu-link>下载模板</menu-link>
+            <el-popconfirm
+              title="表单删除后不可恢复，是否确认删除？"
+              @confirm="delForm(scope.row)"
             >
-              <a> 更多<i class="el-icon-arrow-down el-icon--right"></i> </a>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a">上传模板</el-dropdown-item>
-                <el-dropdown-item command="b">删除模板</el-dropdown-item>
-                <el-popconfirm
-                  @confirm="handleCommand('c', scope.row)"
-                  title="表单删除后不可恢复，是否确认删除？"
-                >
-                  <el-dropdown-item slot="reference" style="color: #e23322"
-                    >删除表单</el-dropdown-item
-                  >
-                </el-popconfirm>
-              </el-dropdown-menu>
-            </el-dropdown>
+              <menu-link no-divider slot="reference"
+                ><span style="color: #e23322">删除表单</span></menu-link
+              >
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
-      <pagination :pagination="ipagination" @change="getFormList" />
+      <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
-    <add-form-dialog ref="addFormDialog" @refresh="getFormList" />
+    <add-form-dialog
+      ref="modalForm"
+      @refresh="loadData"
+      :collection="collectionDetail"
+      :categorys="listCategories"
+    />
     <update-form-category ref="updateFormCategory" @refresh="loadCategories" />
-    <form-generator-dialog ref="formGeneratorDialog" @refresh="getFormList" />
+    <form-generator-dialog ref="formGeneratorDialog" @refresh="loadData" />
     <copy-form-dialog ref="copyFormDialog" />
   </div>
 </template>
@@ -165,8 +164,10 @@ import {
 } from "@/api/form";
 import FormGeneratorDialog from "./components/form-generator-dialog.vue";
 import CopyFormDialog from "./components/copy-form-dialog.vue";
+import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 export default {
   name: "FormDetail",
+  mixins: [DataCollectionMixin],
   components: {
     AddFormDialog,
     UpdateFormCategory,
@@ -175,20 +176,12 @@ export default {
   },
   data() {
     return {
-      headerStyle: {
-        backgroundColor: "#F4F5F6",
-      },
       collectionDetail: {},
-      loading: false,
-      queryParam: {},
-      dataSource: [],
-      listCategories: [],
-      ipagination: {
-        current: 1,
-        pageSize: 10,
-        pageSizeOptions: [10, 20, 30],
-        total: 0,
+      url: {
+        list: "",
       },
+      listUrl: "/uc/api/form/listByCollection/",
+      listCategories: [],
       formInfo: {},
       drawingList: [],
     };
@@ -199,11 +192,13 @@ export default {
       handler(newRoute) {
         if (newRoute.name == "formDetail") {
           this.collectionDetail = JSON.parse(newRoute.query.collectionInfo);
+          this.url.list = this.listUrl + this.collectionDetail.id;
           this.loadCategories();
-          this.getFormList(1);
+          this.loadData(1);
         }
       },
       immediate: true,
+      deep: true,
     },
   },
 
@@ -221,31 +216,8 @@ export default {
       });
     },
 
-    addForm() {
-      this.$refs.addFormDialog.show(this.collectionDetail);
-    },
-
     updateFormCategory() {
       this.$refs.updateFormCategory.show(this.collectionDetail);
-    },
-
-    getFormList(args) {
-      let pageBean = {
-        page: args === 1 ? 1 : this.ipagination.current,
-        pageSize: this.ipagination.pageSize,
-        showTotal: true,
-      };
-      let searchParam = { pageBean, params: this.queryParam };
-      const param = { id: this.collectionDetail.id, searchParam };
-      this.loading = true;
-      getFormList(param)
-        .then((res) => {
-          if (res.state) {
-            this.dataSource = res.value.rows;
-            this.ipagination.total = res.value.total;
-          }
-        })
-        .finally(() => (this.loading = false));
     },
 
     delForm(row) {
@@ -263,10 +235,6 @@ export default {
           this.loading = false;
           this.getFormList();
         });
-    },
-
-    formDetail(row) {
-      this.$refs.addFormDialog.show(this.collectionDetail, row);
     },
 
     showForm(row) {
@@ -305,17 +273,6 @@ export default {
 
     enableFormCollection(val, row) {
       let param = { id: row.id, enabledFlag: val };
-    },
-
-    searchReset() {
-      this.queryParam = {};
-      this.getFormList(1);
-    },
-
-    handleCommand(command, row) {
-      if (command == "c") {
-        this.delForm(row);
-      }
     },
 
     copyForm() {

@@ -11,10 +11,37 @@
         <el-form-item label="部门">
           <el-select
             v-model="queryParam.orgId"
-            clearable
+            filterable
             placeholder="请选择部门"
           >
-            <!-- TODO -->
+            <el-option
+              v-for="item in departList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select
+            v-model="queryParam.roleId"
+            filterable
+            placeholder="请选择部门"
+          >
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="专业">
+          <el-select
+            v-model="queryParam.major"
+            filterable
+            placeholder="请选择专业"
+          >
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -38,13 +65,15 @@
             <mbutton type="danger" slot="reference" name="批量删除" />
           </el-popconfirm>
           <mbutton
+            style="margin-left: 16px"
             @click="handleAdd"
             type="primary"
             name="添加用户"
             icon="新建"
           />
-          <mbutton type="primary" name="导入" @click="handleUpload" />
-          <mbutton type="primary" name="导出" />
+          <mbutton type="primary" name="导入" />
+          <mbutton type="primary" name="导出" @click="handleExport" />
+          <a class="downHref" @click="downloadTemp">下载导入模板</a>
         </div>
       </div>
 
@@ -58,7 +87,13 @@
         @selection-change="onSelectChange"
       >
         <el-table-column type="selection" width="70" align="center" />
-        <el-table-column label="帐号" prop="account" align="center" />
+        <el-table-column label="帐号" prop="account" align="center">
+          <template slot-scope="scope">
+            <a href="javascript:;" @click="handleDetail(scope.row)">{{
+              scope.row.account
+            }}</a>
+          </template>
+        </el-table-column>
         <el-table-column label="姓名" prop="name" align="center" />
         <el-table-column label="所属部门" prop="orgName" align="center" />
         <el-table-column label="所属专业" align="center" />
@@ -76,7 +111,7 @@
             <menu-link @click="handleDetail(scope.row)">查看</menu-link>
             <menu-link @click="handleEdit(scope.row)">编辑</menu-link>
             <el-popconfirm
-              @confirm="delRow(scope.row.id)"
+              @confirm="delBatch(scope.row.id)"
               title="确定删除该用户吗？"
             >
               <menu-link slot="reference">删除</menu-link>
@@ -92,12 +127,11 @@
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
-    <user-dialog ref="modalForm" @refresh="loadData" />
-    <mupload
-      ref="uploadModal"
-      :multiple="false"
-      :downTempUrl="url.downloadTemp"
-      :uploadUrl="url.uploadUrl"
+    <user-dialog
+      ref="modalForm"
+      @refresh="loadData"
+      :roles="roleList"
+      :depts="departList"
     />
   </div>
 </template>
@@ -106,21 +140,34 @@
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import UserDialog from "./components/user-dialog";
 import { resetPwd } from "@/api/system/user";
+import { USER_INFO } from "@/store/mutation-types";
+import { initDeptTree } from "@/api/system/depart";
+import { getRoleList } from "@/api/system/role";
+import { downloadTemp } from "@/api/common";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
   components: { UserDialog },
   data() {
     return {
+      roleList: [],
+      departList: [],
       url: {
         list: "/uc/api/user/getUserPage",
         delBatch: "/uc/api/user/deleteUserByIds",
-        delete: "/uc/api/user/deleteUserByIds",
         downloadTemp: "/uc/api/user/downloadTemplate",
         uploadUrl: "/uc/api/user/import",
+        exportUrl: "/uc/api/user/export",
       },
     };
   },
+
+  created() {
+    this.initDepart();
+    this.initRole();
+    this.loadData(1);
+  },
+
   methods: {
     resetUser(row) {
       resetPwd({ account: row.account, newPwd: "123456" }).then((res) => {
@@ -132,8 +179,71 @@ export default {
         }
       });
     },
+
+    renderDepart(departList) {
+      let options = [];
+      let functionalDepart = departList[0].children.find(
+        (depart) => depart.name == "职能部门"
+      );
+      let teachingDepart = departList[0].children.find(
+        (depart) => depart.name == "教学部门"
+      );
+      functionalDepart.children.forEach((dept) => options.push(dept));
+      teachingDepart.children.forEach((dept) => options.push(dept));
+      return options;
+    },
+
+    initDepart() {
+      let userInfo = this.$ls.get(USER_INFO);
+      initDeptTree(userInfo.userId).then((res) => {
+        if (res.state) {
+          this.departList = this.renderDepart(res.value);
+        }
+      });
+    },
+
+    initRole() {
+      getRoleList({}).then((res) => {
+        if (res.state) {
+          this.roleList = res.value.rows;
+        }
+      });
+    },
+
+    downloadTemp() {
+      downloadTemp(this.url.downloadTemp).then((data) => {
+        if (!data) {
+          this.$message.warning("文件下载失败！");
+          return;
+        }
+        if (typeof window.navigator.msSaveBlob !== "undefined") {
+          window.navigator.msSaveBlob(
+            new Blob([data], { type: "application/vnd.ms-excel" }),
+            this.moduleName + ".xlsx"
+          );
+        } else {
+          let url = window.URL.createObjectURL(
+            new Blob([data], { type: "appliaction/vnd.ms-excel" })
+          );
+          let link = document.createElement("a");
+          link.style.display = "none";
+          link.href = url;
+          link.setAttribute("download", "模板.xlsx");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        }
+      });
+    },
   },
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.downHref {
+  line-height: 32px;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+</style>

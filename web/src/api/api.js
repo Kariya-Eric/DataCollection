@@ -59,7 +59,7 @@ export function deleteAction(url, parameter) {
 export function downFile(url, parameter) {
   return request({
     url: url,
-    params: parameter,
+    data: parameter,
     method: "post",
     responseType: "blob",
   });

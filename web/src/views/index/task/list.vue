@@ -176,6 +176,11 @@ export default {
       return yearList;
     },
   },
+
+  created() {
+    this.loadData(1);
+  },
+
   methods: {
     addTask() {
       this.$refs.addTaskDialog.show();

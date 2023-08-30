@@ -48,7 +48,7 @@ const err = (error) => {
       default:
         Notification.error({
           title: "系统提示",
-          message: data.msg,
+          message: data.message,
           duration: 3000,
         });
         break;

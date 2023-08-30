@@ -9,12 +9,18 @@
         class="headerForm"
       >
         <el-form-item label="年份">
-          <el-date-picker
+          <el-select
             v-model="queryParam.year"
-            type="year"
-            value-format="yyyy"
             placeholder="请选择年份"
-          />
+            clearable
+          >
+            <el-option
+              v-for="year in yearList"
+              :key="year"
+              :label="year"
+              :value="year"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="合集类型">
           <el-select
@@ -36,7 +42,7 @@
         <span>合集列表</span>
         <div class="listHeaderButton">
           <mbutton
-            @click="addCollection"
+            @click="handleAdd"
             icon="新建"
             type="primary"
             name="新建合集"
@@ -50,9 +56,15 @@
         :data="dataSource"
         class="listTable"
         :header-cell-style="headerStyle"
-        @sort-change="sortChange"
+        @sort-change="handleSort"
       >
-        <el-table-column label="合集名称" prop="name" align="center" />
+        <el-table-column label="合集名称" prop="name" align="center">
+          <template slot-scope="scope">
+            <a href="javascript:;" @click="showCollectionDetail(scope.row)">{{
+              scope.row.name
+            }}</a>
+          </template>
+        </el-table-column>
         <el-table-column label="合集类型" prop="type" align="center" />
         <el-table-column
           label="年份"
@@ -61,8 +73,16 @@
           sortable="custom"
           width="150"
         />
-        <el-table-column label="填报指南" prop="zhinan" align="center" />
-        <el-table-column label="合集模板" prop="muban" align="center" />
+        <el-table-column label="填报指南" prop="guidFiles" align="center">
+          <template slot-scope="scope" v-if="scope.row.guidFiles">
+            <p
+              v-for="(link, index) in scope.row.guidFiles.split(',')"
+              :key="index"
+            >
+              <a :href="link"><ellipsis :value="link" :length="40" /></a>
+            </p>
+          </template>
+        </el-table-column>
         <el-table-column label="启用" prop="enabled" align="center" width="100">
           <template slot-scope="scope">
             <el-switch
@@ -73,48 +93,35 @@
             ></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="280">
+        <el-table-column label="操作" align="center" width="330">
           <template slot-scope="scope">
             <menu-link @click="showCollectionDetail(scope.row)"
               >合集详情</menu-link
             >
-            <menu-link @click="updateCollection(scope.row)">合集属性</menu-link>
-            <el-dropdown
-              @command="(command) => handleCommand(command, scope.row)"
-              trigger="click"
-              :hide-on-click="false"
-              placement="bottom"
+            <menu-link @click="handleEdit(scope.row)">合集属性</menu-link>
+            <menu-link @click="handleUpload(scope.row)">指南管理</menu-link>
+            <el-popconfirm
+              title="合集删除后不可恢复，是否确认删除？"
+              @confirm="handleDelete(scope.row)"
             >
-              <a> 更多<i class="el-icon-arrow-down el-icon--right"></i> </a>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a">上传指南</el-dropdown-item>
-                <el-dropdown-item command="b">删除指南</el-dropdown-item>
-                <el-dropdown-item command="c">上传模板</el-dropdown-item>
-                <el-dropdown-item command="d">删除模板</el-dropdown-item>
-                <el-popconfirm
-                  @confirm="handleCommand('e', scope.row)"
-                  title="合集删除后不可恢复，是否确认删除？"
-                >
-                  <el-dropdown-item slot="reference" style="color: #e23322"
-                    >删除合集</el-dropdown-item
-                  >
-                </el-popconfirm>
-              </el-dropdown-menu>
-            </el-dropdown>
+              <menu-link no-divider slot="reference"
+                ><span style="color: #e23322">删除合集</span></menu-link
+              >
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
       <!-- Table End -->
     </el-card>
-    <add-collection-dialog ref="addCollectionDialog" @refresh="loadData" />
-    <mupload ref="upload" />
+    <add-collection-dialog ref="modalForm" @refresh="loadData" />
+    <mupload ref="upload" multiple @success="uploadSuccess" />
   </div>
 </template>
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import AddCollectionDialog from "./components/add-collection-dialog";
-import { delFormCollection, enableForm } from "@/api/form";
+import { enableForm, updateFormCollection } from "@/api/form";
 export default {
   name: "FormList",
   mixins: [DataCollectionMixin],
@@ -123,37 +130,24 @@ export default {
     return {
       url: {
         list: "/uc/api/formCollection/list",
+        delete: "/uc/api/formCollection/delete",
       },
     };
   },
+
+  created() {
+    this.loadData(1);
+  },
+
+  computed: {
+    yearList() {
+      let years = new Set();
+      this.dataSource.forEach((data) => years.add(data.year));
+      return [...years].sort();
+    },
+  },
+
   methods: {
-    addCollection() {
-      this.$refs.addCollectionDialog.show();
-    },
-
-    updateCollection(row) {
-      this.$refs.addCollectionDialog.show(row);
-    },
-
-    delCollection(row) {
-      if (row.enabledFlag == 1) {
-        this.$message.error("表单启用中,不能删除!");
-        return;
-      }
-      let param = "id=" + row.id;
-      this.loading = true;
-      delFormCollection(param)
-        .then((res) => {
-          if (res.state) {
-            this.$message.success(res.message);
-            this.loadData();
-          } else {
-            this.$message.error(res.message);
-          }
-        })
-        .finally(() => (this.loading = false));
-    },
-
     showCollectionDetail(row) {
       this.$router.push({
         path: "/form/detail",
@@ -177,24 +171,24 @@ export default {
         });
     },
 
-    sortChange({ column, prop, order }) {
-      if (order == "ascending") {
-        this.sorter = [{ property: prop, direction: "ASC" }];
-      } else if (order == null) {
-        this.sorter = [];
-      } else {
-        this.sorter = [{ property: prop, direction: "DESC" }];
-      }
-      this.loadData();
-    },
-
-    handleCommand(command, row) {
-      if (command == "e") {
-        this.delCollection(row);
-      }
-      if (command == "c" || command == "a") {
-        this.$refs.upload.show();
-      }
+    //上传成功
+    uploadSuccess(files, record) {
+      let param = {
+        ...record,
+        guidFiles: files.map((file) => file.filePath).join(","),
+      };
+      updateFormCollection(param)
+        .then((res) => {
+          if (res.state) {
+            this.$message.success(res.message);
+            this.loadData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
   },
 };

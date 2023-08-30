@@ -1,11 +1,5 @@
 <template>
-  <el-dialog
-    :title="addFlag ? '新增角色' : '修改角色'"
-    :visible="visible"
-    @close="close"
-    v-if="visible"
-    width="30%"
-  >
+  <el-dialog :title="title" :visible="visible" @close="close" width="30%">
     <div class="formDiv">
       <el-form
         ref="roleForm"
@@ -30,9 +24,14 @@
         </el-form-item>
       </el-form>
     </div>
-    <div slot="footer" class="dialog-footer">
+    <div slot="footer" class="dialog-footer" v-if="!disableSubmit">
       <mbutton @click="close" name="取消" />
-      <mbutton type="primary" @click="handleSubmit" name="确定" />
+      <mbutton
+        type="primary"
+        @click="handleSubmit"
+        name="确定"
+        :loading="loading"
+      />
     </div>
   </el-dialog>
 </template>
@@ -45,12 +44,11 @@ export default {
     return {
       loading: false,
       visible: false,
-      roleForm: {
-        code: "",
-        name: "",
-        enabled: 0,
-      },
+      title: "",
+      name: "角色",
       addFlag: false,
+      roleForm: {},
+      disableSubmit: false,
       rules: {
         name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
         code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
@@ -59,23 +57,18 @@ export default {
   },
 
   methods: {
-    show(addFlag, info) {
+    add() {
+      this.edit({});
+    },
+
+    edit(record) {
+      this.roleForm = Object.assign({}, record);
       this.visible = true;
-      if (info) {
-        const { enabled, code, name } = JSON.parse(JSON.stringify(info));
-        this.roleForm = { enabled, code, name };
-      }
-      this.addFlag = addFlag;
     },
 
     close() {
       this.visible = false;
-      this.$refs.roleForm.resetFields();
-      this.roleForm = {
-        code: "",
-        name: "",
-        enabled: 0,
-      };
+      this.$nextTick(() => this.$refs.roleForm.resetFields());
     },
 
     handleSubmit() {
@@ -97,13 +90,13 @@ export default {
           if (res.state) {
             this.$message.success(res.message);
             this.$emit("refresh");
+            this.close();
           } else {
             this.$message.error(res.message);
           }
         })
         .finally(() => {
           this.loading = false;
-          this.close();
         });
     },
 

@@ -1,4 +1,4 @@
-import { postAction, deleteAction } from "@/api/api";
+import { postAction, deleteAction, downFile } from "@/api/api";
 import Vue from "vue";
 import { BUTTON_LIST } from "@/store/mutation-types";
 
@@ -6,30 +6,21 @@ import { BUTTON_LIST } from "@/store/mutation-types";
 export const DataCollectionMixin = {
   data() {
     return {
-      // 查询条件
       queryParam: {},
-      // 数据源
       dataSource: [],
-      //分页参数
       ipagination: {
         current: 1,
         pageSize: 10,
         pageSizeOptions: [10, 20, 30],
         total: 0,
       },
-      // table加载状态
       loading: false,
-      // table选中keys
       selectedRowKeys: [],
       sorter: [],
       headerStyle: {
         backgroundColor: "#F4F5F6",
       },
     };
-  },
-
-  created() {
-    this.loadData(1);
   },
 
   methods: {
@@ -99,16 +90,20 @@ export const DataCollectionMixin = {
       return false;
     },
 
-    delBatch() {
+    delBatch(id) {
       if (!this.url || !this.url.delBatch) {
         this.$message.error("请设置url.delBatch属性!");
         return;
       }
       let ids = "";
-      this.selectedRowKeys.forEach((element) => {
-        ids += element.id + ",";
-      });
-      ids = "ids=" + ids.substring(0, ids.length - 1);
+      if (id) {
+        ids = "ids=" + id;
+      } else {
+        this.selectedRowKeys.forEach((element) => {
+          ids += element.id + ",";
+        });
+        ids = "ids=" + ids.substring(0, ids.length - 1);
+      }
       this.loading = true;
       deleteAction(this.url.delBatch, ids)
         .then((res) => {
@@ -124,13 +119,13 @@ export const DataCollectionMixin = {
         });
     },
 
-    delRow(id) {
+    handleDelete(row) {
       if (!this.url || !this.url.delete) {
         this.$message.error("请设置url.delete!");
         return;
       }
       this.loading = true;
-      deleteAction(this.url.delete, "ids=" + id)
+      deleteAction(this.url.delete, "id=" + row.id)
         .then((res) => {
           if (res.state) {
             this.$message.success(res.message);
@@ -144,32 +139,78 @@ export const DataCollectionMixin = {
         });
     },
 
-    modalFormOk() {
-      //修改新增成功后的重载列表
-      this.loadData()
-      this.onSelectClear()
-    },
-
     handleDetail: function (record) {
-      this.$refs.modalForm.edit(record)
-      this.$refs.modalForm.title = "详情"
-      this.$refs.modalForm.disableSubmit = true
+      this.$refs.modalForm.edit(record);
+      this.$refs.modalForm.disableSubmit = true;
+      this.$refs.modalForm.addFlag = false;
+      this.$refs.modalForm.title = this.$refs.modalForm.name + "详情";
     },
 
     handleEdit: function (record) {
-      this.$refs.modalForm.edit(record)
-      this.$refs.modalForm.title = "编辑"
-      this.$refs.modalForm.disableSubmit = false
+      this.$refs.modalForm.edit(record);
+      this.$refs.modalForm.disableSubmit = false;
+      this.$refs.modalForm.addFlag = false;
+      this.$refs.modalForm.title = "修改" + this.$refs.modalForm.name;
     },
 
     handleAdd: function () {
-      this.$refs.modalForm.add()
-      this.$refs.modalForm.title = "新增"
-      this.$refs.modalForm.disableSubmit = false
+      this.$refs.modalForm.add();
+      this.$refs.modalForm.disableSubmit = false;
+      this.$refs.modalForm.addFlag = true;
+      this.$refs.modalForm.title = "新增" + this.$refs.modalForm.name;
     },
 
-    handleUpload: function () {
-      this.$refs.uploadModal.show()
-    }
+    handleUpload(row) {
+      this.$refs.upload.info = Object.assign({}, row);
+      this.$refs.upload.show();
+    },
+
+    handleExport() {
+      if (!this.url || !this.url.exportUrl) {
+        this.$message.error("请设置url.exportUrl!");
+        return;
+      }
+      this.loading = true;
+      let params = this.getQueryParams(); //构造查询条件
+      downFile(this.url.exportUrl, params)
+        .then((data) => {
+          if (!data) {
+            this.$message.warning("文件下载失败！");
+            return;
+          }
+          if (typeof window.navigator.msSaveBlob !== "undefined") {
+            window.navigator.msSaveBlob(
+              new Blob([data], { type: "application/vnd.ms-excel" }),
+              this.moduleName + ".xlsx"
+            );
+          } else {
+            let url = window.URL.createObjectURL(
+              new Blob([data], { type: "appliaction/vnd.ms-excel" })
+            );
+            let link = document.createElement("a");
+            link.style.display = "none";
+            link.href = url;
+            link.setAttribute("download", "用户导出.xlsx");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+
+    handleSort({ column, prop, order }) {
+      if (order == "ascending") {
+        this.sorter = [{ property: prop, direction: "ASC" }];
+      } else if (order == null) {
+        this.sorter = [];
+      } else {
+        this.sorter = [{ property: prop, direction: "DESC" }];
+      }
+      this.loadData();
+    },
   },
 };

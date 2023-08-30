@@ -1,10 +1,5 @@
 <template>
-  <el-dialog
-    :title="updateFlag ? '合集属性' : '新建合集'"
-    :visible="visible"
-    @close="close"
-    width="25%"
-  >
+  <el-dialog :title="title" :visible="visible" @close="close" width="25%">
     <el-form
       ref="addCollectionForm"
       :model="addCollectionForm"
@@ -19,15 +14,15 @@
           clearable
           placeholder="请输入合集名称"
           style="width: 100%"
-          :disabled="updateFlag"
+          :disabled="addCollectionForm.enabledFlag == 1"
         />
       </el-form-item>
       <el-form-item prop="type" label="合集类型">
         <el-select
           v-model="addCollectionForm.type"
           placeholder="请选择合集类型"
-          :disabled="updateFlag"
           style="width: 100%"
+          :disabled="addCollectionForm.enabledFlag == 1"
         >
           <el-option
             label="教学基本状态数据"
@@ -39,20 +34,24 @@
       <el-form-item prop="year" label="年份">
         <el-date-picker
           v-model="addCollectionForm.year"
-          :disabled="addCollectionForm.enabledFlag == 1"
           value-format="yyyy"
           type="year"
           format="yyyy"
           placeholder="请选择年份"
           style="width: 100%"
+          :disabled="addCollectionForm.enabledFlag == 1"
         />
       </el-form-item>
     </el-form>
 
-    <div slot="footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
-        >确 定</el-button
+    <div slot="footer" v-if="!disableSubmit">
+      <mbutton name="取消" @click="close" />
+      <mbutton
+        type="primary"
+        name="确定"
+        @click="handleSubmit"
+        :loading="loading"
+      />
       >
     </div>
   </el-dialog>
@@ -64,9 +63,12 @@ export default {
   data() {
     return {
       loading: false,
-      updateFlag: false,
-      visible: false,
+      addFlag: false,
       addCollectionForm: {},
+      visible: false,
+      disableSubmit: false,
+      title: "",
+      name: "合集",
       rules: {
         name: [{ required: true, message: "请输入合集名称" }],
         type: [{ required: true, message: "请选择合集类型" }],
@@ -75,27 +77,27 @@ export default {
     };
   },
   methods: {
-    show(data) {
-      if (data) {
-        this.addCollectionForm = JSON.parse(JSON.stringify(data));
-        this.updateFlag = true;
-      } else {
-        this.updateFlag = false;
-      }
+    add() {
+      this.edit({});
+    },
+
+    edit(record) {
+      this.addCollectionForm = Object.assign({}, record);
       this.visible = true;
     },
+
     close() {
       this.visible = false;
-      this.$refs.addCollectionForm.resetFields();
-      this.addCollectionForm = {};
+      this.$nextTick(() => this.$refs.addCollectionForm.resetFields());
     },
+
     handleSubmit() {
       this.$refs.addCollectionForm.validate((valid) => {
         if (valid) {
-          if (this.updateFlag) {
-            this.handleUpdate();
-          } else {
+          if (this.addFlag) {
             this.handleAdd();
+          } else {
+            this.handleUpdate();
           }
         }
       });
@@ -108,28 +110,29 @@ export default {
           if (res.state) {
             this.$message.success(res.message);
             this.$emit("refresh");
+            this.close();
           } else {
             this.$message.error(res.message);
           }
         })
         .finally(() => {
-          this.close();
           this.loading = false;
         });
     },
 
     handleUpdate() {
+      this.loading = true;
       updateFormCollection(this.addCollectionForm)
         .then((res) => {
           if (res.state) {
             this.$message.success(res.message);
             this.$emit("refresh");
+            this.close();
           } else {
             this.$message.error(res.message);
           }
         })
         .finally(() => {
-          this.close();
           this.loading = false;
         });
     },

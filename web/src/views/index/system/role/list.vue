@@ -36,7 +36,7 @@
             name="批量删除"
           />
           <mbutton
-            @click="addRole"
+            @click="handleAdd"
             type="primary"
             name="添加角色"
             icon="新建"
@@ -58,11 +58,8 @@
         <el-table-column label="角色编码" prop="code" align="center" />
         <el-table-column label="状态" prop="enabled" align="center">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.enabled"
-              :active-value="1"
-              :inactive-value="0"
-            ></el-switch>
+            <status status="3" title="启用" v-if="scope.row.enabled == 1" />
+            <status status="2" title="禁用" v-else />
           </template>
         </el-table-column>
         <el-table-column
@@ -73,7 +70,7 @@
         />
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <a href="javascript:;" @click="updateRole(scope.row)">编辑</a>
+            <a href="javascript:;" @click="handleEdit(scope.row)">编辑</a>
             <el-divider direction="vertical" />
             <a href="javascript:;" @click="showPermission(scope.row)">授权</a>
           </template>
@@ -81,7 +78,7 @@
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
-    <role-dialog ref="roleDialog" @refresh="loadData" />
+    <role-dialog ref="modalForm" @refresh="loadData" />
     <role-permission-drawer ref="rolePermissionDrawer" />
   </div>
 </template>
@@ -105,15 +102,12 @@ export default {
       },
     };
   },
+  
+  created() {
+    this.loadData(1);
+  },
+
   methods: {
-    addRole() {
-      this.$refs.roleDialog.show(true);
-    },
-
-    updateRole(info) {
-      this.$refs.roleDialog.show(false, info);
-    },
-
     showPermission(row) {
       this.$refs.rolePermissionDrawer.show(row);
     },
