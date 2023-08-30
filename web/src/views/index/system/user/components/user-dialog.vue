@@ -1,11 +1,5 @@
 <template>
-  <el-dialog
-    width="35%"
-    :visible="visible"
-    @close="close"
-    :title="addFlag ? '新增用户' : updateFlag ? '修改用户' : '查看用户'"
-    v-if="visible"
-  >
+  <el-dialog width="35%" :visible="visible" @close="close" :title="title">
     <el-form
       ref="userForm"
       :model="userForm"
@@ -16,28 +10,20 @@
     >
       <el-form-item prop="account" label="帐号">
         <el-input
-          :readonly="!addFlag && !updateFlag"
           v-model="userForm.account"
           placeholder="请输入帐号"
           clearable
         />
       </el-form-item>
       <el-form-item prop="name" label="姓名">
-        <el-input
-          v-model="userForm.name"
-          :readonly="!addFlag && !updateFlag"
-          placeholder="请输入姓名"
-          clearable
-        />
+        <el-input v-model="userForm.name" placeholder="请输入姓名" clearable />
       </el-form-item>
       <el-form-item prop="orgId" label="所属部门">
         <el-select
-          :readonly="!addFlag && !updateFlag"
           style="width: 100%"
           v-model="userForm.orgId"
           placeholder="请选择"
           filterable
-          :disabled="orgId != ''"
           clearable
         >
           <el-option-group
@@ -61,8 +47,6 @@
           placeholder="请选择角色"
           clearable
           style="width: 100%"
-          multiple=""
-          :readonly="!addFlag && !updateFlag"
         >
           <el-option
             v-for="item in roleList"
@@ -74,7 +58,6 @@
       </el-form-item>
       <el-form-item prop="email" label="邮箱">
         <el-input
-          :readonly="!addFlag && !updateFlag"
           v-model="userForm.email"
           placeholder="请输入邮箱"
           prefix-icon="el-icon-message"
@@ -83,7 +66,6 @@
       </el-form-item>
       <el-form-item prop="mobile" label="手机">
         <el-input
-          :readonly="!addFlag && !updateFlag"
           v-model="userForm.mobile"
           placeholder="请输入手机号"
           prefix-icon="el-icon-mobile"
@@ -99,7 +81,7 @@
         />
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer" v-if="addFlag || updateFlag">
+    <div slot="footer" class="dialog-footer" v-if="!disableSubmit">
       <mbutton @click="close" name="取消" />
       <mbutton type="primary" name="提交" @click="handleSubmit" />
     </div>
@@ -108,7 +90,9 @@
 
 <script>
 import { USER_INFO } from "@/store/mutation-types";
-import { addUser, updateUser, initDeptTree, getRoleList } from "@/api/system";
+import { addUser, updateUser } from "@/api/system";
+import { initDeptTree } from "@/api/system/depart";
+import { getRoleList } from "@/api/system/role";
 import { getUserDetail } from "@/api/system/user";
 export default {
   name: "UserDrawer",
@@ -120,48 +104,19 @@ export default {
   },
   data() {
     return {
-      addFlag: false,
-      updateFlag: false,
       visible: false,
       loading: false,
-      userForm: {
-        account: "",
-        name: "",
-        orgId: "",
-        roleIds: [],
-        email: "",
-        mobile: "",
-        status: 1,
-      },
+      userForm: {},
       roleList: [],
       departList: [],
+      disableSubmit: false,
+      title: "",
       rules: {
-        account: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        orgId: [
-          {
-            validator: (rule, value, callback) => {
-              if (
-                this.userForm.orgId == undefined ||
-                this.userForm.orgId == ""
-              ) {
-                callback(new Error("请选择部门"));
-              }
-              callback();
-            },
-            trigger: ["blur", "change"],
-          },
-        ],
-        roleIds: [
-          { required: true, message: "请至少选择一个角色", trigger: "blur" },
-        ],
-        email: [
-          {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: ["blur", "change"],
-          },
-        ],
+        account: [{ required: true, message: "请输入账号" }],
+        name: [{ required: true, message: "请输入姓名" }],
+        orgId: [{ required: true, message: "请至少选择一个部门" }],
+        roleIds: [{ required: true, message: "请至少选择一个角色" }],
+        email: [{ type: "email", message: "请输入正确的邮箱地址" }],
         mobile: [
           {
             validator: (rule, value, callback) => {
@@ -178,6 +133,11 @@ export default {
         ],
       },
     };
+  },
+
+  created() {
+    this.initDepart();
+    this.initRole();
   },
 
   methods: {
@@ -205,7 +165,6 @@ export default {
       initDeptTree(userInfo.userId).then((res) => {
         if (res.state) {
           this.departList = this.renderDepart(res.value);
-          this.initRole();
         }
       });
     },
@@ -215,6 +174,26 @@ export default {
           this.roleList = res.value.rows;
         }
       });
+    },
+
+    add() {
+      this.edit({});
+    },
+
+    edit(record) {
+      if (record.id) {
+        this.loading = true;
+        getUserDetail(record.id)
+          .then((res) => {
+            if (res.state) {
+              this.userForm = res.value;
+            }
+          })
+          .finally(() => (this.loading = false));
+      } else {
+        this.userForm = Object.assign({}, record);
+      }
+      this.visible = true;
     },
 
     show(addFlag, updateFlag, info) {
@@ -228,7 +207,6 @@ export default {
           })
           .finally(() => (this.loading = false));
       }
-      this.initDepart();
       this.addFlag = addFlag;
       this.updateFlag = updateFlag;
       if (this.orgId != "") {
@@ -240,16 +218,6 @@ export default {
     close() {
       this.visible = false;
       this.$refs.userForm.resetFields();
-      this.roleList = [];
-      this.userForm = {
-        account: "",
-        name: "",
-        orgId: "",
-        roleIds: [],
-        email: "",
-        mobile: "",
-        status: 1,
-      };
     },
 
     handleSubmit() {

@@ -17,7 +17,7 @@
       </template>
     </el-result>
     <div class="footer">
-      <el-button @click="back" size="small">返回</el-button>
+      <el-button @click="back" size="small">查看任务概览</el-button>
     </div>
   </div>
 </template>

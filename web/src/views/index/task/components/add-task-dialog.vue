@@ -42,7 +42,7 @@
       />
       <add-task-step-fourth
         v-if="currentStep === 3"
-        @back="close"
+        @back="showTaskInfo"
         :taskId="taskId"
       />
     </div>
@@ -85,6 +85,13 @@ export default {
     },
     initTask(taskId) {
       this.taskId = taskId;
+    },
+
+    showTaskInfo() {
+      this.$router.push({
+        path: "/task/info",
+        query: { taskId: this.taskId },
+      });
     },
   },
 };

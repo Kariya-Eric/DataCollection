@@ -141,13 +141,15 @@ export default {
         };
       } else {
         this.updateFlag = false;
-        this.$set(this.addFormForm, "required", true);
       }
-      this.addFormForm.formCollectionId = collection.id;
-      this.addFormForm.name = collection.name;
-      this.addFormForm.type = collection.type;
-      this.addFormForm.year = collection.year;
-      this.addFormForm.enabledFlag = collection.enabledFlag;
+      this.$nextTick(() => {
+        this.addFormForm.required = true;
+        this.addFormForm.formCollectionId = collection.id;
+        this.addFormForm.name = collection.name;
+        this.addFormForm.type = collection.type;
+        this.addFormForm.year = collection.year;
+        this.addFormForm.enabledFlag = collection.enabledFlag;
+      });
       listFormCategories(collection.id).then((res) => {
         if (res.state) {
           this.formCategoryList = res.value

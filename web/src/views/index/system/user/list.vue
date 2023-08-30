@@ -38,7 +38,7 @@
             <mbutton type="danger" slot="reference" name="批量删除" />
           </el-popconfirm>
           <mbutton
-            @click="addUser"
+            @click="handleAdd"
             type="primary"
             name="添加用户"
             icon="新建"
@@ -73,8 +73,8 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="260">
           <template slot-scope="scope">
-            <menu-link @click="showUser(scope.row)">查看</menu-link>
-            <menu-link @click="updateUser(scope.row)">编辑</menu-link>
+            <menu-link @click="handleDetail(scope.row)">查看</menu-link>
+            <menu-link @click="handleEdit(scope.row)">编辑</menu-link>
             <el-popconfirm
               @confirm="delRow(scope.row.id)"
               title="确定删除该用户吗？"
@@ -92,7 +92,7 @@
       </el-table>
       <pagination :pagination="ipagination" @change="loadData" />
     </el-card>
-    <user-dialog ref="userDialog" @refresh="loadData" />
+    <user-dialog ref="modalForm" @refresh="loadData" />
     <mupload
       ref="uploadModal"
       :multiple="false"
@@ -122,18 +122,6 @@ export default {
     };
   },
   methods: {
-    addUser() {
-      this.$refs.userDialog.show(true);
-    },
-
-    showUser(info) {
-      this.$refs.userDialog.show(false, false, info);
-    },
-
-    updateUser(info) {
-      this.$refs.userDialog.show(false, true, info);
-    },
-
     resetUser(row) {
       resetPwd({ account: row.account, newPwd: "123456" }).then((res) => {
         if (res.state) {

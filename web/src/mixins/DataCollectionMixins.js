@@ -153,19 +153,19 @@ export const DataCollectionMixin = {
     handleDetail: function (record) {
       this.$refs.modalForm.edit(record)
       this.$refs.modalForm.title = "详情"
-      this.$refs.disableSubmit = true
+      this.$refs.modalForm.disableSubmit = true
     },
 
     handleEdit: function (record) {
       this.$refs.modalForm.edit(record)
       this.$refs.modalForm.title = "编辑"
-      this.$refs.disableSubmit = false
+      this.$refs.modalForm.disableSubmit = false
     },
 
     handleAdd: function () {
       this.$refs.modalForm.add()
       this.$refs.modalForm.title = "新增"
-      this.$refs.disableSubmit = false
+      this.$refs.modalForm.disableSubmit = false
     },
 
     handleUpload: function () {
