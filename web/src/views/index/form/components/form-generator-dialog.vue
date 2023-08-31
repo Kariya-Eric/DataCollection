@@ -14,6 +14,10 @@
         {{ info.name }}（{{ info.collectTimeType }}）</span
       >
       <div style="display: inline-block; margin-left: 30%">
+        <!-- <el-tabs stretch>
+          <el-tab-pane label="表单设计" name="first"></el-tab-pane>
+          <el-tab-pane label="校验规则" name="second"></el-tab-pane>
+        </el-tabs> -->
         <mbutton
           type="text"
           name="表单设计"
@@ -188,12 +192,16 @@ export default {
   font-size: 18px;
   color: #4a4c51;
 }
-::v-deep .el-dialog__body {
+/deep/ .el-dialog__body {
   padding: 8px;
 }
-::v-deep .el-dialog__header {
+/deep/ .el-dialog__header {
   height: 52px;
   border-bottom: 1px solid #e5e5e5;
   padding: 0;
+}
+/deep/ .el-tabs__nav-scroll {
+  width: 50%;
+  margin: 0 auto;
 }
 </style>

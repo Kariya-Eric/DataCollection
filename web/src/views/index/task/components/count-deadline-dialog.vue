@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="isBatch ? '批量配置统计截止时间' : '统计截止时间'"
+    title="配置统计截止时间"
     :visible="visible"
     :append-to-body="true"
     width="30%"
@@ -14,22 +14,19 @@
       :rules="rules"
       v-loading="loading"
     >
-      <el-form-item label="表单名称" prop="formIds">
+      <el-form-item label="表单名称">
+        <el-input
+          v-model="deadlineForm.name"
+          disabled
+          v-if="!isBatch"
+        ></el-input>
         <el-select
+          v-else
           style="width: 100%"
-          v-model="deadlineForm.formIds"
-          placeholder="请选择"
+          v-model="deadlineForm.names"
           multiple
-          clearable
-          filterable
-          :disabled="!isBatch"
+          disabled
         >
-          <el-option
-            v-for="item in formList"
-            :key="item.formId"
-            :label="item.formName"
-            :value="item.formId"
-          />
         </el-select>
       </el-form-item>
       <el-form-item label="统计截止时间" prop="statisticsEndTime">
@@ -41,10 +38,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
-        >确 定</el-button
-      >
+      <mbutton name="取消" @click="close" />
+      <mbutton name="确定" type="primary" @click="handleSubmit" />
     </div>
   </el-dialog>
 </template>
@@ -53,15 +48,13 @@
 import { configEndTime } from "@/api/task";
 export default {
   name: "CountDeadlineDialog",
-  props: ["taskId"],
+  props: ["taskId", "endTime"],
   data() {
     return {
       visible: false,
-      isBatch: false,
       loading: false,
-      endTime: "",
-      deadlineForm: { formIds: [], statisticsEndTime: "" },
-      formList: [],
+      deadlineForm: {},
+      isBatch: false,
       rules: {
         formIds: [{ required: true, message: "请选择表单名称" }],
         statisticsEndTime: [
@@ -82,23 +75,33 @@ export default {
     };
   },
   methods: {
-    show(isBatch, selectedFormList, formList, endTime) {
-      this.isBatch = isBatch;
-      this.formList = formList;
-      this.endTime = endTime;
-      this.deadlineForm.formIds = selectedFormList.map((form) => form.formId);
-      if (!isBatch) {
-        this.deadlineForm.statisticsEndTime =
-          selectedFormList[0].statisticsEndTime;
+    edit(records) {
+      if (records.length > 1) {
+        this.isBatch = true;
+        this.$set(this.deadlineForm, "statisticsEndTime", "");
+        this.$set(
+          this.deadlineForm,
+          "names",
+          records.map((item) => item.formName)
+        );
+        this.deadlineForm.formIds = records.map((item) => item.formId);
       } else {
-        this.deadlineForm.statisticsEndTime = "";
+        this.isBatch = false;
+        this.$set(
+          this.deadlineForm,
+          "statisticsEndTime",
+          records[0].statisticsEndTime
+        );
+        this.$set(this.deadlineForm, "name", records[0].formName);
+        this.deadlineForm.formIds = [records[0].formId];
       }
+      this.$nextTick(() => this.$refs.deadlineForm.clearValidate());
       this.visible = true;
     },
 
     close() {
       this.visible = false;
-      this.$refs.deadlineForm.resetFields();
+      this.$emit("close");
     },
 
     handleSubmit() {
@@ -109,8 +112,8 @@ export default {
           configEndTime(deadlineForm)
             .then((res) => {
               if (res.state) {
-                //this.$message.success(res.message);
-                this.$emit("refresh");
+                this.$message.success(res.message);
+                this.$emit("refresh", this.deadlineForm);
                 this.close();
               } else {
                 this.$message.error(res.message);

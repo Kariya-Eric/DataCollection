@@ -2,7 +2,7 @@
   <el-dialog
     fullscreen
     :visible="visible"
-    :title="taskId ? '修改任务' : '添加任务'"
+    :title="title"
     v-if="visible"
     :append-to-body="true"
     :show-close="false"
@@ -22,28 +22,29 @@
     </div>
     <div>
       <add-task-step-first
+        :years="years"
         v-if="currentStep === 0"
         @initTask="initTask"
         @back="close"
         @change="changeStep"
-        :taskId="taskId"
+        :task="taskInfo"
       />
       <add-task-step-second
         v-if="currentStep === 1"
         @change="changeStep"
-        :taskId="taskId"
+        :task="taskInfo"
         @back="close"
       />
       <add-task-step-third
         v-if="currentStep === 2"
         @change="changeStep"
-        :taskId="taskId"
+        :taskId="taskInfo.id"
         @back="close"
       />
       <add-task-step-fourth
         v-if="currentStep === 3"
         @back="showTaskInfo"
-        :taskId="taskId"
+        :taskId="taskInfo.id"
       />
     </div>
   </el-dialog>
@@ -62,23 +63,31 @@ export default {
     AddTaskStepThird,
     AddTaskStepFourth,
   },
+  props: ["years"],
   data() {
     return {
       visible: false,
       currentStep: 0,
-      taskId: undefined,
+      title: "",
+      name: "任务",
+      taskInfo: {},
     };
   },
   methods: {
-    show(taskId) {
+    add() {
+      this.edit({});
+    },
+
+    edit(record) {
+      this.taskInfo = Object.assign({}, record);
       this.currentStep = 0;
-      this.taskId = taskId;
       this.visible = true;
     },
+
     close() {
-      this.visible = false;
-      this.taskId = undefined;
+      this.taskId = "";
       this.$emit("refresh");
+      this.visible = false;
     },
     changeStep(step) {
       this.currentStep = step;

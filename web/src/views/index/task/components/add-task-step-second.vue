@@ -3,7 +3,12 @@
     <div class="header">
       <el-row>
         <span>表单集合&nbsp;&nbsp;&nbsp;</span
-        ><el-select v-model="selectFormCollection" size="small" clearable>
+        ><el-select
+          v-model="selectFormCollection"
+          size="small"
+          clearable
+          :disabled="task.type == '教学基本状态数据'"
+        >
           <el-option
             v-for="item in formCollectionList"
             :key="item.id"
@@ -11,16 +16,16 @@
             :value="item.id"
           />
         </el-select>
-        <el-button
+        <mbutton
           type="primary"
-          size="small"
+          name="批量配置统计截止时间"
           style="float: right"
-          @click="applyDeadline(true)"
-          >批量配置统计截止时间</el-button
-        >
+          @click="applyDeadlineBatch"
+        />
       </el-row>
     </div>
     <el-table
+      ref="formTable"
       :data="formList"
       size="small"
       :border="true"
@@ -56,10 +61,9 @@
       />
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <a href="javascript:;" @click="applyDeadline(false, scope.row)"
-            >配置统计截止时间</a
+          <menu-link @click="applyDeadline(scope.row)"
+            >配置统计截止时间</menu-link
           >
-          <el-divider direction="vertical" />
           <a
             href="javascript:;"
             v-if="scope.row.isCanFill"
@@ -79,19 +83,28 @@
       </el-table-column>
     </el-table>
     <div class="footer">
-      <el-button type="primary" size="small" @click="frontStep"
-        >上一步</el-button
-      >
-      <el-button type="primary" @click="nextStep" size="small"
-        >下一步</el-button
-      >
-      <el-button @click="back" size="small">返回</el-button>
+      <mbutton name="上一步" type="primary" @click="frontStep" />
+      <el-popover placement="top" v-model="confirmVisible">
+        <p>所有表单的截止时间相同，是否确认？</p>
+        <div style="text-align: right; margin: 0">
+          <mbutton name="取消" />
+        </div>
+        <mbutton
+          name="下一步"
+          type="primary"
+          @click="nextStep"
+          slot="reference"
+        />
+      </el-popover>
+      <mbutton @click="back" name="返回" />
     </div>
     <unfill-dialog ref="unfillDialog" @refresh="refresh" />
     <count-deadline-dialog
       ref="countDeadlineDialog"
-      :taskId="taskId"
-      @refresh="refresh"
+      :taskId="taskInfo.id"
+      :endTime="taskInfo.statisticsEndTime"
+      @close="closeDeadLine"
+      @refresh="refreshDeadLine"
     />
   </div>
 </template>
@@ -100,15 +113,10 @@
 import CountDeadlineDialog from "./count-deadline-dialog";
 import UnfillDialog from "./unfill-dialog";
 import { formCollectionList } from "@/api/form";
-import {
-  getTask,
-  updateTask,
-  getTaskFormList,
-  configFillStatus,
-} from "@/api/task";
+import { updateTask, getTaskFormList, configFillStatus } from "@/api/task";
 export default {
   components: { UnfillDialog, CountDeadlineDialog },
-  props: ["taskId"],
+  props: ["task"],
   name: "AddTaskStepSecond",
   data() {
     return {
@@ -117,32 +125,16 @@ export default {
       formCollectionList: [],
       formList: [],
       loading: false,
-      taskInfo: {},
+      taskInfo: this.task,
+      confirmVisible: false,
     };
   },
 
   mounted() {
-    this.getFormCollectionList();
+    this.initData();
   },
 
   watch: {
-    taskId: {
-      handler(newVal) {
-        if (newVal !== undefined) {
-          this.loading = true;
-          getTask(newVal)
-            .then((res) => {
-              if (res.state) {
-                this.taskInfo = res.value;
-                this.selectFormCollection = res.value.formCollectionId;
-              }
-            })
-            .finally(() => (this.loading = false));
-        }
-      },
-      immediate: true,
-    },
-
     selectFormCollection(newVal) {
       if (newVal == "" || !newVal) {
         this.formList = [];
@@ -167,7 +159,27 @@ export default {
       }
     },
   },
+
   methods: {
+    initData() {
+      if (this.task.type == "教学基本状态数据") {
+        formCollectionList({ year: this.task.year }).then((res) => {
+          if (res.state) {
+            this.formCollectionList = res.value.rows;
+            this.selectFormCollection = res.value.rows[0].id;
+          }
+        });
+      } else {
+        formCollectionList({}).then((res) => {
+          if (res.state) {
+            this.formCollectionList = res.value.rows.filter(
+              (item) => item.enabledFlag == 1
+            );
+          }
+        });
+      }
+    },
+
     onSelectChange(selectedRowKeys, _) {
       this.selectedRowKeys = selectedRowKeys;
     },
@@ -202,28 +214,30 @@ export default {
         .finally(() => (this.loading = false));
     },
 
-    applyDeadline(isBatch, row) {
-      if (isBatch) {
-        if (this.selectedRowKeys.length <= 0) {
-          this.$message.warning("请至少选择一行");
-          return;
-        }
-        this.$refs.countDeadlineDialog.show(
-          isBatch,
-          this.selectedRowKeys,
-          this.formList,
-          this.taskInfo.statisticsEndTime
-        );
+    applyDeadlineBatch() {
+      if (this.selectedRowKeys.length <= 0) {
+        this.$message.warning("请至少选择一行");
+        return;
       } else {
-        let formList = [];
-        formList.push(row);
-        this.$refs.countDeadlineDialog.show(
-          isBatch,
-          formList,
-          this.formList,
-          this.taskInfo.statisticsEndTime
-        );
+        this.$refs.countDeadlineDialog.edit([...this.selectedRowKeys]);
       }
+    },
+    applyDeadline(row) {
+      this.$refs.countDeadlineDialog.edit([row]);
+    },
+
+    closeDeadLine() {
+      this.$refs.formTable.clearSelection();
+    },
+
+    refreshDeadLine(deadlineForm) {
+      this.formList.forEach((form) => {
+        deadlineForm.formIds.forEach((formId) => {
+          if (form.formId == formId) {
+            form.statisticsEndTime = deadlineForm.statisticsEndTime;
+          }
+        });
+      });
     },
 
     frontStep() {
@@ -232,7 +246,17 @@ export default {
 
     nextStep() {
       if (this.selectFormCollection == "" || !this.selectFormCollection) {
-        this.$message.warning("请选择表单合集！");
+        this.$message.error("请选择表单合集！");
+        return;
+      }
+      if (this.formList.length > 1) {
+        let endTime = this.formList[0].statisticsEndTime;
+        if (this.formList.every((e) => e.statisticsEndTime == endTime)) {
+          this.confirmVisible = false;
+          console.log(123);
+        } else {
+          console.log(456);
+        }
         return;
       }
       let params = {
@@ -250,11 +274,7 @@ export default {
     },
 
     getFormCollectionList() {
-      let query = {
-        params: {},
-        pageBean: { page: 1, pageSize: 1000, showTotal: true },
-      };
-      formCollectionList(query).then((res) => {
+      formCollectionList({}).then((res) => {
         if (res.state) {
           this.formCollectionList = res.value.rows;
         }

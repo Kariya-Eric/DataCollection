@@ -48,7 +48,7 @@
             type="primary"
             icon="新建"
             name="添加任务"
-            @click="addTask"
+            @click="handleAdd"
           />
         </div>
       </div>
@@ -62,8 +62,14 @@
         class="listTable"
         :header-cell-style="headerStyle"
       >
+        <el-table-column label="任务名称" prop="name" align="center">
+          <template slot-scope="scope">
+            <a href="javascript:;" @click="showTaskInfo(scope.row)">{{
+              scope.row.name
+            }}</a>
+          </template>
+        </el-table-column>
         <el-table-column label="任务类型" prop="type" align="center" />
-        <el-table-column label="任务名称" prop="name" align="center" />
         <el-table-column
           label="填报开始时间"
           prop="statisticsStartTime"
@@ -76,7 +82,6 @@
           align="center"
           sortable
         />
-        <el-table-column label="学年" prop="schoolYear" align="center" />
         <el-table-column label="统计时间" prop="year" align="center" />
         <el-table-column label="任务状态" prop="status" align="center">
           <template slot-scope="scope">
@@ -144,7 +149,11 @@
       </el-table>
       <!-- Table End -->
       <pagination :pagination="ipagination" @change="loadData" />
-      <add-task-dialog ref="addTaskDialog" @refresh="loadData" />
+      <add-task-dialog
+        ref="modalForm"
+        @refresh="loadData"
+        :years="schoolYearList"
+      />
     </el-card>
   </div>
 </template>
@@ -169,7 +178,7 @@ export default {
       let startYear = 2018;
       let nowYear = new Date().getFullYear();
       let yearList = [];
-      for (let i = startYear; i < nowYear; i++) {
+      for (let i = nowYear - 1; i >= startYear; i--) {
         let option = `${i}-${i + 1}`;
         yearList.push(option);
       }
@@ -182,10 +191,6 @@ export default {
   },
 
   methods: {
-    addTask() {
-      this.$refs.addTaskDialog.show();
-    },
-
     showTaskInfo(row) {
       this.$router.push({
         path: "/task/info",

@@ -140,9 +140,6 @@ export default {
         ...this.addFormForm,
         name: this.addFormForm.formName,
         type: this.addFormForm.formType,
-        formCategories: this.addFormForm.formCategories
-          ? this.addFormForm.formCategories
-          : "",
         required: this.addFormForm.required ? this.addFormForm.required : false,
       };
       this.loading = true;
@@ -164,10 +161,6 @@ export default {
         ...this.addFormForm,
         name: this.addFormForm.formName,
         type: this.addFormForm.formType,
-        formCategories: this.addFormForm.formCategories
-          ? this.addFormForm.formCategories
-          : "",
-        required: this.addFormForm.required ? this.addFormForm.required : false,
       };
       this.loading = true;
       addForm(params)

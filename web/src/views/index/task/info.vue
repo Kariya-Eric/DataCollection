@@ -157,7 +157,7 @@ export default {
     },
 
     editTask() {
-      this.$refs.addTaskDialog.show(this.taskInfo.id);
+      this.$refs.addTaskDialog.edit(this.taskInfo);
     },
 
     getFormList() {
