@@ -37,27 +37,45 @@
                 <el-option label="未配置" :value="2" />
               </el-select>
               <div style="float: right">
-                <el-button type="primary" size="small" @click="copyPermission"
-                  >复制其他任务权限</el-button
-                >
-                <el-button
+                <mbutton
                   type="primary"
-                  size="small"
-                  @click="applyPermission(true)"
-                  >批量配置权限</el-button
-                >
+                  name="复制其他任务权限"
+                  @click="copyPermission"
+                />
+                <mbutton
+                  type="primary"
+                  name="批量配置权限"
+                  @click="applyPermissionBatch"
+                />
               </div>
             </el-row>
           </div>
           <el-table
             :data="configFormList"
-            size="small"
-            :border="true"
+            ref="table"
+            class="listTable"
+            :header-cell-style="headerStyle"
             v-loading="loading"
             @selection-change="onSelectChange"
           >
             <el-table-column type="selection" width="55" align="center" />
-            <el-table-column label="表单名称" align="center" prop="formName" />
+            <el-table-column label="表单名称" align="center" prop="formName">
+              <template slot-scope="scope">
+                <svg-icon
+                  icon-class="固定表单"
+                  width="16px"
+                  height="16px"
+                  v-if="scope.row.formType == '固定表单'"
+                />
+                <svg-icon
+                  icon-class="浮动表单"
+                  width="16px"
+                  height="16px"
+                  v-else
+                />
+                <span style="margin-left: 10px">{{ scope.row.formName }}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="权限配置状态" align="center" width="120">
               <template slot-scope="scope">
                 <el-tag v-if="scope.row.configStatus" size="small"
@@ -78,10 +96,8 @@
             />
             <el-table-column label="操作" align="center" width="120">
               <template slot-scope="scope">
-                <a
-                  href="javascript:;"
-                  @click="applyPermission(false, scope.row)"
-                  >配置权限</a
+                <menu-link no-divider @click="applyPermission(scope.row)"
+                  >配置权限</menu-link
                 >
               </template>
             </el-table-column>
@@ -90,20 +106,22 @@
       </el-col>
     </el-row>
     <div class="footer">
-      <el-button type="primary" size="small" @click="frontStep"
-        >上一步</el-button
-      >
-      <el-button type="primary" @click="nextStep" size="small"
-        >下一步</el-button
-      >
-      <el-button @click="back" size="small">返回</el-button>
+      <mbutton type="primary" name="上一步" @click="frontStep" />
+      <mbutton type="primary" @click="nextStep" name="下一步" />
+      <mbutton @click="back" name="返回" />
     </div>
     <permission-dialog
       ref="permissionDialog"
-      :taskId="taskId"
+      :taskId="taskInfo.id"
+      :departs="departList"
+      @refresh="refreshPermission"
+      @close="closePermission"
+    />
+    <copy-permission-dialog
+      ref="copyPermissionDialog"
+      :taskId="taskInfo.id"
       @refresh="refresh"
     />
-    <copy-permission-dialog ref="copyPermissionDialog" :taskId="taskId" @refresh="refresh"/>
   </div>
 </template>
 
@@ -113,16 +131,16 @@ import Vue from "vue";
 import { USER_INFO } from "@/store/mutation-types";
 import CopyPermissionDialog from "./copy-permission-dialog";
 import PermissionDialog from "./permission-dialog";
-import { getTask, getTaskFormList } from "@/api/task";
+import { getTaskFormList } from "@/api/task";
 export default {
   components: { PermissionDialog, CopyPermissionDialog },
   name: "AddTaskStepThird",
-  props: ["taskId"],
+  props: ["task"],
   data() {
     return {
       departList: [],
       departFilter: "",
-      taskInfo: {},
+      taskInfo: this.task,
       departProps: {
         children: "children",
         label: "name",
@@ -132,6 +150,9 @@ export default {
       configFormList: [],
       loading: false,
       selectedRowKeys: [],
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
     };
   },
   watch: {
@@ -141,26 +162,23 @@ export default {
   },
   mounted() {
     this.initDepart();
+    this.initData();
   },
-  watch: {
-    taskId: {
-      handler(newVal) {
-        if (newVal !== undefined) {
-          this.loading = true;
-          getTask(newVal)
-            .then((res) => {
-              if (res.state) {
-                this.taskInfo = res.value;
-                this.getFormList(this.taskInfo.formCollectionId);
-              }
-            })
-            .finally(() => (this.loading = false));
-        }
-      },
-      immediate: true,
-    },
-  },
+
   methods: {
+    initData() {
+      const { id, formCollectionId } = this.taskInfo;
+      this.loading = true;
+      getTaskFormList({ taskId: id, formCollectionId })
+        .then((res) => {
+          if (res.state) {
+            this.formList = res.value.filter((item) => item.isCanFill);
+            this.changeStatus(0);
+          }
+        })
+        .finally(() => (this.loading = false));
+    },
+
     refresh() {
       //TODO 配置完成的回显
       this.selectedRowKeys = [];
@@ -183,6 +201,7 @@ export default {
         );
       }
     },
+
     initDepart() {
       let userInfo = Vue.ls.get(USER_INFO);
       initDeptTree(userInfo.userId).then((res) => {
@@ -197,45 +216,33 @@ export default {
       return data.name.indexOf(value) !== -1;
     },
 
-    applyPermission(isBatch, row) {
-      if (isBatch) {
-        if (this.selectedRowKeys.length <= 0) {
-          this.$message.warning("请至少选择一行");
-          return;
-        }
-        this.$refs.permissionDialog.show(
-          isBatch,
-          this.selectedRowKeys,
-          this.formList,
-          this.departList
-        );
-      } else {
-        let formList = [];
-        formList.push(row);
-        this.$refs.permissionDialog.show(
-          isBatch,
-          formList,
-          this.formList,
-          this.departList
-        );
+    applyPermissionBatch() {
+      if (this.selectedRowKeys.length <= 0) {
+        this.$message.warning("请至少选择一行");
+        return;
       }
+      this.$refs.permissionDialog.edit(this.selectedRowKeys);
     },
 
-    getFormList(formCollectionId) {
-      this.loading = true;
-      let query = {
-        taskId: this.taskInfo.id,
-        formCollectionId,
-      };
-      getTaskFormList(query)
-        .then((res) => {
-          if (res.state) {
-            this.formList = res.value;
-            this.changeStatus(0);
-          }
-        })
-        .finally(() => (this.loading = false));
+    applyPermission(row) {
+      this.$refs.permissionDialog.edit([row]);
     },
+
+    refreshPermission(permissionForm) {
+      this.formList.forEach((form) => {
+        permissionForm.formIds.forEach((formId) => {
+          if (form.formId == formId) {
+            form.collaborateOrgName = permissionForm.collaborateOrgName;
+            form.responsibleOrgName = permissionForm.responsibleOrgName;
+          }
+        });
+      });
+    },
+
+    closePermission() {
+      this.$refs.table.clearSelection();
+    },
+
     copyPermission() {
       this.$refs.copyPermissionDialog.show();
     },
@@ -245,6 +252,11 @@ export default {
     },
 
     nextStep() {
+      let forms = this.formList.filter((form) => !form.responsibleOrgName);
+      if (forms.length > 0) {
+        this.$message.error("存在表单尚未配置负责部门，请检查!");
+        return;
+      }
       this.$emit("change", 3);
     },
 

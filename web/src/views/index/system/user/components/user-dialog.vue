@@ -18,7 +18,7 @@
       <el-form-item prop="name" label="姓名">
         <el-input v-model="userForm.name" placeholder="请输入姓名" clearable />
       </el-form-item>
-      <el-form-item prop="orgId" label="所属部门">
+      <el-form-item prop="orgId" label="所属部门" v-if="!departId">
         <el-select
           style="width: 100%"
           v-model="userForm.orgId"
@@ -98,7 +98,7 @@
 import { getUserDetail, addUser, updateUser } from "@/api/system/user";
 export default {
   name: "UserDrawer",
-  props: ["roles", "depts"],
+  props: ["roles", "depts", "departId"],
   data() {
     return {
       visible: false,
@@ -135,14 +135,16 @@ export default {
   computed: {
     departList() {
       let options = [];
-      options.push({
-        label: "职能部门",
-        options: this.depts.filter((dept) => dept.type == "functional"),
-      });
-      options.push({
-        label: "教学部门",
-        options: this.depts.filter((dept) => dept.type == "teaching"),
-      });
+      if (this.depts && this.depts.length > 0) {
+        options.push({
+          label: "职能部门",
+          options: this.depts.filter((dept) => dept.type == "functional"),
+        });
+        options.push({
+          label: "教学部门",
+          options: this.depts.filter((dept) => dept.type == "teaching"),
+        });
+      }
       return options;
     },
   },
@@ -177,6 +179,9 @@ export default {
     handleSubmit() {
       this.$refs.userForm.validate((valid) => {
         if (valid) {
+          if (this.departId) {
+            this.userForm.orgId = this.departId;
+          }
           if (this.addFlag) {
             this.handleAdd();
           } else {

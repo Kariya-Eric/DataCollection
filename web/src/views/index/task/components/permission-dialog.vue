@@ -1,8 +1,8 @@
 <template>
   <el-dialog
-    :title="isBatch ? '批量配置权限' : '配置权限'"
+    title="配置权限"
     :visible="visible"
-    width="40%"
+    width="35%"
     :append-to-body="true"
     @close="close"
   >
@@ -14,22 +14,19 @@
       :rules="rules"
       v-loading="loading"
     >
-      <el-form-item label="表单名称" prop="formIds">
+      <el-form-item label="表单名称">
+        <el-input
+          v-model="permissionForm.name"
+          disabled
+          v-if="!isBatch"
+        ></el-input>
         <el-select
+          v-else
           style="width: 100%"
-          v-model="permissionForm.formIds"
-          placeholder="请选择"
+          v-model="permissionForm.names"
           multiple
-          clearable
-          filterable
-          :disabled="!isBatch"
+          disabled
         >
-          <el-option
-            v-for="item in formList"
-            :key="item.formId"
-            :label="item.formName"
-            :value="item.formId"
-          />
         </el-select>
       </el-form-item>
       <el-form-item label="负责部门" prop="responsibleOrg">
@@ -88,7 +85,12 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <mbutton @click="close" name="取消" />
-      <mbutton type="primary" @click="handleSubmit" name="确定" />
+      <mbutton
+        type="primary"
+        @click="handleSubmit"
+        name="确定"
+        :loading="loading"
+      />
     </div>
   </el-dialog>
 </template>
@@ -97,25 +99,20 @@
 import { configAuthority } from "@/api/task";
 export default {
   name: "PermissionDialog",
-  props: ["taskId"],
+  props: ["taskId", "departs"],
   data() {
     return {
       isBatch: false,
       visible: false,
-      permissionForm: {
-        formIds: [],
-        collaborateOrg: [],
-        responsibleOrg: {},
-      },
-      formList: [],
-      departList: [],
+      permissionForm: {},
       loading: false,
+      showCollaborateOrg: false,
+      submitFlag: "",
       rules: {
-        formIds: [{ required: true, message: "请选择表单名称" }],
         responsibleOrg: [
           {
             validator: (rule, value, callback) => {
-              if (Object.keys(value).length == 0) {
+              if (!value) {
                 callback(new Error("请选择负责部门"));
               }
               callback();
@@ -125,6 +122,9 @@ export default {
         collaborateOrg: [
           {
             validator: (rule, value, callback) => {
+              if (!value || value.length == 0) {
+                callback(new Error("请选择负责协作部门"));
+              }
               let val = value.find(
                 (item) => item == this.permissionForm.responsibleOrg
               );
@@ -139,50 +139,57 @@ export default {
     };
   },
   computed: {
-    showCollaborateOrg() {
-      if (!this.isBatch) {
-        let form = this.formList.find(
-          (form) => form.formId == this.permissionForm.formIds[0]
+    departList() {
+      let options = [];
+      if (this.departs.length > 0) {
+        let functionalDepart = this.departs[0].children.find(
+          (depart) => depart.name == "职能部门"
         );
-        if (form && form.formType == "固定表单") {
-          return false;
-        }
+        let teachingDepart = this.departs[0].children.find(
+          (depart) => depart.name == "教学部门"
+        );
+        options.push({
+          label: "职能部门",
+          options: functionalDepart.children,
+        });
+        options.push({
+          label: "教学部门",
+          options: teachingDepart.children,
+        });
       }
-      return true;
+      return options;
     },
   },
+
   methods: {
     close() {
       this.visible = false;
-      this.$refs.permissionForm.resetFields();
+      this.$emit("close");
+      this.$nextTick(() => this.$refs.permissionForm.resetFields());
     },
 
     handleSubmit() {
-      if (this.isBatch) {
-        for (let index in this.permissionForm.formIds) {
-          let form = this.formList.find(
-            (form) => form.formId == this.permissionForm.formIds[index]
-          );
-          console.log(this.formList, form);
-          if (form && form.formType == "固定表单") {
-            this.$message.error(
-              `【${form.formName}】为固定表单，无法配置协作部门`
-            );
-            return;
-          }
-        }
+      if (this.submitFlag != "") {
+        this.$message.error(
+          `【${this.submitFlag}】为固定表单，无法配置协作部门`
+        );
+        return;
       }
       this.$refs.permissionForm.validate((valid) => {
         if (valid) {
           this.loading = true;
           let responsibleOrgName = this.permissionForm.responsibleOrg.name;
           let responsibleOrgId = this.permissionForm.responsibleOrg.id;
-          let collaborateOrgName = this.permissionForm.collaborateOrg
-            .map((item) => item.name)
-            .join(",");
-          let collaborateOrgId = this.permissionForm.collaborateOrg
-            .map((item) => item.id)
-            .join(",");
+          let collaborateOrgName = "";
+          let collaborateOrgId = "";
+          if (this.permissionForm.collaborateOrg) {
+            collaborateOrgName = this.permissionForm.collaborateOrg
+              .map((item) => item.name)
+              .join(",");
+            collaborateOrgId = this.permissionForm.collaborateOrg
+              .map((item) => item.id)
+              .join(",");
+          }
           let permissionForm = {
             taskId: this.taskId,
             ...this.permissionForm,
@@ -194,7 +201,7 @@ export default {
           configAuthority(permissionForm)
             .then((res) => {
               if (res.state) {
-                this.$emit("refresh");
+                this.$emit("refresh", permissionForm);
                 this.$message.success(res.message);
                 this.close();
               } else {
@@ -206,31 +213,34 @@ export default {
       });
     },
 
-    show(isBatch, selectedFormList, formList, departList) {
-      this.isBatch = isBatch;
-      this.formList = formList;
-      this.permissionForm.formIds = selectedFormList.map((form) => form.formId);
-      this.departList = this.renderDepart(departList);
+    edit(records) {
+      if (records.length > 1) {
+        this.isBatch = true;
+        this.showCollaborateOrg = true;
+        let forms = records
+          .filter((records) => records.formType == "固定表单")
+          .map((item) => item.formName)
+          .join(",");
+        this.submitFlag = forms;
+        this.$set(
+          this.permissionForm,
+          "names",
+          records.map((item) => item.formName)
+        );
+        this.permissionForm.formIds = records.map((item) => item.formId);
+      } else {
+        this.isBatch = false;
+        this.submitFlag = "";
+        if (records[0].formType == "固定表单") {
+          this.showCollaborateOrg = false;
+        } else {
+          this.showCollaborateOrg = true;
+        }
+        this.$set(this.permissionForm, "name", records[0].formName);
+        this.permissionForm.formIds = [records[0].formId];
+      }
+      this.$nextTick(() => this.$refs.permissionForm.clearValidate());
       this.visible = true;
-    },
-
-    renderDepart(departList) {
-      let options = [];
-      let functionalDepart = departList[0].children.find(
-        (depart) => depart.name == "职能部门"
-      );
-      let teachingDepart = departList[0].children.find(
-        (depart) => depart.name == "教学部门"
-      );
-      options.push({
-        label: "职能部门",
-        options: functionalDepart.children,
-      });
-      options.push({
-        label: "教学部门",
-        options: teachingDepart.children,
-      });
-      return options;
     },
   },
 };

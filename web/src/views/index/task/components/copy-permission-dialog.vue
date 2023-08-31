@@ -29,10 +29,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
-        >确 定</el-button
-      >
+      <mbutton name="取消" @click="close" />
+      <mbutton type="primary" name="确定" @click="handleSubmit" />
     </div>
   </el-dialog>
 </template>
@@ -60,27 +58,22 @@ export default {
 
   methods: {
     getTaskList() {
-      let params = {
-        pageBean: {
-          page: 1,
-          pageSize: 2000,
-          showTotal: true,
-        },
-        params: {},
-      };
-      taskList(params).then((res) => {
+      taskList({}).then((res) => {
         if (res.state) {
           this.taskList = res.value.rows.filter((row) => row.id != this.taskId);
         }
       });
     },
+
     close() {
       this.visible = false;
       this.$refs.permissionForm.resetFields();
     },
+
     show() {
       this.visible = true;
     },
+
     handleSubmit() {
       this.$refs.permissionForm.validate((valid) => {
         if (valid) {
@@ -91,7 +84,6 @@ export default {
           copyAuthority(param).then((res) => {
             if (res.state) {
               this.$message.success(res.message);
-              this.$emit("refresh");
               this.close();
             } else {
               this.$message.error(res.message);

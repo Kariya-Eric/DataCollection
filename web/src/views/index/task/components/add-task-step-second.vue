@@ -27,14 +27,14 @@
     <el-table
       ref="formTable"
       :data="formList"
-      size="small"
-      :border="true"
+      class="listTable"
+      :header-cell-style="headerStyle"
       v-loading="loading"
       @selection-change="onSelectChange"
     >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="表单名称" prop="formName" align="center" />
-      <el-table-column label="状态" align="center" width="120">
+      <el-table-column label="是否可填报" align="center" width="120">
         <template slot-scope="scope">
           <el-tag size="small" v-if="scope.row.isCanFill" type="success"
             >可填报</el-tag
@@ -44,12 +44,8 @@
       </el-table-column>
       <el-table-column label="备注" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.remark">
-            {{ scope.row.remark }}
-            <!-- <el-tooltip :content="" placement="right" effect="dark">
-            </el-tooltip> -->
-          </div>
-          <div v-else>-</div>
+          <ellipsis v-if="scope.row.remark" :value="scope.row.remark" />
+          <span v-else>-</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -64,41 +60,53 @@
           <menu-link @click="applyDeadline(scope.row)"
             >配置统计截止时间</menu-link
           >
-          <a
-            href="javascript:;"
-            v-if="scope.row.isCanFill"
-            @click="apply(scope.row)"
-            >申请不可填报</a
+          <menu-link
+            no-divider
+            @click="applyCanfill(scope.row)"
+            v-if="judgeCanfill(scope.row)"
+            >申请不可填报</menu-link
           >
           <el-popconfirm
-            v-else
+            v-if="judgeRedo(scope.row)"
             @confirm="redoCanfill(scope.row)"
             title="确定撤销不可填报吗？"
             icon="el-icon-info"
             icon-color="red"
           >
-            <a href="javascript:;" slot="reference">撤销不可填报</a>
+            <menu-link slot="reference" no-divider>撤销不可填报</menu-link>
           </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
     <div class="footer">
-      <mbutton name="上一步" type="primary" @click="frontStep" />
-      <el-popover placement="top" v-model="confirmVisible">
+      <mbutton
+        name="上一步"
+        type="primary"
+        @click="frontStep"
+        style="margin-right: 16px"
+        :loading="loading"
+      />
+      <el-popover placement="bottom" v-model="confirmVisible" trigger="manual">
         <p>所有表单的截止时间相同，是否确认？</p>
         <div style="text-align: right; margin: 0">
-          <mbutton name="取消" />
+          <mbutton name="确定" type="primary" @click="nextStep" />
+          <mbutton name="取消" @click="confirmVisible = !confirmVisible" />
         </div>
         <mbutton
           name="下一步"
           type="primary"
-          @click="nextStep"
+          @click="showConfirm"
           slot="reference"
+          :loading="loading"
         />
       </el-popover>
-      <mbutton @click="back" name="返回" />
+      <mbutton @click="back" name="返回" style="margin-left: 16px" />
     </div>
-    <unfill-dialog ref="unfillDialog" @refresh="refresh" />
+    <unfill-dialog
+      ref="unfillDialog"
+      @refresh="refreshUnfill"
+      :taskId="taskInfo.id"
+    />
     <count-deadline-dialog
       ref="countDeadlineDialog"
       :taskId="taskInfo.id"
@@ -120,6 +128,9 @@ export default {
   name: "AddTaskStepSecond",
   data() {
     return {
+      headerStyle: {
+        backgroundColor: "#F4F5F6",
+      },
       selectedRowKeys: [],
       selectFormCollection: "",
       formCollectionList: [],
@@ -175,6 +186,7 @@ export default {
             this.formCollectionList = res.value.rows.filter(
               (item) => item.enabledFlag == 1
             );
+            this.selectFormCollection = this.taskInfo.formCollectionId;
           }
         });
       }
@@ -183,35 +195,23 @@ export default {
     onSelectChange(selectedRowKeys, _) {
       this.selectedRowKeys = selectedRowKeys;
     },
-    apply(row) {
-      this.$refs.unfillDialog.show(row);
+
+    applyCanfill(row) {
+      this.$refs.unfillDialog.edit(row);
     },
-    refresh() {
-      //TODO 配置完成的回显
-      this.selectedRowKeys = [];
-      let params = {
-        ...this.taskInfo,
-        formCollectionId: this.selectFormCollection,
-      };
-      this.loading = true;
-      updateTask(params)
-        .then((res) => {
-          if (res.state) {
-            //this.$message.success(res.message);
-            let query = {
-              taskId: this.taskInfo.id,
-              formCollectionId: this.selectFormCollection,
-            };
-            getTaskFormList(query).then((res) => {
-              if (res.state) {
-                this.formList = res.value;
-              }
-            });
-          } else {
-            this.$message.warning(res.message);
-          }
-        })
-        .finally(() => (this.loading = false));
+
+    judgeCanfill(row) {
+      return row.isCanFill && !row.formRequired;
+    },
+
+    judgeRedo(row) {
+      return !row.isCanFill && !row.formRequired;
+    },
+
+    refreshUnfill(unfillForm) {
+      let form = this.formList.find((form) => form.formId == unfillForm.formId);
+      form.isCanFill = false;
+      form.remark = unfillForm.remark;
     },
 
     applyDeadlineBatch() {
@@ -230,6 +230,21 @@ export default {
       this.$refs.formTable.clearSelection();
     },
 
+    showConfirm() {
+      if (this.selectFormCollection == "" || !this.selectFormCollection) {
+        this.$message.error("请选择表单合集！");
+        return;
+      }
+      if (this.formList.length > 1) {
+        let endTime = this.formList[0].statisticsEndTime;
+        if (this.formList.every((e) => e.statisticsEndTime == endTime)) {
+          this.confirmVisible = true;
+          return;
+        }
+      }
+      this.nextStep();
+    },
+
     refreshDeadLine(deadlineForm) {
       this.formList.forEach((form) => {
         deadlineForm.formIds.forEach((formId) => {
@@ -245,20 +260,6 @@ export default {
     },
 
     nextStep() {
-      if (this.selectFormCollection == "" || !this.selectFormCollection) {
-        this.$message.error("请选择表单合集！");
-        return;
-      }
-      if (this.formList.length > 1) {
-        let endTime = this.formList[0].statisticsEndTime;
-        if (this.formList.every((e) => e.statisticsEndTime == endTime)) {
-          this.confirmVisible = false;
-          console.log(123);
-        } else {
-          console.log(456);
-        }
-        return;
-      }
       let params = {
         ...this.taskInfo,
         formCollectionId: this.selectFormCollection,
@@ -287,16 +288,20 @@ export default {
 
     redoCanfill(row) {
       const { taskId, formId, isCanFill } = row;
-      configFillStatus({ taskId, formId, isCanFill: !isCanFill }).then(
-        (res) => {
-          if (res.state) {
-            this.$message.success(res.message);
-            this.refresh();
-          } else {
-            this.$message.error(res.message);
-          }
+      configFillStatus({
+        taskId,
+        formId,
+        isCanFill: !isCanFill,
+        remark: "",
+      }).then((res) => {
+        if (res.state) {
+          this.$message.success(res.message);
+          row.isCanFill = !row.isCanFill;
+          row.remark = "";
+        } else {
+          this.$message.error(res.message);
         }
-      );
+      });
     },
   },
 };

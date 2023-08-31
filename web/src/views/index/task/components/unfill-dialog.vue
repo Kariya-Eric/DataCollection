@@ -3,6 +3,7 @@
     title="不填报原因"
     :visible="visible"
     @close="close"
+    width="35%"
     :append-to-body="true"
   >
     <el-form
@@ -22,10 +23,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="close">取 消</el-button>
-      <el-button type="primary" size="small" @click="handleSubmit"
-        >确 定</el-button
-      >
+      <mbutton name="取消" @click="close" />
+      <mbutton name="确定" type="primary" @click="handleSubmit" />
     </div>
   </el-dialog>
 </template>
@@ -34,11 +33,12 @@
 import { configFillStatus } from "@/api/task";
 export default {
   name: "UnfillDialog",
+  props: ["taskId"],
   data() {
     return {
       unfillForm: {},
       unfileRules: {
-        remark: [{ required: true, message: "请输入不可填报原因" }],
+        remark: [{ required: true, message: "请输入不填报原因" }],
       },
       visible: false,
     };
@@ -47,12 +47,14 @@ export default {
   methods: {
     close() {
       this.visible = false;
-      this.$refs.unfillForm.resetFields();
+      this.$nextTick(() => {
+        this.$refs.unfillForm.resetFields();
+      });
     },
 
-    show(row) {
-      const { taskId, formId, isCanFill } = row;
-      this.unfillForm = { taskId, formId, isCanFill: !isCanFill };
+    edit(row) {
+      const { formId, isCanFill } = row;
+      this.unfillForm = { taskId: this.taskId, formId, isCanFill: !isCanFill };
       this.visible = true;
     },
 
@@ -62,7 +64,7 @@ export default {
           configFillStatus(this.unfillForm).then((res) => {
             if (res.state) {
               this.$message.success(res.message);
-              this.$emit("refresh");
+              this.$emit("refresh", this.unfillForm);
               this.close();
             } else {
               this.$message.error(res.message);

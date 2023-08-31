@@ -38,7 +38,7 @@
       <add-task-step-third
         v-if="currentStep === 2"
         @change="changeStep"
-        :taskId="taskInfo.id"
+        :task="taskInfo"
         @back="close"
       />
       <add-task-step-fourth

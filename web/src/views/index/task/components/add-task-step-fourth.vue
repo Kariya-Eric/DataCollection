@@ -6,7 +6,7 @@
         <el-card class="box-card">
           <p>任务名称:{{ taskName }}</p>
           <p>
-            是否启用任务:<el-switch
+            是否启用任务:&nbsp;&nbsp;<el-switch
               v-model="enabledFlag"
               :active-value="1"
               :inactive-value="0"

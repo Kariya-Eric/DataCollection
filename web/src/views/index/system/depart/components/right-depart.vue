@@ -160,7 +160,12 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <user-dialog ref="userDialog" :orgId="departId" @refresh="getOrgUserList" />
+    <user-dialog
+      ref="userDialog"
+      :roles="roleList"
+      :departId="departId"
+      @refresh="getOrgUserList"
+    />
   </div>
 </template>
 
@@ -292,15 +297,24 @@ export default {
     },
 
     addUser() {
-      this.$refs.userDialog.show(true);
+      this.$refs.userDialog.add();
+      this.$refs.userDialog.disableSubmit = false;
+      this.$refs.userDialog.addFlag = true;
+      this.$refs.userDialog.title = "新增" + this.$refs.modalForm.name;
     },
 
     showUser(info) {
-      this.$refs.userDialog.show(false, false, info);
+      this.$refs.userDialog.edit(info);
+      this.$refs.userDialog.disableSubmit = true;
+      this.$refs.userDialog.addFlag = false;
+      this.$refs.userDialog.title = this.$refs.modalForm.name + "详情";
     },
 
     editUser(info) {
-      this.$refs.userDialog.show(false, true, info);
+      this.$refs.userDialog.edit(info);
+      this.$refs.userDialog.disableSubmit = false;
+      this.$refs.userDialog.addFlag = false;
+      this.$refs.userDialog.title = "修改" + this.$refs.modalForm.name;
     },
 
     delUserBatch() {
