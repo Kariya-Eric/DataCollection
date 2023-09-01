@@ -58,7 +58,7 @@ export default {
 
   methods: {
     add() {
-      this.edit({});
+      this.edit({ enabled: 1 });
     },
 
     edit(record) {

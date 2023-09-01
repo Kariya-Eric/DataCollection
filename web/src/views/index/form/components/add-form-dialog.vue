@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     add() {
-      this.edit({});
+      this.edit({ required: true });
       this.$nextTick(() => this.$refs.addFormForm.clearValidate());
     },
 
@@ -113,7 +113,7 @@ export default {
         let form = { ...record, formName: record.name, formType: record.type };
         this.addFormForm = Object.assign({}, collection, form);
       } else {
-        this.addFormForm = collection;
+        this.addFormForm = Object.assign({}, collection, record);
       }
       this.visible = true;
     },
@@ -140,7 +140,6 @@ export default {
         ...this.addFormForm,
         name: this.addFormForm.formName,
         type: this.addFormForm.formType,
-        required: this.addFormForm.required ? this.addFormForm.required : false,
       };
       this.loading = true;
       updateForm(params)

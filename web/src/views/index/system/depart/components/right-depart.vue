@@ -300,21 +300,21 @@ export default {
       this.$refs.userDialog.add();
       this.$refs.userDialog.disableSubmit = false;
       this.$refs.userDialog.addFlag = true;
-      this.$refs.userDialog.title = "新增" + this.$refs.modalForm.name;
+      this.$refs.userDialog.title = "新增" + this.$refs.userDialog.name;
     },
 
     showUser(info) {
       this.$refs.userDialog.edit(info);
       this.$refs.userDialog.disableSubmit = true;
       this.$refs.userDialog.addFlag = false;
-      this.$refs.userDialog.title = this.$refs.modalForm.name + "详情";
+      this.$refs.userDialog.title = this.$refs.userDialog.name + "详情";
     },
 
     editUser(info) {
       this.$refs.userDialog.edit(info);
       this.$refs.userDialog.disableSubmit = false;
       this.$refs.userDialog.addFlag = false;
-      this.$refs.userDialog.title = "修改" + this.$refs.modalForm.name;
+      this.$refs.userDialog.title = "修改" + this.$refs.userDialog.name;
     },
 
     delUserBatch() {

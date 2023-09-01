@@ -68,6 +68,7 @@ import { updateForm, formVerification } from "@/api/form";
 export default {
   name: "FormGeneartorDialog",
   components: { FormViewDrawer, RuleDetail },
+  props: ["categories"],
   data() {
     return {
       visible: false,
@@ -81,13 +82,7 @@ export default {
   },
   methods: {
     show(formInfo) {
-      formInfo.listCategories = formInfo.listCategories
-        .sort((a, b) => a.sort - b.sort)
-        .map((item) => ({
-          ...item,
-          name: item.sort + 1 + "." + item.name,
-        }));
-      this.info = JSON.parse(JSON.stringify(formInfo));
+      this.info = { ...formInfo, listCategories: this.categories };
       let formConfig = JSON.parse(formInfo.formProperties);
       let drawingList = JSON.parse(formInfo.componentProperties);
       if (formConfig != null) {
@@ -145,7 +140,6 @@ export default {
         })
         .finally(() => {
           this.loading = false;
-          //   this.close();
         });
     },
 

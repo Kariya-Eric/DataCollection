@@ -10,6 +10,7 @@
     >
       <el-form-item prop="account" label="帐号">
         <el-input
+          :disabled="!addFlag"
           v-model="userForm.account"
           placeholder="请输入帐号"
           clearable
@@ -151,7 +152,7 @@ export default {
 
   methods: {
     add() {
-      this.edit({});
+      this.edit({ status: 1 });
       this.$nextTick(() => this.$refs.userForm.clearValidate());
     },
 
@@ -226,4 +227,5 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

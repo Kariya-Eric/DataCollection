@@ -1,46 +1,45 @@
 <template>
   <div>
     <div>
-      <el-divider>列名 - 属性</el-divider>
-      <draggable
-        :list="activeData.columns"
-        :animation="340"
-        group="selectItem"
-        handle=".option-drag"
-        @end="dragEnd"
-      >
-        <div
-          v-for="item in activeData.columns"
-          :key="item.key"
-          class="select-item"
+      <template v-if="activeData.__config__.tag != 'floatTable'">
+        <el-divider>列名 - 属性</el-divider>
+        <draggable
+          :list="activeData.columns"
+          :animation="340"
+          group="selectItem"
+          handle=".option-drag"
+          @end="dragEnd"
         >
-          <div class="select-line-icon option-drag">
-            <i class="el-icon-s-operation" />
+          <div
+            v-for="item in activeData.columns"
+            :key="item.key"
+            class="select-item"
+          >
+            <div class="select-line-icon option-drag">
+              <i class="el-icon-s-operation" />
+            </div>
+            <el-input size="small" v-model="item.label" />
+            <div class="close-btn select-line-icon">
+              <i class="el-icon-remove-outline" @click="delCol(item.key)" />
+            </div>
           </div>
-          <el-input size="small" v-model="item.label" />
-          <div class="close-btn select-line-icon">
-            <i class="el-icon-remove-outline" @click="delCol(item.key)" />
-          </div>
-        </div>
-      </draggable>
-      <div style="margin-left: 20px">
-        <el-button
-          style="padding-bottom: 0"
-          icon="el-icon-circle-plus-outline"
-          type="text"
-          @click="addCol"
-        >
-          添加列
-        </el-button>
-      </div>
-      <template v-if="activeData.__config__.tag == 'floatTable'">
-        <el-divider />
+        </draggable>
         <div style="margin-left: 20px">
-          <el-button type="text" @click="showHeader"> 设置表头 </el-button>
+          <el-button
+            style="padding-bottom: 0"
+            icon="el-icon-circle-plus-outline"
+            type="text"
+            @click="addCol"
+          >
+            添加列
+          </el-button>
         </div>
       </template>
+      <template v-else>
+        <el-divider>表格设置</el-divider>
+        <upload-excel style="margin-left: 20px" @update="updateHeader" />
+      </template>
     </div>
-
     <template v-if="activeData.selectedCol !== -1">
       <el-divider>已选中 : 第{{ activeData.selectedCol }}列</el-divider>
       <el-form-item label="类型">
@@ -268,7 +267,6 @@
         </div>
       </template>
     </template>
-    <float-table-header ref="floatTableHeader" :active-data="activeData" />
   </div>
 </template>
 
@@ -286,13 +284,13 @@ import {
   date,
   address,
 } from "../config/config_common";
-import FloatTableHeader from "./float-table-header";
+import UploadExcel from "./upload-excel.vue";
 export default {
   name: "RightPanelTable",
   props: ["activeData"],
   components: {
     draggable,
-    FloatTableHeader,
+    UploadExcel,
   },
   data() {
     return {
@@ -384,41 +382,19 @@ export default {
       }
     },
 
-    changeFloatCol(newVal, oldVal) {
-      if (newVal > oldVal) {
-        this.activeData.selectedCol = -1;
-        for (let i = 0; i < newVal - oldVal; i++) {
-          let key =
-            this.activeData.columns[this.activeData.columns.length - 1].key + 1;
-          let label = "列" + key;
-          let props = "col" + key;
-          this.activeData.columns.push({
-            key,
-            props,
-            type: input,
-          });
-          this.activeData.headers.forEach((element) => {
-            element.push(label);
-          });
-        }
-      } else {
-        for (let i = 0; i < oldVal - newVal; i++) {
-          this.activeData.columns.pop();
-          this.activeData.headers.forEach((element) => {
-            if (element.length > 1) {
-              element.pop();
-            }
-          });
-        }
+    updateHeader(excel) {
+      const { html, cells } = excel;
+      this.activeData.theader = html;
+      let columns = [];
+      for (let i = 0; i < cells[cells.length - 1].length; i++) {
+        let col = {
+          key: i + 1,
+          props: "col" + (i + 1),
+          type: input,
+        };
+        columns.push(col);
       }
-    },
-
-    showHeader() {
-      this.$refs.floatTableHeader.show();
-    },
-
-    updateHeader(tableData, mergeCells) {
-      console.log(tableData, mergeCells);
+      this.activeData.columns = columns;
     },
   },
 };

@@ -1,23 +1,8 @@
 <template>
   <div class="tableDiv">
+    <div v-html="theader"></div>
     <table class="table">
-      <tbody class="table-body">
-        <tr class="table-list" v-for="(row, index) in theaders" :key="index">
-          <th
-            :rowspan="head.rowspan"
-            :colspan="head.colspan"
-            v-for="(head, index) in row"
-            :key="index"
-          >
-            {{ head.title }}
-          </th>
-        </tr>
-        <!-- 标题列 -->
-        <tr class="table-list">
-          <th v-for="(col, index) in columns" :key="index">
-            {{ col.label }}
-          </th>
-        </tr>
+      <tbody class="table-body" id="tbody">
         <tr class="table-list">
           <td
             v-for="(col, index) in columns.length"
@@ -29,7 +14,7 @@
             }"
             @mousedown="handleCellMousedown(col)"
           >
-            <table-cell :column="columns[index]" />
+            <table-cell :column="columns[index]" placeholder="请输入" />
           </td>
         </tr>
       </tbody>
@@ -39,11 +24,10 @@
 
 <script>
 import TableCell from "./table-cell";
-import { buildFloatHeader } from "../utils/float";
 // 浮动表单设计组件
 export default {
-  name: "FloatTable",
-  props: ["selectedCol", "columns", "extra", "mergeCells"],
+  name: "FixedTable",
+  props: ["selectedCol", "columns", "theader"],
   components: {
     TableCell,
   },
@@ -55,17 +39,10 @@ export default {
   watch: {
     selectedCol(val) {
       this.selectedCells = [];
-      if (val != -1) {
-        for (let i = 0; i < this.columns.length; i++) {
-          let cellIndex = i * this.columns.length + val - 1;
-          this.selectedCells.push(cellIndex);
-        }
+      for (let i = 0; i < this.columns.length; i++) {
+        let cellIndex = i * this.columns.length + val - 1;
+        this.selectedCells.push(cellIndex);
       }
-    },
-  },
-  computed: {
-    theaders() {
-      return buildFloatHeader(this.extra, this.mergeCells);
     },
   },
   methods: {
@@ -90,7 +67,7 @@ export default {
     .table-list {
       height: 46px;
       line-height: 46px;
-      td {
+      > td {
         padding: 0 10px;
         border: 1px solid #dfe6ec;
         min-width: 220px;
@@ -98,7 +75,7 @@ export default {
           background: #d4e7f5;
         }
       }
-      th {
+      > th {
         padding: 0 10px;
         border: 1px solid #dfe6ec;
         min-width: 220px;
@@ -109,11 +86,10 @@ export default {
     }
   }
 }
-
 .tableDiv {
-  //width: 1120px;
-  width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+
 </style>

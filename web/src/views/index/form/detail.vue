@@ -130,7 +130,7 @@
             <menu-link>下载模板</menu-link>
             <el-popconfirm
               title="表单删除后不可恢复，是否确认删除？"
-              @confirm="delForm(scope.row)"
+              @confirm="handleDelete(scope.row)"
             >
               <menu-link no-divider slot="reference"
                 ><span style="color: #e23322">删除表单</span></menu-link
@@ -148,7 +148,11 @@
       :categorys="listCategories"
     />
     <update-form-category ref="updateFormCategory" @refresh="loadCategories" />
-    <form-generator-dialog ref="formGeneratorDialog" @refresh="loadData" />
+    <form-generator-dialog
+      ref="formGeneratorDialog"
+      @refresh="loadData"
+      :categories="listCategories"
+    />
     <copy-form-dialog ref="copyFormDialog" />
   </div>
 </template>
@@ -156,12 +160,7 @@
 <script>
 import AddFormDialog from "./components/add-form-dialog";
 import UpdateFormCategory from "./components/update-form-category";
-import {
-  getFormList,
-  delForm,
-  updateForm,
-  listFormCategories,
-} from "@/api/form";
+import { updateForm, listFormCategories } from "@/api/form";
 import FormGeneratorDialog from "./components/form-generator-dialog.vue";
 import CopyFormDialog from "./components/copy-form-dialog.vue";
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
@@ -179,6 +178,7 @@ export default {
       collectionDetail: {},
       url: {
         list: "",
+        delete: "/uc/api/form/delete",
       },
       listUrl: "/uc/api/form/listByCollection/",
       listCategories: [],
@@ -220,30 +220,8 @@ export default {
       this.$refs.updateFormCategory.show(this.collectionDetail);
     },
 
-    delForm(row) {
-      let param = "id=" + row.id;
-      this.loading = true;
-      delForm(param)
-        .then((res) => {
-          if (res.state) {
-            this.$message.success(res.message);
-          } else {
-            this.$message.error(res.message);
-          }
-        })
-        .finally(() => {
-          this.loading = false;
-          this.getFormList();
-        });
-    },
-
     showForm(row) {
-      listFormCategories(this.collectionDetail.id).then((res) => {
-        if (res.state) {
-          row.listCategories = res.value;
-          this.$refs.formGeneratorDialog.show(row);
-        }
-      });
+      this.$refs.formGeneratorDialog.show(row);
     },
 
     saveForm(formData, formInfo) {
@@ -260,7 +238,7 @@ export default {
         .then((res) => {
           if (res.state) {
             this.$message.success(res.message);
-            this.getFormList();
+            this.loadData();
           } else {
             this.$message.error(res.message);
           }
