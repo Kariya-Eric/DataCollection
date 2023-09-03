@@ -26,7 +26,7 @@
           <el-select
             v-model="queryParam.roleId"
             filterable
-            placeholder="请选择部门"
+            placeholder="请选择角色"
           >
             <el-option
               v-for="item in roleList"
@@ -87,13 +87,7 @@
         @selection-change="onSelectChange"
       >
         <el-table-column type="selection" width="70" align="center" />
-        <el-table-column label="帐号" prop="account" align="center">
-          <template slot-scope="scope">
-            <a href="javascript:;" @click="handleDetail(scope.row)">{{
-              scope.row.account
-            }}</a>
-          </template>
-        </el-table-column>
+        <el-table-column label="帐号" prop="account" align="center" />
         <el-table-column label="姓名" prop="name" align="center" />
         <el-table-column label="所属部门" prop="orgName" align="center" />
         <el-table-column label="所属专业" align="center" />
@@ -188,8 +182,16 @@ export default {
       let teachingDepart = departList[0].children.find(
         (depart) => depart.name == "教学部门"
       );
-      functionalDepart.children.forEach((dept) => options.push(dept));
-      teachingDepart.children.forEach((dept) => options.push(dept));
+      functionalDepart.children.forEach((dept) => {
+        if (dept.status == 1) {
+          options.push(dept);
+        }
+      });
+      teachingDepart.children.forEach((dept) => {
+        if (dept.status == 1) {
+          options.push(dept);
+        }
+      });
       return options;
     },
 
@@ -205,7 +207,7 @@ export default {
     initRole() {
       getRoleList({}).then((res) => {
         if (res.state) {
-          this.roleList = res.value.rows;
+          this.roleList = res.value.rows.filter((role) => role.enabled == 1);
         }
       });
     },

@@ -160,18 +160,18 @@ function buildRules(scheme, ruleList) {
         }' }`
       );
     }
-    if (config.layout === "tableLayout") {
-      rules.push(`{ validator : async (rule,value,callback) => {
-        let result=await this.$refs.table_${config.formId}.validate();
-        if(result){
-            callback(new Error(result));
-        }
-        if(${config.required}&&value.length==0){
-          callback(new Error("请至少输入一条数据！"));
-        }
-        callback();
-      }}`);
-    }
+    // if (config.layout === "tableLayout") {
+    //   rules.push(`{ validator : async (rule,value,callback) => {
+    //     let result=await this.$refs.table_${config.formId}.validate();
+    //     if(result){
+    //         callback(new Error(result));
+    //     }
+    //     if(${config.required}&&value.length==0){
+    //       callback(new Error("请至少输入一条数据！"));
+    //     }
+    //     callback();
+    //   }}`);
+    // }
     ruleList.push(`${scheme.__vModel__}: [${rules.join(",")}],`);
   }
 }

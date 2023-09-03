@@ -11,11 +11,9 @@
       ref="xTable"
       align="center"
       size="medium"
-      min-height="550"
-      :scroll-y="{ enabled: false }"
       :data="dataSource"
       :edit-rules="rules"
-      :edit-config="{ trigger: 'click', mode: 'cell' }"
+      :edit-config="{ trigger: 'click', mode: 'row' }"
     >
       <vxe-column type="seq" width="60"></vxe-column>
       <vxe-column
@@ -24,7 +22,7 @@
         :field="col.props"
         :title="col.label"
         :min-width="220"
-        :edit-render="col.autofocus"
+        :edit-render="{}"
       >
         <template #header="{ column }">
           <span>{{ column.title }}</span>
@@ -136,7 +134,6 @@ export default {
       dataSource: this.value,
     };
   },
-
   computed: {
     rules() {
       let rule = {};
@@ -187,40 +184,30 @@ export default {
       });
       return rule;
     },
+
     renderColumns() {
       return this.columns.map((column) => {
         let component;
-        let autofocus;
         if (column.type.__config__.label == "单行文本") {
           component = "input";
-          autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "多行文本") {
           component = "inputarea";
-          autofocus = { autofocus: ".el-textarea__inner" };
         } else if (column.type.__config__.label == "数字") {
           component = "number";
-          autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "链接") {
           component = "link";
-          autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "邮箱") {
           component = "mail";
-          autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "电话") {
           component = "phone";
-          autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "地址") {
           component = "address";
-          autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "下拉选择") {
           component = "select";
-          autofocus = { autofocus: ".el-input__inner" };
         } else if (column.type.__config__.label == "日期选择") {
           component = "date";
-          autofocus = { autofocus: ".el-input__inner" };
         } else {
           component = "";
-          autofocus = {};
         }
         let { key, label, props } = column;
         let placeholder = column.type.placeholder;
@@ -230,7 +217,6 @@ export default {
           label,
           props,
           component,
-          autofocus,
           comment,
           placeholder,
         };
@@ -256,10 +242,6 @@ export default {
 
     async insertRow() {
       const $table = this.$refs.xTable;
-      const errMap = await $table.validate().catch((errMap) => errMap);
-      if (errMap) {
-        return;
-      }
       const newRecord = {};
       const { row: newRow } = await $table.insertAt(newRecord, -1);
       await $table.setActiveRow(newRow);

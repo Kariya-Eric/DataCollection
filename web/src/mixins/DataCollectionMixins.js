@@ -160,11 +160,6 @@ export const DataCollectionMixin = {
       this.$refs.modalForm.title = "新增" + this.$refs.modalForm.name;
     },
 
-    handleUpload(row) {
-      this.$refs.upload.info = Object.assign({}, row);
-      this.$refs.upload.show();
-    },
-
     handleExport() {
       if (!this.url || !this.url.exportUrl) {
         this.$message.error("请设置url.exportUrl!");

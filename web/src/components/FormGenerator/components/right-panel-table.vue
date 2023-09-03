@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <template v-if="activeData.__config__.tag != 'floatTable'">
+      <template>
         <el-divider>列名 - 属性</el-divider>
         <draggable
           :list="activeData.columns"
@@ -34,10 +34,6 @@
             添加列
           </el-button>
         </div>
-      </template>
-      <template v-else>
-        <el-divider>表格设置</el-divider>
-        <upload-excel style="margin-left: 20px" @update="updateHeader" />
       </template>
     </div>
     <template v-if="activeData.selectedCol !== -1">
@@ -284,13 +280,11 @@ import {
   date,
   address,
 } from "../config/config_common";
-import UploadExcel from "./upload-excel.vue";
 export default {
   name: "RightPanelTable",
   props: ["activeData"],
   components: {
     draggable,
-    UploadExcel,
   },
   data() {
     return {
@@ -380,21 +374,6 @@ export default {
       } else {
         this.$set(column, "dateType", "year");
       }
-    },
-
-    updateHeader(excel) {
-      const { html, cells } = excel;
-      this.activeData.theader = html;
-      let columns = [];
-      for (let i = 0; i < cells[cells.length - 1].length; i++) {
-        let col = {
-          key: i + 1,
-          props: "col" + (i + 1),
-          type: input,
-        };
-        columns.push(col);
-      }
-      this.activeData.columns = columns;
     },
   },
 };

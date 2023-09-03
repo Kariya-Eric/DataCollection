@@ -1,6 +1,6 @@
 <template>
   <div class="tableDiv">
-    <div v-html="theader"></div>
+    <div v-html="theader" class="header"></div>
     <table class="table">
       <tbody class="table-body" id="tbody">
         <tr class="table-list">
@@ -91,5 +91,25 @@ export default {
   overflow-y: hidden;
 }
 
-
+/deep/ .header {
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+    .table-body {
+      cursor: pointer;
+      .table-list {
+        height: 46px;
+        line-height: 46px;
+        > th {
+          padding: 0 10px;
+          border: 1px solid #dfe6ec;
+          min-width: 220px;
+          &.selected {
+            background: #d4e7f5;
+          }
+        }
+      }
+    }
+  }
+}
 </style>

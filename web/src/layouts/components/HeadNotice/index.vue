@@ -24,7 +24,7 @@
         <span>{{ userInfo.username }}</span>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="reset"> 修改密码 </el-dropdown-item>
+        <el-dropdown-item command="reset"> 修改 </el-dropdown-item>
         <el-dropdown-item command="quit">
           <span>
             <svg-icon icon-class="user" />
@@ -84,7 +84,7 @@ export default {
   margin-top: 12px;
 }
 .notice {
-  flex: 0 1 220px;
+  flex: 0 1 260px;
   color: #fff;
   padding: 0 14px;
   cursor: pointer;

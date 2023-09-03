@@ -1,9 +1,15 @@
-import { getAction, deleteAction, putAction, postAction } from "../api";
+import {
+  getAction,
+  deleteAction,
+  putAction,
+  postAction,
+  downFile,
+} from "../api";
 
 //新增表单合集
 const addFormCollection = (params) =>
   postAction("/uc/api/formCollection/add", params);
-  
+
 //修改表单合集
 const updateFormCollection = (params) =>
   putAction("/uc/api/formCollection/update", params);
@@ -59,6 +65,13 @@ const addRule = (params) => postAction("/uc/api/formVerification/add", params);
 
 const updateRule = (params) =>
   putAction("/uc/api/formVerification/update", params);
+
+//==========================================================================================
+
+//上传指南
+const updateGuide = (params) =>
+  putAction("/uc/api/formCollection/updateGuid", params);
+
 export {
   addFormCollection,
   updateFormCollection,
@@ -79,4 +92,5 @@ export {
   delRule,
   addRule,
   updateRule,
+  updateGuide,
 };

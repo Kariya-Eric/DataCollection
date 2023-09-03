@@ -80,7 +80,7 @@
         </el-table-column>
         <el-table-column
           label="表单大类"
-          prop="formCategories"
+          prop="formCategoriesName"
           align="center"
         />
         <el-table-column
@@ -153,7 +153,7 @@
       @refresh="loadData"
       :categories="listCategories"
     />
-    <copy-form-dialog ref="copyFormDialog" />
+    <copy-form-dialog ref="copyFormDialog" :formId="collectionDetail.id" />
   </div>
 </template>
 

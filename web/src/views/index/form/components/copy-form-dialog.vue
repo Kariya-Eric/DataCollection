@@ -59,6 +59,7 @@
 import { formCollectionList, getFormList, copyForm } from "@/api/form";
 export default {
   name: "CopyFormDialog",
+  props: ["formId"],
   data() {
     return {
       visible: false,
@@ -114,8 +115,10 @@ export default {
       this.$refs.copyForm.validate((valid) => {
         if (valid) {
           this.loading = true;
-          let param = { ...this.copyForm };
-          param.formIds = param.formIds.join(".");
+          let param = {
+            formCollectionId: this.formId,
+            formIds: this.copyForm.formIds.join(","),
+          };
           copyForm(param)
             .then((res) => {
               if (res.state) {

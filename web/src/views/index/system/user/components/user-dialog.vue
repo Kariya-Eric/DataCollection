@@ -163,6 +163,7 @@ export default {
           .then((res) => {
             if (res.state) {
               this.userForm = res.value;
+              this.$nextTick(() => this.$refs.userForm.clearValidate());
             }
           })
           .finally(() => (this.loading = false));
@@ -227,5 +228,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -76,10 +76,12 @@
         <el-table-column label="填报指南" prop="guidFiles" align="center">
           <template slot-scope="scope" v-if="scope.row.guidFiles">
             <p
-              v-for="(link, index) in scope.row.guidFiles.split(',')"
+              v-for="(guidFile, index) in JSON.parse(scope.row.guidFiles)"
               :key="index"
             >
-              <a :href="link"><ellipsis :value="link" :length="40" /></a>
+              <a href="javascript:;" @click="downloadGuid(guidFile)"
+                ><ellipsis :value="guidFile.fileName" :length="40"
+              /></a>
             </p>
           </template>
         </el-table-column>
@@ -115,17 +117,18 @@
       <!-- Table End -->
     </el-card>
     <add-collection-dialog ref="modalForm" @refresh="loadData" />
-    <mupload ref="upload" multiple @success="uploadSuccess" />
+    <guide-files-dialog ref="guideFilesDialog" @refresh="loadData" />
   </div>
 </template>
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
 import AddCollectionDialog from "./components/add-collection-dialog";
-import { enableForm, updateFormCollection } from "@/api/form";
+import GuideFilesDialog from "./components/guide-files-dialog.vue";
+import { enableForm } from "@/api/form";
 export default {
   name: "FormList",
   mixins: [DataCollectionMixin],
-  components: { AddCollectionDialog },
+  components: { AddCollectionDialog, GuideFilesDialog },
   data() {
     return {
       url: {
@@ -171,24 +174,19 @@ export default {
         });
     },
 
-    //上传成功
-    uploadSuccess(files, record) {
-      let param = {
-        ...record,
-        guidFiles: files.map((file) => file.filePath).join(","),
-      };
-      updateFormCollection(param)
-        .then((res) => {
-          if (res.state) {
-            this.$message.success(res.message);
-            this.loadData();
-          } else {
-            this.$message.error(res.message);
-          }
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+    handleUpload(row) {
+      this.$refs.guideFilesDialog.show(row);
+    },
+
+    downloadGuid(file) {
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = file.filePath;
+      link.setAttribute("download", file.fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(file.filePath);
     },
   },
 };
