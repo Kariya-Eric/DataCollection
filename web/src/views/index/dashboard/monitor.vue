@@ -47,15 +47,12 @@
         </template>
       </vxe-table-column>
       <vxe-table-column
-        field="status"
+        field="num"
         title="是否"
         :edit-render="{ type: 'default' }"
       >
         <template v-slot:edit="scope">
-          <el-radio-group v-model="scope.row.status">
-            <el-radio :label="0">是</el-radio>
-            <el-radio :label="1">否</el-radio>
-          </el-radio-group>
+          <input-number v-model="scope.row.num" />
         </template>
       </vxe-table-column>
       <vxe-table-column field="id" title="操作" fixed="right" align="center">
@@ -81,7 +78,7 @@ export default {
         {
           name: "xxx",
           date: "2020-12-22",
-          status: 0,
+          num: 20,
         },
       ],
       // 列表必填验证
@@ -97,5 +94,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

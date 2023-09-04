@@ -12,6 +12,7 @@ import Select from "./Select";
 import FormGenerator from "./FormGenerator";
 import Ellipsis from "./Ellipsis";
 import CustomComponents from "./FormGenerator/layouts";
+import ElComponents from "./ElementUI";
 
 export default {
   install(Vue) {
@@ -29,5 +30,6 @@ export default {
     Vue.component("mselect", Select);
     Vue.component("ellipsis", Ellipsis);
     Vue.use(CustomComponents);
+    Vue.use(ElComponents);
   },
 };

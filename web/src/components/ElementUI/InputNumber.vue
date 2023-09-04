@@ -13,17 +13,17 @@
 export default {
   name: "InputNumber",
   model: {
-    prop: "numberValue",
+    prop: "value",
     event: "change",
   },
   props: {
-    numberValue: {
+    value: {
       type: [Number, String],
       default: undefined,
     },
     controls: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   data() {
@@ -32,7 +32,7 @@ export default {
     };
   },
   watch: {
-    numberValue(newValue) {
+    value(newValue) {
       if (typeof newValue === "number") {
         this.insideValue = newValue;
       } else this.insideValue = undefined;
