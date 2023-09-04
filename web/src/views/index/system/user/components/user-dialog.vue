@@ -1,5 +1,11 @@
 <template>
-  <el-dialog width="35%" :visible="visible" @close="close" :title="title">
+  <el-dialog
+    width="35%"
+    :visible="visible"
+    v-if="visible"
+    @close="close"
+    :title="title"
+  >
     <el-form
       ref="userForm"
       :model="userForm"
@@ -76,15 +82,17 @@
         />
       </el-form-item>
       <el-form-item label="状态">
-        <el-switch
-          v-model="userForm.status"
-          :active-value="1"
-          :inactive-value="0"
-        />
+        <transition>
+          <el-switch
+            v-model="userForm.status"
+            :active-value="1"
+            :inactive-value="0"
+          />
+        </transition>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer" v-if="!disableSubmit">
-      <mbutton @click="close" name="取消" />
+      <mbutton @click="visible = false" name="取消" />
       <mbutton
         type="primary"
         name="提交"
@@ -175,7 +183,7 @@ export default {
 
     close() {
       this.visible = false;
-      this.$nextTick(() => this.$refs.userForm.resetFields());
+      this.$refs.userForm.resetFields();
     },
 
     handleSubmit() {
@@ -228,4 +236,5 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>
