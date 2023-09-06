@@ -1,39 +1,44 @@
 <template>
-  <div class="dialog">
-    <el-dialog
-      :visible="visible"
-      :title="title"
-      :width="width"
-      v-bind="$attrs"
-      v-on="$listeners"
-    >
-      <div slot="title" class="dialog-title">
-        <slot name="title"></slot>
-      </div>
-      <div class="dialog-body">
-        <slot> </slot>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="handleCancel">{{ cancelText }}</el-button>
-        <el-button type="primary" @click="handleConfirm">{{
-          okText
-        }}</el-button>
-      </div>
-    </el-dialog>
-  </div>
+  <el-dialog
+    :visible="visible"
+    :title="title"
+    :width="width"
+    v-bind="$attrs"
+    v-on="$listeners"
+  >
+    <div slot="title" class="dialog-title" v-if="!title">
+      <slot name="title"></slot>
+    </div>
+    <el-scrollbar style="height: 50vh">
+      <slot> </slot>
+    </el-scrollbar>
+    <div slot="footer" class="dialog-footer">
+      <mbutton @click="handleCancel" :name="cancelText" />
+      <mbutton
+        type="primary"
+        @click="handleConfirm"
+        :name="okText"
+        :loading="loading"
+      />
+    </div>
+  </el-dialog>
 </template>
 
 <script>
 export default {
   name: "Dialog",
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     visible: {
       type: Boolean,
       default: false,
     },
     width: {
       type: String,
-      default: "550px",
+      default: "640px",
     },
     title: {
       type: String,
@@ -49,7 +54,9 @@ export default {
     },
   },
   methods: {
-    handleConfirm() {},
+    handleConfirm() {
+      this.$emit("confirm");
+    },
 
     handleCancel() {
       this.$emit("update:visible", false);
@@ -64,25 +71,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dialog {
-  width: 550px;
-  /deep/.el-dialog {
-    z-index: 10000;
-    background-color: #ffffff;
-    box-shadow: 0px 0px 10px 0px rgba(17, 130, 251, 0.5);
-    border-radius: 8px;
-    //margin-top: 10% !important;
-  }
-  /deep/.el-dialog__body {
-    padding: 20px 20px 12px 20px;
-  }
-  /deep/.el-dialog__header {
-    border-bottom: 1px solid #f6f7f9;
-    box-sizing: border-box;
-    padding: 16px 30px;
-  }
-  .dialog-footer {
-    text-align: center;
-  }
+/deep/.el-dialog {
+  z-index: 10000;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px 0px #2f68bd;
+  border-radius: 8px;
+  //margin-top: 10% !important;
+}
+/deep/.el-dialog__body {
+  padding: 24px 40px 12px 40px;
+}
+/deep/.el-dialog__header {
+  border-bottom: 1px solid #e5e5e5;
+  box-sizing: border-box;
+  padding: 16px 30px;
+}
+.dialog-footer {
+  text-align: center;
+}
+/deep/.el-scrollbar__wrap {
+  overflow-x: hidden;
 }
 </style>

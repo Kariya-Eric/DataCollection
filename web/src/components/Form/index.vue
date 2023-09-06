@@ -2,10 +2,19 @@
   <el-form
     :model="form"
     ref="form"
+    v-loading="loading"
     :label-position="labelPoistion"
     :label-width="labelWidth"
+    v-bind="$attrs"
+    v-on="$listeners"
   >
-    <el-form-item v-for="(item, i) in items" :key="i">
+    <el-form-item
+      v-for="(item, i) in items"
+      :key="i"
+      :label="item.label"
+      :prop="item.prop"
+      :rules="rules(item)"
+    >
       <!-- input -->
       <el-input
         v-if="item.type === 'input'"
@@ -30,7 +39,7 @@
       >
         <template v-if="item.group">
           <el-option-group
-            v-for="(group,k)in item.options"
+            v-for="(group, k) in item.options"
             :key="k"
             :label="group.label"
             :value="group.value"
@@ -129,6 +138,34 @@
         size="small"
         :placeholder="item.placeholder"
       ></el-date-picker>
+
+      <!-- textarea -->
+      <el-input
+        v-if="item.type === 'textarea'"
+        type="textarea"
+        v-model="form[item.prop]"
+        :disabled="item.disabled"
+        clearable
+        :rows="2"
+        size="small"
+        :placeholder="item.placeholder"
+      />
+
+      <!-- inputnumber -->
+      <el-input-number
+        v-if="item.type === 'number'"
+        v-model="form[item.prop]"
+        :disabled="item.disabled"
+        clearable
+        size="small"
+        :placeholder="item.placeholder"
+        :min="0"
+        :precision="0"
+      ></el-input-number>
+    </el-form-item>
+    <el-form-item v-if="submitButtons">
+      <mbutton type="primary" @click="submit" name="提交" />
+      <mbutton @click="cancel" name="取消" />
     </el-form-item>
   </el-form>
 </template>
@@ -137,6 +174,15 @@
 export default {
   name: "Form",
   props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    submitButtons: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     form: {
       type: Object,
       required: true,
@@ -154,8 +200,46 @@ export default {
       default: "80px",
     },
   },
-  data() {
-    return {};
+  mounted() {
+    this.items.forEach((item) => {
+      let value = this.form[item.prop];
+      if (!value) {
+        if (item.type === "select" && item.multiple) {
+          this.$set(this.form, item.prop, []);
+        } else if (item.type === "checkbox") {
+          this.$set(this.form, item.prop, []);
+        } else if (item.type === "switch") {
+          this.$set(this.form, item.prop, item.number ? 0 : 1);
+        } else {
+          this.$set(this.form, item.prop, "");
+        }
+      }
+    });
+    this.$nextTick(() => this.$refs.form.clearValidate());
+  },
+  methods: {
+    async submit() {
+      try {
+        await this.$refs.form.validate();
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+    cancel() {
+      this.$emit("cancel");
+    },
+
+    rules(item) {
+      let rules = [];
+      if (item.rules) {
+        rules = [...item.rules];
+      }
+      if (item.required) {
+        rules.push({ required: true, message: `请输入${item.label}` });
+      }
+      return rules;
+    },
   },
 };
 </script>

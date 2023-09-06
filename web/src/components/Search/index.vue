@@ -4,9 +4,7 @@
 export default {
   name: "Search",
   data() {
-    return {
-        
-    };
+    return {};
   },
 };
 </script>

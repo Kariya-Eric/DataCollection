@@ -10,6 +10,8 @@ import Status from "./Status";
 import FormGenerator from "./FormGenerator";
 import Ellipsis from "./Ellipsis";
 import Table from './Table'
+import Form from './Form'
+import Dialog from "./Dialog";
 import CustomComponents from "./FormGenerator/layouts"
 
 
@@ -27,6 +29,8 @@ export default {
     Vue.component("formGenerator", FormGenerator);
     Vue.component("ellipsis", Ellipsis);
     Vue.component("mtable", Table)
+    Vue.component('mform', Form)
+    Vue.component('mdialog', Dialog)
     Vue.use(CustomComponents);
   },
 };

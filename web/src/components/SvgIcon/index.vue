@@ -1,7 +1,9 @@
 <template>
-  <svg class="svg-icon" aria-hidden="true" :width="width" :height="height">
-    <use :href="iconName" />
-  </svg>
+  <span @click="click">
+    <svg class="svg-icon" aria-hidden="true" :style="{ width, height }">
+      <use :xlink:href="iconName" :fill="color" />
+    </svg>
+  </span>
 </template>
 
 <script>
@@ -20,10 +22,20 @@ export default {
       type: String,
       default: "1em",
     },
+    color: {
+      type: String,
+      default: "",
+    },
   },
   computed: {
     iconName() {
       return `#icon-${this.iconClass}`;
+    },
+  },
+  methods: {
+    click() {
+      console.log("click");
+      this.$emit("click");
     },
   },
 };
@@ -31,7 +43,6 @@ export default {
 
 <style scoped>
 .svg-icon {
-  vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
 }
