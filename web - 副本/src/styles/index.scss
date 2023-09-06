@@ -1,0 +1,187 @@
+@import "./element-ui.scss";
+@import "./variables.scss";
+@import "./mixin.scss";
+@import "./transition.scss";
+
+body {
+  overflow: hidden;
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: PingFangSC-Semibold, PingFang SC;
+  font-size: 14px;
+}
+
+html {
+  overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  overflow: auto;
+  height: 100%;
+
+  // 主体区域
+  .main-container {
+    min-height: 100%;
+    transition: margin-left 0.28s;
+    position: relative;
+  }
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  // color: inherit;
+  color: $--color-primary;
+  outline: none;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: $--color-primary;
+  text-decoration: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+.app-content {
+  margin: 12px 12px 0px 12px;
+}
+
+.app-card {
+  margin-bottom: 12px;
+}
+
+.link-type,
+.link-type:focus {
+  color: #2f68bd;
+  cursor: pointer;
+
+  &:hover {
+    color: #2f68bd;
+  }
+}
+
+// LIST页面头部搜索表单
+.headerForm {
+  margin-top: 5px;
+  .el-input {
+    width: 220px;
+  }
+  .el-select {
+    width: 220px;
+  }
+  .el-button {
+    margin-left: 30px;
+  }
+  .el-button + .el-button {
+    margin-left: 16px;
+  }
+}
+
+// LIST页面表格样式
+.listTable {
+  .el-table__header tr,
+  .el-table__header th {
+    padding: 0;
+    height: 50px;
+    color: #000000;
+  } //表头
+  .el-table__body tr,
+  .el-table__body td {
+    padding: 0;
+    height: 50px;
+  } ///各行
+}
+
+// LIST页面表格头部
+.listHeader {
+  margin-top: 6px;
+  > span:first-child {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  .listHeaderButton {
+    margin-bottom: 16px;
+    float: right;
+    .el-button + .el-button {
+      margin-left: 16px;
+    }
+  }
+}
+
+//dialog和drawer标题
+.titleSlot {
+  margin: 20px 24px 15px 24px;
+  > span:first-child {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 22px;
+  }
+  .titleButton {
+    float: right;
+    .el-button + .el-button {
+      margin-left: 16px;
+    }
+  }
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000;
+  line-height: 20px;
+}
+
+//card标题
+.cardTitleSlot {
+  margin: 20px 24px 5px 24px;
+  > span:first-child {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 26px;
+  }
+  .titleButton {
+    float: right;
+    .el-button + .el-button {
+      margin-left: 16px;
+    }
+  }
+}

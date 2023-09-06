@@ -1,58 +1,15 @@
 <template>
   <div>
     <el-card shadow="always" class="app-card">
-      <!-- Query Start -->
-      <el-form
+      <msearch
+        :form="queryParam"
         label-width="50px"
-        size="small"
-        :inline="true"
-        class="headerForm"
-      >
-        <el-form-item label="部门">
-          <el-select
-            v-model="queryParam.orgId"
-            filterable
-            placeholder="请选择部门"
-          >
-            <el-option
-              v-for="item in departList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="角色">
-          <el-select
-            v-model="queryParam.roleId"
-            filterable
-            placeholder="请选择角色"
-          >
-            <el-option
-              v-for="item in roleList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="专业">
-          <el-select
-            v-model="queryParam.major"
-            filterable
-            placeholder="请选择专业"
-          >
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-input
-            v-model="queryParam.queryWord"
-            placeholder="请输入姓名,帐号,手机"
-          />
-        </el-form-item>
-        <mbutton type="primary" @click="searchQuery" name="搜索" />
-        <mbutton type="primary" @click="searchReset" name="重置" />
-      </el-form>
+        :items="searchItems"
+        okBtn="查询"
+        cancelBtn="重置"
+        @submit="searchQuery"
+        @cancel="searchReset"
+      />
 
       <div class="listHeader">
         <span>用户管理</span>
@@ -77,67 +34,47 @@
         </div>
       </div>
 
-      <!-- Table Start -->
-      <el-table
+      <mtable
         v-loading="loading"
-        :data="dataSource"
-        class="listTable"
-        :header-cell-style="headerStyle"
-        :border="true"
         @selection-change="onSelectChange"
+        :data="dataSource"
+        :columns="columns"
+        :pagination="ipagination"
+        selection="selection"
       >
-        <el-table-column type="selection" width="70" align="center" />
-        <el-table-column label="帐号" prop="account" align="center" />
-        <el-table-column label="姓名" prop="name" align="center" />
-        <el-table-column label="所属部门" prop="orgName" align="center" />
-        <el-table-column label="所属专业" align="center" />
-        <el-table-column label="角色" prop="roleName" align="center" />
-        <el-table-column label="邮箱" prop="email" align="center" />
-        <el-table-column label="手机号" prop="mobile" align="center" />
-        <el-table-column label="状态" prop="status" align="center">
-          <template slot-scope="scope">
-            <status status="3" title="启用" v-if="scope.row.status == 1" />
-            <status status="2" title="禁用" v-else />
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" width="260">
-          <template slot-scope="scope">
-            <menu-link @click="handleDetail(scope.row)">查看</menu-link>
-            <menu-link @click="handleEdit(scope.row)">编辑</menu-link>
-            <el-popconfirm
-              @confirm="delBatch(scope.row.id)"
-              title="确定删除该用户吗？"
-            >
-              <menu-link slot="reference">删除</menu-link>
-            </el-popconfirm>
-            <el-popconfirm
-              @confirm="resetUser(scope.row)"
-              title="确定重置该用户的密码吗？"
-            >
-              <menu-link slot="reference" no-divider>重置密码</menu-link>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination :pagination="ipagination" @change="loadData" />
+        <template slot="status" slot-scope="{ row }">
+          <status status="3" title="启用" v-if="row.status == 1" />
+          <status status="2" title="禁用" v-else />
+        </template>
+        <template slot="action" slot-scope="scope">
+          <menu-link @click="handleDetail(scope.row)">查看</menu-link>
+          <menu-link @click="handleEdit(scope.row)">编辑</menu-link>
+          <el-popconfirm
+            @confirm="delBatch(scope.row.id)"
+            title="确定删除该用户吗？"
+          >
+            <menu-link slot="reference">删除</menu-link>
+          </el-popconfirm>
+          <el-popconfirm
+            @confirm="resetUser(scope.row)"
+            title="确定重置该用户的密码吗？"
+          >
+            <menu-link slot="reference" no-divider>重置密码</menu-link>
+          </el-popconfirm>
+        </template>
+      </mtable>
     </el-card>
-    <user-dialog
-      ref="modalForm"
-      @refresh="loadData"
-      :roles="roleList"
-      :depts="departList"
-    />
+    <user-dialog ref="userDialog" :roles="roleList" :depts="departList" />
   </div>
 </template>
 
 <script>
 import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
-import UserDialog from "./components/user-dialog";
-import { resetPwd } from "@/api/system/user";
 import { USER_INFO } from "@/store/mutation-types";
 import { initDeptTree } from "@/api/system/depart";
 import { getRoleList } from "@/api/system/role";
 import { downloadTemp } from "@/api/common";
+import UserDialog from "./components/user-dialog1.vue";
 export default {
   name: "UserList",
   mixins: [DataCollectionMixin],
@@ -153,6 +90,27 @@ export default {
         uploadUrl: "/uc/api/user/import",
         exportUrl: "/uc/api/user/export",
       },
+      searchItems: [
+        { label: "部门", prop: "orgId", type: "select", options: [] },
+        { label: "角色", prop: "roleId", type: "select", options: [] },
+        { label: "专业", prop: "major", type: "select", options: [] },
+        {
+          prop: "queryWord",
+          type: "input",
+          placeholder: "请输入姓名,帐号,手机",
+        },
+      ],
+      columns: [
+        { prop: "account", label: "账号" },
+        { prop: "name", label: "姓名" },
+        { prop: "orgName", label: "所属部门" },
+        { prop: "account", label: "所属专业" },
+        { prop: "roleName", label: "角色" },
+        { prop: "email", label: "邮箱" },
+        { prop: "mobile", label: "手机号" },
+        { slot: "status", label: "状态" },
+        { slot: "action", label: "操作", width: 260 },
+      ],
     };
   },
 
@@ -163,17 +121,9 @@ export default {
   },
 
   methods: {
-    resetUser(row) {
-      resetPwd({ account: row.account, newPwd: "123456" }).then((res) => {
-        if (res.state) {
-          this.$message.success(res.message);
-          this.loadData();
-        } else {
-          this.$message.error(res.message);
-        }
-      });
+    handleAdd() {
+      this.$refs.userDialog.show();
     },
-
     renderDepart(departList) {
       let options = [];
       let functionalDepart = departList[0].children.find(
@@ -208,6 +158,7 @@ export default {
       getRoleList({}).then((res) => {
         if (res.state) {
           this.roleList = res.value.rows.filter((role) => role.enabled == 1);
+          this.searchItems[1].options = this.roleList;
         }
       });
     },
@@ -242,10 +193,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.downHref {
-  line-height: 32px;
-  margin-left: 12px;
-  margin-right: 12px;
-}
-</style>
+<style scoped lang="scss"></style>
