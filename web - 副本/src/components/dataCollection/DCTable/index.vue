@@ -1,21 +1,7 @@
 <template>
   <div>
-    <el-table
-      :data="data"
-      border
-      :header-cell-style="headerStyle"
-      style="width: 100%"
-      v-bind="$attrs"
-      class="listTable"
-      v-on="$listeners"
-      ref="table"
-    >
-      <el-table-column
-        v-if="selection"
-        :type="selection"
-        width="60"
-        align="center"
-      />
+    <el-table :data="data" border :header-cell-style="headerStyle" style="width: 100%" v-bind="$attrs" class="list-table" v-on="$listeners" ref="table">
+      <el-table-column v-if="selection" :type="selection" width="60" align="center" />
       <el-table-column
         v-for="(col, i) in columns"
         :key="i"
@@ -30,7 +16,7 @@
           <template v-else>
             <span v-if="!row[col.prop]">-</span>
             <span v-else-if="typeof row[col.prop] === 'string'">
-              <ellipsis v-model="row[col.prop]" :length="col.length" />
+              <dc-ellipsis v-model="row[col.prop]" :length="col.length" />
             </span>
             <span v-else>{{ row[col.prop] }}</span>
           </template>
@@ -54,55 +40,55 @@
 
 <script>
 export default {
-  name: "Table",
+  name: 'DCTable',
   props: {
     selection: {
       type: String,
-      required: false,
+      required: false
     },
     data: {
       type: Array,
-      required: true,
+      required: true
     },
     columns: {
       type: Array,
-      required: true,
+      required: true
     },
     pagination: {
-      type: Object,
+      type: Object
     },
     layout: {
       type: String,
-      default: "total, prev, pager, next, sizes,jumper",
+      default: 'total, prev, pager, next, sizes,jumper'
     },
     background: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   data() {
     return {
       headerStyle: {
-        backgroundColor: "#F4F5F6",
-      },
-    };
+        backgroundColor: '#F4F5F6'
+      }
+    }
   },
   methods: {
     handleSizeChange(val) {
-      this.pagination.pageSize = val;
-      this.$emit("change", this.pagination);
+      this.pagination.pageSize = val
+      this.$emit('change', this.pagination)
     },
 
     handleCurrentChange(val) {
-      this.pagination.current = val;
-      this.$emit("change", this.pagination);
+      this.pagination.current = val
+      this.$emit('change', this.pagination)
     },
 
     clearSelection() {
-      this.$refs.table.clearSelection();
-    },
-  },
-};
+      this.$refs.table.clearSelection()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

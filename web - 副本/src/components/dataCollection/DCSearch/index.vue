@@ -1,10 +1,10 @@
 <template>
-  <mform
+  <dc-form
     ref="searchForm"
     :items="items"
     :form="form"
     :inline="true"
-    class="headerForm"
+    class="header-form"
     :label-width="labelWidth"
     submitButtons
     okBtn="查询"
@@ -16,31 +16,31 @@
 
 <script>
 export default {
-  name: "Search",
+  name: 'DCSearch',
   props: {
     form: {
       type: Object,
-      required: true,
+      required: true
     },
     items: {
       type: Array,
-      required: true,
+      required: true
     },
     labelWidth: {
       type: String,
-      default: "80px",
-    },
+      default: '80px'
+    }
   },
   methods: {
     cancel() {
-      this.$emit("cancel");
+      this.$emit('cancel')
     },
 
     submit() {
-      this.$emit("submit");
-    },
-  },
-};
+      this.$emit('submit')
+    }
+  }
+}
 </script>
 
 <style></style>

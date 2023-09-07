@@ -1,73 +1,60 @@
 <template>
-  <el-dialog
-    :visible="visible"
-    :title="title"
-    :width="width"
-    v-bind="$attrs"
-    v-on="$listeners"
-  >
+  <el-dialog :visible="visible" :title="title" :width="width" v-bind="$attrs" v-on="$listeners">
     <div slot="title" class="dialog-title" v-if="!title">
       <slot name="title"></slot>
     </div>
-    <el-scrollbar style="height: 50vh">
-      <slot> </slot>
-    </el-scrollbar>
+    <slot> </slot>
     <div slot="footer" class="dialog-footer">
-      <mbutton @click="handleCancel" :name="cancelText" />
-      <mbutton
-        type="primary"
-        @click="handleConfirm"
-        :name="okText"
-        :loading="loading"
-      />
+      <el-button @click="handleCancel">{{ cancelText }}</el-button>
+      <el-button type="primary" @click="handleConfirm" :disabled="disabled">{{ okText }} </el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
 export default {
-  name: "Dialog",
+  name: 'DCDialog',
   props: {
-    loading: {
+    disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     visible: {
       type: Boolean,
-      default: false,
+      default: false
     },
     width: {
       type: String,
-      default: "640px",
+      default: '640px'
     },
     title: {
       type: String,
-      default: null,
+      default: null
     },
     okText: {
       type: String,
-      default: "确 认",
+      default: '确 认'
     },
     cancelText: {
       type: String,
-      default: "取 消",
-    },
+      default: '取 消'
+    }
   },
   methods: {
     handleConfirm() {
-      this.$emit("confirm");
+      this.$emit('confirm')
     },
 
     handleCancel() {
-      this.$emit("update:visible", false);
-      this.$emit("cancel");
+      this.$emit('update:visible', false)
+      this.$emit('cancel')
     },
 
     close() {
-      this.$emit("update:visible", false);
-    },
-  },
-};
+      this.$emit('update:visible', false)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -88,8 +75,5 @@ export default {
 }
 .dialog-footer {
   text-align: center;
-}
-/deep/.el-scrollbar__wrap {
-  overflow-x: hidden;
 }
 </style>
