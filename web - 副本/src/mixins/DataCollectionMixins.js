@@ -141,19 +141,16 @@ export const DataCollectionMixin = {
 
     handleDetail: function (record) {
       this.$refs.modalForm.info(record)
-      this.$refs.modalForm.addFlag = false
       this.$refs.modalForm.title = this.$refs.modalForm.name + '详情'
     },
 
     handleEdit: function (record) {
       this.$refs.modalForm.edit(record)
-      this.$refs.modalForm.addFlag = false
       this.$refs.modalForm.title = '修改' + this.$refs.modalForm.name
     },
 
     handleAdd: function () {
       this.$refs.modalForm.add()
-      this.$refs.modalForm.addFlag = true
       this.$refs.modalForm.title = '新增' + this.$refs.modalForm.name
     },
 

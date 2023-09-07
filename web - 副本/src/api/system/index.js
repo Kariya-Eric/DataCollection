@@ -30,7 +30,7 @@ const getOrgInfo = (params) => getAction(`/uc/api/org/get/${params}`);
 //获取组织人员
 const getOrgUser = (params) =>
   getAction(
-    `/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyWord}&roleId=${params.roleId}`
+    `/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyword}&roleId=${params.roleId}`
   );
 //删除组织
 const delOrg = (params) => deleteAction("/uc/api/org/remove", params);

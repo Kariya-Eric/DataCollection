@@ -86,6 +86,12 @@ a:hover {
 // LIST页面头部搜索表单
 .header-form {
   margin-top: 5px;
+  .el-button {
+    margin-left: 16px;
+  }
+  .el-button + .el-button {
+    margin-left: 16px;
+  }
 }
 
 // LIST页面表格样式

@@ -1,6 +1,16 @@
 <template>
   <div>
-    <el-table :data="data" border :header-cell-style="headerStyle" style="width: 100%" v-bind="$attrs" class="list-table" v-on="$listeners" ref="table">
+    <el-table
+      :data="data"
+      :size="size"
+      border
+      :header-cell-style="headerStyle"
+      style="width: 100%"
+      v-bind="$attrs"
+      class="list-table"
+      v-on="$listeners"
+      ref="table"
+    >
       <el-table-column v-if="selection" :type="selection" width="60" align="center" />
       <el-table-column
         v-for="(col, i) in columns"
@@ -42,6 +52,10 @@
 export default {
   name: 'DCTable',
   props: {
+    size: {
+      type: String,
+      default: 'medium'
+    },
     selection: {
       type: String,
       required: false

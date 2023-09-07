@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card shadow="always" class="app-card">
-      <dc-search :form="queryParam" label-width="50px" :items="searchItems" okBtn="查询" cancelBtn="重置" @submit="searchQuery" @cancel="searchReset" />
+      <dc-search :form="queryParam" label-width="50px" :items="searchItems" okBtn="搜索" cancelBtn="重置" @submit="searchQuery" @cancel="searchReset" />
 
       <div class="list-header">
         <span>用户管理</span>
@@ -9,7 +9,7 @@
           <el-popconfirm v-if="selectedRowKeys.length > 0" @confirm="delBatch" title="确认批量删除选中用户吗？">
             <el-button type="danger" slot="reference">批量删除</el-button>
           </el-popconfirm>
-          <el-button style="margin-left: 16px" @click="handleAdd" type="primary"><svg-icon icon-class="新建" />添加用户</el-button>
+          <el-button style="margin-left: 12px" @click="handleAdd" type="primary"><svg-icon icon-class="新建" />添加用户</el-button>
           <el-button type="primary">导入</el-button>
           <el-button type="primary" @click="handleExport">导出</el-button>
           <a class="downHref" @click="downloadTemp">下载导入模板</a>
@@ -36,7 +36,7 @@
         </template>
       </dc-table>
     </el-card>
-    <user-dialog ref="modalForm" :roles="roleList" :depts="departList" name="用户" />
+    <user-dialog ref="modalForm" :roles="roleList" :depts="departList" name="用户" @refresh="loadData" />
   </div>
 </template>
 
@@ -47,6 +47,7 @@ import { initDeptTree } from '@/api/system/depart'
 import { getRoleList } from '@/api/system/role'
 import { downloadTemp } from '@/api/common'
 import UserDialog from './components/user-dialog'
+import { resetPwd } from '@/api/system/user'
 export default {
   name: 'UserList',
   mixins: [DataCollectionMixin],
@@ -89,6 +90,17 @@ export default {
   },
 
   methods: {
+    resetUser(row) {
+      resetPwd({ account: row.account, newPwd: '123456' }).then(res => {
+        if (res.state) {
+          this.$message.success(res.message)
+          this.loadData()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+
     renderDepart(departList) {
       let options = []
       let functionalDepart = departList[0].children.find(depart => depart.name == '职能部门')

@@ -48,8 +48,8 @@
         v-if="item.type === 'switch'"
         v-model="form[item.prop]"
         :disabled="item.disabled"
-        :active-value="item.number ? '1' : true"
-        :inactive-value="item.number ? '0' : false"
+        :active-value="item.number ? 1 : true"
+        :inactive-value="item.number ? 0 : false"
       ></el-switch>
 
       <!-- date -->
@@ -101,16 +101,7 @@
       />
 
       <!-- inputnumber -->
-      <el-input-number
-        v-if="item.type === 'number'"
-        style="width: 50%"
-        v-model="form[item.prop]"
-        :disabled="item.disabled"
-        clearable
-        :placeholder="item.placeholder ? item.placeholder : `请输入${item.label}`"
-        :min="0"
-        :precision="0"
-      ></el-input-number>
+      <el-input-number v-if="item.type === 'number'" v-model="form[item.prop]" :disabled="item.disabled" clearable :min="0" :precision="0"></el-input-number>
     </el-form-item>
     <el-form-item v-if="submitButtons">
       <el-button type="primary" @click="submit">{{ okBtn }}</el-button>
@@ -166,7 +157,9 @@ export default {
         } else if (item.type === 'checkbox') {
           this.$set(this.form, item.prop, [])
         } else if (item.type === 'switch') {
-          this.$set(this.form, item.prop, item.number ? '0' : false)
+          this.$set(this.form, item.prop, item.number ? 0 : false)
+        } else if (item.type === 'number') {
+          this.$set(this.form, item.prop, 0)
         } else {
           this.$set(this.form, item.prop, '')
         }
@@ -202,9 +195,13 @@ export default {
 
     reset() {
       this.$refs.form.clearValidate()
+    },
+
+    resetFields() {
+      this.$refs.form.resetFields()
     }
   }
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>

@@ -14,32 +14,53 @@
               <el-input v-model="departFilter" placeholder="请输入部门名称" @input="searchDepart" clearable />
             </el-form-item>
           </el-form>
-          <depart-tree ref="departTree" :loading="loading" :departList="departList" />
+          <depart-tree ref="departTree" :loading="loading" :departList="departList" @select="selectDepart" @edit="editDept" @del="delDept" />
         </el-card>
       </el-col>
-      <el-col :span="16"></el-col>
+      <el-col :span="16">
+        <el-tabs type="border-card" ref="tabs">
+          <el-tab-pane label="组织信息">
+            <el-empty description="请选择部门查看详细信息" v-if="!selectDept.id" />
+            <depart-info v-else :departId="selectDept.id" :isEdit="deptEdit" :users="userList" @refresh="refreshDept" />
+          </el-tab-pane>
+          <el-tab-pane label="人员信息">
+            <el-empty description="请选择部门查看详细信息" v-if="!selectDept.id" />
+            <depart-user v-else :roles="roleList" :depart="selectDept" />
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
     </el-row>
     <add-depart-dialog ref="modalForm" @refresh="initDepart" :functionId="functionId" :teachingId="teachingId" />
   </div>
 </template>
 
 <script>
+import { getUserList } from '@/api/system/user'
 import AddDepartDialog from './components/add-depart-dialog'
 import DepartTree from './components/depart-tree'
 import { initDeptTree, delOrg } from '@/api/system/depart'
+import { getRoleList } from '@/api/system/role'
 import { USER_INFO } from '@/store/mutation-types'
+import DepartInfo from './components/depart-info'
+import DepartUser from './components/depart-user'
 export default {
   name: 'DeptList',
-  components: { DepartTree, AddDepartDialog },
+  components: { DepartTree, AddDepartDialog, DepartInfo, DepartUser },
   data() {
     return {
       departFilter: '',
       departList: [],
-      loading: false
+      loading: false,
+      selectDept: {},
+      deptEdit: false,
+      userList: [],
+      roleList: []
     }
   },
   mounted() {
     this.initDepart()
+    this.initRole()
+    this.initUserList()
   },
 
   computed: {
@@ -64,6 +85,14 @@ export default {
   },
 
   methods: {
+    initRole() {
+      getRoleList({}).then(res => {
+        if (res.state) {
+          this.roleList = res.value.rows.filter(role => role.enabled == 1)
+        }
+      })
+    },
+
     initDepart() {
       let userInfo = this.$ls.get(USER_INFO)
       this.loading = true
@@ -84,9 +113,56 @@ export default {
 
     searchDepart() {
       this.$refs.departTree.filter(this.departFilter)
+    },
+
+    selectDepart(val) {
+      this.selectDept = val
+      this.deptEdit = false
+    },
+
+    editDept(val) {
+      this.selectDept = val
+      this.deptEdit = true
+    },
+
+    initUserList() {
+      getUserList({}).then(res => {
+        if (res.state) {
+          this.userList = res.value.rows
+        }
+      })
+    },
+
+    delDept(val) {
+      let params = 'id=' + val.id
+      this.loading = true
+      delOrg(params)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.initDepart()
+            this.selectDept = {}
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    refreshDept(value) {
+      let { id, status } = value
+      this.selectDept = { id, status }
     }
   }
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+/deep/.el-tabs__item {
+  height: 46px;
+  line-height: 46px;
+  font-size: 16px;
+  width: 150px;
+  text-align: center;
+}
+</style>

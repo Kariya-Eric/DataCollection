@@ -11,7 +11,7 @@ const updateOrg = (params) => putAction("/uc/api/org/updateOrg", params);
 
 const getOrgUser = (params) =>
   getAction(
-    `/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyWord}&roleId=${params.roleId}`
+    `/uc/api/org/getOrgUser/${params.orgId}?keyword=${params.keyword}&roleId=${params.roleId}`
   );
 
 const delOrgUser = (params) => deleteAction("/uc/api/org/delOrgUser", params);

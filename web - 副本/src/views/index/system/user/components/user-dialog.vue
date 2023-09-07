@@ -1,6 +1,6 @@
 <template>
   <div>
-    <dc-dialog :visible.sync="visible" :title="title" @confirm="$refs.userForm.submit()" :disabled="loading">
+    <dc-dialog :visible.sync="visible" :title="title" @confirm="$refs.userForm.submit()" :disabled="loading" @close="$refs.userForm.resetFields()">
       <dc-form :form="userForm" :items="userFormItems" ref="userForm" @submit="submit" :loading="loading" />
     </dc-dialog>
   </div>
@@ -13,6 +13,7 @@ export default {
   props: ['roles', 'depts', 'departId', 'name'],
   data() {
     return {
+      updateFlag: false,
       loading: false,
       visible: false,
       title: '',
@@ -20,18 +21,51 @@ export default {
       userFormItems: [
         { prop: 'account', label: '账号', required: true, type: 'input' },
         { prop: 'name', label: '姓名', required: true, type: 'input' },
-        { prop: 'orgId', label: '所属部门', required: true, type: 'select' },
-        { prop: 'roleIds', label: '角色', required: true, type: 'select', multiple: true },
-        { prop: 'email', label: '邮箱', type: 'input', prefix: 'el-icon-message' },
-        { prop: 'mobile', label: '手机', type: 'input', prefix: 'el-icon-mobile' },
+        { prop: 'orgId', label: '所属部门', required: true, type: 'select', options: [] },
+        { prop: 'roleIds', label: '角色', required: true, type: 'select', multiple: true, options: [] },
+        { prop: 'email', label: '邮箱', type: 'input', prefix: 'el-icon-message', rules: [{ type: 'email', message: '请输入正确的邮箱地址' }] },
+        {
+          prop: 'mobile',
+          label: '手机',
+          type: 'input',
+          prefix: 'el-icon-mobile',
+          rules: [
+            {
+              validator: (rule, value, callback) => {
+                if (value) {
+                  if (!/^[1][3,4,5,7,8,9][0-9]{9}$/.test(value)) {
+                    callback(new Error('清输入正确的手机号'))
+                  }
+                }
+                callback()
+              },
+              trigger: ['blur', 'change']
+            }
+          ]
+        },
         { prop: 'status', label: '状态', type: 'switch', number: true }
       ]
     }
   },
-
-  mounted() {
-    this.$set(this.userFormItems[2], 'options', this.depts)
-    this.$set(this.userFormItems[3], 'options', this.roles)
+  watch: {
+    roles: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          let item = this.userFormItems.find(item => item.prop == 'roleIds')
+          item.options = newVal
+        }
+      }
+    },
+    depts: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          let item = this.userFormItems.find(item => item.prop == 'orgId')
+          item.options = newVal
+        }
+      }
+    }
   },
 
   methods: {
@@ -52,9 +86,10 @@ export default {
       this.userFormItems = this.userFormItems.map(item => {
         return { ...item, disabled: false }
       })
-      this.userForm = Object.assign({}, { status: 1 })
+      this.userForm = { ...this.userForm, status: 1 }
       this.$nextTick(() => this.$refs.userForm.reset())
       this.loading = false
+      this.updateFlag = false
       this.visible = true
     },
 
@@ -74,10 +109,51 @@ export default {
         return { ...item, disabled: false }
       })
       this.initData(record.id)
+      this.updateFlag = true
       this.visible = true
     },
 
-    submit(flag) {}
+    submit(flag) {
+      if (flag) {
+        if (this.updateFlag) {
+          this.handleUpdate()
+        } else {
+          this.handleAdd()
+        }
+      }
+    },
+
+    handleUpdate() {
+      this.loading = true
+      updateUser(this.userForm)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.$emit('refresh')
+            this.visible = false
+          } else {
+            this.$message.error(res.message)
+          }
+          this.loading = false
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    handleAdd() {
+      this.loading = true
+      let param = { ...this.userForm, password: '123456' }
+      addUser(param)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.$emit('refresh')
+            this.visible = false
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    }
   }
 }
 </script>
