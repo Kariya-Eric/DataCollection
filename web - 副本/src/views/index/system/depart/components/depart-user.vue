@@ -25,9 +25,9 @@
         <dc-status status="2" title="禁用" v-else />
       </template>
       <template slot="action" slot-scope="{ row }">
-        <a @click="handleDetail(row)">查看</a>
+        <a @click="userInfo(row)">查看</a>
         <el-divider direction="vertical" />
-        <a @click="handleEdit(row)">编辑</a>
+        <a @click="editUser(row)">编辑</a>
         <el-divider direction="vertical" />
         <el-popconfirm @confirm="delUser(row.id)" title="确定删除该用户吗？">
           <a slot="reference">删除</a>
@@ -77,6 +77,7 @@ export default {
 
   data() {
     return {
+      queryParam: { roleId: '', keyword: '' },
       searchItems: [
         { label: '角色', prop: 'roleId', type: 'select', options: [] },
         { label: '姓名', prop: 'keyword', type: 'input' }
@@ -112,6 +113,20 @@ export default {
       this.$refs.modalForm.title = '新增' + this.$refs.modalForm.name
       this.$refs.modalForm.userFormItems = this.$refs.modalForm.userFormItems.filter(item => item.prop !== 'orgId')
       this.$refs.modalForm.add()
+    },
+
+    userInfo(record) {
+      this.$refs.modalForm.userForm = { orgId: this.depart.id }
+      this.$refs.modalForm.title = this.$refs.modalForm.name + '详情'
+      this.$refs.modalForm.userFormItems = this.$refs.modalForm.userFormItems.filter(item => item.prop !== 'orgId')
+      this.$refs.modalForm.info(record)
+    },
+
+    editUser(record) {
+      this.$refs.modalForm.userForm = { orgId: this.depart.id }
+      this.$refs.modalForm.title = '修改' + this.$refs.modalForm.name
+      this.$refs.modalForm.userFormItems = this.$refs.modalForm.userFormItems.filter(item => item.prop !== 'orgId')
+      this.$refs.modalForm.edit(record)
     },
 
     delUserBatch() {

@@ -21,7 +21,7 @@ export default {
       userFormItems: [
         { prop: 'account', label: '账号', required: true, type: 'input' },
         { prop: 'name', label: '姓名', required: true, type: 'input' },
-        { prop: 'orgId', label: '所属部门', required: true, type: 'select', options: [] },
+        { prop: 'orgId', label: '所属部门', required: true, type: 'select', options: [], group: true },
         { prop: 'roleIds', label: '角色', required: true, type: 'select', multiple: true, options: [] },
         { prop: 'email', label: '邮箱', type: 'input', prefix: 'el-icon-message', rules: [{ type: 'email', message: '请输入正确的邮箱地址' }] },
         {
@@ -83,9 +83,7 @@ export default {
 
     add() {
       this.loading = true
-      this.userFormItems = this.userFormItems.map(item => {
-        return { ...item, disabled: false }
-      })
+      this.userFormItems.forEach(item => (item.disabled = false))
       this.userForm = { ...this.userForm, status: 1 }
       this.$nextTick(() => this.$refs.userForm.reset())
       this.loading = false
@@ -94,20 +92,13 @@ export default {
     },
 
     info(record) {
-      this.userFormItems = this.userFormItems.map(item => {
-        return { ...item, disabled: true }
-      })
+      this.userFormItems.forEach(item => (item.disabled = true))
       this.initData(record.id)
       this.visible = true
     },
 
     edit(record) {
-      this.userFormItems = this.userFormItems.map((item, index) => {
-        if (index === 0) {
-          return { ...item, disabled: true }
-        }
-        return { ...item, disabled: false }
-      })
+      this.userFormItems.forEach((item, index) => (item.disabled = index === 0))
       this.initData(record.id)
       this.updateFlag = true
       this.visible = true

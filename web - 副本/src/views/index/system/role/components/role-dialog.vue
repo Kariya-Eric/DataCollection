@@ -1,123 +1,108 @@
 <template>
-  <el-dialog :title="title" :visible="visible" @close="close" width="30%">
-    <div class="formDiv">
-      <el-form
-        ref="roleForm"
-        :model="roleForm"
-        label-width="80px"
-        size="small"
-        :rules="rules"
-        v-loading="loading"
-      >
-        <el-form-item prop="code" label="角色编码">
-          <el-input v-model="roleForm.code" clearable :disabled="!addFlag" />
-        </el-form-item>
-        <el-form-item prop="name" label="角色名称">
-          <el-input v-model="roleForm.name" clearable />
-        </el-form-item>
-        <el-form-item prop="enabled" label="状态">
-          <el-switch
-            v-model="roleForm.enabled"
-            :active-value="1"
-            :inactive-value="0"
-          />
-        </el-form-item>
-      </el-form>
-    </div>
-    <div slot="footer" class="dialog-footer" v-if="!disableSubmit">
-      <mbutton @click="close" name="取消" />
-      <mbutton
-        type="primary"
-        @click="handleSubmit"
-        name="确定"
-        :loading="loading"
-      />
-    </div>
-  </el-dialog>
+  <div>
+    <dc-dialog :title="title" :visible.sync="visible" @confirm="$refs.roleForm.submit()" @close="$refs.roleForm.resetFields()" width="30%" :disabled="loading">
+      <dc-form ref="roleForm" @submit="submit" :items="items" :form="roleForm" :loading="loading" />
+    </dc-dialog>
+  </div>
 </template>
 
 <script>
-import { addRole, updateRole } from "@/api/system";
+import { addRole, updateRole } from '@/api/system'
 export default {
-  name: "RoleDialog",
+  name: 'RoleDialog',
+  props: ['name'],
   data() {
     return {
       loading: false,
       visible: false,
-      title: "",
-      name: "角色",
-      addFlag: false,
+      title: '',
       roleForm: {},
-      disableSubmit: false,
-      rules: {
-        name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
-        code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
-      },
-    };
+      items: [
+        { label: '角色编码', prop: 'code', type: 'input', required: true },
+        { label: '角色名称', prop: 'name', type: 'input', required: true },
+        { label: '状态', prop: 'enabled', type: 'switch', number: true }
+      ]
+    }
   },
 
   methods: {
+    submit(flag) {
+      if (flag) {
+        if (this.updateFlag) {
+          this.handleUpdate()
+        } else {
+          this.handleAdd()
+        }
+      }
+    },
+
     add() {
-      this.edit({ enabled: 1 });
+      this.roleForm = { ...this.roleForm, enabled: 1 }
+      this.items.forEach(item => {
+        if (item.prop == 'code') item.disabled = false
+      })
+      this.$nextTick(() => this.$refs.roleForm.reset())
+      this.updateFlag = false
+      this.visible = true
     },
 
     edit(record) {
-      this.roleForm = Object.assign({}, record);
-      this.visible = true;
-    },
-
-    close() {
-      this.visible = false;
-      this.$nextTick(() => this.$refs.roleForm.resetFields());
+      this.roleForm = Object.assign({}, record)
+      this.items.forEach(item => {
+        if (item.prop == 'code') item.disabled = true
+      })
+      this.$nextTick(() => this.$refs.roleForm.reset())
+      this.updateFlag = true
+      this.visible = true
     },
 
     handleSubmit() {
-      this.$refs.roleForm.validate((valid) => {
+      this.$refs.roleForm.validate(valid => {
         if (valid) {
           if (this.addFlag) {
-            this.handleAdd();
+            this.handleAdd()
           } else {
-            this.handleUpdate();
+            this.handleUpdate()
           }
         }
-      });
+      })
     },
 
     handleAdd() {
-      this.loading = true;
+      this.loading = true
       addRole(this.roleForm)
-        .then((res) => {
+        .then(res => {
           if (res.state) {
-            this.$message.success(res.message);
-            this.$emit("refresh");
-            this.close();
+            this.$message.success(res.message)
+            this.$emit('refresh')
+            this.visible = false
           } else {
-            this.$message.error(res.message);
+            this.$message.error(res.message)
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
 
     handleUpdate() {
-      this.loading = true;
+      this.loading = true
       updateRole(this.roleForm)
-        .then((res) => {
+        .then(res => {
           if (res.state) {
-            this.$message.success(res.message);
-            this.$emit("refresh");
+            this.$message.success(res.message)
+            this.$emit('refresh')
+            this.visible = false
           } else {
-            this.$message.error(res.message);
+            this.$message.error(res.message)
           }
         })
         .finally(() => {
-          this.loading = false;
-          this.close();
-        });
-    },
-  },
-};
+          this.loading = false
+        })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

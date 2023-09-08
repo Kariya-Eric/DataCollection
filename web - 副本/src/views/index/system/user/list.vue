@@ -16,7 +16,15 @@
         </div>
       </div>
 
-      <dc-table v-loading="loading" @selection-change="onSelectChange" :data="dataSource" :columns="columns" :pagination="ipagination" selection="selection">
+      <dc-table
+        v-loading="loading"
+        @selection-change="onSelectChange"
+        :data="dataSource"
+        :columns="columns"
+        :pagination="ipagination"
+        selection="selection"
+        @change="loadData"
+      >
         <template slot="status" slot-scope="{ row }">
           <dc-status status="3" title="启用" v-if="row.status == 1" />
           <dc-status status="2" title="禁用" v-else />
@@ -64,7 +72,7 @@ export default {
         exportUrl: '/uc/api/user/export'
       },
       searchItems: [
-        { label: '部门', prop: 'orgId', type: 'select', options: [] },
+        { label: '部门', prop: 'orgId', type: 'select', options: [], group: true },
         { label: '角色', prop: 'roleId', type: 'select', options: [] },
         { label: '专业', prop: 'major', type: 'select', options: [] },
         { prop: 'queryWord', type: 'input', placeholder: '请输入姓名,帐号,手机' }
@@ -104,17 +112,23 @@ export default {
     renderDepart(departList) {
       let options = []
       let functionalDepart = departList[0].children.find(depart => depart.name == '职能部门')
+      let functionalOptions = []
+      if (functionalDepart) {
+        functionalOptions = functionalDepart.children.map(item => {
+          let { name, id, status } = item
+          return { name, id, disabled: status == 0 }
+        })
+      }
       let teachingDepart = departList[0].children.find(depart => depart.name == '教学部门')
-      functionalDepart.children.forEach(dept => {
-        if (dept.status == 1) {
-          options.push(dept)
-        }
-      })
-      teachingDepart.children.forEach(dept => {
-        if (dept.status == 1) {
-          options.push(dept)
-        }
-      })
+      let teachingOptions = []
+      if (teachingDepart) {
+        teachingOptions = teachingDepart.children.map(item => {
+          let { name, id, status } = item
+          return { name, id, disabled: status == 0 }
+        })
+      }
+      options.push({ label: '职能部门', options: functionalOptions })
+      options.push({ label: '教学部门', options: teachingOptions })
       return options
     },
 
@@ -123,6 +137,7 @@ export default {
       initDeptTree(userInfo.userId).then(res => {
         if (res.state) {
           this.departList = this.renderDepart(res.value)
+          this.searchItems[0].options = this.departList
         }
       })
     },

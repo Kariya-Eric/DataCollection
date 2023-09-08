@@ -25,22 +25,24 @@
       >
         <template v-if="item.group">
           <el-option-group v-for="(group, k) in item.options" :key="k" :label="group.label" :value="group.value">
-            <el-option v-for="(opt, key) in group.options" :key="key" :label="opt.label || opt.name" :value="opt.value || opt.id" />
+            <el-option v-for="(opt, key) in group.options" :key="key" :label="opt.name || opt.label" :value="opt.id || opt.value" :disabled="opt.disabled" />
           </el-option-group>
         </template>
         <template v-else>
-          <el-option v-for="(opt, key) in item.options" :key="key" :label="opt.label || opt.name" :value="opt.value || opt.id" />
+          <el-option v-for="(opt, key) in item.options" :key="key" :label="opt.name || opt.label" :value="opt.id || opt.value" :disabled="opt.disabled" />
         </template>
       </el-select>
 
       <!-- radio -->
       <el-radio-group v-if="item.type === 'radio'" v-model="form[item.prop]" :disabled="item.disabled">
-        <el-radio v-for="(opt, key) in item.options" :key="key" :label="opt.value || opt.id">{{ opt.label || opt.name }}</el-radio>
+        <el-radio v-for="(opt, key) in item.options" :disabled="opt.disabled" :key="key" :label="opt.id || opt.value">{{ opt.name || opt.label }}</el-radio>
       </el-radio-group>
 
       <!-- checkbox -->
       <el-checkbox-group v-if="item.type === 'checkbox'" v-model="form[item.prop]" :disabled="item.disabled">
-        <el-checkbox v-for="(opt, key) in item.options" :key="key" :label="opt.value || opt.id">{{ opt.label || opt.name }}</el-checkbox>
+        <el-checkbox v-for="(opt, key) in item.options" :disabled="opt.disabled" :key="key" :label="opt.id || opt.value">{{
+          opt.name || opt.label
+        }}</el-checkbox>
       </el-checkbox-group>
 
       <!-- switch -->
@@ -61,7 +63,7 @@
         clearable
         type="date"
         format="yyyy-MM-dd"
-        value-format="yyy-MM-dd"
+        value-format="yyyy-MM-dd"
         :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
       ></el-date-picker>
 
@@ -73,7 +75,7 @@
         clearable
         type="month"
         format="yyyy-MM"
-        value-format="yyy-MM"
+        value-format="yyyy-MM"
         :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
       ></el-date-picker>
 
@@ -85,7 +87,7 @@
         clearable
         type="year"
         format="yyyy"
-        value-format="yyy"
+        value-format="yyyy"
         :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
       ></el-date-picker>
 
@@ -148,24 +150,15 @@ export default {
       default: '80px'
     }
   },
-  mounted() {
-    this.items.forEach(item => {
-      let value = this.form[item.prop]
-      if (!value) {
-        if (item.type === 'select' && item.multiple) {
-          this.$set(this.form, item.prop, [])
-        } else if (item.type === 'checkbox') {
-          this.$set(this.form, item.prop, [])
-        } else if (item.type === 'switch') {
-          this.$set(this.form, item.prop, item.number ? 0 : false)
-        } else if (item.type === 'number') {
-          this.$set(this.form, item.prop, 0)
-        } else {
-          this.$set(this.form, item.prop, '')
+  watch: {
+    form(n, o) {
+      this.items.forEach(item => {
+        let value = n[item.prop]
+        if (item.type == 'month' || item.type == 'year' || item.type == 'date') {
+          if (value) n[item.prop] = new Date(value)
         }
-      }
-    })
-    this.$nextTick(() => this.$refs.form.clearValidate())
+      })
+    }
   },
   methods: {
     submit() {

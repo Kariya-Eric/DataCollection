@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     add() {
-      this.form = Object.assign({}, { status: '1' })
+      this.form = Object.assign({}, { status: 1 })
       this.$nextTick(() => this.$refs.form.reset())
       this.visible = true
     },
