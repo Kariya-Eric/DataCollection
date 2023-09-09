@@ -1,82 +1,63 @@
 <template>
   <div>
     <el-card shadow="always" class="app-card">
-      <msearch
-        :form="queryParam"
-        label-width="50px"
-        :items="searchItems"
-        okBtn="查询"
-        cancelBtn="重置"
-        @submit="searchQuery"
-        @cancel="searchReset"
-      />
+      <dc-search :form="queryParam" label-width="50px" :items="searchItems" okBtn="搜索" cancelBtn="重置" @submit="searchQuery" @cancel="searchReset" />
 
-      <div class="listHeader">
+      <div class="list-header">
         <span>用户管理</span>
-        <div class="listHeaderButton">
-          <el-popconfirm
-            v-if="selectedRowKeys.length > 0"
-            @confirm="delBatch"
-            title="确认批量删除选中用户吗？"
-          >
-            <mbutton type="danger" slot="reference" name="批量删除" />
+        <div class="list-header-button">
+          <el-popconfirm v-if="selectedRowKeys.length > 0" @confirm="delBatch" title="确认批量删除选中用户吗？">
+            <el-button type="danger" slot="reference">批量删除</el-button>
           </el-popconfirm>
-          <mbutton
-            style="margin-left: 16px"
-            @click="handleAdd"
-            type="primary"
-            name="添加用户"
-            icon="新建"
-          />
-          <mbutton type="primary" name="导入" />
-          <mbutton type="primary" name="导出" @click="handleExport" />
+          <el-button style="margin-left: 12px" @click="handleAdd" type="primary"><svg-icon icon-class="新建" />添加用户</el-button>
+          <el-button type="primary">导入</el-button>
+          <el-button type="primary" @click="handleExport">导出</el-button>
           <a class="downHref" @click="downloadTemp">下载导入模板</a>
         </div>
       </div>
 
-      <mtable
+      <dc-table
         v-loading="loading"
         @selection-change="onSelectChange"
         :data="dataSource"
         :columns="columns"
         :pagination="ipagination"
         selection="selection"
+        @change="loadData"
       >
         <template slot="status" slot-scope="{ row }">
-          <status status="3" title="启用" v-if="row.status == 1" />
-          <status status="2" title="禁用" v-else />
+          <dc-status status="3" title="启用" v-if="row.status == 1" />
+          <dc-status status="2" title="禁用" v-else />
         </template>
         <template slot="action" slot-scope="scope">
-          <menu-link @click="handleDetail(scope.row)">查看</menu-link>
-          <menu-link @click="handleEdit(scope.row)">编辑</menu-link>
-          <el-popconfirm
-            @confirm="delBatch(scope.row.id)"
-            title="确定删除该用户吗？"
-          >
-            <menu-link slot="reference">删除</menu-link>
+          <a @click="handleDetail(scope.row)">查看</a>
+          <el-divider direction="vertical" />
+          <a @click="handleEdit(scope.row)">编辑</a>
+          <el-divider direction="vertical" />
+          <el-popconfirm @confirm="delBatch(scope.row.id)" title="确定删除该用户吗？">
+            <a slot="reference">删除</a>
           </el-popconfirm>
-          <el-popconfirm
-            @confirm="resetUser(scope.row)"
-            title="确定重置该用户的密码吗？"
-          >
-            <menu-link slot="reference" no-divider>重置密码</menu-link>
+          <el-divider direction="vertical" />
+          <el-popconfirm @confirm="resetUser(scope.row)" title="确定重置该用户的密码吗？">
+            <a slot="reference" no-divider>重置密码</a>
           </el-popconfirm>
         </template>
-      </mtable>
+      </dc-table>
     </el-card>
-    <user-dialog ref="userDialog" :roles="roleList" :depts="departList" />
+    <user-dialog ref="modalForm" :roles="roleList" :depts="departList" name="用户" @refresh="loadData" />
   </div>
 </template>
 
 <script>
-import { DataCollectionMixin } from "@/mixins/DataCollectionMixins";
-import { USER_INFO } from "@/store/mutation-types";
-import { initDeptTree } from "@/api/system/depart";
-import { getRoleList } from "@/api/system/role";
-import { downloadTemp } from "@/api/common";
-import UserDialog from "./components/user-dialog1.vue";
+import { DataCollectionMixin } from '@/mixins/DataCollectionMixins'
+import { USER_INFO } from '@/store/mutation-types'
+import { initDeptTree } from '@/api/system/depart'
+import { getRoleList } from '@/api/system/role'
+import { downloadTemp } from '@/api/common'
+import UserDialog from './components/user-dialog'
+import { resetPwd } from '@/api/system/user'
 export default {
-  name: "UserList",
+  name: 'UserList',
   mixins: [DataCollectionMixin],
   components: { UserDialog },
   data() {
@@ -84,113 +65,115 @@ export default {
       roleList: [],
       departList: [],
       url: {
-        list: "/uc/api/user/getUserPage",
-        delBatch: "/uc/api/user/deleteUserByIds",
-        downloadTemp: "/uc/api/user/downloadTemplate",
-        uploadUrl: "/uc/api/user/import",
-        exportUrl: "/uc/api/user/export",
+        list: '/uc/api/user/getUserPage',
+        delBatch: '/uc/api/user/deleteUserByIds',
+        downloadTemp: '/uc/api/user/downloadTemplate',
+        uploadUrl: '/uc/api/user/import',
+        exportUrl: '/uc/api/user/export'
       },
       searchItems: [
-        { label: "部门", prop: "orgId", type: "select", options: [] },
-        { label: "角色", prop: "roleId", type: "select", options: [] },
-        { label: "专业", prop: "major", type: "select", options: [] },
-        {
-          prop: "queryWord",
-          type: "input",
-          placeholder: "请输入姓名,帐号,手机",
-        },
+        { label: '部门', prop: 'orgId', type: 'select', options: [], group: true },
+        { label: '角色', prop: 'roleId', type: 'select', options: [] },
+        { label: '专业', prop: 'major', type: 'select', options: [] },
+        { prop: 'queryWord', type: 'input', placeholder: '请输入姓名,帐号,手机' }
       ],
       columns: [
-        { prop: "account", label: "账号" },
-        { prop: "name", label: "姓名" },
-        { prop: "orgName", label: "所属部门" },
-        { prop: "account", label: "所属专业" },
-        { prop: "roleName", label: "角色" },
-        { prop: "email", label: "邮箱" },
-        { prop: "mobile", label: "手机号" },
-        { slot: "status", label: "状态" },
-        { slot: "action", label: "操作", width: 260 },
-      ],
-    };
+        { prop: 'account', label: '账号' },
+        { prop: 'name', label: '姓名' },
+        { prop: 'orgName', label: '所属部门' },
+        { prop: 'account', label: '所属专业' },
+        { prop: 'roleName', label: '角色' },
+        { prop: 'email', label: '邮箱' },
+        { prop: 'mobile', label: '手机号' },
+        { slot: 'status', label: '状态' },
+        { slot: 'action', label: '操作', width: 260 }
+      ]
+    }
   },
 
   created() {
-    this.initDepart();
-    this.initRole();
-    this.loadData(1);
+    this.initDepart()
+    this.initRole()
+    this.loadData(1)
   },
 
   methods: {
-    handleAdd() {
-      this.$refs.userDialog.show();
+    resetUser(row) {
+      resetPwd({ account: row.account, newPwd: '123456' }).then(res => {
+        if (res.state) {
+          this.$message.success(res.message)
+          this.loadData()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     },
+
     renderDepart(departList) {
-      let options = [];
-      let functionalDepart = departList[0].children.find(
-        (depart) => depart.name == "职能部门"
-      );
-      let teachingDepart = departList[0].children.find(
-        (depart) => depart.name == "教学部门"
-      );
-      functionalDepart.children.forEach((dept) => {
-        if (dept.status == 1) {
-          options.push(dept);
-        }
-      });
-      teachingDepart.children.forEach((dept) => {
-        if (dept.status == 1) {
-          options.push(dept);
-        }
-      });
-      return options;
+      let options = []
+      let functionalDepart = departList[0].children.find(depart => depart.name == '职能部门')
+      let functionalOptions = []
+      if (functionalDepart) {
+        functionalOptions = functionalDepart.children.map(item => {
+          let { name, id, status } = item
+          return { name, id, disabled: status == 0 }
+        })
+      }
+      let teachingDepart = departList[0].children.find(depart => depart.name == '教学部门')
+      let teachingOptions = []
+      if (teachingDepart) {
+        teachingOptions = teachingDepart.children.map(item => {
+          let { name, id, status } = item
+          return { name, id, disabled: status == 0 }
+        })
+      }
+      options.push({ label: '职能部门', options: functionalOptions })
+      options.push({ label: '教学部门', options: teachingOptions })
+      return options
     },
 
     initDepart() {
-      let userInfo = this.$ls.get(USER_INFO);
-      initDeptTree(userInfo.userId).then((res) => {
+      let userInfo = this.$ls.get(USER_INFO)
+      initDeptTree(userInfo.userId).then(res => {
         if (res.state) {
-          this.departList = this.renderDepart(res.value);
+          this.departList = this.renderDepart(res.value)
+          this.searchItems[0].options = this.departList
         }
-      });
+      })
     },
 
     initRole() {
-      getRoleList({}).then((res) => {
+      getRoleList({}).then(res => {
         if (res.state) {
-          this.roleList = res.value.rows.filter((role) => role.enabled == 1);
-          this.searchItems[1].options = this.roleList;
+          this.roleList = res.value.rows.filter(role => role.enabled == 1)
+          this.searchItems[1].options = this.roleList
         }
-      });
+      })
     },
 
     downloadTemp() {
-      downloadTemp(this.url.downloadTemp).then((data) => {
+      downloadTemp(this.url.downloadTemp).then(data => {
         if (!data) {
-          this.$message.warning("文件下载失败！");
-          return;
+          this.$message.warning('文件下载失败！')
+          return
         }
-        if (typeof window.navigator.msSaveBlob !== "undefined") {
-          window.navigator.msSaveBlob(
-            new Blob([data], { type: "application/vnd.ms-excel" }),
-            this.moduleName + ".xlsx"
-          );
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(new Blob([data], { type: 'application/vnd.ms-excel' }), this.moduleName + '.xlsx')
         } else {
-          let url = window.URL.createObjectURL(
-            new Blob([data], { type: "appliaction/vnd.ms-excel" })
-          );
-          let link = document.createElement("a");
-          link.style.display = "none";
-          link.href = url;
-          link.setAttribute("download", "模板.xlsx");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
+          let url = window.URL.createObjectURL(new Blob([data], { type: 'appliaction/vnd.ms-excel' }))
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', '模板.xlsx')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(url)
         }
-      });
-    },
-  },
-};
+      })
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss"></style>

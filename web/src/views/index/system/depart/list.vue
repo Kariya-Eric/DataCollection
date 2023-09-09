@@ -3,228 +3,165 @@
     <el-row :gutter="24">
       <el-col :span="8">
         <el-card shadow="always" class="app-card">
-          <div slot="header" class="cardTitleSlot">
+          <div slot="header" class="card-title">
             <span>组织架构</span>
-            <mbutton
-              type="primary"
-              name="添加组织"
-              class="titleButton"
-              @click="addDepart"
-            />
+            <span class="card-title-button">
+              <el-button type="primary" @click="addDepart">添加组织</el-button>
+            </span>
           </div>
-          <el-form
-            label-width="80px"
-            size="small"
-            :inline="true"
-            class="headerForm"
-          >
-            <el-form-item label="部门名称">
-              <el-input
-                v-model="departFilter"
-                placeholder="请输入部门名称"
-                @input="searchDepart"
-              />
-            </el-form-item>
-          </el-form>
-          <el-tree
-            ref="departTree"
-            node-key="id"
-            :expand-on-click-node="false"
-            :data="departList"
-            :props="departProps"
-            default-expand-all
-            class="filter-tree"
-            highlight-current
-            @current-change="changeSelect"
-            :filter-node-method="filterNode"
-            :render-content="renderContent"
-          ></el-tree>
+          <el-row style="margin-bottom: 24px">
+            <el-col :span="3"> <span style="line-height: 32px">部门名称</span></el-col>
+            <el-col :span="21"> <el-input v-model="departFilter" placeholder="请输入部门名称搜索" @input="searchDepart" clearable /></el-col>
+          </el-row>
+          <depart-tree ref="departTree" :loading="loading" :departList="departList" @select="selectDepart" @edit="editDept" @del="delDept" />
         </el-card>
       </el-col>
       <el-col :span="16">
-        <right-depart
-          :departId="selectedDepartId"
-          :isEdit="departEditFlag"
-          @close="closeRight"
-          @refresh="initDepart"
-        />
+        <el-tabs type="border-card" ref="tabs">
+          <el-tab-pane label="组织信息">
+            <el-empty description="请选择部门查看详细信息" v-if="!selectDept.id" />
+            <depart-info v-else :departId="selectDept.id" :isEdit="deptEdit" :users="userList" @refresh="refreshDept" />
+          </el-tab-pane>
+          <el-tab-pane label="人员信息">
+            <el-empty description="请选择部门查看详细信息" v-if="!selectDept.id" />
+            <depart-user v-else :roles="roleList" :depart="selectDept" />
+          </el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
-    <add-depart-dialog
-      ref="addDepartDialog"
-      @refresh="initDepart"
-      :functionId="functionId"
-      :teachingId="teachingId"
-    />
+    <add-depart-dialog ref="modalForm" @refresh="initDepart" :functionId="functionId" :teachingId="teachingId" />
   </div>
 </template>
 
 <script>
-import { initDeptTree, delOrg } from "@/api/system/depart";
-import { USER_INFO } from "@/store/mutation-types";
-import AddDepartDialog from "./components/add-depart-dialog";
-import RightDepart from "./components/right-depart.vue";
+import { getUserList } from '@/api/system/user'
+import AddDepartDialog from './components/add-depart-dialog'
+import DepartTree from './components/depart-tree'
+import { initDeptTree, delOrg } from '@/api/system/depart'
+import { getRoleList } from '@/api/system/role'
+import { USER_INFO } from '@/store/mutation-types'
+import DepartInfo from './components/depart-info'
+import DepartUser from './components/depart-user'
 export default {
-  components: { AddDepartDialog, RightDepart },
+  name: 'DeptList',
+  components: { DepartTree, AddDepartDialog, DepartInfo, DepartUser },
   data() {
     return {
-      departProps: {
-        label: "name",
-        children: "children",
-      },
+      departFilter: '',
       departList: [],
-      departFilter: "",
-      selectedDepartId: "",
-      departEditFlag: false,
-    };
+      loading: false,
+      selectDept: {},
+      deptEdit: false,
+      userList: [],
+      roleList: []
+    }
   },
   mounted() {
-    this.initDepart();
+    this.initDepart()
+    this.initRole()
+    this.initUserList()
   },
+
   computed: {
     functionId() {
       if (this.departList.length > 0) {
-        let functionDept = this.departList[0].children.find(
-          (dept) => dept.name == "职能部门"
-        );
+        let functionDept = this.departList[0].children.find(dept => dept.name == '职能部门')
         if (functionDept) {
-          return functionDept.id;
+          return functionDept.id
         }
       }
-      return "";
+      return ''
     },
     teachingId() {
       if (this.departList.length > 0) {
-        let teachingDept = this.departList[0].children.find(
-          (dept) => dept.name == "教学部门"
-        );
+        let teachingDept = this.departList[0].children.find(dept => dept.name == '教学部门')
         if (teachingDept) {
-          return teachingDept.id;
+          return teachingDept.id
         }
       }
-      return "";
-    },
+      return ''
+    }
   },
-  methods: {
-    closeRight() {
-      this.$refs.departTree.setCurrentKey(null);
-      this.selectedDepartId = "";
-    },
 
-    changeSelect(data) {
-      if (JSON.parse(data.isParent)) {
-        this.selectedDepartId = "";
-        return;
-      }
-      this.departEditFlag = false;
-      this.selectedDepartId = data.id;
+  methods: {
+    initRole() {
+      getRoleList({}).then(res => {
+        if (res.state) {
+          this.roleList = res.value.rows.filter(role => role.enabled == 1)
+        }
+      })
     },
 
     initDepart() {
-      let userInfo = this.$ls.get(USER_INFO);
-      initDeptTree(userInfo.userId).then((res) => {
-        if (res.state) {
-          this.departList = res.value;
-        } else {
-          this.$message.error(res.message);
-        }
-      });
-    },
-
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.name.indexOf(value) !== -1;
-    },
-
-    searchDepart() {
-      this.$refs.departTree.filter(this.departFilter);
-    },
-
-    renderContent(h, { node, data, store }) {
-      return !JSON.parse(data.isParent) ? (
-        <span class="custom-tree-node">
-          <span class="label">
-            <svg-icon width="16px" height="16px" icon-class="部门" />
-            {data.name}
-          </span>
-          <span class="button">
-            <span
-              onClick={(e) => {
-                if (this.$refs.departTree.getCurrentKey() == data.id) {
-                  e.stopPropagation();
-                  this.departEditFlag = true;
-                } else {
-                  this.$refs.departTree.setCurrentKey(data.id);
-                }
-              }}
-            >
-              <svg-icon width="16px" height="16px" icon-class="编辑" />
-            </span>
-
-            <el-popconfirm
-              title="确认删除吗？"
-              onConfirm={() => this.delOrg(data)}
-            >
-              <svg-icon
-                width="16px"
-                height="16px"
-                icon-class="删除"
-                slot="reference"
-              />
-            </el-popconfirm>
-          </span>
-        </span>
-      ) : (
-        <span class="custom-tree-node">
-          <span class="label">
-            <svg-icon width="16px" height="16px" icon-class="部门" />
-            {data.name}
-          </span>
-        </span>
-      );
+      let userInfo = this.$ls.get(USER_INFO)
+      this.loading = true
+      initDeptTree(userInfo.userId)
+        .then(res => {
+          if (res.state) {
+            this.departList = res.value
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
     },
 
     addDepart() {
-      this.$refs.addDepartDialog.show();
+      this.$refs.modalForm.add()
     },
 
-    delOrg(data) {
-      let params = "id=" + data.id;
-      delOrg(params).then((res) => {
+    searchDepart() {
+      this.$refs.departTree.filter(this.departFilter)
+    },
+
+    selectDepart(val) {
+      this.selectDept = val
+      this.deptEdit = false
+    },
+
+    editDept(val) {
+      this.selectDept = val
+      this.deptEdit = true
+    },
+
+    initUserList() {
+      getUserList({}).then(res => {
         if (res.state) {
-          this.$message.success(res.message);
-          this.initDepart();
-          this.selectedDepartId = "";
-        } else {
-          this.$message.error(res.message);
+          this.userList = res.value.rows
         }
-      });
+      })
     },
-  },
-};
-</script>
 
-<style lang="scss">
-.custom-tree-node {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
-  padding-right: 12px;
-  .label {
-    svg {
-      margin-right: 12px;
-    }
-  }
-  .button {
-    display: none;
-    svg {
-      margin-right: 20px;
+    delDept(val) {
+      let params = 'id=' + val.id
+      this.loading = true
+      delOrg(params)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.initDepart()
+            this.selectDept = {}
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    refreshDept(value) {
+      let { id, status } = value
+      this.selectDept = { id, status }
     }
   }
 }
-.custom-tree-node:hover .button {
-  display: block;
+</script>
+
+<style lang="scss" scoped>
+/deep/.el-tabs__item {
+  height: 46px;
+  line-height: 46px;
+  font-size: 16px;
+  width: 150px;
+  text-align: center;
 }
 </style>

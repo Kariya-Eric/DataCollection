@@ -10,21 +10,9 @@
     @change="changeValue"
   >
     <el-option :value="valueName" class="options">
-      <el-tree
-        id="tree-option"
-        ref="selectedTree"
-        :accordion="accordion"
-        :data="options"
-        :props="props"
-        :node-key="props.value"
-        @node-click="handleNodeClick"
-      >
+      <el-tree id="tree-option" ref="selectedTree" :accordion="accordion" :data="options" :props="props" :node-key="props.value" @node-click="handleNodeClick">
         <span slot-scope="{ data }">
-          <i
-            class="[data.color!=null?'ification_col':'']"
-            :style="{ 'background-color': data.color }"
-          ></i
-          >&nbsp;&nbsp;{{ data.name }}
+          <i class="[data.color!=null?'ification_col':'']" :style="{ 'background-color': data.color }"></i>&nbsp;&nbsp;{{ data.name }}
         </span>
       </el-tree>
     </el-option>
@@ -33,137 +21,133 @@
 
 <script>
 export default {
-  name: "SelectTree",
+  name: 'SelectTree',
   props: {
     props: {
       type: Object,
       default: () => {
-        return { value: "id", children: "children", label: "name" };
-      },
+        return { value: 'id', children: 'children', label: 'name' }
+      }
     },
     options: {
       type: Array,
       default: () => {
-        return [];
-      },
+        return []
+      }
     },
     value: {
       type: String,
-      default: "",
+      default: ''
     },
     valueMultiple: {
       type: Array,
       default: () => {
-        return [];
-      },
+        return []
+      }
     },
     clearable: {
       type: Boolean,
-      default: true,
+      default: true
     },
     multiple: {
       type: Boolean,
-      default: false,
+      default: false
     },
     accordion: {
       type: Boolean,
-      default: false,
+      default: false
     },
     readonly: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
       resultValue: [],
-      valueName: this.multiple ? [] : "",
-    };
+      valueName: this.multiple ? [] : ''
+    }
   },
   watch: {
     value() {
-      this.resultValue = this.multiple ? this.valueMultiple : this.value;
-      this.initHandle();
-    },
+      this.resultValue = this.multiple ? this.valueMultiple : this.value
+      this.initHandle()
+    }
   },
 
   mounted() {
-    this.resultValue = this.multiple ? this.valueMultiple : this.value;
-    this.initHandle();
+    this.resultValue = this.multiple ? this.valueMultiple : this.value
+    this.initHandle()
   },
   methods: {
     initHandle() {
       if (this.resultValue) {
         if (this.multiple) {
-          this.resultValue.forEach((item) => this.valueName.push(item.name));
+          this.resultValue.forEach(item => this.valueName.push(item.name))
         } else {
-          this.valueName = this.renderList(this.options).filter(
-            (o) => o.value == this.resultValue
-          )[0].label;
+          this.valueName = this.renderList(this.options).filter(o => o.value == this.resultValue)[0].label
         }
       }
     },
 
     handleNodeClick(node) {
       if (this.multiple) {
-        let num = 0;
-        this.valueName.forEach((item) =>
-          item == node[this.props.label] ? num++ : num
-        );
+        let num = 0
+        this.valueName.forEach(item => (item == node[this.props.label] ? num++ : num))
         if (num == 0) {
-          this.valueName.push(node[this.props.label]);
-          this.resultValue.push(node);
+          this.valueName.push(node[this.props.label])
+          this.resultValue.push(node)
         }
       } else {
-        this.$refs.selectTree.blur();
-        this.valueName = node[this.props.label];
-        this.resultValue = node.id;
+        this.$refs.selectTree.blur()
+        this.valueName = node[this.props.label]
+        this.resultValue = node.id
       }
-      this.$emit("getValue", this.resultValue);
+      this.$emit('getValue', this.resultValue)
     },
 
     changeValue(val) {
       if (this.multiple) {
         this.resultValue.forEach((item, index) => {
-          let i = val.indexOf(item.name);
+          let i = val.indexOf(item.name)
           if (i == -1) {
-            this.resultValue.splice(index, 1);
+            this.resultValue.splice(index, 1)
           }
-        });
-        this.$emit("getValue", this.resultValue);
+        })
+        this.$emit('getValue', this.resultValue)
       } else {
-        this.$emit("getValue", val);
+        this.$emit('getValue', val)
       }
     },
 
     clearHandle() {
-      this.valueName = this.multiple ? [] : "";
-      this.resultValue = this.multiple ? [] : "";
-      this.clearSelected();
-      this.$emit("getValue", this.resultValue);
+      this.valueName = this.multiple ? [] : ''
+      this.resultValue = this.multiple ? [] : ''
+      this.clearSelected()
+      this.$emit('getValue', this.resultValue)
     },
 
     clearSelected() {
-      let allNode = document.querySelectorAll("#tree-option .el-tree-node");
-      allNode.forEach((ele) => ele.classList.remove("is-current"));
+      let allNode = document.querySelectorAll('#tree-option .el-tree-node')
+      allNode.forEach(ele => ele.classList.remove('is-current'))
     },
 
     renderList(list) {
-      let options = [];
-      this.recusive(list, options);
-      return options;
+      let options = []
+      this.recusive(list, options)
+      return options
     },
 
     recusive(list, options) {
-      list.forEach((item) => {
-        options.push({ label: item.name, value: item.id });
+      list.forEach(item => {
+        options.push({ label: item.name, value: item.id })
         if (item.children && item.children.length > 0) {
-          this.recusive(item.children, options);
+          this.recusive(item.children, options)
         }
-      });
-    },
-  },
-};
+      })
+    }
+  }
+}
 </script>
 
 <style scoped>

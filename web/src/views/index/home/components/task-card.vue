@@ -5,11 +5,7 @@
       <span>数据采集</span>
     </div>
     <div class="labelSvg" v-if="task.showLabel">
-      <svg-icon
-        width="78px"
-        height="78px"
-        :icon-class="task.showLabel == 1 ? '即将截止' : '已逾期'"
-      />
+      <svg-icon width="78px" height="78px" :icon-class="task.showLabel == 1 ? '即将截止' : '已逾期'" />
     </div>
     <div class="label">
       <ul>
@@ -19,16 +15,16 @@
       </ul>
     </div>
     <div style="text-align: right">
-      <mbutton type="primary" name="进入任务" />
+      <el-button type="primary">进入任务</el-button>
     </div>
   </el-card>
 </template>
 
 <script>
 export default {
-  name: "DataCard",
-  props: ["task"],
-};
+  name: 'DataCard',
+  props: ['task']
+}
 </script>
 
 <style scoped lang="scss">

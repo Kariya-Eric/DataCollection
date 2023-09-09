@@ -2,43 +2,27 @@
   <div>
     <el-card shadow="always" style="margin-bottom: 8px">
       <!-- Query Start -->
-      <el-form
-        label-width="70px"
-        size="small"
-        :inline="true"
-        class="headerForm"
-      >
+      <el-form label-width="70px" size="small" :inline="true" class="headerForm">
         <el-form-item label="年份">
-          <el-select
-            v-model="queryParam.year"
-            placeholder="请选择"
-            @change="searchQuery"
-          >
+          <el-select v-model="queryParam.year" placeholder="请选择" @change="searchQuery">
             <el-option label="2022" value="2022" />
             <el-option label="2021" value="2021" />
             <el-option label="2020" value="2020" />
           </el-select>
         </el-form-item>
         <el-form-item label="报告类型">
-          <el-select
-            v-model="queryParam.type"
-            placeholder="请选择"
-            @change="searchQuery"
-          >
-            <el-option
-              label="本科教学状态数据分析报告"
-              value="本科教学状态数据分析报告"
-            />
+          <el-select v-model="queryParam.type" placeholder="请选择" @change="searchQuery">
+            <el-option label="本科教学状态数据分析报告" value="本科教学状态数据分析报告" />
             <el-option label="本科教学质量报告" value="本科教学质量报告" />
           </el-select>
         </el-form-item>
-        <mbutton type="primary" name="搜索" />
-        <mbutton type="primary" name="重置" />
+        <el-button type="primary">搜索</el-button>
+        <el-button type="primary">重置</el-button>
       </el-form>
       <div class="listHeader">
         <span>分析报告</span>
         <div class="listHeaderButton">
-          <mbutton type="primary" name="导出" />
+          <el-button type="primary">导出</el-button>
         </div>
       </div>
     </el-card>
@@ -46,20 +30,8 @@
     <el-row :gutter="24">
       <el-col :span="6">
         <el-card shadow="always">
-          <el-input
-            placeholder="输入目录名称进行过滤"
-            v-model="categoryFilter"
-            clearable
-            size="small"
-            prefix-icon="el-icon-search"
-          />
-          <el-tree
-            class="filter-tree"
-            :data="categoryList"
-            :props="categoryProps"
-            :filter-node-method="filterNode"
-            ref="categoryTree"
-          ></el-tree>
+          <el-input placeholder="输入目录名称进行过滤" v-model="categoryFilter" clearable size="small" prefix-icon="el-icon-search" />
+          <el-tree class="filter-tree" :data="categoryList" :props="categoryProps" :filter-node-method="filterNode" ref="categoryTree"></el-tree>
         </el-card>
       </el-col>
       <el-col :span="18">
@@ -78,31 +50,31 @@
 
 <script>
 export default {
-  name: "AnalyzeDetail",
+  name: 'AnalyzeDetail',
   data() {
     return {
       queryParam: {},
       categoryList: [],
-      categoryFilter: "",
+      categoryFilter: '',
       categoryProps: {
-        children: "children",
-        label: "name",
-      },
-    };
+        children: 'children',
+        label: 'name'
+      }
+    }
   },
   watch: {
     categoryFilter(val) {
-      this.$refs.categoryTree.filter(val);
-    },
+      this.$refs.categoryTree.filter(val)
+    }
   },
   methods: {
     searchQuery() {},
     filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
-    },
-  },
-};
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>
