@@ -4,7 +4,7 @@
       <!-- input -->
       <el-input
         v-if="item.type === 'input'"
-        v-model.trim="form[item.prop]"
+        v-model="form[item.prop]"
         :placeholder="item.placeholder ? item.placeholder : `请输入${item.label}`"
         :disabled="item.disabled"
         :prefix-icon="item.prefix"

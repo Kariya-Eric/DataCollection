@@ -4,7 +4,7 @@
     ref="tree"
     node-key="id"
     :expand-on-click-node="false"
-    :data="departList"
+    :data="departs"
     :props="{ label: 'name', children: 'children' }"
     default-expand-all
     :filter-node-method="filterNode"
@@ -21,6 +21,27 @@
 export default {
   name: 'DepartTree',
   props: ['loading', 'departList'],
+
+  watch: {
+    departList: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal && newVal.length > 0) {
+          let depts = Object.assign([], newVal)
+          depts[0].children.forEach(ele => {
+            let child = ele.children.filter(dept => dept.status == 1)
+            ele.children = child
+          })
+          this.departs = depts
+        }
+      }
+    }
+  },
+  data() {
+    return {
+      departs: []
+    }
+  },
   methods: {
     filter(value) {
       this.$refs.tree.filter(value)

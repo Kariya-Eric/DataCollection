@@ -69,7 +69,7 @@ export default {
       }
       this.formFormItems[4].options = this.categorys
       let form = { ...record, formName: record.name, formType: record.type }
-      this.formForm = Object.assign({}, collection, form)
+      this.formForm = Object.assign({}, form, collection)
       this.$nextTick(() => this.$refs.formForm.reset())
       this.updateFlag = true
       this.visible = true

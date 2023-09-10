@@ -1,5 +1,5 @@
 <template>
-  <dc-dialog fullscreen :visible.sync="visible" :title="title" :show-close="false" :submitButtons="false">
+  <dc-dialog fullscreen :visible.sync="visible" :title="title" :show-close="false" :submitButtons="false" @close="$emit('refresh')">
     <div class="steps">
       <el-steps :active="currentStep" align-center finish-status="success" process-status="finish">
         <el-step title="基础信息" />
@@ -53,7 +53,6 @@ export default {
 
     close() {
       this.taskId = ''
-      this.$emit('refresh')
       this.visible = false
     },
 

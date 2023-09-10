@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="visible" :title="title" :width="width" v-bind="$attrs" v-on="$listeners">
+  <el-dialog :visible="visible" :title="title" :width="width" v-bind="$attrs" v-on="$listeners" :close-on-click-modal="false" :close-on-press-escape="false">
     <div slot="title" class="dialog-title" v-if="!title">
       <slot name="title"></slot>
     </div>

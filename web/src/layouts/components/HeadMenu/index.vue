@@ -1,29 +1,19 @@
 <template>
   <div class="menu">
-    <el-menu
-      :show-timeout="200"
-      mode="horizontal"
-      router
-      :default-active="$route.path"
-    >
-      <menu-item
-        v-for="(route, index) in routers"
-        :key="index"
-        :item="route"
-        :base-path="route.path"
-      />
+    <el-menu :show-timeout="200" mode="horizontal" router :default-active="$route.path">
+      <menu-item v-for="(route, index) in routers" :key="index" :item="route" :base-path="route.path" />
     </el-menu>
   </div>
 </template>
 
 <script>
-import MenuItem from "./MenuItem";
+import MenuItem from './MenuItem'
 
 export default {
-  name: "HeadMenu",
+  name: 'HeadMenu',
   components: { MenuItem },
-  props: ["routers"],
-};
+  props: ['routers']
+}
 </script>
 
 <style lang="scss" scoped>
@@ -36,6 +26,14 @@ export default {
 }
 /deep/ .el-submenu__icon-arrow {
   display: none;
+}
+/deep/.el-submenu__title:hover {
+  width: 170px;
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
+  background-position: center;
+  span {
+    color: #2f68bd;
+  }
 }
 /deep/.el-menu--horizontal > .el-menu-item {
   width: 170px;
@@ -56,7 +54,7 @@ export default {
 }
 
 /deep/.el-menu--horizontal > .el-menu-item.is-active {
-  background: url("~@/assets/menu/menu-active.png") no-repeat;
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
   background-position: center;
   padding-left: 40px;
   svg {
@@ -87,7 +85,7 @@ export default {
   }
 }
 /deep/.el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
-  background: url("~@/assets/menu/menu-active.png") no-repeat;
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
   background-position: center;
   padding-left: 40px;
   svg {
@@ -136,7 +134,7 @@ export default {
   }
   .el-menu-item:hover {
     width: 170px;
-    background: url("~@/assets/menu/menu-active.png") no-repeat;
+    background: url('~@/assets/menu/menu-active.png') no-repeat;
     background-position: center;
     span {
       color: #2f68bd;

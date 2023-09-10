@@ -2,27 +2,12 @@
   <div>
     <el-card shadow="always" style="margin-bottom: 8px">
       <!-- Query Start -->
-      <el-form label-width="70px" size="small" :inline="true" class="headerForm">
-        <el-form-item label="年份">
-          <el-select v-model="queryParam.year" placeholder="请选择" @change="searchQuery">
-            <el-option label="2022" value="2022" />
-            <el-option label="2021" value="2021" />
-            <el-option label="2020" value="2020" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="报告类型">
-          <el-select v-model="queryParam.type" placeholder="请选择" @change="searchQuery">
-            <el-option label="本科教学状态数据分析报告" value="本科教学状态数据分析报告" />
-            <el-option label="本科教学质量报告" value="本科教学质量报告" />
-          </el-select>
-        </el-form-item>
-        <el-button type="primary">搜索</el-button>
-        <el-button type="primary">重置</el-button>
-      </el-form>
-      <div class="listHeader">
+      <dc-search label-width="80px" :items="searchItems" :form="queryParam" okBtn="搜索" cancelBtn="重置" @submit="searchQuery" @cancel="searchReset" />
+      <div class="list-header">
         <span>分析报告</span>
-        <div class="listHeaderButton">
+        <div class="list-header-button">
           <el-button type="primary">导出</el-button>
+          <el-button>返回</el-button>
         </div>
       </div>
     </el-card>
@@ -49,11 +34,24 @@
 </template>
 
 <script>
+import { DataCollectionMixin } from '@/mixins/DataCollectionMixins'
 export default {
   name: 'AnalyzeDetail',
+  mixins: [DataCollectionMixin],
   data() {
     return {
-      queryParam: {},
+      searchItems: [
+        { type: 'select', prop: 'year', label: '年份', options: [] },
+        {
+          type: 'select',
+          prop: 'type',
+          label: '报告类型',
+          options: [
+            { label: '本科教学状态数据分析报告', value: '本科教学状态数据分析报告' },
+            { label: '本科教学质量报告', value: '本科教学质量报告' }
+          ]
+        }
+      ],
       categoryList: [],
       categoryFilter: '',
       categoryProps: {
@@ -68,7 +66,6 @@ export default {
     }
   },
   methods: {
-    searchQuery() {},
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1

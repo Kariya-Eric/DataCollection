@@ -114,18 +114,22 @@ export default {
       let functionalDepart = departList[0].children.find(depart => depart.name == '职能部门')
       let functionalOptions = []
       if (functionalDepart) {
-        functionalOptions = functionalDepart.children.map(item => {
-          let { name, id, status } = item
-          return { name, id, disabled: status == 0 }
-        })
+        functionalOptions = functionalDepart.children
+          .filter(item => item.status == 1)
+          .map(item => {
+            let { name, id } = item
+            return { name, id }
+          })
       }
       let teachingDepart = departList[0].children.find(depart => depart.name == '教学部门')
       let teachingOptions = []
       if (teachingDepart) {
-        teachingOptions = teachingDepart.children.map(item => {
-          let { name, id, status } = item
-          return { name, id, disabled: status == 0 }
-        })
+        teachingOptions = teachingDepart.children
+          .filter(item => item.status == 1)
+          .map(item => {
+            let { name, id } = item
+            return { name, id }
+          })
       }
       options.push({ label: '职能部门', options: functionalOptions })
       options.push({ label: '教学部门', options: teachingOptions })

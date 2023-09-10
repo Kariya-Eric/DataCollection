@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     back() {
-      console.log('back')
       this.$emit('back')
     },
 

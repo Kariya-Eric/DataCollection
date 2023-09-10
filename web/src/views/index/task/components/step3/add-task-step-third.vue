@@ -96,13 +96,6 @@ export default {
       if (val.grade == 'COMMON' && val.name != '职能部门' && val.name != '教学部门') {
         //顶级
         this.changeStatus(this.statusOptions)
-        // if (this.statusOptions == 0) {
-        //   this.configFormList = this.formList.filter(form => form.responsibleOrgName)
-        // } else if (this.statusOptions == 1) {
-        //   this.configFormList = this.formList.filter(form => form.configStatus && !form.responsibleOrgName)
-        // } else {
-        //   this.configFormList = this.formList.filter(form => !form.configStatus && !form.responsibleOrgName)
-        // }
       } else if (val.grade == 'COMMON' && (val.name == '职能部门' || val.name == '教学部门')) {
         //二级
         let ids = val.children.map(dept => dept.name)
