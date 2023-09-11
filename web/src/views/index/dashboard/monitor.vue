@@ -1,11 +1,9 @@
 <template>
   <el-card shadow="always" class="app-card">
-    <el-form>
-      <el-form-item label="xx">
-        <el-input v-model="input" />
-      </el-form-item>
-    </el-form>
-    <el-button>123</el-button>
+    <el-button @click="visible = true">click</el-button>
+    <dc-dialog :visible.sync="visible" title="sheet" width="80%">
+      <luck-sheet />
+    </dc-dialog>
   </el-card>
 </template>
 
@@ -13,7 +11,7 @@
 export default {
   data() {
     return {
-      input: '123'
+      visible: false
     }
   }
 }

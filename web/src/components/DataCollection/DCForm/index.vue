@@ -80,7 +80,16 @@
       ></el-switch>
 
       <!-- date -->
-      <el-date-picker
+      <date-picker
+        v-if="item.type === 'date'"
+        style="width: 100%"
+        v-model="form[item.prop]"
+        :disabled="item.disabled"
+        clearable
+        type="date"
+        :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
+      />
+      <!-- <el-date-picker
         v-if="item.type === 'date'"
         style="width: 100%"
         v-model="form[item.prop]"
@@ -89,10 +98,29 @@
         type="date"
         format="yyyy-MM-dd"
         value-format="yyyy-MM-dd"
-        :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
-      ></el-date-picker>
+      ></el-date-picker> -->
 
-      <el-date-picker
+      <date-picker
+        v-if="item.type === 'month'"
+        style="width: 100%"
+        v-model="form[item.prop]"
+        :disabled="item.disabled"
+        clearable
+        type="month"
+        :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
+      />
+
+      <date-picker
+        v-if="item.type === 'year'"
+        style="width: 100%"
+        v-model="form[item.prop]"
+        :disabled="item.disabled"
+        clearable
+        type="year"
+        :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
+      />
+
+      <!-- <el-date-picker
         v-if="item.type === 'month'"
         style="width: 100%"
         v-model="form[item.prop]"
@@ -114,7 +142,7 @@
         format="yyyy"
         value-format="yyyy"
         :placeholder="item.placeholder ? item.placeholder : `请选择${item.label}`"
-      ></el-date-picker>
+      ></el-date-picker> -->
 
       <!-- textarea -->
       <el-input
@@ -140,9 +168,10 @@
 <script>
 import SelectGroup from './components/select-group'
 import SelectAll from './components/select-all'
+import DatePicker from './components/date-picker.vue'
 export default {
   name: 'DCForm',
-  components: { SelectGroup, SelectAll },
+  components: { SelectGroup, SelectAll, DatePicker },
   props: {
     loading: {
       type: Boolean,
@@ -178,16 +207,18 @@ export default {
       default: '80px'
     }
   },
-  watch: {
-    form(n, o) {
-      this.items.forEach(item => {
-        let value = n[item.prop]
-        if (item.type == 'month' || item.type == 'year' || item.type == 'date') {
-          if (value) n[item.prop] = new Date(value)
-        }
-      })
-    }
-  },
+
+  // watch: {
+  //   form(n, o) {
+  //     this.items.forEach(item => {
+  //       let value = n[item.prop]
+  //       // if (item.type == 'month' || item.type == 'year' || item.type == 'date') {
+  //       //   if (value) n[item.prop] = new Date(value)
+  //       // }
+  //     })
+  //   }
+  // },
+
   methods: {
     submit() {
       this.$refs.form.validate(valid => {
