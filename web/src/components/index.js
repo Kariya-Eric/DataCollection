@@ -6,6 +6,7 @@ import FormGenerator from './FormGenerator'
 import SelectTree from './SelectTree'
 import CustomComponents from './FormGenerator/layouts'
 import DCComponents from './DataCollection'
+import InputTextarea from './InputTextarea'
 
 export default {
   install(Vue) {
@@ -15,6 +16,7 @@ export default {
     Vue.component('formGenerator', FormGenerator)
     Vue.component('selectTree', SelectTree)
     Vue.component('countDown', CountDown)
+    Vue.component('inputTextarea', InputTextarea)
     Vue.use(CustomComponents)
     Vue.use(DCComponents)
   }

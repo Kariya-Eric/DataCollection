@@ -1,6 +1,5 @@
 import PropTypes from 'ant-design-vue/es/_util/vue-types'
-import { filterDictText } from '@/components/dict/JDictSelectUtil'
-import { getEnhancedMixins, JVXERenderType, replaceProps } from '@/components/jeecg/JVxeTable/utils/cellUtils'
+import { getEnhancedMixins, DCVXERenderType, replaceProps, filterDictText } from '../utils/cellUtils'
 
 // noinspection JSUnusedLocalSymbols
 export default {
@@ -111,7 +110,7 @@ export default {
         this.innerValue = this.enhanced.setValue.call(this, value)
 
         // 判断是否启用翻译
-        if (this.renderType === JVXERenderType.spaner && this.enhanced.translate.enabled) {
+        if (this.renderType === DCVXERenderType.spaner && this.enhanced.translate.enabled) {
           let res = this.enhanced.translate.handler.call(this, value)
           // 异步翻译，目前仅【多级联动】使用
           if (res instanceof Promise) {
@@ -189,7 +188,7 @@ export default {
   /**
    * 【自定义增强】用于实现一些增强事件
    * 【注】这里只是定义接口，具体功能需要到各个组件内实现（也有部分功能实现）
-   * 【注】该属性不是Vue官方属性，是JVxeTable组件自定义的
+   * 【注】该属性不是Vue官方属性，是DCVXETable组件自定义的
    *      所以方法内的 this 指向并不是当前组件，而是方法自身，
    *      也就是说并不能 this 打点调实例里的任何方法
    */

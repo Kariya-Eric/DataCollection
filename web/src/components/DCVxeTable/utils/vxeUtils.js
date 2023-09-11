@@ -1,5 +1,4 @@
-import { getVmParentByName } from '@/utils/util'
-import { JVXETypes } from '@comp/jeecg/JVxeTable/index'
+import { DCVXETypes } from '../index'
 
 export const VALIDATE_FAILED = Symbol()
 
@@ -80,7 +79,7 @@ export function vxePackageToSuperQuery(columns, handler) {
     // 遍历列
     for (let i = 0; i < columns.length; i++) {
       let col = columns[i]
-      if (col.type === JVXETypes.rowCheckbox || col.type === JVXETypes.rowRadio || col.type === JVXETypes.rowExpand || col.type === JVXETypes.rowNumber) {
+      if (col.type === DCVXETypes.rowCheckbox || col.type === DCVXETypes.rowRadio || col.type === DCVXETypes.rowExpand || col.type === DCVXETypes.rowNumber) {
         continue
       }
       let field = {
@@ -89,11 +88,11 @@ export function vxePackageToSuperQuery(columns, handler) {
         text: col.title,
         dictCode: col.dictCode || col.dict
       }
-      if (col.type === JVXETypes.date || col.type === JVXETypes.datetime) {
+      if (col.type === DCVXETypes.date) {
         field.type = col.type
         field.format = col.format
       }
-      if (col.type === JVXETypes.inputNumber) {
+      if (col.type === DCVXETypes.inputNumber) {
         field.type = 'int'
       }
       if (Array.isArray(col.options)) {
@@ -110,4 +109,3 @@ export function vxePackageToSuperQuery(columns, handler) {
   }
   return null
 }
-
