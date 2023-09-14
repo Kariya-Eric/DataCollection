@@ -7,7 +7,10 @@ import SelectTree from './SelectTree'
 import CustomComponents from './FormGenerator/layouts'
 import DCComponents from './DataCollection'
 import InputTextarea from './InputTextarea'
-
+import AntdComponents from './antd.lazy'
+import AreaLinkage from './AreaLinkage'
+import VueAreaLinkage from 'vue-area-linkage'
+import data from 'china-area-data'
 export default {
   install(Vue) {
     Vue.component('breadcrumb', Breadcrumb)
@@ -17,7 +20,11 @@ export default {
     Vue.component('selectTree', SelectTree)
     Vue.component('countDown', CountDown)
     Vue.component('inputTextarea', InputTextarea)
+    Vue.component('areaLinkage', AreaLinkage)
+    Vue.use(VueAreaLinkage)
     Vue.use(CustomComponents)
     Vue.use(DCComponents)
+    Vue.use(AntdComponents)
+    Vue.prototype.$pcaa = data
   }
 }

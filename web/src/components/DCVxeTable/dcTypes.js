@@ -17,12 +17,13 @@ export const DCVXETypes = {
 
   input: 'input',
   inputNumber: 'inputNumber',
+  inputLink: 'inputLink',
+  inputPhone: 'inputPhone',
+  inputMail: 'inputMail',
   textarea: 'textarea',
   select: 'select',
   date: 'date',
   checkbox: 'checkbox',
-  // 下拉搜索
-  selectSearch: 'select-search',
   // 下拉多选
   selectMultiple: 'select-multiple',
   slot: 'slot',

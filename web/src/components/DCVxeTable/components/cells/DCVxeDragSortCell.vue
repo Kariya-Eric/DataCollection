@@ -5,11 +5,6 @@
       <a-icon type="align-right" />
     </div>
 
-    <!--    <div class="dc-vxe-ds-btns">-->
-    <!--      <a-button icon="caret-up" size="small" :disabled="disabledMoveUp" @click="handleRowMoveUp"/>-->
-    <!--      <a-button icon="caret-down" size="small" :disabled="disabledMoveDown" @click="handleRowMoveDown"/>-->
-    <!--    </div>-->
-
     <a-menu slot="overlay">
       <a-menu-item key="0" :disabled="disabledMoveUp" @click="handleRowMoveUp">向上移</a-menu-item>
       <a-menu-item key="1" :disabled="disabledMoveDown" @click="handleRowMoveDown">向下移</a-menu-item>
@@ -21,11 +16,9 @@
 
 <script>
 import DCVxeCellMixins from '../../mixins/DCVxeCellMixin'
-import { Dropdown, Menu, Icon } from 'ant-design-vue'
 export default {
   name: 'DCVxeDragSortCell',
   mixins: [DCVxeCellMixins],
-  components: { ADropdown: Dropdown, AMenu: Menu, AIcon: Icon },
   computed: {
     // 排序结果保存字段
     dragSortKey() {

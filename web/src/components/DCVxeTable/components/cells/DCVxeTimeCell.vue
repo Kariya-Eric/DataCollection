@@ -13,11 +13,9 @@
 <script>
 import moment from 'moment'
 import DCVxeCellMixins, { dispatchEvent } from '../../mixins/DCVxeCellMixin'
-import { TimePicker } from 'ant-design-vue'
 export default {
   name: 'DCVxeTimeCell',
   mixins: [DCVxeCellMixins],
-  components: { ATimePicker: TimePicker },
   props: {},
   data() {
     return {

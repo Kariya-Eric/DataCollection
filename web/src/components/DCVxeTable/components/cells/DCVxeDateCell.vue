@@ -16,14 +16,10 @@
 import moment from 'moment'
 import { DCVXETypes } from '../../index'
 import DCVxeCellMixins, { dispatchEvent } from '../../mixins/DCVxeCellMixin'
-import { DatePicker } from 'ant-design-vue'
 
 export default {
   name: 'DCVxeDateCell',
   mixins: [DCVxeCellMixins],
-  components: {
-    ADatePicker: DatePicker
-  },
   data() {
     return {
       innerDateValue: null

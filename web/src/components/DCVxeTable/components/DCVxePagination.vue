@@ -6,10 +6,8 @@
 
 <script>
 import PropTypes from 'ant-design-vue/es/_util/vue-types'
-import { Pagination } from 'ant-design-vue'
 export default {
   name: 'DCVxePagination',
-  components: { APagination: Pagination },
   props: {
     size: String,
     disabled: PropTypes.bool,

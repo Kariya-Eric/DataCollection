@@ -123,13 +123,6 @@ export default {
           iconClose: 'ant-table-row-expand-icon ant-table-row-collapsed',
           iconOpen: 'ant-table-row-expand-icon ant-table-row-expanded'
         },
-        // 虚拟滚动配置，y轴大于30条数据时启用虚拟滚动
-        // 'scroll-y': {
-        //   gt: 30
-        // },
-        // 'scroll-x': {
-        //   gt: 15
-        // },
         'radio-config': { highlight: true },
         'checkbox-config': { highlight: true }
       },
@@ -137,12 +130,6 @@ export default {
       selectedRows: [],
       // 绑定左侧选择框已选择的id
       selectedRowIds: [],
-      // 统计列配置
-      statistics: {
-        has: false,
-        sum: [],
-        average: []
-      },
       // 允许执行刷新特效的行ID
       reloadEffectRowKeysMap: {}
     }
@@ -176,19 +163,6 @@ export default {
         if (column.cellRender) {
           Object.assign(column.cellRender, renderOptions)
         }
-
-        // if (column.$type === DCVXETypes.datetime) {
-        //   let width = column.width && column.width.endsWith('px') ? Number.parseInt(column.width.substr(0, column.width.length - 2)) : 0
-        //   if (width <= 190) {
-        //     column.width = '190px'
-        //   }
-        // }
-        // if (column.$type === DCVXETypes.date) {
-        //   let width = column.width && column.width.endsWith('px') ? Number.parseInt(column.width.substr(0, column.width.length - 2)) : 0
-        //   if (width <= 135) {
-        //     column.width = '135px'
-        //   }
-        // }
       })
       return this.innerColumns
     },
@@ -200,26 +174,16 @@ export default {
     vxeProps() {
       let expandConfig = Object.assign({}, this.defaultVxeProps['expand-config'], this.expandConfig)
 
-      return Object.assign(
-        {},
-        this.defaultVxeProps,
-        {
-          showFooter: this.statistics.has
-        },
-        this.$attrs,
-        {
-          loading: this.loading,
-          columns: this.vxeColumns,
-          editRules: this.vxeEditRules,
-          // data: this.dataSource,
-          height: this.height === 'auto' ? null : this.height,
-          maxHeight: this.maxHeight,
-          border: this.bordered,
-          expandConfig: expandConfig,
-          footerMethod: this.handleFooterMethod
-          // footerSpanMethod: this.handleFooterSpanMethod,
-        }
-      )
+      return Object.assign({}, this.defaultVxeProps, this.$attrs, {
+        loading: this.loading,
+        columns: this.vxeColumns,
+        editRules: this.vxeEditRules,
+        // data: this.dataSource,
+        height: this.height === 'auto' ? null : this.height,
+        maxHeight: this.maxHeight,
+        border: this.bordered,
+        expandConfig: expandConfig
+      })
     },
     // vxe 最终 events
     vxeEvents() {
@@ -287,10 +251,6 @@ export default {
         let { rowNumber, rowSelection, rowExpand, dragSort } = this
         let expandColumn, seqColumn, checkboxColumn, radioColumn, dragSortColumn
         if (Array.isArray(columns)) {
-          this.statistics.has = false
-          this.statistics.sum = []
-          this.statistics.average = []
-
           // 处理成vxe可识别的columns
           columns.forEach(column => {
             let col = { ...column }
@@ -341,14 +301,6 @@ export default {
                       if (rule.pattern === fooPatterns[0].value) {
                         rule.required = true
                         delete rule.pattern
-                      } else {
-                        // 兼容Online表单的特殊规则
-                        for (let foo of fooPatterns) {
-                          if (foo.value === rule.pattern) {
-                            rule.pattern = foo.pattern
-                            break
-                          }
-                        }
                       }
                     } else if (typeof rule.handler === 'function') {
                       // 自定义函数校验
@@ -358,17 +310,6 @@ export default {
                   }
                 }
                 innerEditRules[col.key] = rules
-              }
-              // 处理统计列
-              // sum = 求和、average = 平均值
-              if (Array.isArray(col.statistics)) {
-                this.statistics.has = true
-                col.statistics.forEach(item => {
-                  let arr = this.statistics[item.toLowerCase()]
-                  if (Array.isArray(arr)) {
-                    pushIfNotExist(arr, col.key)
-                  }
-                })
               }
               innerColumns.push(col)
             }
@@ -385,9 +326,6 @@ export default {
         // 判断是否开启了可选择行
         if (rowSelection) {
           let width = 40
-          if (this.statistics.has && !rowExpand && !dragSort) {
-            width = 60
-          }
           let col = { type: this.rowSelectionType, width, fixed: 'left', align: 'center' }
           // radio
           if (this.rowSelectionType === 'radio' && radioColumn) {
@@ -402,9 +340,6 @@ export default {
         // 是否可展开行
         if (rowExpand) {
           let width = 40
-          if (this.statistics.has && !dragSort) {
-            width = 60
-          }
           let col = { type: 'expand', title: '', width, fixed: 'left', align: 'center', slots: { content: 'expandContent' } }
           if (expandColumn) {
             col = Object.assign(col, expandColumn, { type: 'expand' })
@@ -414,9 +349,6 @@ export default {
         // 是否可拖动排序
         if (dragSort) {
           let width = 40
-          if (this.statistics.has) {
-            width = 60
-          }
           let col = {
             type: DCVXETypes.rowDragSort,
             title: '',
@@ -436,8 +368,7 @@ export default {
       }
     }
   },
-  created() {},
-  mounted() {},
+
   methods: {
     handleVxeScroll(event) {
       let { $refs, scroll } = this
@@ -543,54 +474,6 @@ export default {
       getEnhancedMixins(column.own.$type, 'aopEvents').editActived.apply(this, arguments)
     },
 
-    /** 表尾数据处理方法，用于显示统计信息 */
-    handleFooterMethod({ columns, data }) {
-      const { statistics } = this
-      let footers = []
-      if (statistics.has) {
-        if (statistics.sum.length > 0) {
-          footers.push(
-            this.getFooterStatisticsMap({
-              columns: columns,
-              title: '合计',
-              checks: statistics.sum,
-              method: column => XEUtils.sum(data, column.property)
-            })
-          )
-        }
-        if (statistics.average.length > 0) {
-          footers.push(
-            this.getFooterStatisticsMap({
-              columns: columns,
-              title: '平均',
-              checks: statistics.average,
-              method: column => XEUtils.mean(data, column.property)
-            })
-          )
-        }
-      }
-      return footers
-    },
-
-    getFooterStatisticsMap({ columns, title, checks, method }) {
-      return columns.map((column, columnIndex) => {
-        if (columnIndex === 0) {
-          return title
-        }
-        if (checks.includes(column.property)) {
-          return method(column, columnIndex)
-        }
-        return null
-      })
-    },
-
-    /** 表尾单元格合并方法 */
-    handleFooterSpanMethod(event) {
-      if (event.columnIndex === 0) {
-        return { colspan: 2 }
-      }
-    },
-
     /*--- 外部可调用接口方法 ---*/
 
     /**
@@ -673,14 +556,6 @@ export default {
           }
         })
       })
-      // 【issues/3828】数据更新后，重新计算统计列
-      if (updated && this.statistics.has) {
-        this.$nextTick(async () => {
-          let { xTable } = this.$refs.vxe.$refs
-          await xTable.updateCache(true)
-          await xTable.updateData()
-        })
-      }
     },
 
     /** 获取所有的数据，包括values、deleteIds */

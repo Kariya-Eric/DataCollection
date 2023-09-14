@@ -1,61 +1,40 @@
 <template>
-  <a-input ref="input" :value="innerValue" v-bind="cellProps" @blur="handleBlur" @change="handleChange" />
+  <a-input ref="input" :value="innerValue" v-bind="cellProps" @blur="handleBlur" @change="handleChange">
+    <a-icon v-if="prefixIcon" slot="prefix" :type="prefixIcon" />
+  </a-input>
 </template>
 
 <script>
-import { DCVXETypes } from '../../index'
 import DCVxeCellMixins from '../../mixins/DCVxeCellMixin'
-import { Input } from 'ant-design-vue'
-const NumberRegExp = /^-?\d+\.?\d*$/
 export default {
   name: 'DCVxeInputCell',
   mixins: [DCVxeCellMixins],
-  components: {
-    AInput: Input
+  computed: {
+    prefixIcon() {
+      if (this.$type === 'inputPhone') {
+        return 'mobile'
+      } else if (this.$type === 'inputMail') {
+        return 'mail'
+      } else if (this.$type === 'inputLink') {
+        return 'link'
+      }
+      return undefined
+    }
   },
   methods: {
     /** 处理change事件 */
     handleChange(event) {
-      let { $type } = this
-      let { target } = event
-      let { value, selectionStart } = target
+      let { value } = event.target
       let change = true
-      if ($type === DCVXETypes.inputNumber) {
-        // 判断输入的值是否匹配数字正则表达式，不匹配就还原
-        if (!NumberRegExp.test(value) && value !== '' && value !== '-') {
-          change = false
-          value = this.innerValue
-          target.value = value || ''
-          if (typeof selectionStart === 'number') {
-            target.selectionStart = selectionStart - 1
-            target.selectionEnd = selectionStart - 1
-          }
-        }
-      }
       // 触发事件，存储输入的值
       if (change) {
         this.handleChangeCommon(value)
-      }
-
-      if ($type === DCVXETypes.inputNumber) {
-        // this.recalcOneStatisticsColumn(col.key)
       }
     },
 
     /** 处理blur失去焦点事件 */
     handleBlur(event) {
-      let { $type } = this
       let { target } = event
-      // 判断输入的值是否匹配数字正则表达式，不匹配就置空
-      if ($type === DCVXETypes.inputNumber) {
-        if (!NumberRegExp.test(target.value)) {
-          target.value = ''
-        } else {
-          target.value = Number.parseFloat(target.value)
-        }
-        this.handleChangeCommon(target.value)
-      }
-
       this.handleBlurCommon(target.value)
     }
   },
@@ -66,11 +45,6 @@ export default {
       autofocus: '.ant-input'
     },
     getValue(value) {
-      if (this.$type === DCVXETypes.inputNumber && typeof value === 'string') {
-        if (NumberRegExp.test(value)) {
-          return Number.parseFloat(value)
-        }
-      }
       return value
     }
   }

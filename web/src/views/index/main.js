@@ -2,9 +2,7 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
-import '@/styles/element-ui.scss'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
-import 'ant-design-vue/dist/antd.css'
 
 import '@/styles/index.scss' // global css
 

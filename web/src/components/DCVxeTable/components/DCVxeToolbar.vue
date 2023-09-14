@@ -25,10 +25,8 @@
 </template>
 
 <script>
-import { Button, Popconfirm } from 'ant-design-vue'
 export default {
   name: 'DCVxeToolbar',
-  components: { AButton: Button, APopconfirm: Popconfirm },
   props: {
     toolbarConfig: Object,
     size: String,
