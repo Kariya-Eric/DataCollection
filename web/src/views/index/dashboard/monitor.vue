@@ -11,7 +11,7 @@ export default {
     return {
       dataSource: [],
       columns: [
-        { title: '字段', key: 'fieldName', type: DCVXETypes.inputMail, align: 'center' },
+        { title: '字段', key: 'fieldName', type: DCVXETypes.inputMail, align: 'center', titleHelper: { message: '123' } },
         { title: '字段', key: 'fieldName2', type: DCVXETypes.inputLink, align: 'center' },
         { title: '字段', key: 'fieldName2', type: DCVXETypes.inputPhone, align: 'center' }
       ]

@@ -28,6 +28,11 @@
   .vxe-table.border--outer .vxe-table--header-wrapper {
     background-color: #ffffff;
   }
+  .vxe-table.border--default .vxe-table--body-wrapper,
+  .vxe-table.border--full .vxe-table--body-wrapper,
+  .vxe-table.border--outer .vxe-table--body-wrapper {
+    overflow-x: hidden;
+  }
 }
 
 // 更改 tooltip 校验失败的颜色

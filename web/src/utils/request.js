@@ -47,7 +47,7 @@ const err = error => {
                   window.location.reload()
                 }
               } catch (e) {
-                location.reload()
+                window.location.reload()
               }
             })
           }

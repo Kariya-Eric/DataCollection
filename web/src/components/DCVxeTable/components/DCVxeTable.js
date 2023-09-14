@@ -7,7 +7,7 @@ import { getEnhancedMixins, replaceProps } from '../utils/cellUtils'
 
 import DCVxeToolbar from './DCVxeToolbar'
 import DCVxePagination from './DCVxePagination'
-import { cloneObject, pushIfNotExist, randomString, simpleDebounce } from '../utils/index'
+import { cloneObject, randomString, simpleDebounce } from '../utils/index'
 import { UtilTools } from 'vxe-table/packages/tools/src/utils'
 
 export default {
@@ -30,11 +30,6 @@ export default {
     dataSource: {
       type: Array,
       required: true
-    },
-    authPre: {
-      type: String,
-      required: false,
-      default: ''
     },
     // 是否显示工具栏
     toolbar: PropTypes.bool.def(false),
@@ -296,12 +291,6 @@ export default {
                     if (rule.unique || rule.pattern === 'only') {
                       // 唯一校验器
                       rule.validator = uniqueValidator.bind(this)
-                    } else if (rule.pattern) {
-                      // 非空
-                      if (rule.pattern === fooPatterns[0].value) {
-                        rule.required = true
-                        delete rule.pattern
-                      }
                     } else if (typeof rule.handler === 'function') {
                       // 自定义函数校验
                       rule.validator = handlerConvertToValidator.bind(this)
@@ -1043,21 +1032,6 @@ export default {
   }
 }
 
-// 兼容 online 的规则
-const fooPatterns = [
-  { title: '非空', value: '*', pattern: /^.+$/ },
-  { title: '6到16位数字', value: 'n6-16', pattern: /^\d{6,16}$/ },
-  { title: '6到16位任意字符', value: '*6-16', pattern: /^.{6,16}$/ },
-  { title: '6到18位字母', value: 's6-18', pattern: /^[a-z|A-Z]{6,18}$/ },
-  { title: '网址', value: 'url', pattern: /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/ },
-  { title: '电子邮件', value: 'e', pattern: /^([\w]+\.*)([\w]+)@[\w]+\.\w{3}(\.\w{2}|)$/ },
-  { title: '手机号码', value: 'm', pattern: /^1[3456789]\d{9}$/ },
-  { title: '邮政编码', value: 'p', pattern: /^[0-9]{6}$/ },
-  { title: '字母', value: 's', pattern: /^[A-Z|a-z]+$/ },
-  { title: '数字', value: 'n', pattern: /^-?\d+(\.?\d+|\d?)$/ },
-  { title: '整数', value: 'z', pattern: /^-?\d+$/ },
-  { title: '金额', value: 'money', pattern: /^(([1-9][0-9]*)|([0]\.\d{0,2}|[1-9][0-9]*\.\d{0,5}))$/ }
-]
 
 /** 旧版handler转为新版Validator */
 function handlerConvertToValidator(event) {
