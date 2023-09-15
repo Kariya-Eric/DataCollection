@@ -22,13 +22,7 @@ DCVxeTable.methods = Object.assign({}, VxeGridMethodsMap, DCVxeTable.methods)
 // VXETable 全局配置
 const VXETableSettings = {
   // z-index 起始值
-  zIndex: 1000,
-  table: {
-    validConfig: {
-      // 校验提示方式：强制使用tooltip
-      message: 'tooltip'
-    }
-  }
+  zIndex: 1000
 }
 
 // 执行注册方法
@@ -62,10 +56,7 @@ VXETable.interceptor.add('event.clearActived', function (params, event, target) 
     if (className.includes('j-input-pop')) {
       return false
     }
-    // 点击的标签是JPopup的弹出层、部门选择、用户选择
-    if (className.includes('j-popup-modal') || className.includes('j-depart-select-modal') || className.includes('j-user-select-modal')) {
-      return false
-    }
+
     // 执行增强
     let flag = interceptor['event.clearActived.className'].apply(this, [className, ...arguments])
     if (flag === false) {

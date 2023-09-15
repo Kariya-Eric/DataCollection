@@ -40,6 +40,10 @@
   background-color: #e23322 !important;
 }
 
+.vxe-header--column .vxe-cell-help-icon {
+  margin-left: 12px;
+}
+
 // 更改 输入框 校验失败的颜色
 .col--valid-error > .vxe-cell > .ant-input,
 .col--valid-error > .vxe-cell > .ant-select .ant-input,

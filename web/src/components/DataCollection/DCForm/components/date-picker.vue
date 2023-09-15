@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      momVal: new Date(this.value)
+      momVal: this.value ? new Date(this.value) : null
     }
   },
   model: {

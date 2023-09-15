@@ -7,9 +7,9 @@
       <a-button v-if="showAdd" icon="plus" @click="trigger('add')" :disabled="disabled" type="primary">新增</a-button>
       <a-button v-if="showSave" icon="save" @click="trigger('save')" :disabled="disabled">保存</a-button>
       <template v-if="selectedRowIds.length > 0">
-        <a-popconfirm v-if="showRemove" :title="`确定要删除这 ${selectedRowIds.length} 项吗?`" :disabled="disabled" @confirm="trigger('remove')">
-          <a-button icon="minus" :disabled="disabled">删除</a-button>
-        </a-popconfirm>
+        <el-popconfirm v-if="showRemove" :title="`确定要删除这 ${selectedRowIds.length} 项吗?`" :disabled="disabled" @confirm="trigger('remove')">
+          <a-button slot="reference" icon="minus" :disabled="disabled">删除</a-button>
+        </el-popconfirm>
         <template v-if="showClearSelection">
           <a-button icon="delete" @click="trigger('clearSelection')">清空选择</a-button>
         </template>

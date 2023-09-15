@@ -58,18 +58,16 @@ export default {
       this.formFormItems[4].options = this.categorys
       this.formForm = { ...collection, ...this.formForm, required: true }
       this.$nextTick(() => this.$refs.formForm.reset())
+      console.log
       this.updateFlag = false
       this.visible = true
     },
 
     edit(record) {
-      let collection = {
-        ...this.collection,
-        formCollectionId: this.collection.id
-      }
+      let collection = { ...this.collection }
       this.formFormItems[4].options = this.categorys
       let form = { ...record, formName: record.name, formType: record.type }
-      this.formForm = Object.assign({}, form, collection)
+      this.formForm = Object.assign({}, collection, form)
       this.$nextTick(() => this.$refs.formForm.reset())
       this.updateFlag = true
       this.visible = true
@@ -109,7 +107,8 @@ export default {
       let params = {
         ...this.formForm,
         name: this.formForm.formName,
-        type: this.formForm.formType
+        type: this.formForm.formType,
+        id: null
       }
       this.loading = true
       addForm(params)

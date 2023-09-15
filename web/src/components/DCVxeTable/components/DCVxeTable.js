@@ -9,6 +9,7 @@ import DCVxeToolbar from './DCVxeToolbar'
 import DCVxePagination from './DCVxePagination'
 import { cloneObject, randomString, simpleDebounce } from '../utils/index'
 import { UtilTools } from 'vxe-table/packages/tools/src/utils'
+import Sortable from 'sortablejs'
 
 export default {
   name: 'DCVxeTable',
@@ -64,8 +65,6 @@ export default {
     disabled: PropTypes.bool.def(false),
     // 是否可拖拽排序 TODO 仅实现上下排序，未实现拖拽排序（可能无法实现或较为困难）
     dragSort: PropTypes.bool.def(false),
-    // 排序字段保存的Key
-    dragSortKey: PropTypes.string.def('orderNum'),
     // 大小，可选值有：medium（中）、small（小）、mini（微）、tiny（非常小）
     size: PropTypes.oneOf(['medium', 'small', 'mini', 'tiny']).def('medium'),
     // 是否显示边框线
@@ -111,7 +110,6 @@ export default {
         'show-overflow': true,
         // 表头溢出隐藏并显示tooltip
         'show-header-overflow': true,
-        'show-footer-overflow': true,
         // 可编辑配置
         'edit-config': { trigger: 'click', mode: 'cell', showStatus: true },
         'expand-config': {
@@ -141,9 +139,6 @@ export default {
           reloadEffect: this.reloadEffect,
           reloadEffectRowKeysMap: this.reloadEffectRowKeysMap,
           listeners: this.cellListeners
-        }
-        if (column.$type === DCVXETypes.rowDragSort) {
-          renderOptions.dragSortKey = this.dragSortKey
         }
         // slot 组件特殊处理
         if (column.$type === DCVXETypes.slot) {
@@ -210,13 +205,7 @@ export default {
     cellListeners() {
       return {
         trigger: (name, event) => this.trigger(name, event),
-        valueChange: event => this.trigger('valueChange', event),
-        /** 当前行向上移一位 */
-        rowMoveUp: rowIndex => this.rowResort(rowIndex, rowIndex - 1),
-        /** 当前行向下移一位 */
-        rowMoveDown: rowIndex => this.rowResort(rowIndex, rowIndex + 1),
-        /** 在当前行下面插入一行 */
-        rowInsertDown: rowIndex => this.insertRows({}, rowIndex + 1)
+        valueChange: event => this.trigger('valueChange', event)
       }
     }
   },
@@ -226,14 +215,6 @@ export default {
       immediate: true,
       async handler() {
         let vxe = await getRefPromise(this, 'vxe')
-
-        this.dataSource.forEach((data, idx) => {
-          // 开启了排序就自动计算排序值
-          if (this.dragSort) {
-            this.$set(data, this.dragSortKey, idx + 1)
-          }
-        })
-
         // 阻断vue监听大数据，提高性能
         vxe.loadData(this.dataSource)
       }
@@ -337,10 +318,10 @@ export default {
         }
         // 是否可拖动排序
         if (dragSort) {
-          let width = 40
+          let width = 60
           let col = {
             type: DCVXETypes.rowDragSort,
-            title: '',
+            titleHelp: { message: '按住后可上下拖动排序' },
             width,
             fixed: 'left',
             align: 'center',
@@ -358,7 +339,26 @@ export default {
     }
   },
 
+  mounted() {
+    this.rowDrop()
+  },
+
   methods: {
+    rowDrop() {
+      this.$nextTick(() => {
+        let { xTable } = this.$refs.vxe.$refs
+        this.sortable = Sortable.create(xTable.$el.querySelector('.body--wrapper>.vxe-table--body tbody'), {
+          handle: '.drag-btn',
+          onEnd: ({ newIndex, oldIndex }) => {
+            const tableData = xTable.getTableData().tableData
+            const currRow = tableData.splice(oldIndex, 1)[0]
+            tableData.splice(newIndex, 0, currRow)
+            this.$emit('sort', tableData)
+          }
+        })
+      })
+    },
+
     handleVxeScroll(event) {
       let { $refs, scroll } = this
 
@@ -420,13 +420,7 @@ export default {
       }
 
       // 显示详细信息
-      if (column.own.showDetails) {
-        // 两个如果同时存在的话会出现死循环
-        $refs.subPopover ? $refs.subPopover.close() : null
-        $refs.detailsModal ? $refs.detailsModal.open(event) : null
-      } else if ($refs.subPopover) {
-        $refs.subPopover.toggle(event)
-      } else if (this.clickSelectRow) {
+      if (this.clickSelectRow) {
         let className = $event.target.className || ''
         className = typeof className === 'string' ? className : className.toString()
         // 点击的是expand，不做处理
@@ -485,12 +479,6 @@ export default {
         // 先清空所有数据
         xTable.loadData([])
 
-        dataSource.forEach((data, idx) => {
-          // 开启了排序就自动计算排序值
-          if (this.dragSort) {
-            this.$set(data, this.dragSortKey, idx + 1)
-          }
-        })
         // 再新增
         return xTable.insertAt(dataSource)
       }
@@ -624,24 +612,12 @@ export default {
      * @param isOnlJs 是否是onlineJS增强触发的
      * @return
      */
-    async addRows(rows = {}, isOnlJs) {
-      return this._addOrInsert(rows, -1, 'added', isOnlJs)
+    async addRows(rows = {}) {
+      const valid = await this.validateTable()
+      if (valid) return
+      return this._addOrInsert(rows, -1, 'added')
     },
 
-    /**
-     * 添加一行或多行
-     *
-     * @param rows
-     * @param index 添加下标，数字，必填
-     * @return
-     */
-    async insertRows(rows, index) {
-      if (typeof index !== 'number' || index < 0) {
-        console.warn(`【DCVXETable】insertRows：index必须传递数字，且大于-1`)
-        return
-      }
-      return this._addOrInsert(rows, index, 'inserted')
-    },
     /**
      * 添加一行或多行临时数据，不会填充默认值，传什么就添加进去什么
      * @param rows
@@ -660,7 +636,6 @@ export default {
         // 激活最后一行的编辑模式
         xTable.setActiveRow(result.rows[result.rows.length - 1])
       }
-      await this._recalcSortNumber()
       return result
     },
 
@@ -679,7 +654,6 @@ export default {
     /** 删除一行或多行数据 */
     async removeRows(rows) {
       const res = await this._remove(rows)
-      await this._recalcSortNumber()
       return res
     },
 
@@ -761,7 +735,6 @@ export default {
     async removeSelection() {
       let res = await this._remove(this.selectedRows)
       this.clearSelection()
-      await this._recalcSortNumber()
       return res
     },
 
@@ -819,7 +792,6 @@ export default {
       // 从新增中移除已删除的数据
       XEUtils.remove(insertList, row => rows.indexOf(row) > -1)
       xTable.handleTableData()
-      xTable.updateFooter()
       xTable.updateCache()
       xTable.checkSelectionStatus()
       if (scrollYLoad) {
@@ -831,36 +803,7 @@ export default {
       })
     },
 
-    /** 行重新排序 */
-    async rowResort(oldIndex, newIndex) {
-      const xTable = this.$refs.vxe.$refs.xTable
-      window.xTable = xTable
-      const sort = array => {
-        // 存储旧数据，并删除旧项目
-        let row = array.splice(oldIndex, 1)[0]
-        // 向新项目里添加旧数据
-        array.splice(newIndex, 0, row)
-      }
-      sort(xTable.tableFullData)
-      if (xTable.keepSource) {
-        sort(xTable.tableSourceData)
-      }
-      await this.$nextTick()
-      await this._recalcSortNumber()
-    },
-
-    /** 重新计算排序字段的数值 */
-    async _recalcSortNumber() {
-      const xTable = this.$refs.vxe.$refs.xTable
-      if (this.dragSort) {
-        xTable.tableFullData.forEach((data, idx) => (data[this.dragSortKey] = idx + 1))
-      }
-      await xTable.updateCache(true)
-      return await xTable.updateData()
-    },
-
-    async _addOrInsert(rows = {}, index, triggerName, isOnlJs) {
-      let { xTable } = this.$refs.vxe.$refs
+    async _addOrInsert(rows = {}, index) {
       let records
       if (Array.isArray(rows)) {
         records = rows
@@ -870,20 +813,6 @@ export default {
       // 遍历添加默认值
       records.forEach(record => this._createRow(record))
       let result = await this.pushRows(records, { index: index, setActive: true })
-      // 遍历插入的行
-      // update--begin--autor:lvdandan-----date:20201117------for:LOWCOD-987 【新行编辑】js增强附表内置方法调用问题 #1819
-      // online js增强时以传过来值为准，不再赋默认值
-      if (isOnlJs != true) {
-        for (let i = 0; i < result.rows.length; i++) {
-          let row = result.rows[i]
-          this.trigger(triggerName, {
-            row: row,
-            $table: xTable,
-            target: this
-          })
-        }
-      }
-      // update--end--autor:lvdandan-----date:20201117------for:LOWCOD-987 【新行编辑】js增强附表内置方法调用问题 #1819
       return result
     },
     // 创建新行，自动添加默认值
@@ -1031,7 +960,6 @@ export default {
     this.$emit('beforeDestroy')
   }
 }
-
 
 /** 旧版handler转为新版Validator */
 function handlerConvertToValidator(event) {

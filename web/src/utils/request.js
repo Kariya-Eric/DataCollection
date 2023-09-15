@@ -41,14 +41,7 @@ const err = error => {
           onOk: () => {
             store.dispatch('LogOut').then(() => {
               Vue.ls.remove(ACCESS_TOKEN)
-              try {
-                let path = window.document.location.pathname
-                if (path != '/' && path.indexOf('/user/login') == -1) {
-                  window.location.reload()
-                }
-              } catch (e) {
-                window.location.reload()
-              }
+              window.location.reload()
             })
           }
         })

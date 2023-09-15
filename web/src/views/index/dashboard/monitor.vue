@@ -1,6 +1,6 @@
 <template>
   <el-card shadow="always" class="app-card">
-    <dc-vxe-table toolbar keep-source :dataSource="dataSource" :columns="columns"> </dc-vxe-table>
+    <dc-vxe-table toolbar rowNumber drag-sort keep-source :dataSource="dataSource" :columns="columns" @sort="sort"> </dc-vxe-table>
   </el-card>
 </template>
 
@@ -11,10 +11,31 @@ export default {
     return {
       dataSource: [],
       columns: [
-        { title: '字段', key: 'fieldName', type: DCVXETypes.inputMail, align: 'center', titleHelper: { message: '123' } },
-        { title: '字段', key: 'fieldName2', type: DCVXETypes.inputLink, align: 'center' },
+        { title: '字段', key: 'fieldName', type: DCVXETypes.inputMail, align: 'center', titleHelp: { content: '123' } },
+        {
+          title: '字段',
+          key: 'fieldName2',
+          type: DCVXETypes.inputLink,
+          align: 'center',
+          validateRules: [
+            {
+              required: true,
+              message: '请输入${title}'
+            },
+            {
+              unique: true,
+              message: '${title}不能重复'
+            }
+          ]
+        },
         { title: '字段', key: 'fieldName2', type: DCVXETypes.inputPhone, align: 'center' }
       ]
+    }
+  },
+  methods: {
+    sort(data) {
+      this.dataSource = []
+      this.$nextTick(() => (this.dataSource = data))
     }
   }
 }

@@ -9,19 +9,18 @@ import {
   Icon,
   Badge,
   Breadcrumb,
-  Menu,
   DatePicker,
   Dropdown,
-  Popconfirm,
   TimePicker,
   Progress,
   Tree,
   TreeSelect,
   Pagination,
   notification,
+  Spin,
   Modal
 } from 'ant-design-vue'
-import 'ant-design-vue/dist/antd.less';
+import 'ant-design-vue/dist/antd.less'
 
 export default {
   install(Vue) {
@@ -35,18 +34,15 @@ export default {
     Vue.component('AIcon', Icon)
     Vue.component('ABadge', Badge)
     Vue.component('ABreadcrumb', Breadcrumb)
-    Vue.component('AMenu', Menu)
     Vue.component('ADatePicker', DatePicker)
     Vue.component('ATimePicker', TimePicker)
     Vue.component('AProgress', Progress)
-    Vue.component('APopconfirm', Popconfirm)
     Vue.component('ATree', Tree)
     Vue.component('ADropdown', Dropdown)
     Vue.component('ATreeSelect', TreeSelect)
     Vue.component('APagination', Pagination)
     Vue.component('ASelectOption', Select.Option)
-    Vue.component('AMenuItem', Menu.Item)
-    Vue.component('AMenuDivider', Menu.Divider)
+    Vue.component('ASpin', Spin)
     Vue.use(Modal)
     Vue.prototype.$notification = notification
     Vue.prototype.$DCModal = Modal
