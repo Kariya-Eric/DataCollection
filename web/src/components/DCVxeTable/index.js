@@ -19,7 +19,6 @@ export const DCVXETypes = dcTypes.DCVXETypes
 export const AllCells = {
   ...mapCell(DCVXETypes.normal, DCVxeNormalCell),
   ...mapCell(DCVXETypes.input, DCVxeInputCell),
-  ...mapCell(DCVXETypes.input, DCVxeInputCell),
   ...mapCell(DCVXETypes.inputLink, DCVxeInputCell),
   ...mapCell(DCVXETypes.inputPhone, DCVxeInputCell),
   ...mapCell(DCVXETypes.inputMail, DCVxeInputCell),

@@ -17,6 +17,7 @@ export default {
           key: 'fieldName2',
           type: DCVXETypes.inputLink,
           align: 'center',
+          placeholder: '请输入1',
           validateRules: [
             {
               required: true,

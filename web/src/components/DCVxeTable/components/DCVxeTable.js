@@ -360,15 +360,11 @@ export default {
     },
 
     handleVxeScroll(event) {
-      let { $refs, scroll } = this
+      let { scroll } = this
 
       // 记录滚动条的位置
       scroll.top = event.scrollTop
       scroll.left = event.scrollLeft
-
-      $refs.subPopover ? $refs.subPopover.close() : null
-      this.scrolling = true
-      this.closeScrolling()
     },
     // 当手动勾选单选时触发的事件
     handleVxeRadioChange(event) {
@@ -410,14 +406,7 @@ export default {
 
     // 点击单元格时触发的事件
     handleCellClick(event) {
-      let { row, column, $event, $table } = event
-      let { $refs } = this
-
-      // 点击了可编辑的
-      if (column.editRender) {
-        $refs.subPopover ? $refs.subPopover.close() : null
-        return
-      }
+      let { row, $event, $table } = event
 
       // 显示详细信息
       if (this.clickSelectRow) {
@@ -899,30 +888,7 @@ export default {
       }
       return null
     },
-    // 渲染点击时弹出的子表
-    renderSubPopover(h) {
-      if (this.clickRowShowSubForm && this.$scopedSlots.subForm) {
-        return h('dc-vxe-sub-popover', {
-          ref: 'subPopover',
-          scopedSlots: {
-            subForm: this.$scopedSlots.subForm
-          }
-        })
-      }
-      return null
-    },
-    // 渲染点击时弹出的详细信息
-    renderDetailsModal(h) {
-      if (this.clickRowShowMainForm && this.$scopedSlots.mainForm) {
-        return h('dc-vxe-details-modal', {
-          ref: 'detailsModal',
-          scopedSlots: {
-            subForm: this.clickRowShowSubForm ? this.$scopedSlots.subForm : null,
-            mainForm: this.$scopedSlots.mainForm
-          }
-        })
-      }
-    },
+
     // 渲染分页器
     renderPagination(h) {
       if (this.pagination && Object.keys(this.pagination).length > 0) {
@@ -946,14 +912,7 @@ export default {
       {
         class: ['dc-vxe-table-box', `size--${this.size}`]
       },
-      [
-        this.renderSubPopover(h),
-        this.renderDetailsModal(h),
-        this.renderToolbar(h),
-        this.renderToolbarAfterSlot(),
-        this.renderVxeGrid(h),
-        this.renderPagination(h)
-      ]
+      [this.renderToolbar(h), this.renderToolbarAfterSlot(), this.renderVxeGrid(h), this.renderPagination(h)]
     )
   },
   beforeDestroy() {
