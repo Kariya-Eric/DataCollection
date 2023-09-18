@@ -117,7 +117,10 @@ export default {
         if (!errMap) {
           let param = {
             formCollectionId: this.categoryForm.id,
-            categories: this.$refs.vTable.getTableData()
+            categories: this.$refs.vTable.getTableData().map((data, index) => {
+              data.sort = index
+              return data
+            })
           }
           saveFormCategories(param)
             .then(res => {

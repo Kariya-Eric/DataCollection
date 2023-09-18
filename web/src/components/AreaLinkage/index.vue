@@ -30,9 +30,6 @@ export default {
       type: String,
       required: false
     },
-    // 组件的类型，可选值：
-    // select 下拉样式
-    // cascader 级联样式（默认）
     type: {
       type: String,
       default: 'cascader'

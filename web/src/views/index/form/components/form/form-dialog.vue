@@ -22,7 +22,7 @@ export default {
         { prop: 'type', label: '合集类型', disabled: true, type: 'input' },
         { prop: 'year', label: '年份', disabled: true, type: 'input' },
         { prop: 'formName', label: '表单名称', required: true, type: 'input' },
-        { prop: 'formCategories', label: '表单大类', required: true, type: 'select', options: [] },
+        { prop: 'formCategories', label: '表单大类', type: 'select', options: [] },
         {
           prop: 'collectTimeType',
           label: '统计时间类型',
@@ -58,7 +58,6 @@ export default {
       this.formFormItems[4].options = this.categorys
       this.formForm = { ...collection, ...this.formForm, required: true }
       this.$nextTick(() => this.$refs.formForm.reset())
-      console.log
       this.updateFlag = false
       this.visible = true
     },
@@ -107,8 +106,7 @@ export default {
       let params = {
         ...this.formForm,
         name: this.formForm.formName,
-        type: this.formForm.formType,
-        id: null
+        type: this.formForm.formType
       }
       this.loading = true
       addForm(params)

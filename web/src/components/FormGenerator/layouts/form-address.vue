@@ -1,103 +1,54 @@
 <template>
-  <div @blur="onBlur">
-    <el-cascader
-      placeholder="请选择地址"
-      filterable
-      style="width: 100%"
-      v-model="selectOption"
-      @change="changeOption"
-      :props="cascaderProps"
-    />
-    <el-input
-      type="textarea"
-      :rows="3"
-      placeholder="请输入详细地址"
-      v-model="textarea"
-      @input="changeVal"
-    />
+  <div>
+    <area-linkage v-model="address" />
+    <el-input type="textarea" :rows="3" placeholder="请输入详细地址" v-model="textarea" @input="changeVal" />
   </div>
 </template>
 
 <script>
-import { cityList } from "@/api/common";
-
 export default {
-  name: "FormAddress",
-  props: ["value"],
+  name: 'FormAddress',
+  props: ['value'],
   watch: {
     value: {
       handler(val) {
-        if (!val) {
-          this.selectOption = [];
-          this.textarea = "";
-        } else {
-          let arr = val.split("/");
-          this.textarea = arr[arr.length - 1];
-          arr.pop();
-          this.selectOption = arr;
+        if (val) {
+          let addressArray = val.split('/')
+          if (addressArray.length > 1) {
+            this.address = addressArray[0]
+            this.textarea = addressArray[1]
+          } else {
+            this.address = addressArray[0]
+          }
         }
       },
-      immediate: true,
+      immediate: true
     },
+    address(newVal, oldVal) {
+      this.address = newVal
+      if (newVal != oldVal) {
+        if (newVal) {
+          let address = this.textarea == '' ? newVal : newVal + '/' + this.textarea
+          this.$emit('input', address)
+        } else {
+          this.$emit('input', '/' + this.textarea)
+        }
+      }
+    }
   },
   data() {
     return {
-      textarea: "",
-      selectOption: [],
-      cascaderProps: {
-        lazy: true,
-        lazyLoad(node, resolve) {
-          const { level } = node;
-          if (level === 0) {
-            //获取省份
-            cityList("100000").then((res) => {
-              let arr = res.value.map((item) => ({
-                value: item.id,
-                label: item.simpleName,
-              }));
-              resolve(arr);
-            });
-          } else {
-            const { value } = node;
-            cityList(value).then((res) => {
-              let arr = res.value.map((item) => ({
-                value: item.id,
-                label: item.simpleName,
-              }));
-              resolve(arr);
-            });
-          }
-        },
-      },
-    };
+      textarea: '',
+      address: ''
+    }
   },
-
   methods: {
-    changeOption(val) {
-      this.selectOption = val;
-      let address = "";
-      this.selectOption.forEach((opt) => (address += opt + "/"));
-      address += this.textarea;
-      this.$emit("input", address);
-    },
     changeVal(val) {
-      this.textarea = val;
-      let address = "";
-      this.selectOption.forEach((opt) => (address += opt + "/"));
-      address += this.textarea;
-      this.$emit("input", address);
-    },
-
-    onBlur() {
-      //失去焦点触发
-      this.$parent.$emit("el.form.blur");
-    },
-  },
-};
+      let address = val == '' ? this.address : this.address + '/' + this.textarea
+      this.$emit('input', address)
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
-.el-textarea {
-  margin-top: 8px;
-}
-</style>
+<style scoped lang="scss"></style>
