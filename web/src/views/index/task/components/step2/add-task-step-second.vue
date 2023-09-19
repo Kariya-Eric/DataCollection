@@ -6,6 +6,7 @@
         <el-select v-model="selectFormCollection" clearable :disabled="task.type == '教学基本状态数据'">
           <el-option v-for="item in formCollectionList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
+        <span style="margin-left: 12px; color: red">{{ tips }}</span>
         <el-button type="primary" style="float: right" @click="applyDeadlineBatch">批量配置统计截止时间</el-button>
       </el-row>
     </div>
@@ -63,6 +64,7 @@ export default {
   name: 'AddTaskStepSecond',
   data() {
     return {
+      tips: '',
       selectedRowKeys: [],
       selectFormCollection: '',
       formCollectionList: [],
@@ -81,6 +83,7 @@ export default {
   },
 
   mounted() {
+    this.tips = ''
     this.initData()
   },
 
@@ -115,9 +118,16 @@ export default {
       if (this.task.type == '教学基本状态数据') {
         formCollectionList({ year: this.task.year }).then(res => {
           if (res.state) {
-            this.formCollectionList = res.value.rows
-            let formCollection = res.value.rows.find(r => r.year == parseInt(this.task.year) + 1 && r.type == '教学基本状态数据')
-            if (formCollection) this.selectFormCollection = formCollection.id
+            this.formCollectionList = res.value.rows.filter(item => item.enabledFlag == 1)
+            if (this.formCollectionList.length == 0) {
+              this.tips = '当前年份下不存在表单合集或表单合集未启用'
+            }
+            let formCollection = this.formCollectionList.find(r => r.year == parseInt(this.task.year) + 1 && r.type == '教学基本状态数据')
+            if (formCollection) {
+              this.selectFormCollection = formCollection.id
+            } else {
+              this.tips = '当前年份下不存在表单合集或表单合集未启用'
+            }
           }
         })
       } else {

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+import { Notification, MessageBox } from 'element-ui'
 import store from '../store'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
@@ -26,38 +27,35 @@ const err = error => {
     let data = error.response.data
     switch (error.response.status) {
       case 404:
-        Vue.prototype.$notification.error({
-          message: '系统提示',
-          description: '很抱歉,资源未找到！',
-          duration: 3
+        Notification.error({
+          title: '系统提示',
+          message: '很抱歉,资源未找到！',
+          duration: 3000
         })
         break
       case 401:
-        Vue.prototype.$DCModal.error({
-          title: '登录已过期',
-          content: '很抱歉，登录已过期，请重新登录',
-          okText: '重新登录',
-          mask: false,
-          onOk: () => {
+        MessageBox.alert('登陆信息已失效，请重新登录', '确定', {
+          confirmButtonText: '重新登录',
+          type: 'warning',
+          callback: action => {
             store.dispatch('LogOut').then(() => {
-              Vue.ls.remove(ACCESS_TOKEN)
-              window.location.reload()
+              location.reload() // 为了重新实例化vue-router对象 避免bug
             })
           }
         })
         break
       default:
-        Vue.prototype.$notification.error({
-          message: '系统提示',
-          description: data.message,
-          duration: 3
+        Notification.error({
+          title: '系统提示',
+          message: data.message,
+          duration: 3000
         })
         break
     }
   } else if (error.message) {
-    Vue.prototype.$notification.error({
-      message: '系统提示',
-      description: error.message,
+    Notification.error({
+      title: '系统提示',
+      message: error.message,
       duration: 3000
     })
   }

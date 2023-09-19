@@ -58,6 +58,8 @@ export default {
       }
       if (drawingList != null) {
         this.drawingList = drawingList
+      } else {
+        this.drawingList = []
       }
       this.visible = true
     },

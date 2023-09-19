@@ -60,15 +60,6 @@ exports.cssLoaders = function (options) {
   return {
     css: generateLoaders(),
     postcss: generateLoaders(),
-    less: generateLoaders('less', {
-      modifyVars: {
-        'primary-color': '#2f68bd',
-        'link-color': '#2f68bd',
-        'success-color': '#2b9e77',
-        'error-color': '#e23322'
-      },
-      javascriptEnabled: true
-    }),
     sass: generateLoaders('sass', {
       indentedSyntax: true
     }),

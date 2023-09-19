@@ -2,15 +2,7 @@
   <div style="height: 100%">
     <div style="height: 100%; overflow: auto">
       <div class="right-preview">
-        <iframe
-          v-show="isIframeLoaded"
-          ref="previewPage"
-          id="myIframe"
-          class="result-wrapper"
-          frameborder="0"
-          :src="previewURL"
-          @load="iframeLoad"
-        />
+        <iframe v-show="isIframeLoaded" ref="previewPage" id="myIframe" class="result-wrapper" frameborder="0" :src="previewURL" @load="iframeLoad" />
         <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper" />
       </div>
     </div>
@@ -19,46 +11,45 @@
 
 <script>
 // 表单预览页面
-import { makeUpHtml } from "../utils/html";
-import { makeUpJs } from "../utils/js";
-import { makeUpCss } from "../utils/css";
-import { parse } from "@babel/parser";
-import { exportDefault } from "../utils/index";
+import { makeUpHtml } from '../utils/html'
+import { makeUpJs } from '../utils/js'
+import { makeUpCss } from '../utils/css'
+import { parse } from '@babel/parser'
+import { exportDefault } from '../utils/index'
 
 const editorObj = {
   html: null,
   js: null,
-  css: null,
-};
+  css: null
+}
 
 export default {
-  name: "FormView",
-  props: ["formConf"],
+  name: 'FormView',
+  props: ['formConf'],
   data() {
     return {
       editorObj,
       isIframeLoaded: false,
       isInitcode: false, // 保证open后两个异步只执行一次runcode
-      previewURL: "",
-    };
+      previewURL: ''
+    }
   },
 
   watch: {
     formConf: {
       handler(newVal) {
-        this.isInitcode = false;
-        this.previewURL =
-          process.env.BASE_URL + ":" + process.env.BASE_PORT + "/preview.html";
-        this.editorObj.html = makeUpHtml(newVal);
-        this.editorObj.js = makeUpJs(newVal);
-        this.editorObj.css = makeUpCss(newVal);
+        this.isInitcode = false
+        this.previewURL = process.env.BASE_URL + ':' + process.env.BASE_PORT + '/preview.html'
+        this.editorObj.html = makeUpHtml(newVal)
+        this.editorObj.js = makeUpJs(newVal)
+        this.editorObj.css = makeUpCss(newVal)
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
 
   created() {
-    window.getMessageFromFrame = this.getMessageFromFrame;
+    window.getMessageFromFrame = this.getMessageFromFrame
   },
 
   methods: {
@@ -66,95 +57,88 @@ export default {
       if (!this.isInitcode) {
         // 延时加载，处理iframe高度
         setTimeout(() => {
-          this.resizeIframe();
-        }, 500);
-        this.isIframeLoaded = true;
-        this.isInitcode = true;
-        this.runCode();
+          this.resizeIframe()
+        }, 500)
+        this.isIframeLoaded = true
+        this.isInitcode = true
+        this.runCode()
       }
     },
 
     runCode() {
-      const jsCodeStr = editorObj.js;
+      const jsCodeStr = editorObj.js
       try {
-        const ast = parse(jsCodeStr, { sourceType: "module" });
-        const astBody = ast.program.body;
+        const ast = parse(jsCodeStr, { sourceType: 'module' })
+        const astBody = ast.program.body
         if (astBody.length > 1) {
-          this.$confirm(
-            "js格式不能识别，仅支持修改export default的对象内容",
-            "提示",
-            {
-              type: "warning",
-            }
-          );
-          return;
+          this.$confirm('js格式不能识别，仅支持修改export default的对象内容', '提示', {
+            type: 'warning'
+          })
+          return
         }
-        if (astBody[0].type === "ExportDefaultDeclaration") {
+        if (astBody[0].type === 'ExportDefaultDeclaration') {
           const postData = {
-            type: "refreshFrame",
+            type: 'refreshFrame',
             data: {
               html: editorObj.html,
-              js: jsCodeStr.replace(exportDefault, ""),
-              css: editorObj.css,
-            },
-          };
+              js: jsCodeStr.replace(exportDefault, ''),
+              css: editorObj.css
+            }
+          }
 
-          this.$refs.previewPage.contentWindow.postMessage(
-            postData,
-            location.origin
-          );
+          this.$refs.previewPage.contentWindow.postMessage(postData, location.origin)
         } else {
-          this.$message.error("请使用export default");
+          this.$message.error('请使用export default')
         }
       } catch (err) {
-        this.$message.error(`js错误：${err}`);
-        console.error(err);
+        this.$message.error(`js错误：${err}`)
+        console.error(err)
       }
     },
 
     getMessageFromFrame(value) {
-      if (value.hasOwnProperty("resize")) {
-        this.resizeIframe();
+      if (value.hasOwnProperty('resize')) {
+        this.resizeIframe()
       }
-      if (value.hasOwnProperty("submit")) {
-        this.$emit("submit", value.submit);
+      if (value.hasOwnProperty('submit')) {
+        this.$emit('submit', value.submit)
       }
-      if (value.hasOwnProperty("save")) {
-        this.$emit("save", value.save);
+      if (value.hasOwnProperty('save')) {
+        this.$emit('save', value.save)
       }
     },
 
     post(type) {
-      let iframe = this.$refs.previewPage.contentWindow;
-      iframe.postMessage(type);
+      let iframe = this.$refs.previewPage.contentWindow
+      iframe.postMessage(type)
     },
 
     //设置frame高度
     resizeIframe() {
-      var iframe = document.getElementById("myIframe");
+      var iframe = document.getElementById('myIframe')
       this.$nextTick(() => {
-        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-        var innerHeight = innerDoc.body.scrollHeight + 32;
-        iframe.style.height = innerHeight + "px";
-      });
+        var innerDoc = iframe.contentDocument || iframe.contentWindow.document
+        var innerHeight = innerDoc.body.scrollHeight + 32
+        iframe.style.height = innerHeight + 'px'
+      })
     },
 
     submit() {
-      let iframe = this.$refs.previewPage.contentWindow;
-      iframe.postMessage({ type: "submitForm" });
+      let iframe = this.$refs.previewPage.contentWindow
+      iframe.postMessage({ type: 'submitForm' })
     },
 
     reset() {
-      let iframe = this.$refs.previewPage.contentWindow;
-      iframe.postMessage({ type: "resetForm" });
+      let iframe = this.$refs.previewPage.contentWindow
+      iframe.postMessage({ type: 'resetForm' })
     },
 
     save() {
-      let iframe = this.$refs.previewPage.contentWindow;
-      iframe.postMessage({ type: "saveForm" });
-    },
-  },
-};
+      let iframe = this.$refs.previewPage.contentWindow
+      iframe.postMessage({ type: 'saveForm' })
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

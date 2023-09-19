@@ -3,20 +3,7 @@
     <div v-if="reloading">
       <span> Reloading... </span>
     </div>
-    <area-cascader
-      v-else-if="_type === enums.type[0]"
-      :value="innerValue"
-      :data="pcaa"
-      :level="1"
-      :style="{ width }"
-      v-bind="$attrs"
-      v-on="_listeners"
-      @change="handleChange"
-    />
-    <area-select v-else-if="_type === enums.type[1]" :value="innerValue" :data="pcaa" :level="2" v-bind="$attrs" v-on="_listeners" @change="handleChange" />
-    <div v-else>
-      <span style="color: red"> Bad type value: {{ _type }}</span>
-    </div>
+    <area-cascader :value="innerValue" separator="-" :data="pcaa" :level="1" :style="{ width }" v-bind="$attrs" v-on="_listeners" @change="handleChange" />
   </div>
 </template>
 
@@ -30,10 +17,6 @@ export default {
       type: String,
       required: false
     },
-    type: {
-      type: String,
-      default: 'cascader'
-    },
     width: {
       type: String,
       default: '100%'
@@ -44,9 +27,6 @@ export default {
       pcaa: this.$pcaa,
       innerValue: [],
       usedListeners: ['change'],
-      enums: {
-        type: ['cascader', 'select']
-      },
       reloading: false,
       areaData: ''
     }
@@ -59,14 +39,6 @@ export default {
         delete listeners[key]
       })
       return listeners
-    },
-    _type() {
-      if (this.enums.type.includes(this.type)) {
-        return this.type
-      } else {
-        console.error(`AreaLinkage的type属性只能接收指定的值（${this.enums.type.join('|')}）`)
-        return this.enums.type[0]
-      }
     }
   },
   watch: {

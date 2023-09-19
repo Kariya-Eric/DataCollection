@@ -47,7 +47,8 @@ export const DataCollectionMixin = {
       let params = this.getQueryParams() //构造查询条件
       postAction(this.url.list, params)
         .then(res => {
-          this.dataSource = res.value.rows || res.value
+          let data = res.value.rows || res.value
+          this.dataSource = data.sort((r1, r2) => r1.sort - r2.sort)
           this.ipagination.total = res.value.total
         })
         .catch(e => console.log('此处报错', e))

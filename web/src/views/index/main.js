@@ -6,6 +6,15 @@ import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 
 import '@/styles/index.scss' // global css
 
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/style.css'
+import VXETablePluginElement from 'vxe-table-plugin-element'
+import 'vxe-table-plugin-element/dist/style.css'
+Vue.use(VXETable)
+VXETable.use(VXETablePluginElement)
+
+Vue.use(VXETable)
+
 import App from './App'
 import router from '@/router'
 import store from '@/store'
@@ -27,8 +36,6 @@ Vue.use(ElementUI, { size: 'small' })
 Vue.use(ElementUI, { locale })
 
 Vue.use(Storage, config.storageOptions)
-
-import '@/components/DCVxeTable/install'
 
 Vue.config.productionTip = false
 

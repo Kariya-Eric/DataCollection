@@ -1,15 +1,30 @@
 <template>
   <div>
     <area-linkage v-model="address" />
-    <el-input type="textarea" :rows="3" placeholder="请输入详细地址" v-model="textarea" @input="changeVal" />
+    <el-input type="textarea" :rows="4" placeholder="请输入详细地址" v-model="textarea" @input="changeVal" v-if="showDetail" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'FormAddress',
-  props: ['value'],
+  props: ['value', 'type'],
   watch: {
+    type: {
+      handler(newVal, oldVal) {
+        if (newVal != oldVal) {
+          if (newVal == '省（直辖市、自治区）/市/区-详细地址') {
+            this.showDetail = true
+          } else {
+            this.showDetail = false
+          }
+          this.address = ''
+          this.textarea = ''
+          this.$emit('input', '')
+        }
+      },
+      immediate: true
+    },
     value: {
       handler(val) {
         if (val) {
@@ -38,6 +53,7 @@ export default {
   },
   data() {
     return {
+      showDetail: true,
       textarea: '',
       address: ''
     }

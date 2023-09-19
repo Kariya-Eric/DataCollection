@@ -187,6 +187,7 @@ export default {
       const newRecord = {}
       const { row: newRow } = await $table.insertAt(newRecord, -1)
       await $table.setActiveRow(newRow)
+      this.$emit('add')
     },
 
     // 处理选择和数字的回显
