@@ -98,8 +98,8 @@ export default {
       }
       if (flag) {
         let collaborateOrgId = ''
-        if (this.permissionForm.collaborateOrg) {
-          collaborateOrgId = this.permissionForm.collaborateOrg.map(item => item.id).join(',')
+        if (this.permissionForm.collaborateOrgId) {
+          collaborateOrgId = this.permissionForm.collaborateOrgId.join(',')
         }
         let permissionForm = {
           ...this.permissionForm,
