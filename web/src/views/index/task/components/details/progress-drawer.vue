@@ -49,11 +49,10 @@ export default {
       formInfo: {},
       dataSource: [],
       columns: [
-        { label: '部门', prop: 'collaborateOrgName' },
+        { label: '部门', prop: 'orgName' },
         { label: '填报人', prop: 'fillUserName' },
         { label: '最新提交时间', prop: 'statisticsEndTime' },
-        { label: '审核状态', action: 'status' },
-        { label: '操作', action: 'action' }
+        { label: '审核状态', action: 'status' }
       ]
     }
   },

@@ -1,0 +1,62 @@
+@import '~ant-design-vue/es/style/themes/default.less';
+
+html,
+body,
+#app,
+#root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout.layout-basic {
+  height: 100vh;
+  min-height: 100vh;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizelegibility;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+.ant-pro-top-nav-header.light {
+  background: url('~@/assets/head/head.png');
+  h1 {
+    font-size: 18px;
+    font-family: PingFangSC-Semibold, PingFang SC;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #ffffff;
+  }
+}
+
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@
 // 判断填报按钮权限
 export function judgeApply(row, currentUser) {
   if (row.status == 0 || row.status == 3) {
-    return currentUser.username == row.fillUserName
+    return currentUser.username == row.fillUserName && row.type == '子表'
   }
   return false
 }
@@ -17,7 +17,7 @@ export function judgeApply(row, currentUser) {
 // 判断审核按钮权限
 export function judgeAudit(row, currentUser) {
   if (row.status == 1) {
-    return currentUser.username == row.responsibleUserName
+    return currentUser.username == row.responsibleUserName && row.type == '子表'
   }
   return false
 }
@@ -37,7 +37,7 @@ export function judgeShow(row, currentUser) {
 // 判断撤回按钮权限
 export function judgeRedo(row, currentUser) {
   if (row.fillUserName == currentUser.username) {
-    return row.status == 1
+    return row.status == 1 && row.type == '子表'
   }
   return false
 }
@@ -52,5 +52,5 @@ export function judgeRemind(row, currentUser) {
 
 // 判断填报进度按钮权限
 export function judgeProgress(row, currentUser) {
-  return row.responsibleUserName == currentUser.username
+  return row.responsibleUserName == currentUser.username && row.type == '总表'
 }

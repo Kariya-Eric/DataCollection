@@ -49,6 +49,7 @@ export default {
         if (newRoute.name == 'taskDetail') {
           this.taskId = newRoute.query.taskId
           this.taskName = newRoute.query.taskName
+          this.activeName = 'ALL'
         }
       },
       immediate: true

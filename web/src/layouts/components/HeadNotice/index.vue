@@ -1,24 +1,10 @@
 <template>
   <div class="notice">
-    <i
-      v-if="noticeNumber == 0"
-      class="el-icon-bell"
-      style="font-size: 18px; padding: 4px"
-      @click="showNotice"
-    />
+    <i v-if="noticeNumber == 0" class="el-icon-bell" style="font-size: 18px; padding: 4px" @click="showNotice" />
     <el-badge v-else :value="noticeNumber">
-      <i
-        class="el-icon-bell"
-        style="font-size: 18px; padding: 4px"
-        @click="showNotice"
-      />
+      <i class="el-icon-bell" style="font-size: 18px; padding: 4px" @click="showNotice" />
     </el-badge>
-    <el-dropdown
-      class="avatar-container"
-      trigger="hover"
-      size="medium"
-      @command="handleCommand"
-    >
+    <el-dropdown class="avatar-container" trigger="hover" size="medium" @command="handleCommand">
       <span class="action action-full">
         <el-avatar class="avatar" src="@/assets/images/avatar.jpg" />
         <span>{{ userInfo.username }}</span>
@@ -38,45 +24,45 @@
 </template>
 
 <script>
-import NoticeDialog from "./components/notice-dialog.vue";
-import { getNumber } from "@/api/notice";
+import NoticeDialog from './components/notice-dialog.vue'
+import { getNumber } from '@/api/notice'
 export default {
-  name: "HeadNotice",
-  props: ["userInfo"],
+  name: 'HeadNotice',
+  props: ['userInfo'],
   components: { NoticeDialog },
 
   data() {
     return {
-      noticeNumber: 0,
-    };
+      noticeNumber: 0
+    }
   },
 
   created() {
-    this.init();
+    this.init()
   },
 
   methods: {
     showNotice() {
-      this.$refs.noticeDialog.show();
+      this.$refs.noticeDialog.show()
     },
 
     init() {
-      getNumber().then((res) => {
+      getNumber().then(res => {
         if (res.state) {
-          this.noticeNumber = res.value;
+          this.noticeNumber = res.value
         }
-      });
+      })
     },
 
     handleCommand(command) {
-      if (command == "quit") {
-        this.$emit("logout");
+      if (command == 'quit') {
+        this.$emit('logout')
       }
-      if (command == "reset") {
+      if (command == 'reset') {
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

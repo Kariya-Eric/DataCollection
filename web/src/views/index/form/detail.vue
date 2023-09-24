@@ -76,17 +76,14 @@ export default {
   data() {
     return {
       searchItems: [
-        { type: 'input', label: '合集名称', prop: 'name' },
+        { type: 'select', label: '表单大类', prop: 'formCategories', options: [] },
         {
           type: 'select',
-          label: '合集类型',
+          label: '前置表单',
           prop: 'type',
-          options: [
-            { label: '教学基本状态数据', value: '教学基本状态数据' },
-            { label: '其他数据', value: '其他数据' }
-          ]
+          options: []
         },
-        { type: 'year', label: '年份', prop: 'year' }
+        { type: 'input', label: '表单名称', prop: 'name' }
       ],
       columns: [
         { slot: 'name', label: '表单名称' },
@@ -135,6 +132,7 @@ export default {
               ...item,
               name: item.sort + 1 + '.' + item.name
             }))
+          this.searchItems[0].options = this.listCategories
         }
       })
     },

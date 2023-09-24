@@ -37,7 +37,7 @@
         </el-popconfirm>
         <el-divider direction="vertical" v-if="judgeRedo(scope.row, currentUser)" />
         <el-popconfirm v-if="judgeRedo(scope.row, currentUser)" @confirm="redoForm(scope.row)" title="确认要撤回该表吗">
-          <ma slot="reference">撤回</ma>
+          <a slot="reference">撤回</a>
         </el-popconfirm>
         <el-divider direction="vertical" v-if="judgeProgress(scope.row, currentUser)" />
         <a @click="showProgress(scope.row)" v-if="judgeProgress(scope.row, currentUser)">填报进度</a>
@@ -96,9 +96,16 @@ export default {
       ]
     }
   },
-  mounted() {
-    this.url.list = `${this.listUrl}?taskId=${this.taskId}&type=ALL`
-    this.loadData(1)
+  watch: {
+    taskId: {
+      handler(newVal) {
+        if (newVal) {
+          this.url.list = `${this.listUrl}?taskId=${this.taskId}&type=ALL`
+          this.loadData(1)
+        }
+      },
+      immediate: true
+    }
   },
 
   methods: {

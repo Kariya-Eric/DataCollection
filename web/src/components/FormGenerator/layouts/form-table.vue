@@ -168,12 +168,13 @@ export default {
   methods: {
     async validate() {
       const $table = this.$refs.xTable
-      const errMap = await $table.validate().catch(errMap => errMap)
-      if (errMap) {
-        return '请确认数据是否正确'
+      try {
+        await $table.validate()
+        this.$emit('input', $table.getTableData().tableData)
+        return undefined
+      } catch (e) {
+        return '验证不通过！'
       }
-      this.$emit('input', $table.getTableData().tableData)
-      return undefined
     },
 
     async deleteRow(row) {
