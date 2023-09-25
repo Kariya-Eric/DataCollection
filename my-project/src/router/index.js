@@ -26,6 +26,11 @@ export const constantRouterMap = [
       },
     ],
   },
+  {
+    path: '/test',
+    component: () => import('@/views/test/index'),
+    name: 'test',
+  },
 ]
 
 const createRouter = () =>

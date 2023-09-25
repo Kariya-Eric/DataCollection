@@ -4,7 +4,6 @@ const packageJson = require('./package.json')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const GitRevision = new GitRevisionPlugin()
 const buildDate = JSON.stringify(new Date().toLocaleString())
-const createThemeColorReplacerPlugin = require('./config/plugin.config')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -23,17 +22,17 @@ const vueConfig = {
     plugins: [
       new webpack.IgnorePlugin({
         contextRegExp: /^\.\/locale$/,
-        resourceRegExp: /moment$/,
+        resourceRegExp: /moment$/
       }),
       new webpack.DefinePlugin({
         APP_VERSION: `"${packageJson.version}"`,
         GIT_HASH: JSON.stringify(getGitHash()),
-        BUILD_DATE: buildDate,
-      }),
-    ],
+        BUILD_DATE: buildDate
+      })
+    ]
   },
 
-  chainWebpack: (config) => {
+  chainWebpack: config => {
     config.resolve.alias.set('@$', resolve('src'))
     const svgRule = config.module.rule('svg')
     config.module.rules.delete('svg')
@@ -50,13 +49,8 @@ const vueConfig = {
       .loader('vue-svg-loader')
       .options({
         svgo: {
-          plugins: [
-            { prefixIds: true },
-            { cleanupIDs: true },
-            { convertShapeToPath: false },
-            { convertStyleToAttrs: true },
-          ],
-        },
+          plugins: [{ prefixIds: true }, { cleanupIDs: true }, { convertShapeToPath: false }, { convertStyleToAttrs: true }]
+        }
       })
       .end()
       .end()
@@ -73,23 +67,23 @@ const vueConfig = {
           'link-color': '#2F68BD',
           'error-color': '#E23322',
           'success-color': '#2B9E77',
-          'border-radius-base': '4px',
+          'border-radius-base': '4px'
         },
 
-        javascriptEnabled: true,
-      },
-    },
+        javascriptEnabled: true
+      }
+    }
   },
 
   devServer: {
-    port: 3000,
+    port: 3000
   },
 
   // disable source map in production
   productionSourceMap: false,
   lintOnSave: false,
   // babel-loader no-ignore node_modules/*
-  transpileDependencies: [],
+  transpileDependencies: []
 }
 
 module.exports = vueConfig
