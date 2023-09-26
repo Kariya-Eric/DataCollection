@@ -16,14 +16,56 @@
       font-family: PingFangSC-Semibold, PingFang SC;
     }
   }
-
-  .menu {
-    .anticon {
-      margin-right: 8px;
-    }
-
-    .ant-dropdown-menu-item {
-      min-width: 100px;
+}
+.ant-menu-submenu {
+  width: 120px;
+  .ant-menu-submenu-title {
+    text-align: center;
+    span {
+      text-align: center;
     }
   }
+}
+.ant-menu-item {
+  width: 120px;
+  a {
+    text-align: center;
+  }
+}
+
+.ant-menu-horizontal > .ant-menu-item:hover,
+.ant-menu-horizontal > .ant-menu-submenu:hover,
+.ant-menu-horizontal > .ant-menu-item-active,
+.ant-menu-horizontal > .ant-menu-submenu-active,
+.ant-menu-horizontal > .ant-menu-item-open,
+.ant-menu-horizontal > .ant-menu-submenu-open,
+.ant-menu-horizontal > .ant-menu-item-selected,
+.ant-menu-horizontal > .ant-menu-submenu-selected {
+  color: #2f68bd;
+  border-bottom: none;
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
+  background-position: center;
+}
+
+.ant-menu-item,
+.ant-menu-submenu-title {
+  transition: none;
+}
+.ant-menu-submenu,
+.ant-menu-submenu-inline {
+  transition: none;
+}
+
+.ant-menu-horizontal > .ant-menu-item:hover,
+.ant-menu-horizontal > .ant-menu-submenu:hover,
+.ant-menu-horizontal > .ant-menu-item-active,
+.ant-menu-horizontal > .ant-menu-submenu-active,
+.ant-menu-horizontal > .ant-menu-item-open,
+.ant-menu-horizontal > .ant-menu-submenu-open,
+.ant-menu-horizontal > .ant-menu-item-selected,
+.ant-menu-horizontal > .ant-menu-submenu-selected:hover {
+  color: #2f68bd;
+  border-bottom: none;
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
+  background-position: center;
 }

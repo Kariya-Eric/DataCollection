@@ -1,5 +1,5 @@
 <template>
-  <a-card> 123 </a-card>
+  <div>detail</div>
 </template>
 
 <script>

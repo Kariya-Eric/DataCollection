@@ -17,7 +17,7 @@ const permission = {
     UpdateRouter({ commit }, routes) {
       return new Promise(resolve => {
         let routelist = routes.constRouters
-        // constantRouterMap[1].children = constantRouterMap[1].children.concat(routelist)
+        constantRouterMap[1].children = constantRouterMap[1].children.concat(routelist)
         commit('SET_PERMISSIONLIST', constantRouterMap)
         resolve()
       })

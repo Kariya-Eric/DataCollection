@@ -10,39 +10,39 @@
 </template>
 
 <script>
-import Logo from "./Logo";
-import HeadMenu from "./HeadMenu";
-import { mapActions, mapState } from "vuex";
-import HeadNotice from "./HeadNotice";
-import PageHeaderLayout from "../PageHeaderLayout";
-import { USER_INFO } from "@/store/mutation-types";
+import Logo from './Logo'
+import HeadMenu from './HeadMenu'
+import { mapActions, mapState } from 'vuex'
+import HeadNotice from './HeadNotice'
+import PageHeaderLayout from '../PageHeaderLayout'
+import { USER_INFO } from '@/store/mutation-types'
 
 export default {
   components: {
     HeadNotice,
     PageHeaderLayout,
     Logo,
-    HeadMenu,
+    HeadMenu
   },
   data() {
     return {
-      userInfo: this.$ls.get(USER_INFO),
-    };
+      userInfo: this.$ls.get(USER_INFO)
+    }
   },
   computed: {
     ...mapState({
-      routers: (state) => state.permission.permissionList,
-    }),
+      routers: state => state.permission.permissionList
+    })
   },
   methods: {
-    ...mapActions(["LogOut"]),
+    ...mapActions(['LogOut']),
     logout() {
       this.LogOut().then(() => {
-        location.reload(); // 为了重新实例化vue-router对象 避免bug
-      });
-    },
-  },
-};
+        location.reload() // 为了重新实例化vue-router对象 避免bug
+      })
+    }
+  }
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -52,7 +52,7 @@ export default {
   width: 100%;
   line-height: 54px;
   border-radius: 0px !important;
-  background: url("~@/assets/head/head.png") repeat-x;
+  background: url('~@/assets/head/head.png') repeat-x;
   .item {
     margin-top: 10px;
     margin-right: 40px;

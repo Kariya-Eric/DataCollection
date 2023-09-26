@@ -30,7 +30,6 @@ router.beforeEach((to, from, next) => {
             let constRouters = buildRouters(res)
             store.dispatch('UpdateRouter', { constRouters }).then(() => {
               router.addRoutes(store.getters.permissionList)
-              console.log('x', router.getRoutes())
               store.dispatch('GetButtonList').then(() => {
                 next({ ...to, replace: true })
               })

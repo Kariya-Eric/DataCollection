@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { UserLayout, BasicLayout, RouteView } from '@/layouts'
+import { UserLayout, BasicLayout } from '@/layouts'
 
 // hack router push callback
 const originalPush = Router.prototype.push
@@ -37,20 +37,6 @@ export const constantRouterMap = [
         name: 'Home',
         component: () => import('@/views/home/index'),
         meta: { title: '首页' }
-      },
-      {
-        path: '/form',
-        name: 'form',
-        component: RouteView,
-        meta: { title: '表格' },
-        children: [
-          {
-            path: '/form/list',
-            name: 'formList',
-            component: () => import('@/views/form/list'),
-            meta: { title: 'formlIst' }
-          }
-        ]
       }
     ]
   },
@@ -64,6 +50,7 @@ export const constantRouterMap = [
     redirect: '/404',
     hidden: true,
     name: 'error',
+    component: BasicLayout,
     children: [
       {
         path: '/404',
