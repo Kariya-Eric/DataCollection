@@ -5,20 +5,20 @@ import storage from 'store'
 
 const permission = {
   state: {
-    permissionList: [],
+    permissionList: []
   },
   mutations: {
     SET_PERMISSIONLIST: (state, permissionList) => {
       state.permissionList = permissionList
-    },
+    }
   },
   actions: {
     // 动态添加主界面路由，需要缓存
     UpdateRouter({ commit }, routes) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         let routelist = routes.constRouters
-        console.log('com', constantRouterMap.concat(routelist))
-        commit('SET_PERMISSIONLIST', constantRouterMap.concat(routelist))
+        // constantRouterMap[1].children = constantRouterMap[1].children.concat(routelist)
+        commit('SET_PERMISSIONLIST', constantRouterMap)
         resolve()
       })
     },
@@ -27,11 +27,11 @@ const permission = {
     GetPermissionList({ commit }) {
       return new Promise((resolve, reject) => {
         getMenuList()
-          .then((response) => {
+          .then(response => {
             const menuData = response.value.length == 0 ? [] : response.value[0].children
             resolve(menuData)
           })
-          .catch((error) => {
+          .catch(error => {
             reject(error)
           })
       })
@@ -41,17 +41,17 @@ const permission = {
     GetButtonList({ commit }) {
       return new Promise((resolve, reject) => {
         getButtonList()
-          .then((response) => {
+          .then(response => {
             const buttons = response.value.curUserMethod
             storage.set(BUTTON_LIST, buttons)
             resolve()
           })
-          .catch((error) => {
+          .catch(error => {
             reject(error)
           })
       })
-    },
-  },
+    }
+  }
 }
 
 export default permission

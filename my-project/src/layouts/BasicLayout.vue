@@ -1,12 +1,5 @@
 <template>
-  <pro-layout
-    :menus="mainMenu"
-    :collapsed="collapsed"
-    v-bind="settings"
-    :mediaQuery="query"
-    :handleCollapse="handleCollapse"
-    :handleMediaQuery="handleMediaQuery"
-  >
+  <pro-layout :menus="menus" :collapsed="collapsed" v-bind="settings" :mediaQuery="query" :handleCollapse="handleCollapse" :handleMediaQuery="handleMediaQuery">
     <template v-slot:menuHeaderRender>
       <div class="logo">
         <img src="@/assets/logo.png" />
@@ -34,7 +27,7 @@ export default {
   name: 'BasicLayout',
   components: {
     RightContent,
-    GlobalFooter,
+    GlobalFooter
   },
   data() {
     return {
@@ -43,18 +36,19 @@ export default {
       settings: {
         layout: 'topmenu',
         theme: 'light',
-        contentWidth: 'Fluid',
+        contentWidth: 'Fluid'
       },
-      query: {},
+      query: {}
     }
   },
   computed: {
     ...mapState({
-      mainMenu: (state) => state.permission.permissionList,
-    }),
+      mainMenu: state => state.permission.permissionList
+    })
   },
   created() {
-    console.log('main', this.mainMenu)
+    const routes = this.mainMenu.find(item => item.path === '/')
+    this.menus = routes && routes.children
   },
   methods: {
     handleCollapse(val) {
@@ -63,8 +57,8 @@ export default {
 
     handleMediaQuery(val) {
       this.query = {}
-    },
-  },
+    }
+  }
 }
 </script>
 

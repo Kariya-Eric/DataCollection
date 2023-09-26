@@ -26,10 +26,11 @@ router.beforeEach((to, from, next) => {
         // request login userInfo
         store
           .dispatch('GetPermissionList')
-          .then((res) => {
+          .then(res => {
             let constRouters = buildRouters(res)
             store.dispatch('UpdateRouter', { constRouters }).then(() => {
               router.addRoutes(store.getters.permissionList)
+              console.log('x', router.getRoutes())
               store.dispatch('GetButtonList').then(() => {
                 next({ ...to, replace: true })
               })
@@ -38,7 +39,7 @@ router.beforeEach((to, from, next) => {
           .catch(() => {
             notification.error({
               message: '错误',
-              description: '请求用户信息失败，请重试',
+              description: '请求用户信息失败，请重试'
             })
             // 失败时，获取用户信息失败时，调用登出，来清空历史保留信息
             store.dispatch('Logout').then(() => {

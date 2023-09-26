@@ -1,23 +1,24 @@
-import { BasicLayout, PageView } from '@/layouts'
+import { RouteView } from '@/layouts'
 
 //菜单item生成路由页面
 function loadView(item) {
+  let flag = item.children.length > 0
   return {
     path: item.menuUrl,
     name: item.alias,
-    component: PageView,
+    hidden: item.enableMenu == 0,
+    component: flag ? RouteView : () => import(`@/views${item.templateUrl}`),
     meta: {
-      hidden: item.enableMenu == 0,
       title: item.name,
       icon: undefined,
-      keepAlive: true,
+      keepAlive: true
     },
-    children: [],
+    children: []
   }
 }
 //递归生成
 function menuRecrusive(menus, routers) {
-  menus.forEach((menu) => {
+  menus.forEach(menu => {
     if (menu.children.length > 0) {
       const route = loadView(menu)
       routers.push(route)
@@ -34,40 +35,25 @@ function loadPageView(item) {
   return {
     path: item.menuUrl,
     name: item.alias,
+    hidden: item.enableMenu == 0,
     component: () => import(`@/views${item.templateUrl}`),
     meta: {
-      hidden: item.enableMenu == 0,
       title: item.name,
       icon: undefined,
-      keepAlive: true,
-    },
+      keepAlive: true
+    }
   }
 }
 
 export function buildRouters(menus) {
   //多级菜单
-  let subMenus = menus.filter((menu) => menu.children.length > 0)
-  let singleMenus = menus.filter((menu) => menu.children.length == 0)
+  let subMenus = menus.filter(menu => menu.children.length > 0)
+  let singleMenus = menus.filter(menu => menu.children.length == 0)
   const routers = []
   menuRecrusive(subMenus, routers)
-  singleMenus.forEach((singleMenu) => {
+  singleMenus.forEach(singleMenu => {
     const route = loadPageView(singleMenu)
     routers.push(route)
   })
-  const index = [
-    {
-      path: '/',
-      name: 'index',
-      component: BasicLayout,
-      meta: { title: '首页' },
-      children: routers,
-    },
-    {
-      path: '*',
-      redirect: '/404',
-      hidden: true,
-    },
-  ]
-  console.log('x', index)
-  return index
+  return routers
 }
