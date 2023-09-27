@@ -6,5 +6,6 @@ import IconSelector from '@/components/IconSelector'
 import ArticleListContent from '@/components/ArticleListContent'
 
 import Dialog from '@/components/Dialog'
+import Switch from '@/components/DataCollection/Switch'
 
-export { Ellipsis, FooterToolbar, Tree, MultiTab, IconSelector, ArticleListContent, Dialog }
+export { Ellipsis, FooterToolbar, Tree, MultiTab, IconSelector, ArticleListContent, Dialog, Switch }

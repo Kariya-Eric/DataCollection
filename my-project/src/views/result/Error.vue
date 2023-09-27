@@ -2,7 +2,7 @@
   <a-card :bordered="false">
     <a-result status="error" :title="result.title" :sub-title="result.description">
       <template #extra>
-        <a-button type="primary" >{{ $t('result.fail.error.btn-text') }}</a-button>
+        <a-button type="primary" >{{ ('result.fail.error.btn-text') }}</a-button>
       </template>
       <div class="desc">
         <div style="font-size: 16px; color: rgba(0, 0, 0, 0.85); font-weight: 500; margin-bottom: 16px">

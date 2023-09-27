@@ -1,5 +1,9 @@
 @import '~ant-design-vue/es/style/themes/default.less';
 
+.ant-btn {
+  min-width: 80px;
+}
+
 .ant-pro-global-header-index-right {
   margin-right: 8px;
 
@@ -18,17 +22,19 @@
   }
 }
 .ant-menu-submenu {
-  width: 120px;
+  width: 170px;
   .ant-menu-submenu-title {
     text-align: center;
     span {
+      font-size: 16px;
       text-align: center;
     }
   }
 }
 .ant-menu-item {
-  width: 120px;
+  width: 170px;
   a {
+    font-size: 16px;
     text-align: center;
   }
 }
@@ -68,4 +74,61 @@
   border-bottom: none;
   background: url('~@/assets/menu/menu-active.png') no-repeat;
   background-position: center;
+}
+
+.table-page-search-wrapper {
+  .ant-form-inline {
+    .ant-form-item {
+      display: flex;
+      margin-bottom: 24px;
+      margin-right: 0;
+      .ant-form-item-control-wrapper {
+        flex: 1 1;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      > .ant-form-item-label {
+        line-height: 32px;
+        padding-right: 8px;
+        width: auto;
+      }
+      .ant-form-item-control {
+        height: 32px;
+        line-height: 32px;
+      }
+    }
+  }
+}
+.table-page-search-buttons {
+  display: block;
+  margin-bottom: 24px;
+  white-space: nowrap;
+  .ant-btn {
+    margin-right: 12px;
+  }
+}
+
+.table-operator {
+  margin-bottom: 18px;
+  > span {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 32px;
+  }
+  .table-operator-button {
+    float: right;
+    button {
+      margin-left: 6px;
+      margin-right: 6px;
+    }
+  }
+}
+.ant-table-thead > tr > th {
+  font-weight: 600 !important;
+  color: rgba(0, 0, 0, 1) !important;
+  background: #f4f5f6 !important;
+}
+
+.ant-pro-top-nav-header-menu {
+  max-width: 70% !important;
 }

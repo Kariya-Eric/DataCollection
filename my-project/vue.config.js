@@ -72,9 +72,9 @@ const vueConfig = {
           'card-radius': '4px',
           'menu-item-font-size': '16px',
           'menu-item-color': '#FFFFFF',
-          'menu-bg': `url('~@/assets/head/head.png') repeat-x`
+          'menu-bg': `url('~@/assets/head/head.png') repeat-x`,
+          'text-color': '#000000'
         },
-
         javascriptEnabled: true
       }
     }

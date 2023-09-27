@@ -1,4 +1,4 @@
-import { RouteView } from '@/layouts'
+import { RouteView, PageView } from '@/layouts'
 
 //菜单item生成路由页面
 function loadView(item) {
@@ -7,7 +7,7 @@ function loadView(item) {
     path: item.menuUrl,
     name: item.alias,
     hidden: item.enableMenu == 0,
-    component: flag ? RouteView : () => import(`@/views${item.templateUrl}`),
+    component: flag ? PageView : () => import(`@/views${item.templateUrl}`),
     meta: {
       title: item.name,
       icon: undefined,

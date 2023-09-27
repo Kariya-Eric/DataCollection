@@ -1,5 +1,6 @@
 <template>
   <page-header-wrapper
+    :title="false"
     :breadcrumb="{
       props: {
         routes: customRoutes,
@@ -12,15 +13,19 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
   name: 'PageView',
   computed: {
-    ...mapState({
-      routers: state => state.permission.permissionList
-    }),
     customRoutes() {
-      return []
+      let breadList = []
+      breadList.push({ path: '/home', title: '首页' })
+      this.$route.matched.forEach(item => {
+        if (item.path) {
+          let rt = { path: item.path, title: item.meta.title }
+          breadList.push(rt)
+        }
+      })
+      return breadList
     }
   },
   methods: {
@@ -46,3 +51,12 @@ export default {
   }
 }
 </script>
+<style lang="less">
+.ant-pro-page-header-wrap-page-header-warp {
+  background: none;
+}
+.ant-breadcrumb-link {
+  font-family: PingFangSC-Semibold, PingFang SC;
+  font-weight: bold;
+}
+</style>
