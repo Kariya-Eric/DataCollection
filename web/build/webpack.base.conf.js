@@ -21,7 +21,6 @@ const createLintingRule = () => ({
 })
 
 module.exports = {
-  lintOnSave: false,
   context: path.resolve(__dirname, '../'),
   entry: {
     index: './src/views/index/main.js',
