@@ -24,7 +24,7 @@ export const DataCollectionListMixin = {
   },
   methods: {
     loadData(arg) {
-      if (!this.url.list) {
+      if (!this.url || !this.url.list) {
         this.$message.error('请设置url.list属性！')
         return
       }
@@ -59,7 +59,7 @@ export const DataCollectionListMixin = {
                 this.ipagination.total = 0
               }
             } else {
-              this.$message.waring(res.message)
+              this.$message.warning(res.message)
             }
           })
           .finally(() => (this.loading = false))
@@ -103,6 +103,15 @@ export const DataCollectionListMixin = {
         this.$message.error('请设置url.delete属性')
         return
       }
+      let that = this
+      deleteAction(that.url.delete, { id }).then(res => {
+        if (res.state) {
+          that.$message.success(res.message)
+          that.loadData()
+        } else {
+          that.$message.error(res.message)
+        }
+      })
     },
 
     getQueryParams() {
@@ -121,6 +130,29 @@ export const DataCollectionListMixin = {
     handleTableChange(pagination, filters, sorter) {
       this.ipagination = pagination
       this.loadData()
+    },
+
+    modalFormOk() {
+      this.loadData()
+      this.onClearSelected()
+    },
+
+    handleDetail(record, title) {
+      this.$refs.modalForm.edit(record)
+      this.$refs.modalForm.title = title
+      this.$refs.modalForm.disabled = true
+    },
+
+    handleEdit(record, title) {
+      this.$refs.modalForm.edit(record)
+      this.$refs.modalForm.title = title
+      this.$refs.modalForm.disabled = false
+    },
+
+    handleAdd(title) {
+      this.$refs.modalForm.add()
+      this.$refs.modalForm.title = title
+      this.$refs.modalForm.disabled = false
     }
   }
 }

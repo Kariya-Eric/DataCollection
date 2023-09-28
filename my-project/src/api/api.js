@@ -7,13 +7,13 @@ export function postAction(url, parameter) {
   //将签名和时间戳，添加在请求接口 Header
   let signHeader = {
     'X-Sign': sign,
-    'X-TIMESTAMP': signMd5Utils.getTimestamp(),
+    'X-TIMESTAMP': signMd5Utils.getTimestamp()
   }
   return request({
     url: url,
     method: 'post',
     data: parameter,
-    headers: signHeader,
+    headers: signHeader
   })
 }
 
@@ -22,7 +22,7 @@ export function putAction(url, parameter) {
   return request({
     url: url,
     method: 'put',
-    data: parameter,
+    data: parameter
   })
 }
 
@@ -32,21 +32,22 @@ export function getAction(url, parameter) {
   //将签名和时间戳，添加在请求接口 Header
   let signHeader = {
     'X-Sign': sign,
-    'X-TIMESTAMP': signMd5Utils.getTimestamp(),
+    'X-TIMESTAMP': signMd5Utils.getTimestamp()
   }
   return request({
     url: url,
     method: 'get',
     params: parameter,
-    headers: signHeader,
+    headers: signHeader
   })
 }
 
 //deleteAction
 export function deleteAction(url, parameter) {
   return request({
-    url: url + `?${parameter}`,
+    url,
     method: 'delete',
+    params: parameter
   })
 }
 
@@ -61,7 +62,7 @@ export function downFile(url, parameter) {
     url: url,
     data: parameter,
     method: 'post',
-    responseType: 'blob',
+    responseType: 'blob'
   })
 }
 
@@ -77,7 +78,7 @@ export function uploadAction(url, parameter) {
     data: parameter,
     method: 'post',
     headers: {
-      'Content-Type': 'multipart/form-data', // 文件上传
-    },
+      'Content-Type': 'multipart/form-data' // 文件上传
+    }
   })
 }

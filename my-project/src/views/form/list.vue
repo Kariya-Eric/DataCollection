@@ -23,8 +23,8 @@
           </a-col>
           <a-col :md="3" :sm="12">
             <span class="table-page-search-buttons">
-              <a-button type="primary" icon="search">搜索</a-button>
-              <a-button type="primary" icon="reload">重置</a-button>
+              <a-button type="primary" icon="search" @click="searchQuery">搜索</a-button>
+              <a-button type="primary" icon="reload" @click="searchReset">重置</a-button>
             </span>
           </a-col>
         </a-row>
@@ -34,7 +34,7 @@
     <div class="table-operator">
       <span>合集列表</span>
       <div class="table-operator-button">
-        <a-button type="primary">新建合集</a-button>
+        <a-button type="primary" @click="handleAdd('新增合集')">新建合集</a-button>
       </div>
     </div>
 
@@ -50,21 +50,35 @@
         @change="handleTableChange"
       >
         <template slot="enabledFlag" slot-scope="text, record">
-          <a-switch v-model="record.enabledFlag" />
+          <dc-switch v-model="record.enabledFlag" />
+        </template>
+        <template slot="action" slot-scope="text, record">
+          <a>合集详情</a>
+          <a-divider type="vertical" />
+          <a @click="showCollection(record)">合集属性</a>
+          <a-divider type="vertical" />
+          <a>指南管理</a>
+          <a-divider type="vertical" />
+          <a-popconfirm title="合集删除后不可恢复，是否确认删除？" @confirm="handleDelete(record.id)"> <a style="color: #e23322">删除合集</a></a-popconfirm>
         </template>
       </a-table>
     </div>
+
+    <collection-modal ref="modalForm" @ok="modalFormOk" />
   </a-card>
 </template>
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
+import CollectionModal from './components/collection/collection-modal.vue'
 export default {
+  components: { CollectionModal },
   mixins: [DataCollectionListMixin],
   data() {
     return {
       url: {
-        list: '/uc/api/formCollection/list'
+        list: '/uc/api/formCollection/list',
+        delete: '/uc/api/formCollection/delete'
       },
       columns: [
         { dataIndex: 'name', title: '合集名称', align: 'center', scopedSlots: { customRender: 'name' } },
@@ -79,7 +93,12 @@ export default {
   created() {
     this.loadData(1)
   },
-  methods: {}
+  methods: {
+    showCollection(record) {
+      this.handleEdit(record, '合集属性')
+      this.$refs.modalForm.disabled = record.enabledFlag == 1
+    }
+  }
 }
 </script>
 

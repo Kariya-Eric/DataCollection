@@ -8,7 +8,6 @@ import 'ant-design-vue/dist/antd.less'
 
 // ext library
 import VueClipboard from 'vue-clipboard2'
-import MultiTab from '@/components/MultiTab'
 import PermissionHelper from '@/core/permission/permission'
 // import '@/components/use'
 import './directives/action'
@@ -17,7 +16,6 @@ VueClipboard.config.autoSetContainer = true
 
 Vue.use(Antd)
 Vue.use(Viser)
-Vue.use(MultiTab)
 Vue.use(VueClipboard)
 Vue.use(PermissionHelper)
 Vue.use(VueCropper)
