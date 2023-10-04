@@ -5,12 +5,12 @@
         <a-row :gutter="24">
           <a-col :md="4" :sm="8">
             <a-form-item label="角色名称">
-              <a-input placeholder="请输入角色名称" v-model="queryParam.name" />
+              <a-input placeholder="请输入角色名称" v-model="queryParam.name" allowClear />
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="8">
             <a-form-item label="角色状态">
-              <a-select placeholder="请选择角色状态" v-model="queryParam.enabled">
+              <a-select placeholder="请选择角色状态" v-model="queryParam.enabled" allowClear>
                 <a-select-option :value="1">启用</a-select-option>
                 <a-select-option :value="0">禁用</a-select-option>
               </a-select>
@@ -48,23 +48,27 @@
         @change="handleTableChange"
       >
         <template slot="action" slot-scope="text, record">
-          <a>编辑</a>
+          <a @click="handleEdit(record, '修改角色')">编辑</a>
           <a-divider type="vertical" />
           <a>授权</a>
         </template>
       </a-table>
     </div>
+    <role-modal ref="modalForm" @ok="loadData" />
   </a-card>
 </template>
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
+import RoleModal from './components/role-modal'
 export default {
   mixins: [DataCollectionListMixin],
+  components: { RoleModal },
   data() {
     return {
       url: {
-        list: '/uc/api/role/getRolePage'
+        list: '/uc/api/role/getRolePage',
+        deleteBatch: '/uc/api/role/deleteRoleByIds'
       },
       columns: [
         { dataIndex: 'name', title: '角色名称', align: 'center' },

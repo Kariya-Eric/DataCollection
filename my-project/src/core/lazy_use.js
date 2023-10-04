@@ -46,7 +46,9 @@ import {
   Descriptions,
   Space,
   message,
-  notification
+  notification,
+  Tree,
+  Empty
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 
@@ -76,6 +78,7 @@ Vue.use(Tabs)
 Vue.use(Icon)
 Vue.use(Badge)
 Vue.use(Popover)
+Vue.use(Empty)
 Vue.use(Dropdown)
 Vue.use(List)
 Vue.use(Avatar)
@@ -99,7 +102,7 @@ Vue.use(Result)
 Vue.use(Statistic)
 Vue.use(Descriptions)
 Vue.use(Space)
-
+Vue.use(Tree)
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message
 Vue.prototype.$notification = notification

@@ -2,17 +2,14 @@
   <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false">
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
-        <a-form-model-item label="合集名称" prop="name">
-          <a-input v-model="model.name" placeholder="请输入合集名称" :disabled="disabled" />
+        <a-form-model-item label="角色编码" prop="code">
+          <a-input v-model="model.code" allowClear placeholder="请输入角色编码" :disabled="disabled" />
         </a-form-model-item>
-        <a-form-model-item label="合集类型" prop="type">
-          <a-select v-model="model.type" placeholder="请选择合集类型" :disabled="disabled">
-            <a-select-option value="教学基本状态数据">教学基本状态数据</a-select-option>
-            <a-select-option value="其他数据">其他数据</a-select-option>
-          </a-select>
+        <a-form-model-item label="角色名称" prop="name">
+          <a-input v-model="model.name" allowClear placeholder="请输入角色名称" />
         </a-form-model-item>
-        <a-form-model-item label="年份" prop="year">
-          <dc-date v-model="model.year" placeholder="请输入年份" mode="year" format="YYYY" :disabled="disabled" />
+        <a-form-model-item label="状态">
+          <dc-switch v-model="model.enabled" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -21,34 +18,41 @@
 
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
-import { addFormCollection, updateFormCollection } from '@/api/form'
+import { addRole, updateRole } from '@/api/system/role'
 export default {
-  name: 'CollectionModal',
+  name: 'RoleModal',
   mixins: [DataCollectionModalMixin],
   data() {
     return {
       rules: {
-        name: [{ required: true, message: '请输入合集名称' }],
-        type: [{ required: true, message: '请选择合集类型' }],
-        year: [{ required: true, message: '请选择年份' }]
+        code: [{ required: true, message: '请输入角色编码' }],
+        name: [{ required: true, message: '请输入角色名称' }]
       }
     }
   },
+
   methods: {
     add(title) {
-      this.edit({}, title)
+      this.edit({ enabled: 1 }, title)
     },
+
     edit(record, title) {
       this.title = title
       this.model = Object.assign({}, record)
+      if (record.id) {
+        this.$nextTick(() => (this.disabled = true))
+      }
       this.visible = true
     },
+
     close() {
       this.model = {}
+      this.disabled = false
       this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
     },
+
     handleOk() {
       const that = this
       this.$refs.form.validate(valid => {
@@ -56,9 +60,9 @@ export default {
           that.loading = true
           let handler
           if (!this.model.id) {
-            handler = addFormCollection(this.model)
+            handler = addRole(this.model)
           } else {
-            handler = updateFormCollection(this.model)
+            handler = updateRole(this.model)
           }
           handler
             .then(res => {
@@ -80,4 +84,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped lang="less"></style>

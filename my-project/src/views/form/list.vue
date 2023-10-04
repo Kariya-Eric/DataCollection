@@ -4,8 +4,10 @@
       <a-form layout="inline">
         <a-row :gutter="24">
           <a-col :md="4" :sm="12">
-            <a-form-item label="年份" placeholder="请选择年份">
-              <a-select v-model="queryParam.year"></a-select>
+            <a-form-item label="年份">
+              <a-select v-model="queryParam.year" placeholder="请选择年份">
+                <a-select-option v-for="item in yearList" :key="item.value" :value="item.value">{{ item.label }}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="12">
@@ -50,10 +52,10 @@
         @change="handleTableChange"
       >
         <template slot="enabledFlag" slot-scope="text, record">
-          <dc-switch v-model="record.enabledFlag" />
+          <dc-switch v-model="record.enabledFlag" @change="val => enableCollection(val, record.id)" />
         </template>
         <template slot="action" slot-scope="text, record">
-          <a>合集详情</a>
+          <a @click="showCollectionDetail(record)">合集详情</a>
           <a-divider type="vertical" />
           <a @click="showCollection(record)">合集属性</a>
           <a-divider type="vertical" />
@@ -71,6 +73,7 @@
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import CollectionModal from './components/collection/collection-modal.vue'
+import { enableCollection } from '@/api/form'
 export default {
   components: { CollectionModal },
   mixins: [DataCollectionListMixin],
@@ -93,10 +96,42 @@ export default {
   created() {
     this.loadData(1)
   },
+  computed: {
+    yearList() {
+      let years = new Set()
+      this.dataSource.forEach(data => years.add(data.year))
+      return [...years].sort().map(item => {
+        return { label: item, value: item }
+      })
+    }
+  },
   methods: {
     showCollection(record) {
       this.handleEdit(record, '合集属性')
       this.$refs.modalForm.disabled = record.enabledFlag == 1
+    },
+
+    enableCollection(val, id) {
+      this.loading = true
+      enableCollection({ id, enabledFlag: val })
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => {
+          this.loadData()
+          this.loading = false
+        })
+    },
+
+    showCollectionDetail(record) {
+      this.$router.push({
+        path: '/form/detail',
+        query: { collectionInfo: JSON.stringify(record) }
+      })
     }
   }
 }

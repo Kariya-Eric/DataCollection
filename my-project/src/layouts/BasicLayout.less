@@ -2,6 +2,7 @@
 
 .ant-btn {
   min-width: 80px;
+  min-height: 32px;
 }
 
 .ant-pro-global-header-index-right {
@@ -138,12 +139,13 @@
 }
 
 .ant-modal-header {
-  border-radius: 8px;
+  border-radius: 8px 8px 0 0;
   border-bottom: 1px solid #e5e5e5;
 }
 
 .ant-modal-body {
   max-height: calc(80vh - 150px);
+  padding: 24px 24px 12px 24px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 6px;
@@ -167,9 +169,19 @@
 .ant-modal-footer {
   border-top: none;
   text-align: center;
-  padding: 10px 16px 16px 16px;
+  padding: 0px 16px 24px 16px;
 }
 .ant-modal-title {
   font-size: 20px;
   font-weight: 600;
+}
+
+.ant-card-head-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ant-input-affix-wrapper .ant-input-prefix,
+.ant-input-affix-wrapper .ant-input-suffix {
+  color: rgba(0, 0, 0, 0.3) !important;
 }

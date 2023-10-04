@@ -5,4 +5,6 @@ const addFormCollection = params => postAction('/uc/api/formCollection/add', par
 //修改表单合集
 const updateFormCollection = params => putAction('/uc/api/formCollection/update', params)
 
-export { addFormCollection, updateFormCollection }
+const enableCollection = params => putAction('/uc/api/formCollection/enable', params)
+
+export { addFormCollection, updateFormCollection, enableCollection }

@@ -33,24 +33,9 @@ export const DataCollectionListMixin = {
       }
       this.loading = true
       let params = this.getQueryParams()
-      if (this.url.method == 'get') {
-        getAction(this.url.list, params)
-          .then(res => {
-            if (res.state) {
-              this.dataSource = res.value.rows || res.value
-              if (res.value.total) {
-                this.ipagination.total = res.value.total
-              } else {
-                this.ipagination.total = 0
-              }
-            } else {
-              this.$message.waring(res.message)
-            }
-          })
-          .finally(() => (this.loading = false))
-      } else {
-        postAction(this.url.list, params)
-          .then(res => {
+      postAction(this.url.list, params)
+        .then(res => {
+          if (res.hasOwnProperty('state')) {
             if (res.state) {
               this.dataSource = res.value.rows || res.value
               if (res.value.total) {
@@ -61,9 +46,15 @@ export const DataCollectionListMixin = {
             } else {
               this.$message.warning(res.message)
             }
-          })
-          .finally(() => (this.loading = false))
-      }
+          } else {
+            this.dataSource = res
+            this.ipagination.total = 0
+          }
+        })
+        .finally(() => {
+          this.onClearSelected()
+          this.loading = false
+        })
     },
 
     onSelectChange(selectedRowKeys, selectionRows) {
@@ -86,7 +77,7 @@ export const DataCollectionListMixin = {
     },
 
     batchDel() {
-      if (!this.url.deleteBatch) {
+      if (!this.url || !this.url.deleteBatch) {
         this.$message.error('请设置url.deleteBatch属性')
         return
       }
@@ -94,24 +85,39 @@ export const DataCollectionListMixin = {
         this.$message.waring('请至少选择一条记录')
         return
       } else {
-        let ids = ''
+        let ids = this.selectedRowKeys.join(',')
+        let that = this
+        that.loading = true
+        deleteAction(this.url.deleteBatch, { ids })
+          .then(res => {
+            if (res.state) {
+              that.$message.success(res.message)
+              that.loadData()
+            } else {
+              that.$message.error(res.message)
+            }
+          })
+          .finally(() => (that.loading = false))
       }
     },
 
     handleDelete(id) {
-      if (!this.url.delete) {
+      if (!this.url || !this.url.delete) {
         this.$message.error('请设置url.delete属性')
         return
       }
       let that = this
-      deleteAction(that.url.delete, { id }).then(res => {
-        if (res.state) {
-          that.$message.success(res.message)
-          that.loadData()
-        } else {
-          that.$message.error(res.message)
-        }
-      })
+      that.loading = true
+      deleteAction(that.url.delete, { id })
+        .then(res => {
+          if (res.state) {
+            that.$message.success(res.message)
+            that.loadData()
+          } else {
+            that.$message.error(res.message)
+          }
+        })
+        .finally(() => (that.loading = false))
     },
 
     getQueryParams() {
@@ -153,6 +159,38 @@ export const DataCollectionListMixin = {
       this.$refs.modalForm.add()
       this.$refs.modalForm.title = title
       this.$refs.modalForm.disabled = false
+    },
+
+    handleExport(fileName) {
+      if (!this.url || !this.url.exportUrl) {
+        this.$message.error('请设置url.exportUrl!')
+        return
+      }
+      this.loading = true
+      let params = this.getQueryParams()
+      downFile(this.url.exportUrl, params)
+        .then(data => {
+          if (!data) {
+            this.$message.warning('文件下载失败！')
+            return
+          }
+          if (typeof window.navigator.msSaveBlob !== 'undefined') {
+            window.navigator.msSaveBlob(new Blob([data], { type: 'application/vnd.ms-excel' }), fileName + '.xlsx')
+          } else {
+            let url = window.URL.createObjectURL(new Blob([data], { type: 'appliaction/vnd.ms-excel' }))
+            let link = document.createElement('a')
+            link.style.display = 'none'
+            link.href = url
+            link.setAttribute('download', fileName + '.xlsx')
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            window.URL.revokeObjectURL(url)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }
