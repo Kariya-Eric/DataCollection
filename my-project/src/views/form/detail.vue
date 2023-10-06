@@ -10,7 +10,9 @@
           <a-row :gutter="24">
             <a-col :md="4" :sm="12">
               <a-form-item label="表单大类">
-                <a-select v-model="queryParam.formCategories" placeholder="请选择表单大类"> </a-select>
+                <a-select v-model="queryParam.formCategories" placeholder="请选择表单大类">
+                  <a-select-option v-for="item in listCategories" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="4" :sm="12">
@@ -41,18 +43,65 @@
           <a-button type="primary">新建表单</a-button>
         </div>
       </div>
+
+      <div>
+        <a-table
+          bordered
+          rowKey="id"
+          :dataSource="dataSource"
+          :pagination="ipagination"
+          :loading="loading"
+          :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+          :columns="columns"
+          @change="handleTableChange"
+        >
+          <template slot="required" slot-scope="text, record">
+            {{ record.required ? `是` : `否` }}
+          </template>
+          <template slot="enabled" slot-scope="text, record">
+            <dc-switch v-model="record.enabledFlag" @change="val => enableForm(val, record.id)" />
+          </template>
+          <template slot="action" slot-scope="text, record">
+            <a>表单详情</a>
+            <a-divider type="vertical" />
+            <a>表单属性</a>
+            <a-divider type="vertical" />
+            <a>下载模板</a>
+            <a-divider type="vertical" />
+            <a-popconfirm title="表单删除后不可恢复，是否确认删除？">
+              <a><span style="color: #e23322">删除表单</span></a>
+            </a-popconfirm>
+          </template>
+        </a-table>
+      </div>
     </a-card>
   </div>
 </template>
 
 <script>
+const listUrl = '/uc/api/form/listByCollection/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
+import { listFormCategories, enableForm } from '@/api/form'
 export default {
   name: 'FormDetail',
   mixins: [DataCollectionListMixin],
   data() {
     return {
-      collectionDetail: {}
+      url: {
+        list: '',
+        delete: '/uc/api/form/delete'
+      },
+      listCategories: [],
+      collectionDetail: {},
+      columns: [
+        { dataIndex: 'name', title: '表单名称', align: 'center', scopedSlots: { customRender: 'name' } },
+        { dataIndex: 'formCategoriesName', title: '表单大类', align: 'center' },
+        { dataIndex: 'collectTimeType', title: '统计时间类型', align: 'center' },
+        { dataIndex: 'required', title: '是否必填', align: 'center', scopedSlots: { customRender: 'required' } },
+        { dataIndex: 'a', title: '前置表单', align: 'center' },
+        { dataIndex: 'enabled', title: '启用', align: 'center', scopedSlots: { customRender: 'enabled' } },
+        { dataIndex: 'action', title: '操作', width: 340, align: 'center', scopedSlots: { customRender: 'action' } }
+      ]
     }
   },
   watch: {
@@ -60,6 +109,8 @@ export default {
       handler(newRoute) {
         if (newRoute.name == 'formDetail') {
           this.collectionDetail = JSON.parse(newRoute.query.collectionInfo)
+          this.loadCategories()
+          this.refreshData()
         }
       },
       immediate: true,
@@ -67,7 +118,42 @@ export default {
     }
   },
 
-  methods: {}
+  methods: {
+    refreshData() {
+      this.url.list = listUrl + this.collectionDetail.id
+      this.loadData(1)
+    },
+
+    loadCategories() {
+      listFormCategories(this.collectionDetail.id).then(res => {
+        if (res.state) {
+          this.listCategories = res.value
+            .sort((a, b) => a.sort - b.sort)
+            .map(item => ({
+              ...item,
+              name: item.sort + 1 + '.' + item.name
+            }))
+        }
+      })
+    },
+
+    enableForm(val, id) {
+      let param = { id, enabledFlag: val }
+      this.loading = true
+      enableForm(param)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => {
+          this.refreshData()
+          this.loading = false
+        })
+    }
+  }
 }
 </script>
 

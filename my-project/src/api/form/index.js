@@ -7,4 +7,9 @@ const updateFormCollection = params => putAction('/uc/api/formCollection/update'
 
 const enableCollection = params => putAction('/uc/api/formCollection/enable', params)
 
-export { addFormCollection, updateFormCollection, enableCollection }
+//根据id获取表单大类，不包分页
+const listFormCategories = params => postAction(`/uc/api/formCategories/listAll/${params}`)
+
+const enableForm = params => putAction('/uc/api/form/enable', params)
+
+export { addFormCollection, updateFormCollection, enableCollection, listFormCategories, enableForm }

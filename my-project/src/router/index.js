@@ -39,38 +39,13 @@ export const constantRouterMap = [
         meta: { title: '首页' }
       }
     ]
-  },
-  {
-    path: '/test',
-    component: () => import('@/views/test/index'),
-    name: 'test'
-  },
-  {
-    path: '*',
-    redirect: '/404',
-    hidden: true,
-    name: 'error',
-    component: BasicLayout,
-    children: [
-      {
-        path: '/404',
-        component: () => import('@/views/exception/404'),
-        name: '404',
-        meta: { title: 404 }
-      }
-    ]
   }
 ]
 
-const createRouter = () =>
-  new Router({
-    mode: 'history',
-    routes: constantRouterMap,
-    scrollBehavior: () => ({
-      y: 0
-    })
+export default new Router({
+  mode: 'history',
+  routes: constantRouterMap,
+  scrollBehavior: () => ({
+    y: 0
   })
-
-const router = createRouter()
-
-export default router
+})

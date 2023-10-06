@@ -1,19 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
-const packageJson = require('./package.json')
-const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const GitRevision = new GitRevisionPlugin()
-const buildDate = JSON.stringify(new Date().toLocaleString())
 
 function resolve(dir) {
   return path.join(__dirname, dir)
-}
-
-function getGitHash() {
-  try {
-    return GitRevision.version()
-  } catch (e) {}
-  return 'unknown'
 }
 
 // vue.config.js
@@ -23,17 +12,12 @@ const vueConfig = {
       new webpack.IgnorePlugin({
         contextRegExp: /^\.\/locale$/,
         resourceRegExp: /moment$/
-      }),
-      new webpack.DefinePlugin({
-        APP_VERSION: `"${packageJson.version}"`,
-        GIT_HASH: JSON.stringify(getGitHash()),
-        BUILD_DATE: buildDate
       })
     ]
   },
 
   chainWebpack: config => {
-    config.resolve.alias.set('@$', resolve('src'))
+    config.resolve.alias.set('@$', resolve('src')).set('@api', resolve('src/api')).set('@assets', resolve('src/assets')).set('@views', resolve('src/views'))
     const svgRule = config.module.rule('svg')
     config.module.rules.delete('svg')
 
@@ -78,7 +62,6 @@ const vueConfig = {
       }
     }
   },
-
   devServer: {
     port: 3000
   },
