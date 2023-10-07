@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       rules: {
-        type: [{ required: true, message: '请选择职能类型' }],
+        type: [{ required: true, message: '请选择职能类型', trigger: 'change' }],
         name: [{ required: true, message: '请输入部门名称' }],
         code: [{ required: true, message: '请输入部门编码' }],
         orderNo: [{ required: true, message: '请输入排序' }]

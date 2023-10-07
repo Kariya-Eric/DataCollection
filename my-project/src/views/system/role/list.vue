@@ -75,7 +75,7 @@ export default {
         { dataIndex: 'code', title: '角色编码', align: 'center' },
         { dataIndex: 'enabled', title: '状态', align: 'center' },
         { dataIndex: 'updateTime', title: '更新时间', align: 'center' },
-        { dataIndex: 'action', title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
       ]
     }
   },

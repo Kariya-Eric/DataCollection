@@ -106,7 +106,7 @@ export default {
         { dataIndex: 'email', title: '邮箱', align: 'center' },
         { dataIndex: 'mobile', title: '手机号', align: 'center' },
         { dataIndex: 'status', title: '状态', align: 'center' },
-        { dataIndex: 'action', title: '操作', width: 250, align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '操作', width: 250, align: 'center', scopedSlots: { customRender: 'action' } }
       ],
       roleList: [],
       departList: []

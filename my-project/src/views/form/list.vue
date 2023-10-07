@@ -51,6 +51,9 @@
         :columns="columns"
         @change="handleTableChange"
       >
+        <template slot="name" slot-scope="text, record">
+          <a @click="showCollectionDetail(record)">{{ record.name }}</a>
+        </template>
         <template slot="enabledFlag" slot-scope="text, record">
           <dc-switch v-model="record.enabledFlag" @change="val => enableCollection(val, record.id)" />
         </template>
@@ -84,12 +87,12 @@ export default {
         delete: '/uc/api/formCollection/delete'
       },
       columns: [
-        { dataIndex: 'name', title: '合集名称', align: 'center', scopedSlots: { customRender: 'name' } },
+        { title: '合集名称', align: 'center', scopedSlots: { customRender: 'name' } },
         { dataIndex: 'type', title: '合集类型', align: 'center' },
         { dataIndex: 'year', title: '年份', align: 'center' },
         { dataIndex: 'guidFiles', title: '填报指南', align: 'center', scopedSlots: { customRender: 'guidFiles' } },
-        { dataIndex: 'enabledFlag', title: '启用', align: 'center', scopedSlots: { customRender: 'enabledFlag' } },
-        { dataIndex: 'action', title: '操作', width: 340, align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '启用', align: 'center', scopedSlots: { customRender: 'enabledFlag' } },
+        { title: '操作', width: 340, align: 'center', scopedSlots: { customRender: 'action' } }
       ]
     }
   },

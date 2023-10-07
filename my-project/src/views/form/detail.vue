@@ -40,7 +40,7 @@
         <div class="table-operator-button">
           <a-button type="primary">配置表单大类</a-button>
           <a-button type="primary">复制表单</a-button>
-          <a-button type="primary">新建表单</a-button>
+          <a-button type="primary" @click="handleAdd('新建表单')">新建表单</a-button>
         </div>
       </div>
 
@@ -62,9 +62,9 @@
             <dc-switch v-model="record.enabledFlag" @change="val => enableForm(val, record.id)" />
           </template>
           <template slot="action" slot-scope="text, record">
-            <a>表单详情</a>
+            <a @click="showForm(record)">表单详情</a>
             <a-divider type="vertical" />
-            <a>表单属性</a>
+            <a @click="handleEdit(record, '表单属性')">表单属性</a>
             <a-divider type="vertical" />
             <a>下载模板</a>
             <a-divider type="vertical" />
@@ -75,6 +75,8 @@
         </a-table>
       </div>
     </a-card>
+    <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
+    <form-generator-modal ref="formGeneratorModal" />
   </div>
 </template>
 
@@ -82,8 +84,11 @@
 const listUrl = '/uc/api/form/listByCollection/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { listFormCategories, enableForm } from '@/api/form'
+import FormModal from './components/form/form-modal.vue'
+import FormGeneratorModal from './components/formDesign/form-generator-modal.vue'
 export default {
   name: 'FormDetail',
+  components: { FormModal, FormGeneratorModal },
   mixins: [DataCollectionListMixin],
   data() {
     return {
@@ -97,10 +102,10 @@ export default {
         { dataIndex: 'name', title: '表单名称', align: 'center', scopedSlots: { customRender: 'name' } },
         { dataIndex: 'formCategoriesName', title: '表单大类', align: 'center' },
         { dataIndex: 'collectTimeType', title: '统计时间类型', align: 'center' },
-        { dataIndex: 'required', title: '是否必填', align: 'center', scopedSlots: { customRender: 'required' } },
+        { title: '是否必填', align: 'center', scopedSlots: { customRender: 'required' } },
         { dataIndex: 'a', title: '前置表单', align: 'center' },
-        { dataIndex: 'enabled', title: '启用', align: 'center', scopedSlots: { customRender: 'enabled' } },
-        { dataIndex: 'action', title: '操作', width: 340, align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '启用', align: 'center', scopedSlots: { customRender: 'enabled' } },
+        { title: '操作', width: 340, align: 'center', scopedSlots: { customRender: 'action' } }
       ]
     }
   },
@@ -110,7 +115,7 @@ export default {
         if (newRoute.name == 'formDetail') {
           this.collectionDetail = JSON.parse(newRoute.query.collectionInfo)
           this.loadCategories()
-          this.refreshData()
+          this.refreshData(1)
         }
       },
       immediate: true,
@@ -119,9 +124,9 @@ export default {
   },
 
   methods: {
-    refreshData() {
+    refreshData(args) {
       this.url.list = listUrl + this.collectionDetail.id
-      this.loadData(1)
+      this.loadData(args)
     },
 
     loadCategories() {
@@ -152,6 +157,10 @@ export default {
           this.refreshData()
           this.loading = false
         })
+    },
+
+    showForm(record) {
+      this.$refs.formGeneratorModal.show(record)
     }
   }
 }

@@ -44,8 +44,8 @@ export default {
       rules: {
         account: [{ required: true, message: '请输入账号' }],
         name: [{ required: true, message: '请输入姓名' }],
-        orgId: [{ required: true, message: '请选择部门' }],
-        roleIds: [{ required: true, message: '请选择角色' }],
+        orgId: [{ required: true, message: '请选择部门', trigger: 'change' }],
+        roleIds: [{ required: true, message: '请选择角色', trigger: 'change' }],
         email: [{ pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/, message: '请输入合法的邮箱' }],
         mobile: [{ pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[2567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, message: '请输入合法的手机' }]
       },

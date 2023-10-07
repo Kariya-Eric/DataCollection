@@ -47,6 +47,7 @@ import {
   Space,
   message,
   notification,
+  Slider,
   Tree,
   Empty
 } from 'ant-design-vue'
@@ -55,7 +56,8 @@ import Viser from 'viser-vue'
 // ext library
 import VueCropper from 'vue-cropper'
 import './directives/action'
-import DcComponents from '@/components/DataCollection'
+import DcComponents from '@/components'
+
 Vue.use(DcComponents)
 
 Vue.use(ConfigProvider)
@@ -66,6 +68,7 @@ Vue.use(Button)
 Vue.use(Switch)
 Vue.use(Radio)
 Vue.use(Checkbox)
+Vue.use(Slider)
 Vue.use(Select)
 Vue.use(Card)
 Vue.use(Form)
