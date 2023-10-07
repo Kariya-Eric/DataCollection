@@ -1,25 +1,36 @@
 <template>
-  <a-modal :visible="visible" :confirmLoading="loading" @ok="handleOk" :maskClosable="false" :keyboard="false" :footer="null" :closable="false">
+  <dc-modal :visible="visible" :confirmLoading="loading" @ok="handleOk">
     <template slot="title">
-      <a-row type="flex" class="title-row">
+      <a-row type="flex" class="title-row" justify="space-between">
         <a-col class="left">
           <a-tag color="orange">{{ info.type }}</a-tag>
           <span>{{ info.name }}（{{ info.collectTimeType }}）</span>
         </a-col>
-        <a-col class="center"> </a-col>
+        <a-col class="center">
+          <a-tabs>
+            <a-tab-pane key="1">
+              <span slot="tab" style="font-size: 20px"> 表单设计 </span>
+            </a-tab-pane>
+            <a-tab-pane key="2">
+              <span slot="tab" style="font-size: 20px"> 校验规则 </span>
+            </a-tab-pane>
+          </a-tabs>
+        </a-col>
         <a-col class="right">
-          <div class="title-button">
-            <a-button type="danger">清空</a-button>
-            <a-button type="primary">预览</a-button>
-            <a-button type="primary">保存</a-button>
-            <a-button @click="handleCancel">返回</a-button>
-          </div>
+          <a-button type="danger">清空</a-button>
+          <a-button type="primary">预览</a-button>
+          <a-button type="primary">保存</a-button>
+          <a-button @click="handleCancel">返回</a-button>
         </a-col>
       </a-row>
     </template>
 
-    <form-generator :formInfo="info" :drawingList="drawingList" :form-config="formConfig" ref="formGenerator" />
-  </a-modal>
+    <div v-show="activeTab === 0">
+      <form-generator :formInfo="info" :drawingList="drawingList" :form-config="formConfig" ref="formGenerator" />
+    </div>
+
+    <div class="container" v-if="activeTab === 1">123</div>
+  </dc-modal>
 </template>
 
 <script>
@@ -31,7 +42,8 @@ export default {
       visible: false,
       loading: false,
       drawingList: [],
-      formConfig: null
+      formConfig: null,
+      activeTab: 0
     }
   },
   methods: {
@@ -72,10 +84,16 @@ export default {
 /deep/.ant-modal-body {
   height: calc(100vh - 55px) !important;
   max-height: calc(100vh - 55px) !important;
+  padding-top: 8px !important;
   overflow: auto;
 }
 /deep/.ant-modal-header {
   border-radius: 0 !important;
+}
+/deep/ .ant-modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
 }
 /deep/.ant-modal-content {
   height: 100vh !important;
@@ -83,14 +101,16 @@ export default {
 }
 .title-row {
   .left {
-    width: 30%;
+    width: 25%;
+  }
+  .center {
+    position: absolute;
+    left: 40%;
+    top: 12px;
   }
   .right {
-    .title-button {
-      right: 0px;
-      .ant-btn {
-        margin-left: 12px;
-      }
+    .ant-btn {
+      margin-left: 12px;
     }
   }
 }

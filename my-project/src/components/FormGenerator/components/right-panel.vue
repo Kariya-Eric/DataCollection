@@ -1,0 +1,374 @@
+<template>
+  <div class="right-board">
+    <el-tabs v-model="currentTab" :stretch="true">
+      <el-tab-pane label="组件属性" name="field" />
+      <el-tab-pane label="表单属性" name="form" />
+    </el-tabs>
+    <el-scrollbar class="right-scrollbar">
+      <div class="field-box">
+        <!-- 组件属性 -->
+        <el-form v-if="currentTab === 'field' && showField" size="small" label-width="90px">
+          <el-form-item v-if="activeData.__config__.changeTag" label="组件类型">
+            <el-select v-model="activeData.__config__.tagIcon" placeholder="请选择组件类型" :style="{ width: '100%' }" @change="tagChange">
+              <el-option-group v-for="group in tagList" :key="group.label" :label="group.label">
+                <el-option v-for="item in group.options" :key="item.__config__.label" :label="item.__config__.label" :value="item.__config__.tagIcon">
+                  <svg-icon class="node-icon" :icon-class="item.__config__.tagIcon" />
+                  <span> {{ item.__config__.label }}</span>
+                </el-option>
+              </el-option-group>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.tag == 'formDivider'" label="组件名">
+            {{ activeData.__config__.label }}
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider'" label="标题">
+            <el-input v-model="activeData.__config__.label" placeholder="请输入标题" />
+          </el-form-item>
+          <el-form-item v-if="activeData.placeholder !== undefined" label="占位提示">
+            <el-input v-model="activeData.placeholder" placeholder="请输入占位提示" />
+          </el-form-item>
+
+          <el-form-item label="注释" v-if="activeData.comment !== undefined">
+            <el-input type="textarea" :rows="4" placeholder="请输入组件注释" size="small" v-model="activeData.comment" />
+          </el-form-item>
+
+          <el-form-item v-if="activeData.__config__.span !== undefined && activeData.__config__.tag !== 'formDivider'" label="组件宽度">
+            <el-slider v-model="activeData.__config__.span" :min="1" :max="24" :marks="{ 12: '' }" @change="spanChange"></el-slider>
+          </el-form-item>
+          <el-form-item v-if="activeData.style && activeData.style.width !== undefined" label="输入框宽度">
+            <el-slider v-model="inputWidth" :marks="{ 50: '' }"></el-slider>
+          </el-form-item>
+
+          <el-form-item v-if="activeData.__config__.tag === 'el-input-number'" label="小数位数">
+            <el-input-number v-model="activeData.precision" :min="0" placeholder="小数位数" />
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.tag === 'el-input-number'" label="最小值">
+            <el-input-number v-model="activeData.min" placeholder="最小值" />
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.tag === 'el-input-number'" label="最大值">
+            <el-input-number v-model="activeData.max" placeholder="最大值" />
+          </el-form-item>
+
+          <el-form-item v-if="activeData.__config__.tag === 'el-checkbox-group'" label="至少应选">
+            <el-input-number :value="activeData.min" :min="0" placeholder="至少应选" @input="$set(activeData, 'min', $event ? $event : undefined)" />
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.tag === 'el-checkbox-group'" label="最多可选">
+            <el-input-number :value="activeData.max" :min="0" placeholder="最多可选" @input="$set(activeData, 'max', $event ? $event : undefined)" />
+          </el-form-item>
+
+          <el-form-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式">
+            <el-select v-model="activeData.type" style="width: 100%">
+              <el-option label="国/省（直辖市、自治区）/市" value="国/省（直辖市、自治区）/市" />
+              <el-option label="省（直辖市、自治区）/市/区-详细地址" value="省（直辖市、自治区）/市/区-详细地址" />
+              <el-option label="省（直辖市、自治区）/市/区" value="省（直辖市、自治区）/市/区" />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="activeData.format !== undefined" label="时间格式">
+            <el-select v-model="activeData.format" @change="changeTimeFormat" style="width: 100%">
+              <el-option label="年（yyyy）" value="yyyy" />
+              <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
+              <el-option label="年月（yyyyMM）" value="yyyyMM" />
+            </el-select>
+          </el-form-item>
+          <template v-if="['el-checkbox-group', 'el-radio-group', 'el-select'].indexOf(activeData.__config__.tag) > -1">
+            <el-divider>选项</el-divider>
+            <draggable :list="activeData.__slot__.options" :animation="340" group="selectItem" handle=".option-drag">
+              <div v-for="(item, index) in activeData.__slot__.options" :key="index" class="select-item">
+                <div class="select-line-icon option-drag">
+                  <i class="el-icon-s-operation" />
+                </div>
+                <el-input v-model="item.label" placeholder="选项名" size="small" />
+                <div class="close-btn select-line-icon" @click="delSelectItem(index)">
+                  <i class="el-icon-remove-outline" />
+                </div>
+              </div>
+            </draggable>
+            <div style="margin-left: 20px">
+              <el-button style="padding-bottom: 0" icon="el-icon-circle-plus-outline" type="text" @click="addSelectItem"> 添加选项 </el-button>
+              <a style="margin-left: 96px">设置选项来源</a>
+            </div>
+            <el-divider />
+          </template>
+
+          <el-form-item v-if="activeData.__config__.tag === 'formPhone'" label="支持固话">
+            <el-switch v-model="activeData.isMobile" />
+          </el-form-item>
+
+          <el-form-item v-if="activeData.__config__.tag === 'el-input'" label="禁止汉字">
+            <el-switch v-model="activeData.allowChar" />
+          </el-form-item>
+
+          <el-form-item v-if="activeData.__config__.showLabel !== undefined && activeData.__config__.tag !== 'formDivider'" label="显示标签">
+            <el-switch v-model="activeData.__config__.showLabel" />
+          </el-form-item>
+
+          <el-form-item v-if="activeData.__config__.tag === 'el-select'" label="能否搜索">
+            <el-switch v-model="activeData.filterable" />
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.tag === 'el-select'" label="是否多选">
+            <el-switch v-model="activeData.multiple" @change="multipleChange" />
+          </el-form-item>
+          <el-form-item v-if="activeData.__config__.required !== undefined" label="是否必填">
+            <el-switch v-model="activeData.__config__.required" />
+          </el-form-item>
+
+          <!-- 自定义组件start -->
+          <template v-if="activeData.__config__.tag === 'formDivider'">
+            <el-divider>分割线设置</el-divider>
+            <el-form-item label="标题">
+              <el-input v-model="activeData.title" />
+            </el-form-item>
+            <el-form-item label="字体大小">
+              <el-slider v-model="activeData.fontSize" :min="12" :step="1" :max="30" :marks="{ 16: '', 24: '' }"></el-slider>
+            </el-form-item>
+          </template>
+
+          <right-panel-table v-if="activeData.__config__.layout === 'tableLayout'" :activeData="activeData" />
+          <!-- 自定义组件end -->
+        </el-form>
+
+        <!-- 表单属性 -->
+        <el-form v-show="currentTab === 'form'" size="small" label-width="100px">
+          <el-form-item label="表单名称">
+            <el-input v-model="baseInfo.name" />
+          </el-form-item>
+          <el-form-item label="表单大类">
+            <el-select v-model="baseInfo.formCategories" style="width: 100%">
+              <el-option v-for="item in baseInfo.listCategories" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="统计时间类型">
+            <el-select v-model="baseInfo.collectTimeType" style="width: 100%">
+              <el-option label="时点" value="时点" />
+              <el-option label="学年" value="学年" />
+              <el-option label="自然年" value="自然年" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="表单类型">
+            <el-input v-model="baseInfo.type" disabled />
+          </el-form-item>
+          <el-form-item label="表单尺寸">
+            <el-radio-group v-model="formConf.size">
+              <el-radio-button label="medium"> 中等 </el-radio-button>
+              <el-radio-button label="small"> 较小 </el-radio-button>
+              <el-radio-button label="mini"> 迷你 </el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="标签对齐">
+            <el-radio-group v-model="formConf.labelPosition">
+              <el-radio-button label="left"> 左对齐 </el-radio-button>
+              <el-radio-button label="right"> 右对齐 </el-radio-button>
+              <el-radio-button label="top"> 顶部对齐 </el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="标签宽度">
+            <el-slider v-model="formConf.labelWidth" :min="10" :step="10" :max="240" :marks="{ 120: '' }" @change="labelChange"></el-slider>
+          </el-form-item>
+
+          <template v-if="baseInfo.type == '固定表单'">
+            <el-divider>表单显隐规则</el-divider>
+            <div v-for="(item, index) in formConf.componentsVisible" :key="index" class="reg-item">
+              <span class="close-btn">
+                <i class="el-icon-close" @click="delRule(index)" />
+              </span>
+              <a @click="editRule(index)">表单显隐藏规则-第{{ index + 1 }}条</a>
+            </div>
+            <div style="margin-left: 20px">
+              <el-button icon="el-icon-circle-plus-outline" type="text" @click="addRule"> 添加规则 </el-button>
+            </div>
+            <logic-dialog ref="logicDialog" :drawing-list="drawingList" :form-conf="formConf" />
+          </template>
+        </el-form>
+      </div>
+    </el-scrollbar>
+  </div>
+</template>
+
+<script>
+import draggable from 'vuedraggable'
+import LogicDialog from './logic-dialog.vue'
+import { inputComponentsFix, selectComponentsFix } from '../config/config_fix'
+import RightPanelTable from './right-panel-table.vue'
+export default {
+  name: 'RightPanel',
+  components: {
+    draggable,
+    RightPanelTable,
+    LogicDialog
+  },
+  props: ['showField', 'activeData', 'formConf', 'baseInfo', 'drawingList'],
+  data() {
+    return {
+      currentTab: 'field'
+    }
+  },
+  computed: {
+    inputWidth: {
+      get() {
+        if (this.activeData.style != undefined) {
+          return parseInt(this.activeData.style.width)
+        }
+        return 0
+      },
+      set(val) {
+        this.$set(this.activeData, 'style', { width: val + '%' })
+      }
+    },
+    tagList() {
+      return [
+        {
+          label: '输入型组件',
+          options: inputComponentsFix
+        },
+        {
+          label: '选择型组件',
+          options: selectComponentsFix
+        }
+      ]
+    }
+  },
+
+  methods: {
+    // start
+    changeTimeFormat(val) {
+      this.activeData['value-format'] = val
+      if (val === 'yyyy-MM') {
+        this.$set(this.activeData, 'dateType', 'month')
+      } else if (val === 'yyyyMM') {
+        this.$set(this.activeData, 'dateType', 'month')
+      } else {
+        this.$set(this.activeData, 'dateType', 'year')
+      }
+    },
+
+    addRule() {
+      this.$refs.logicDialog.show()
+    },
+
+    delRule(index) {
+      this.formConf.componentsVisible.splice(index, 1)
+    },
+
+    editRule(index) {
+      this.$refs.logicDialog.show(index)
+    },
+    // end
+    addSelectItem() {
+      for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
+        this.activeData.__slot__.options[i].value = i + 1
+      }
+      this.activeData.__slot__.options.push({
+        label: '选项',
+        value: this.activeData.__slot__.options.length + 1
+      })
+    },
+    delSelectItem(index) {
+      this.activeData.__slot__.options.splice(index, 1)
+      for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
+        this.activeData.__slot__.options[i].value = i + 1
+      }
+    },
+    spanChange(val) {
+      this.$set(this.formConf, 'span', val)
+    },
+    labelChange(val) {
+      this.$set(this.formConf, 'labelWidth', val)
+    },
+    multipleChange(val) {
+      this.$set(this.activeData.__config__, 'defaultValue', val ? [] : '')
+    },
+    dragEnd(obj) {
+      if (obj.oldIndex + 1 == this.activeData.selectedCol) {
+        this.activeData.selectedCol = obj.newIndex + 1
+      }
+    },
+
+    tagChange(tagIcon) {
+      let target = inputComponentsFix.find(item => item.__config__.tagIcon === tagIcon)
+      if (!target) target = selectComponentsFix.find(item => item.__config__.tagIcon === tagIcon)
+      this.$emit('tag-change', target)
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.right-board {
+  flex: 0 1 350px;
+  background-color: #fff;
+  .center-scrollbar {
+    height: calc(100vh - 42px);
+    /deep/ .el-scrollbar__wrap {
+      overflow-x: hidden;
+    }
+  }
+  .field-box {
+    // position: relative;
+    box-sizing: border-box;
+    height: calc(100vh - 42px);
+    padding: 0 24px 0 8px;
+  }
+}
+.select-item {
+  display: flex;
+  border: 1px dashed #fff;
+  box-sizing: border-box;
+  & .close-btn {
+    cursor: pointer;
+    color: #f56c6c;
+  }
+  & .el-input + .el-input {
+    margin-left: 4px;
+  }
+}
+.select-item + .select-item {
+  margin-top: 4px;
+}
+.select-item.sortable-chosen {
+  border: 1px dashed #409eff;
+}
+.select-line-icon {
+  line-height: 32px;
+  font-size: 22px;
+  padding: 0 4px;
+  color: #777;
+}
+.option-drag {
+  cursor: move;
+}
+.node-label {
+  font-size: 14px;
+}
+.node-icon {
+  color: #bebfc3;
+}
+.reg-item {
+  padding: 12px 6px;
+  background: #f8f8f8;
+  position: relative;
+  border-radius: 4px;
+  .close-btn {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    z-index: 1;
+    cursor: pointer;
+    font-size: 12px;
+    &:hover {
+      background: rgba(210, 23, 23, 0.5);
+    }
+  }
+  & + .reg-item {
+    margin-top: 18px;
+  }
+}
+</style>

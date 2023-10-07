@@ -1,5 +1,5 @@
 @selectedColor: #f6f7ff;
-@lighterBlue: #2F68BD;
+@lighterBlue: #2f68bd;
 
 .container {
   position: relative;
@@ -23,23 +23,11 @@
   padding-bottom: 20px;
 }
 
-.center-header {
-  position: relative;
-  height: 64px;
-  overflow: hidden;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  line-height: 64px;
-  background: #fff;
-  padding: 20;
-}
-.center-header .select-lang-trigger {
-  float: right;
-}
 .center-main {
-  height: calc(100vh - 88px);
+  height: calc(100vh - 120px);
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
-  margin: 24px 16px 0;
+  margin: 12px 0 12px 0;
 }
 
 .components-body {
@@ -76,15 +64,8 @@
   border-top: none;
   border-left: none;
   .delete-btn {
-    color: #E23322;
+    color: #e23322;
   }
-}
-.logo-wrapper {
-  position: relative;
-  height: 42px;
-  background: #fff;
-  border-bottom: 1px solid #f1e8e8;
-  box-sizing: border-box;
 }
 .left-header {
   position: relative;
@@ -239,11 +220,11 @@
   }
   & > .drawing-item-delete {
     right: 24px;
-    border-color: #E23322;
-    color: #E23322;
+    border-color: #e23322;
+    color: #e23322;
     background: #fff;
     &:hover {
-      background: #E23322;
+      background: #e23322;
       color: #fff;
     }
   }
