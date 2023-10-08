@@ -76,7 +76,7 @@
       </div>
     </a-card>
     <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
-    <form-generator-modal ref="formGeneratorModal" />
+    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" />
   </div>
 </template>
 

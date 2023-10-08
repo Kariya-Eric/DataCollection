@@ -60,14 +60,14 @@
       </div>
     </a-layout>
     <a-layout-sider :collapsed-width="0" :width="350" theme="light" :style="{ overflow: 'auto', height: '100vh', position: 'fixed', right: 0 }">
-      <!-- <right-panel
+      <right-panel
         :active-data="activeData"
         :form-conf="formConf"
         :show-field="drawingList.length != 0"
         :base-info="formInfo"
         :drawing-list="drawingList"
         @tag-change="tagChange"
-      /> -->
+      />
     </a-layout-sider>
   </a-layout>
 </template>

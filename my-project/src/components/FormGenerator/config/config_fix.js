@@ -59,8 +59,6 @@ export const selectComponentsFix = [
         }
       ]
     },
-    min: null,
-    max: null,
     comment: ''
   }
 ]

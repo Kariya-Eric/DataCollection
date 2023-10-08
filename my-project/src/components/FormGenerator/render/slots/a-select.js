@@ -1,9 +1,7 @@
 export default {
   options(h, conf, key) {
-    const list = [];
-    conf.__slot__.options.forEach((item) =>
-      list.push(<el-option label={item.label} value={item.value}></el-option>)
-    );
-    return list;
-  },
-};
+    const list = []
+    conf.__slot__.options.forEach(item => list.push(<a-select-option value={item.value}>{item.label}</a-select-option>))
+    return list
+  }
+}

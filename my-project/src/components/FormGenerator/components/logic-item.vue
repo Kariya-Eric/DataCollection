@@ -1,17 +1,17 @@
 <template>
   <div class="item">
-    <el-select v-model="term" size="small" style="width: 25%" @change="changeTerm">
-      <el-option v-for="(item, index) in options" :key="index" :label="item.label" :value="item.value" />
-    </el-select>
-    <el-select size="small" style="width: 15%" v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag">
-      <el-option v-for="(item, index) in calFlagList" :key="index" :label="item.label" :value="item.value" />
-    </el-select>
-    <el-input-number :disabled="calFlagList.length == 0" v-if="inputType == 1" v-model="termVal" @change="changeTermVal" style="width: 55%" />
-    <el-date-picker :disabled="calFlagList.length == 0" v-else-if="inputType == 2" v-model="termVal" @change="changeTermVal" style="width: 55%" />
-    <el-select :disabled="calFlagList.length == 0" v-else-if="inputType == 3" multiple v-model="termVals" @change="changeTermVal" style="width: 55%">
-      <el-option v-for="(item, index) in termOptions" :key="index" :label="item.label" :value="item.value" />
-    </el-select>
-    <el-input v-else v-model="termVal" style="width: 55%" @input="changeTermVal" :disabled="calFlagList.length == 0" />
+    <a-select v-model="term" style="width: 20%; margin-right: 8px" @change="changeTerm">
+      <a-select-option v-for="(item, index) in options" :key="index" :value="item.value">{{ item.label }}</a-select-option>
+    </a-select>
+    <a-select style="width: 15%; margin-right: 8px" v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag">
+      <a-select-option v-for="(item, index) in calFlagList" :key="index" :value="item.value">item.label</a-select-option>
+    </a-select>
+    <a-input-number :disabled="calFlagList.length == 0" v-if="inputType == 1" v-model="termVal" @change="changeTermVal" style="width: 55%" />
+    <dc-date :disabled="calFlagList.length == 0" v-else-if="inputType == 2" v-model="termVal" @change="changeTermVal" style="width: 55%" />
+    <a-select :disabled="calFlagList.length == 0" v-else-if="inputType == 3" multiple v-model="termVals" @change="changeTermVal" style="width: 55%">
+      <a-select-option v-for="(item, index) in termOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
+    </a-select>
+    <a-input v-else v-model="termVal" style="width: 55%" @change="changeInputTermVal" :disabled="calFlagList.length == 0" />
   </div>
 </template>
 
@@ -122,6 +122,11 @@ export default {
 
     changeTermVal(val) {
       this.termVal = val
+      this.handlerVal()
+    },
+
+    changeInputTermVal(e) {
+      this.termVal = e.target.value
       this.handlerVal()
     },
 

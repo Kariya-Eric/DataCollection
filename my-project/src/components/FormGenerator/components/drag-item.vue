@@ -34,9 +34,8 @@ const layouts = {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
     const child = renderChildren.apply(this, arguments)
+    const dividerWrapper={span:24,offset:0}
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
-    let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
-    if (config.showLabel === false) labelWidth = '0'
     return (
       <a-col
         span={config.span}
@@ -46,12 +45,20 @@ const layouts = {
           event.stopPropagation()
         }}
       >
-        <a-form-model-item label={config.showLabel ? config.label : ''} required={config.required}>
+        <a-form-model-item label={config.showLabel ? config.label : ''} required={config.required}
+          wrapperCol={config.tag==='formDivider'?dividerWrapper:null}
+        >
           <render
             key={config.renderKey}
             conf={currentItem}
             onInput={event => {
-              this.$set(config, 'defaultValue', event)
+              let value = event
+            if (config.tag === 'a-input'
+              || config.tag === 'a-textarea'
+              || config.tag === 'a-radio-group') {
+              value = event.target.value
+            }
+              this.$set(config, 'defaultValue',value)
             }}
           >
             {child}
@@ -67,8 +74,6 @@ const layouts = {
     const config = currentItem.__config__
     const child = renderChildren.apply(this, arguments)
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
-    let labelWidth = config.labelWidth ? `${config.labelWidth}px` : null
-    if (config.showLabel === false) labelWidth = '0'
     return (
       <a-col
         span={config.span}

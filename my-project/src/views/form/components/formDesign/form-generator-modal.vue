@@ -17,7 +17,7 @@
           </a-tabs>
         </a-col>
         <a-col class="right">
-          <a-button type="danger">清空</a-button>
+          <a-button type="danger"> 清空</a-button>
           <a-button type="primary">预览</a-button>
           <a-button type="primary">保存</a-button>
           <a-button @click="handleCancel">返回</a-button>
@@ -36,6 +36,7 @@
 <script>
 export default {
   name: 'FormGeneratorModal',
+  props: ['categories'],
   data() {
     return {
       info: {},
@@ -77,10 +78,9 @@ export default {
 /deep/.ant-modal {
   width: 100vw !important;
   max-width: 100vw !important;
-  top: 0;
-  padding: 0;
+  top: 0 !important;
+  padding: 0 !important;
 }
-
 /deep/.ant-modal-body {
   height: calc(100vh - 55px) !important;
   max-height: calc(100vh - 55px) !important;
@@ -90,10 +90,10 @@ export default {
 /deep/.ant-modal-header {
   border-radius: 0 !important;
 }
-/deep/ .ant-modal-title {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 26px;
+/deep/.ant-modal-title {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 26px !important;
 }
 /deep/.ant-modal-content {
   height: 100vh !important;
