@@ -71,13 +71,13 @@
           </a-select>
         </a-form-model-item>
 
-        <el-form-item v-if="activeData.format !== undefined" label="时间格式">
-          <el-select v-model="activeData.format" @change="changeTimeFormat" style="width: 100%">
-            <el-option label="年（yyyy）" value="yyyy" />
-            <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
-            <el-option label="年月（yyyyMM）" value="yyyyMM" />
-          </el-select>
-        </el-form-item>
+        <a-form-model-item v-if="activeData.format !== undefined" label="时间格式" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+          <a-select v-model="activeData.format" @change="changeTimeFormat">
+            <a-select-option value="YYYY">年（yyyy）</a-select-option>
+            <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
+            <a-select-option value="YYYYMM">年月（yyyyMM）</a-select-option>
+          </a-select>
+        </a-form-model-item>
 
         <template v-if="['a-checkbox-group', 'a-radio-group', 'a-select'].indexOf(activeData.__config__.tag) > -1">
           <a-divider>选项</a-divider>
@@ -122,10 +122,10 @@
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.__config__.tag === 'a-select'" label="能否搜索" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
-          <a-switch v-model="activeData.filterable" />
+          <a-switch v-model="activeData.showSearch" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.tag === 'a-select'" label="是否多选" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
-          <a-switch v-model="activeData.multiple" @change="multipleChange" />
+          <a-switch :value="activeData.mode === 'default'" @change="multipleChange" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.required !== undefined" label="是否必填" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
           <a-switch v-model="activeData.__config__.required" />
@@ -180,11 +180,11 @@
           <a-divider>表单显隐规则</a-divider>
           <div v-for="(item, index) in formConf.componentsVisible" :key="index" class="reg-item">
             <span class="close-btn">
-              <a-icon class="close-circle" @click="delRule(index)" />
+              <a-icon type="close" @click="delRule(index)" />
             </span>
             <a @click="editRule(index)">表单显隐藏规则-第{{ index + 1 }}条</a>
           </div>
-          <div style="margin-left: 20px">
+          <div>
             <a-button icon="plus-circle" type="link" @click="addRule"> 添加规则 </a-button>
           </div>
           <logic-dialog ref="logicDialog" :drawing-list="drawingList" :form-conf="formConf" />
@@ -241,13 +241,12 @@ export default {
   methods: {
     // start
     changeTimeFormat(val) {
-      this.activeData['value-format'] = val
-      if (val === 'yyyy-MM') {
-        this.$set(this.activeData, 'dateType', 'month')
-      } else if (val === 'yyyyMM') {
-        this.$set(this.activeData, 'dateType', 'month')
+      if (val === 'YYYY-MM') {
+        this.$set(this.activeData, 'mode', 'month')
+      } else if (val === 'YYYYMM') {
+        this.$set(this.activeData, 'mode', 'month')
       } else {
-        this.$set(this.activeData, 'dateType', 'year')
+        this.$set(this.activeData, 'mode', 'year')
       }
     },
 
@@ -291,8 +290,10 @@ export default {
     labelChange(val) {
       this.$set(this.formConf, 'labelWidth', val)
     },
+
     multipleChange(val) {
-      this.$set(this.activeData.__config__, 'defaultValue', val ? [] : '')
+      this.$set(this.activeData, 'mode', val ? 'multiple' : 'default')
+      this.$set(this.activeData.__config__, 'defaultValue', val ? [] : undefined)
     },
     dragEnd(obj) {
       if (obj.oldIndex + 1 == this.activeData.selectedCol) {
@@ -324,7 +325,7 @@ export default {
   padding: 0px;
 }
 .right-main {
-  height: calc(100vh - 64px - 30px);
+  height: calc(100vh - 130px);
   overflow-y: auto;
   margin: 10px 10px 0;
   padding: 4px 8px 4px 8px;
@@ -365,5 +366,34 @@ export default {
 }
 .node-icon {
   color: #bebfc3;
+}
+
+.reg-item {
+  padding: 12px 6px;
+  background: #f8f8f8;
+  position: relative;
+  border-radius: 4px;
+  .close-btn {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    display: block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    z-index: 1;
+    cursor: pointer;
+    font-size: 12px;
+    &:hover {
+      background: rgba(210, 23, 23, 0.5);
+    }
+  }
+  & + .reg-item {
+    margin-top: 18px;
+  }
 }
 </style>

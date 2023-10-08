@@ -4,6 +4,7 @@ import DcModal from './DataCollection/DcModal.vue'
 import FormGenerator from './FormGenerator'
 import Tinymce from './Tinymce'
 import CustomComponents from './FormGenerator/layouts'
+import VueAreaLinkage from 'vue-area-linkage'
 export default {
   install(Vue) {
     Vue.component('DcSwitch', DcSwitch)
@@ -12,5 +13,6 @@ export default {
     Vue.component('FormGenerator', FormGenerator)
     Vue.component('tinymce', Tinymce)
     Vue.use(CustomComponents)
+    Vue.use(VueAreaLinkage)
   }
 }

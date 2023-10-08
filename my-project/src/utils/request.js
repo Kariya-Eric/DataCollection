@@ -10,43 +10,54 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 const request = axios.create({
   // API 请求的默认前缀
   baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
-  timeout: 6000, // 请求超时时间
+  timeout: 6000 // 请求超时时间
 })
 
 // 异常拦截处理器
-const errorHandler = (error) => {
+const errorHandler = error => {
   if (error.response) {
     if (error.response) {
       const data = error.response.data
-      if (error.response.status === 404) {
-        notification.error({
-          message: '系统提示',
-          description: '很抱歉,资源未找到！',
-        })
-      } else if (error.response.status === 401) {
-        Modal.confirm({
-          title: '登录已过期',
-          content: '登陆信息已失效，请重新登录',
-          okText: '重新登录',
-          mask: false,
-          onOk: () => {
-            store.dispatch('Logout').then(() => {
-              setTimeout(() => {
-                window.location.reload()
-              }, 1500)
-            })
-          },
-        })
-      } else {
-        notification.error({
-          message: '系统提示',
-          description: data.message,
-        })
+      switch (error.response.status) {
+        case 404:
+          notification.error({
+            message: '系统提示',
+            description: '很抱歉,资源未找到！'
+          })
+          break
+        case 401:
+          Modal.confirm({
+            title: '登录已过期',
+            content: '登陆信息已失效，请重新登录',
+            okText: '重新登录',
+            mask: false,
+            onOk: () => {
+              store.dispatch('Logout').then(() => {
+                storage.remove(ACCESS_TOKEN)
+                try {
+                  let path = window.document.location.pathname
+                  console.log('location pathname -> ' + path)
+                  if (path != '/' && path.indexOf('/user/login') == -1) {
+                    window.location.reload()
+                  }
+                } catch (e) {
+                  window.location.reload()
+                }
+              })
+            }
+          })
+          break
+        default:
+          notification.error({
+            message: '系统提示',
+            description: data.message
+          })
+          break
       }
     } else {
       notification.error({
         message: '系统提示',
-        description: data.message,
+        description: data.message
       })
     }
   }
@@ -54,7 +65,7 @@ const errorHandler = (error) => {
 }
 
 // request interceptor
-request.interceptors.request.use((config) => {
+request.interceptors.request.use(config => {
   const token = storage.get(ACCESS_TOKEN)
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
@@ -65,7 +76,7 @@ request.interceptors.request.use((config) => {
 }, errorHandler)
 
 // response interceptor
-request.interceptors.response.use((response) => {
+request.interceptors.response.use(response => {
   return response.data
 }, errorHandler)
 
@@ -73,7 +84,7 @@ const installer = {
   vm: {},
   install(Vue) {
     Vue.use(VueAxios, request)
-  },
+  }
 }
 
 export default request

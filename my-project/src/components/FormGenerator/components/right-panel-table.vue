@@ -2,118 +2,153 @@
   <div>
     <div>
       <template>
-        <el-divider>列名 - 属性</el-divider>
+        <a-divider>列名 - 属性</a-divider>
         <draggable :list="activeData.columns" :animation="340" group="selectItem" handle=".option-drag" @end="dragEnd">
           <div v-for="item in activeData.columns" :key="item.key" class="select-item">
             <div class="select-line-icon option-drag">
-              <i class="el-icon-s-operation" />
+              <a-icon type="unordered-list" style="font-size: 18px" />
             </div>
-            <el-input size="small" v-model="item.label" />
+            <a-input v-model="item.label" />
             <div class="close-btn select-line-icon">
-              <i class="el-icon-remove-outline" @click="delCol(item.key)" />
+              <a-icon type="delete" style="font-size: 18px" @click="delCol(item.key)" />
             </div>
           </div>
         </draggable>
-        <div style="margin-left: 20px">
-          <el-button style="padding-bottom: 0" icon="el-icon-circle-plus-outline" type="text" @click="addCol"> 添加列 </el-button>
+        <div style="margin-top: 8px">
+          <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addCol"> 添加列 </a-button>
         </div>
       </template>
     </div>
     <template v-if="activeData.selectedCol !== -1">
-      <el-divider>已选中 : 第{{ activeData.selectedCol }}列</el-divider>
-      <el-form-item label="类型">
-        <el-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.label" style="width: 100%" @change="tagChange">
-          <el-option label="单行文本" value="单行文本" />
-          <el-option label="多行文本" value="多行文本" />
-          <el-option label="数字" value="数字" />
-          <el-option label="邮箱" value="邮箱" />
-          <el-option label="电话" value="电话" />
-          <el-option label="链接" value="链接" />
-          <el-option label="地址" value="地址" />
-          <el-option label="下拉选择" value="下拉选择" />
-          <el-option label="日期选择" value="日期选择" />
-        </el-select>
-      </el-form-item>
+      <a-divider>已选中 : 第{{ activeData.selectedCol }}列</a-divider>
+      <a-form-model-item label="类型" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.label" @change="tagChange">
+          <a-select-option value="单行文本">单行文本</a-select-option>
+          <a-select-option value="多行文本">多行文本</a-select-option>
+          <a-select-option value="数字">数字</a-select-option>
+          <a-select-option value="邮箱">邮箱</a-select-option>
+          <a-select-option value="电话">电话</a-select-option>
+          <a-select-option value="链接">链接</a-select-option>
+          <a-select-option value="地址">地址</a-select-option>
+          <a-select-option value="下拉选择">下拉选择</a-select-option>
+          <a-select-option value="日期选择">日期选择</a-select-option>
+        </a-select>
+      </a-form-model-item>
 
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '电话'" label="支持固话">
-        <el-switch v-model="activeData.columns[activeData.selectedCol - 1].type.isMobile" />
-      </el-form-item>
-      <el-form-item
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '电话'"
+        label="支持固话"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.isMobile" />
+      </a-form-model-item>
+      <a-form-model-item
         v-if="
-          activeData.columns[activeData.selectedCol - 1].type.__config__.label === '单行文本' ||
-          activeData.columns[activeData.selectedCol - 1].type.__config__.label === '多行文本'
+          activeData.columns[activeData.selectedCol - 1].type.__config__.label === '单行文本' || activeData.columns[activeData.selectedCol - 1].type.__config__.label === '多行文本'
         "
         label="禁止汉字"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
       >
-        <el-switch v-model="activeData.columns[activeData.selectedCol - 1].type.allowChar" />
-      </el-form-item>
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="小数位数">
-        <el-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.precision" :min="0" placeholder="小数位数" />
-      </el-form-item>
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="最小值">
-        <el-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" />
-      </el-form-item>
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="最大值">
-        <el-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" />
-      </el-form-item>
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.allowChar" />
+      </a-form-model-item>
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'"
+        label="小数位数"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.precision" :min="0" placeholder="小数位数" />
+      </a-form-model-item>
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'"
+        label="最小值"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" />
+      </a-form-model-item>
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'"
+        label="最大值"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" />
+      </a-form-model-item>
 
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '地址'" label="地址格式">
-        <el-select v-model="activeData.columns[activeData.selectedCol - 1].type.type" style="width: 100%">
-          <el-option label="国/省（直辖市、自治区）/市" value="国/省（直辖市、自治区）/市" />
-          <el-option label="省（直辖市、自治区）/市/区-详细地址" value="省（直辖市、自治区）/市/区-详细地址" />
-          <el-option label="省（直辖市、自治区）/市/区" value="省（直辖市、自治区）/市/区" />
-        </el-select>
-      </el-form-item>
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '地址'"
+        label="地址格式"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type">
+          <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
+          <a-select-option value="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
+          <a-select-option value="省（直辖市、自治区）/市/区">省（直辖市、自治区）/市/区</a-select-option>
+        </a-select>
+      </a-form-model-item>
 
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '日期选择'" label="时间格式">
-        <el-select
-          style="width: 100%"
-          v-model="activeData.columns[activeData.selectedCol - 1].type.format"
-          @change="val => changeTimeFormat(val, activeData.columns[activeData.selectedCol - 1].type)"
-        >
-          <el-option label="年（yyyy）" value="yyyy" />
-          <el-option label="年-月（yyyy-MM）" value="yyyy-MM" />
-          <el-option label="年月（yyyyMM）" value="yyyyMM" />
-        </el-select>
-      </el-form-item>
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '日期选择'"
+        label="时间格式"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.format" @change="val => changeTimeFormat(val, activeData.columns[activeData.selectedCol - 1].type)">
+          <a-select-option value="YYYY">年（yyyy）</a-select-option>
+          <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
+          <a-select-option value="YYYYMM">年月（yyyyMM）</a-select-option>
+        </a-select>
+      </a-form-model-item>
 
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'" label="能否搜索">
-        <el-switch v-model="activeData.columns[activeData.selectedCol - 1].type.filterable" />
-      </el-form-item>
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'"
+        label="能否搜索"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.showSearch" />
+      </a-form-model-item>
 
-      <el-form-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'" label="能否多选">
-        <el-switch v-model="activeData.columns[activeData.selectedCol - 1].type.multiple" />
-      </el-form-item>
+      <a-form-model-item
+        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'"
+        label="能否多选"
+        :labelCol="{ span: 6, offset: 0 }"
+        :wrapperCol="{ span: 18, offset: 0 }"
+      >
+        <a-switch :value="activeData.columns[activeData.selectedCol - 1].type.mode === 'default'" @change="changeMultiple" />
+      </a-form-model-item>
 
-      <el-form-item label="是否必填">
-        <el-switch v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.required" />
-      </el-form-item>
+      <a-form-model-item label="是否必填" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.required" />
+      </a-form-model-item>
 
-      <el-form-item label="注释">
-        <el-input
-          type="textarea"
+      <a-form-model-item label="注释" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-textarea
           :rows="4"
           :placeholder="`请输入${activeData.columns[activeData.selectedCol - 1].label}注释`"
-          size="small"
           v-model="activeData.columns[activeData.selectedCol - 1].type.comment"
         />
-      </el-form-item>
+      </a-form-model-item>
 
       <template v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'">
-        <el-divider>选项</el-divider>
+        <a-divider>选项</a-divider>
         <draggable :list="activeData.columns[activeData.selectedCol - 1].type.options" :animation="340" group="selectItem" handle=".option-drag">
           <div v-for="(item, index) in activeData.columns[activeData.selectedCol - 1].type.__slot__.options" :key="index" class="select-item">
             <div class="select-line-icon option-drag">
-              <i class="el-icon-s-operation" />
+              <a-icon type="unordered-list" style="font-size: 18px" />
             </div>
-            <el-input v-model="item.label" placeholder="选项名" size="small" />
+            <a-input v-model="item.label" placeholder="选项名" />
             <div class="close-btn select-line-icon">
-              <i class="el-icon-remove-outline" @click="delOption(index)" />
+              <a-icon type="delete" style="font-size: 18px" @click="delOption(index)" />
             </div>
           </div>
         </draggable>
-        <div style="margin-left: 20px">
-          <el-button style="padding-bottom: 0" icon="el-icon-circle-plus-outline" type="text" @click="addOption"> 添加选项 </el-button>
+        <div style="margin-top: 8px">
+          <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addOption"> 添加选项 </a-button>
           <a style="margin-left: 96px">设置选项来源</a>
         </div>
       </template>
@@ -137,6 +172,7 @@ export default {
     }
   },
   methods: {
+    changeMultiple(val) {},
     addCol() {
       this.activeData.selectedCol = -1
       let key = this.activeData.columns[this.activeData.columns.length - 1].key + 1
@@ -195,13 +231,12 @@ export default {
     },
 
     changeTimeFormat(val, column) {
-      column['value-format'] = val
-      if (val === 'yyyy-MM') {
-        this.$set(column, 'dateType', 'month')
-      } else if (val === 'yyyyMM') {
-        this.$set(column, 'dateType', 'month')
+      if (val === 'YYYY-MM') {
+        this.$set(column, 'mode', 'month')
+      } else if (val === 'YYYYMM') {
+        this.$set(column, 'mode', 'month')
       } else {
-        this.$set(column, 'dateType', 'year')
+        this.$set(column, 'mode', 'year')
       }
     }
   }

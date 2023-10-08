@@ -109,6 +109,11 @@ export default {
     }
   },
   render(h) {
+    if (this.conf.__config__.tag === 'a-select') {
+      if (this.conf.showSearch) {
+        this.conf.filterOption = (inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
+      }
+    }
     const dataObject = makeDataObject()
     const confClone = deepClone(this.conf)
     const children = this.$slots.default || []

@@ -4,7 +4,7 @@
       <a-select-option v-for="(item, index) in options" :key="index" :value="item.value">{{ item.label }}</a-select-option>
     </a-select>
     <a-select style="width: 15%; margin-right: 8px" v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag">
-      <a-select-option v-for="(item, index) in calFlagList" :key="index" :value="item.value">item.label</a-select-option>
+      <a-select-option v-for="(item, index) in calFlagList" :key="index" :value="item.value">{{ item.label }}</a-select-option>
     </a-select>
     <a-input-number :disabled="calFlagList.length == 0" v-if="inputType == 1" v-model="termVal" @change="changeTermVal" style="width: 55%" />
     <dc-date :disabled="calFlagList.length == 0" v-else-if="inputType == 2" v-model="termVal" @change="changeTermVal" style="width: 55%" />
@@ -73,7 +73,7 @@ export default {
       }
       let component = this.drawingList.filter(item => item.__config__.formId == val)[0]
       if (
-        component.__config__.tag == 'el-input' ||
+        component.__config__.tag == 'a-input' ||
         component.__config__.tag == 'formLink' ||
         component.__config__.tag == 'formMail' ||
         component.__config__.tag == 'formAddress' ||
@@ -84,8 +84,8 @@ export default {
           { label: '不等于', value: '!=' }
         ]
         this.inputType = 0
-      } else if (component.__config__.tag == 'el-input-number' || component.__config__.tag == 'el-date-picker') {
-        this.inputType = component.__config__.tag == 'el-input-number' ? 1 : 2
+      } else if (component.__config__.tag == 'a-input-number' || component.__config__.tag == 'a-date-picker') {
+        this.inputType = component.__config__.tag == 'a-input-number' ? 1 : 2
         this.calFlagList = [
           { label: '等于', value: '==' },
           { label: '不等于', value: '!=' },

@@ -141,7 +141,7 @@ export const select = {
 export const date = {
   __config__: {
     label: '日期选择',
-    tag: 'el-date-picker',
+    tag: 'dc-date',
     changeTag: true,
     tagIcon: '日期选择',
     showLabel: true,
@@ -152,9 +152,8 @@ export const date = {
   },
   placeholder: '请选择',
   style: { width: '100%' },
-  type: 'month',
-  format: 'yyyy-MM',
-  'value-format': 'yyyy-MM',
+  mode: 'month',
+  format: 'YYYY-MM',
   comment: ''
 }
 

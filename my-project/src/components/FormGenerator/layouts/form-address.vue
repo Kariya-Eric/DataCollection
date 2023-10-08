@@ -1,85 +1,104 @@
 <template>
   <div>
-    <a-cascader placeholder="请选择地址" filterable style="width: 100%" v-model="selectOption" @change="changeOption" :props="cascaderProps" />
-    <a-textarea :rows="3" placeholder="请输入详细地址" v-model="textarea" @change="changeVal" />
+    <template v-if="type === '省（直辖市、自治区）/市/区-详细地址'">
+      <a-input-group>
+        <area-cascader v-model="address" :data="pcaa" :placeholder="placeholder" :level="level" type="text" @change="changeAreaCascader" />
+        <a-textarea style="margin-top: 8px" v-model="extraAddress" :placeholder="placeholder" @change="changeExtra" />
+      </a-input-group>
+    </template>
+    <template v-else>
+      <area-cascader v-model="address" :data="pcaa" :placeholder="placeholder" :level="level" type="text" @change="changeAreaCascader" />
+    </template>
   </div>
 </template>
 
 <script>
-import { cityList } from '@/api/common'
+import 'vue-area-linkage/dist/index.css'
+import { pcaa } from 'area-data'
 
 export default {
   name: 'FormAddress',
-  props: ['value'],
+  props: ['value', 'placeholder', 'type'],
+  data() {
+    return {
+      pcaa,
+      address: [],
+      fullAddress: '',
+      level: 0,
+      extraAddress: ''
+    }
+  },
   watch: {
-    value: {
-      handler(val) {
-        if (!val) {
-          this.selectOption = []
-          this.textarea = ''
+    type: {
+      handler(newval) {
+        this.address = []
+        this.fullAddress = ''
+        this.extraAddress = ''
+        if (newval === '国/省（直辖市、自治区）/市') {
+          this.level = 0
+        } else if (newval === '省（直辖市、自治区）/市/区') {
+          this.level = 1
         } else {
-          let arr = val.split('/')
-          this.textarea = arr[arr.length - 1]
-          arr.pop()
-          this.selectOption = arr
+          this.level = 1
+        }
+        this.$emit('input', this.fullAddress)
+      },
+      immediate: true
+    },
+    value: {
+      handler(newval) {
+        if (newval) {
+          if (this.type === '国/省（直辖市、自治区）/市') {
+            this.address = newval.split('/')
+            this.extraAddress = ''
+          } else if (this.type === '省（直辖市、自治区）/市/区') {
+            this.address = newval.split('/')
+            this.extraAddress = ''
+          } else {
+            let arr = newval.split('/')
+            this.extraAddress = arr[arr.length - 1]
+            arr.pop()
+            this.address = arr
+          }
+        } else {
+          this.address = []
+          this.fullAddress = ''
+          this.extraAddress = ''
         }
       },
       immediate: true
     }
   },
-  data() {
-    return {
-      textarea: '',
-      selectOption: [],
-      cascaderProps: {
-        lazy: true,
-        lazyLoad(node, resolve) {
-          const { level } = node
-          if (level === 0) {
-            //获取省份
-            cityList('100000').then(res => {
-              let arr = res.value.map(item => ({
-                value: item.id,
-                label: item.simpleName
-              }))
-              resolve(arr)
-            })
-          } else {
-            const { value } = node
-            cityList(value).then(res => {
-              let arr = res.value.map(item => ({
-                value: item.id,
-                label: item.simpleName
-              }))
-              resolve(arr)
-            })
-          }
-        }
-      }
-    }
-  },
-
   methods: {
-    changeOption(val) {
-      this.selectOption = val
-      let address = ''
-      this.selectOption.forEach(opt => (address += opt + '/'))
-      address += this.textarea
-      this.$emit('input', address)
+    changeAreaCascader(val) {
+      console.log(val)
     },
-    changeVal(e) {
-      this.textarea = e.target.value
-      let address = ''
-      this.selectOption.forEach(opt => (address += opt + '/'))
-      address += this.textarea
-      this.$emit('input', address)
-    }
+    changeExtra(e) {}
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.el-textarea {
-  margin-top: 8px;
+<style lang="less">
+.area-select {
+  width: 100% !important;
+  vertical-align: middle;
+}
+.area-select .area-selected-trigger {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  left: 0;
+  max-width: 100%;
+  height: 32px;
+  margin-top: -15px;
+  overflow: hidden;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 16px;
+  white-space: nowrap;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+.cascader-menu-list .cascader-menu-option.selected {
+  color: #2f68bd;
 }
 </style>
