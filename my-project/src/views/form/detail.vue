@@ -10,19 +10,19 @@
           <a-row :gutter="24">
             <a-col :md="4" :sm="12">
               <a-form-item label="表单大类">
-                <a-select v-model="queryParam.formCategories" placeholder="请选择表单大类">
+                <a-select v-model="queryParam.formCategories" placeholder="请选择表单大类" allowClear>
                   <a-select-option v-for="item in listCategories" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="4" :sm="12">
               <a-form-item label="前置表单">
-                <a-select v-model="queryParam.type" placeholder="请选择前置表单"> </a-select>
+                <a-select v-model="queryParam.type" placeholder="请选择前置表单" allowClear> </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="4" :sm="12">
               <a-form-item label="表单名称">
-                <a-select v-model="queryParam.name" placeholder="请输入表单名称"> </a-select>
+                <a-input v-model="queryParam.name" placeholder="请输入表单名称" allowClear> </a-input>
               </a-form-item>
             </a-col>
             <a-col :md="3" :sm="12">
@@ -39,7 +39,7 @@
         <span>合集详情</span>
         <div class="table-operator-button">
           <a-button type="primary">配置表单大类</a-button>
-          <a-button type="primary">复制表单</a-button>
+          <a-button type="primary" @click="copyForm">复制表单</a-button>
           <a-button type="primary" @click="handleAdd('新建表单')">新建表单</a-button>
         </div>
       </div>
@@ -58,6 +58,9 @@
           <template slot="required" slot-scope="text, record">
             {{ record.required ? `是` : `否` }}
           </template>
+          <template slot="type" slot-scope="text, record">
+            {{ record.type }}
+          </template>
           <template slot="enabled" slot-scope="text, record">
             <dc-switch v-model="record.enabledFlag" @change="val => enableForm(val, record.id)" />
           </template>
@@ -68,7 +71,7 @@
             <a-divider type="vertical" />
             <a>下载模板</a>
             <a-divider type="vertical" />
-            <a-popconfirm title="表单删除后不可恢复，是否确认删除？">
+            <a-popconfirm title="表单删除后不可恢复，是否确认删除？" @confirm="handleDelete(record.id)">
               <a><span style="color: #e23322">删除表单</span></a>
             </a-popconfirm>
           </template>
@@ -77,6 +80,7 @@
     </a-card>
     <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
     <form-generator-modal ref="formGeneratorModal" :categories="listCategories" />
+    <form-copy-modal ref="formCopyModal" :formId="collectionDetail.id" @ok="refreshData" />
   </div>
 </template>
 
@@ -86,9 +90,10 @@ import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { listFormCategories, enableForm } from '@/api/form'
 import FormModal from './components/form/form-modal.vue'
 import FormGeneratorModal from './components/formDesign/form-generator-modal.vue'
+import FormCopyModal from './components/form/form-copy-modal.vue'
 export default {
   name: 'FormDetail',
-  components: { FormModal, FormGeneratorModal },
+  components: { FormModal, FormGeneratorModal, FormCopyModal },
   mixins: [DataCollectionListMixin],
   data() {
     return {
@@ -102,6 +107,7 @@ export default {
         { dataIndex: 'name', title: '表单名称', align: 'center', scopedSlots: { customRender: 'name' } },
         { dataIndex: 'formCategoriesName', title: '表单大类', align: 'center' },
         { dataIndex: 'collectTimeType', title: '统计时间类型', align: 'center' },
+        { title: '表单类型', align: 'center', scopedSlots: { customRender: 'type' } },
         { title: '是否必填', align: 'center', scopedSlots: { customRender: 'required' } },
         { dataIndex: 'a', title: '前置表单', align: 'center' },
         { title: '启用', align: 'center', scopedSlots: { customRender: 'enabled' } },
@@ -124,6 +130,10 @@ export default {
   },
 
   methods: {
+    copyForm() {
+      this.$refs.formCopyModal.show()
+    },
+
     refreshData(args) {
       this.url.list = listUrl + this.collectionDetail.id
       this.loadData(args)

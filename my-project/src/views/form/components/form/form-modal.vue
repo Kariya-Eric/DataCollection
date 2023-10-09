@@ -11,16 +11,16 @@
         <a-form-model-item label="年份">
           <a-input v-model="model.year" :disabled="true" />
         </a-form-model-item>
-        <a-form-model-item label="表单名称">
-          <a-input v-model="model.formName" :disabled="true" />
+        <a-form-model-item label="表单名称" prop="formName">
+          <a-input v-model="model.formName" allowClear />
         </a-form-model-item>
         <a-form-model-item label="表单大类">
-          <a-select v-model="model.formCategories">
+          <a-select v-model="model.formCategories" allowClear>
             <a-select-option v-for="cate in categories" :key="cate.id" :value="cate.id">{{ cate.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="统计时间类型" prop="collectTimeType">
-          <a-select v-model="model.collectTimeType" placeholer="请输入统计时间类型">
+          <a-select v-model="model.collectTimeType" placeholer="请输入统计时间类型" allowClear>
             <a-select-option value="时点">时点</a-select-option>
             <a-select-option value="学年">学年</a-select-option>
             <a-select-option value="自然年">自然年</a-select-option>
@@ -33,7 +33,7 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="排序" prop="sort">
-          <a-input-number v-model="model.sort" placeholder="请输入排序" style="width: 35%" />
+          <a-input-number v-model="model.sort" placeholder="请输入排序" style="width: 35%" :min="0" />
         </a-form-model-item>
         <a-form-model-item label="是否必填">
           <a-switch v-model="model.required" />
@@ -45,13 +45,19 @@
 
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
+import { addForm, updateForm } from '@/api/form'
 export default {
   name: 'FormModal',
   mixins: [DataCollectionModalMixin],
   props: ['collection', 'categories'],
   data() {
     return {
+      layout: {
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 }
+      },
       rules: {
+        formName: [{ required: true, message: '请输入表单名称' }],
         formType: [{ required: true, message: '请选择表单类型' }],
         sort: [{ required: true, message: '请输入排序' }],
         collectTimeType: [{ required: true, message: '请选择统计时间类型', trigger: 'change' }]
@@ -110,7 +116,7 @@ export default {
         this.model = Object.assign({}, collection, form)
       } else {
         let form = { ...collection, formCollectionId: this.collection.id }
-        this.model = Object.assign(form, record)
+        this.model = Object.assign(form, record, { id: undefined })
       }
       this.visible = true
     }

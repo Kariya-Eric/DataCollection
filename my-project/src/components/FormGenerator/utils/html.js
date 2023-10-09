@@ -144,11 +144,11 @@ const layouts = {
 const tags = {
   'a-input': el => {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
-    return `<${tag} ${vModel} ${type} ${placeholder} ${width}></${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${width}></${tag}>`
   },
   'a-textarea': el => {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
-    return `<${tag} ${vModel}  ${placeholder} ${width}></${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${width}></${tag}>`
   },
   'a-input-number': el => {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
@@ -161,9 +161,10 @@ const tags = {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
     const showSearch = el.showSearch ? 'showSearch' : ''
     const multiple = `mode="${el.mode}"`
+    const filterOption = `:filterOption="(inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0"`
     let child = buildElSelectChild(el)
     if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${placeholder} ${multiple} ${showSearch} ${width}>${child}</${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${multiple} ${showSearch} ${filterOption} ${width}>${child}</${tag}>`
   },
   'a-radio-group': el => {
     const { tag, vModel } = attrBuilder(el)
