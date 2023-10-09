@@ -66,7 +66,7 @@
         <a-form-model-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
           <a-select v-model="activeData.type">
             <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
-            <a-select-option value="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
+            <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
             <a-select-option value="省（直辖市、自治区）/市/区">省（直辖市、自治区）/市/区</a-select-option>
           </a-select>
         </a-form-model-item>

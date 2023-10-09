@@ -7,18 +7,18 @@
           <span>{{ info.name }}（{{ info.collectTimeType }}）</span>
         </a-col>
         <a-col class="center">
-          <a-tabs>
-            <a-tab-pane key="1">
+          <a-tabs v-model="activeTab">
+            <a-tab-pane :key="0">
               <span slot="tab" style="font-size: 20px"> 表单设计 </span>
             </a-tab-pane>
-            <a-tab-pane key="2">
+            <a-tab-pane :key="1">
               <span slot="tab" style="font-size: 20px"> 校验规则 </span>
             </a-tab-pane>
           </a-tabs>
         </a-col>
         <a-col class="right">
           <a-button type="danger"> 清空</a-button>
-          <a-button type="primary">预览</a-button>
+          <a-button type="primary" @click="view">预览</a-button>
           <a-button type="primary">保存</a-button>
           <a-button @click="handleCancel">返回</a-button>
         </a-col>
@@ -26,17 +26,20 @@
     </template>
 
     <div v-show="activeTab === 0">
-      <form-generator :formInfo="info" :drawingList="drawingList" :form-config="formConfig" ref="formGenerator" />
+      <form-generator :formInfo="info" :drawingList="drawingList" :form-config="formConfig" ref="formGenerator" @view="showView" @save="saveForm" />
     </div>
 
     <div class="container" v-if="activeTab === 1">123</div>
+    <form-view-drawer ref="formViewDrawer" />
   </dc-modal>
 </template>
 
 <script>
+import FormViewDrawer from './form-view-drawer.vue'
 export default {
   name: 'FormGeneratorModal',
   props: ['categories'],
+  components: { FormViewDrawer },
   data() {
     return {
       info: {},
@@ -69,7 +72,21 @@ export default {
         this.drawingList = []
       }
       this.visible = true
-    }
+    },
+
+    view() {
+      this.$refs.formGenerator.view()
+    },
+
+    save() {
+      this.$refs.formGenerator.save()
+    },
+
+    showView(formData) {
+      this.$refs.formViewDrawer.show(formData)
+    },
+
+    saveForm(formData) {}
   }
 }
 </script>

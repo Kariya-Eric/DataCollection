@@ -28,9 +28,17 @@
     </template>
     <template v-if="column.type.__config__.label === '地址'">
       <!-- <form-address :style="column.type.style" :placeholder="`请输入${placeholder}`" /> -->
+      <form-address :style="column.type.style" :placeholder="`请输入${placeholder}`" :type="column.type.type" />
     </template>
     <template v-if="column.type.__config__.label === '下拉选择'">
-      <a-select :style="column.type.style" :placeholder="`请选择${placeholder}`" :multiple="column.type.multiple" :filterable="column.type.filterable" v-model="selectVal">
+      <a-select
+        :style="column.type.style"
+        :placeholder="`请选择${placeholder}`"
+        :mode="column.type.mode"
+        :showSearch="column.type.showSearch"
+        v-model="selectVal"
+        :filterOption="(inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0"
+      >
         <a-select-option v-for="(item, index) in column.type.__slot__.options" :key="index" :value="item.value">{{ item.label }}</a-select-option>
       </a-select>
     </template>
@@ -51,7 +59,7 @@ export default {
       inputTextVal: '',
       inputNumberVal: undefined,
       dateVal: undefined,
-      selectVal: this.column.type.multiple ? [] : ''
+      selectVal: this.column.type.mode === 'multiple' ? [] : undefined
     }
   }
 }

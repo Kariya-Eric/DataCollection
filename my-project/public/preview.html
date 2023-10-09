@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      body {
+        margin: 0;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        padding-right: 12px;
+        height: 100%;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+      }
+
+      input,
+      textarea {
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+      }
+      /* 滚动条优化 start */
+      /* 定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸 */
+      ::-webkit-scrollbar {
+        /* width: 10px;
+      height: 10px;
+      background-color: #ebebe0; */
+        width: 6px;
+        height: 6px;
+        background-color: transparent;
+      }
+      /* 定义滚动条轨道 内阴影+圆角 */
+      ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(139, 136, 136, 0.3) !important;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+      }
+      /*定义滑块  内阴影+圆角*/
+      .input-table .thead::-webkit-scrollbar-thumb,
+      .input-table .thead .tr::-webkit-scrollbar-thumb,
+      .input-table .scroll-view::-webkit-scrollbar-thumb,
+      ::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        box-shadow: inset 0 0 6px rgba(151, 146, 146, 0.3);
+        background-color: #e3e3e6 !important;
+      }
+      .input-table .thead::-webkit-scrollbar-thumb:hover,
+      .input-table .thead .tr::-webkit-scrollbar-thumb:hover,
+      .input-table .scroll-view::-webkit-scrollbar-thumb:hover,
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #e3e3e6;
+      }
+      /* 滚动条优化 end */
+    </style>
+  </head>
+
+  <body>
+    <noscript>
+      <strong>抱歉，javascript被禁用，请开启后重试。</strong>
+    </noscript>
+    <div id="previewApp"></div>
+  </body>
+</html>

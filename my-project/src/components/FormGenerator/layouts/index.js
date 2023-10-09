@@ -6,6 +6,7 @@ import FloatTable from './float-table'
 import FixedTable from './fixed-table'
 import FormTextarea from './form-textarea'
 import FormAddress from './form-address'
+import FormView from './form-view'
 
 export default {
   install(Vue) {
@@ -17,5 +18,6 @@ export default {
     Vue.component('fixedTable', FixedTable)
     Vue.component('formTextarea', FormTextarea)
     Vue.component('formAddress', FormAddress)
+    Vue.component('formView', FormView)
   }
 }

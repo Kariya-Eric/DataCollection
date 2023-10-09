@@ -1,18 +1,43 @@
 <template>
-  <div class="item">
-    <a-select v-model="term" style="width: 20%; margin-right: 8px" @change="changeTerm">
-      <a-select-option v-for="(item, index) in options" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-    </a-select>
-    <a-select style="width: 15%; margin-right: 8px" v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag">
-      <a-select-option v-for="(item, index) in calFlagList" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-    </a-select>
-    <a-input-number :disabled="calFlagList.length == 0" v-if="inputType == 1" v-model="termVal" @change="changeTermVal" style="width: 55%" />
-    <dc-date :disabled="calFlagList.length == 0" v-else-if="inputType == 2" v-model="termVal" @change="changeTermVal" style="width: 55%" />
-    <a-select :disabled="calFlagList.length == 0" v-else-if="inputType == 3" multiple v-model="termVals" @change="changeTermVal" style="width: 55%">
-      <a-select-option v-for="(item, index) in termOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-    </a-select>
-    <a-input v-else v-model="termVal" style="width: 55%" @change="changeInputTermVal" :disabled="calFlagList.length == 0" />
-  </div>
+  <a-input-group id="logic-item">
+    <a-row>
+      <a-col :span="5">
+        <a-select v-model="term" @change="changeTerm" style="width: 100%" :getPopupContainer="target => target.parentNode">
+          <a-select-option v-for="(item, index) in options" :key="index" :value="item.value">{{ item.label }}</a-select-option>
+        </a-select>
+      </a-col>
+      <a-col :xs="{ span: 7, offset: 1 }">
+        <a-select v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag" style="width: 100%" :getPopupContainer="target => target.parentNode">
+          <a-select-option v-for="(item, index) in calFlagList" :key="index" :value="item.value">{{ item.label }}</a-select-option>
+        </a-select>
+      </a-col>
+      <a-col :xs="{ span: 10, offset: 1 }">
+        <a-input-number :disabled="calFlagList.length == 0" v-if="inputType == 1" v-model="termVal" @change="changeTermVal" style="width: 100%" />
+        <dc-date
+          :disabled="calFlagList.length == 0"
+          v-else-if="inputType == 2"
+          v-model="termVal"
+          @change="changeTermVal"
+          :getCalendarContainer="target => target.parentNode"
+          style="width: 100%"
+          mode="date"
+          format="YYYY-MM-DD"
+        />
+        <a-select
+          :disabled="calFlagList.length == 0"
+          v-else-if="inputType == 3"
+          multiple
+          v-model="termVals"
+          @change="changeTermVal"
+          style="width: 100%"
+          :getPopupContainer="target => target.parentNode"
+        >
+          <a-select-option v-for="(item, index) in termOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
+        </a-select>
+        <a-input v-else v-model="termVal" style="width: 100%" @change="changeInputTermVal" :disabled="calFlagList.length == 0" />
+      </a-col>
+    </a-row>
+  </a-input-group>
 </template>
 
 <script>
@@ -84,7 +109,7 @@ export default {
           { label: '不等于', value: '!=' }
         ]
         this.inputType = 0
-      } else if (component.__config__.tag == 'a-input-number' || component.__config__.tag == 'a-date-picker') {
+      } else if (component.__config__.tag == 'a-input-number' || component.__config__.tag == 'dc-date') {
         this.inputType = component.__config__.tag == 'a-input-number' ? 1 : 2
         this.calFlagList = [
           { label: '等于', value: '==' },

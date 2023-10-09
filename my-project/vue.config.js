@@ -65,7 +65,22 @@ const vueConfig = {
   devServer: {
     port: 3000
   },
-
+  publicPath: '/',
+  pages: {
+    index: {
+      entry: 'src/main.js',
+      template: 'public/index.html',
+      filename: 'index.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'index']
+    },
+    preview: {
+      entry: 'src/preview.js',
+      template: 'public/preview.html',
+      filename: 'preview.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'preview']
+    }
+  },
+  runtimeCompiler: true,
   // disable source map in production
   productionSourceMap: false,
   lintOnSave: false,

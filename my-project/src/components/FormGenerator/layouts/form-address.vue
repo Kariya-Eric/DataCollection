@@ -1,13 +1,16 @@
 <template>
   <div>
-    <template v-if="type === '省（直辖市、自治区）/市/区-详细地址'">
+    <template v-if="typeNum === 2">
       <a-input-group>
-        <area-cascader v-model="address" :data="pcaa" :placeholder="placeholder" :level="level" type="text" @change="changeAreaCascader" />
+        <area-cascader v-model="address2" :data="pcaa" :placeholder="placeholder" :level="1" type="text" @change="changeAreaCascader2" v-if="mounted" />
         <a-textarea style="margin-top: 8px" v-model="extraAddress" :placeholder="placeholder" @change="changeExtra" />
       </a-input-group>
     </template>
-    <template v-else>
-      <area-cascader v-model="address" :data="pcaa" :placeholder="placeholder" :level="level" type="text" @change="changeAreaCascader" />
+    <template v-if="typeNum === 1">
+      <area-cascader v-model="address1" :data="pcaa" :placeholder="placeholder" :level="1" type="text" @change="changeAreaCascader1" v-if="mounted" />
+    </template>
+    <template v-if="typeNum === 0">
+      <area-cascader v-model="address0" :data="pcaa" :placeholder="placeholder" :level="0" type="text" @change="changeAreaCascader0" v-if="mounted" />
     </template>
   </div>
 </template>
@@ -22,47 +25,59 @@ export default {
   data() {
     return {
       pcaa,
-      address: [],
-      fullAddress: '',
-      level: 0,
-      extraAddress: ''
+      address0: [],
+      address1: [],
+      address2: [],
+      extraAddress: '',
+      refresh: true,
+      mounted: false
+    }
+  },
+  computed: {
+    typeNum() {
+      if (this.type === '国/省（直辖市、自治区）/市') {
+        return 0
+      } else if (this.type === '省（直辖市、自治区）/市/区') {
+        return 1
+      } else {
+        return 2
+      }
     }
   },
   watch: {
     type: {
-      handler(newval) {
-        this.address = []
-        this.fullAddress = ''
+      handler() {
+        this.mounted = false
+        this.address0 = []
+        this.address1 = []
+        this.address2 = []
         this.extraAddress = ''
-        if (newval === '国/省（直辖市、自治区）/市') {
-          this.level = 0
-        } else if (newval === '省（直辖市、自治区）/市/区') {
-          this.level = 1
-        } else {
-          this.level = 1
-        }
-        this.$emit('input', this.fullAddress)
+        this.$nextTick(() => (this.mounted = true))
       },
       immediate: true
     },
     value: {
       handler(newval) {
         if (newval) {
-          if (this.type === '国/省（直辖市、自治区）/市') {
-            this.address = newval.split('/')
-            this.extraAddress = ''
-          } else if (this.type === '省（直辖市、自治区）/市/区') {
-            this.address = newval.split('/')
-            this.extraAddress = ''
+          if (this.typeNum == 0) {
+            this.address0 = newval.split('/')
+          } else if (this.typeNum == 1) {
+            this.address1 = newval.split('/')
           } else {
             let arr = newval.split('/')
-            this.extraAddress = arr[arr.length - 1]
-            arr.pop()
-            this.address = arr
+            if (arr.length === 4) {
+              this.extraAddress = arr[arr.length - 1]
+              arr.pop()
+              this.address2 = arr
+            } else {
+              this.extraAddress = ''
+              this.address2 = arr
+            }
           }
         } else {
-          this.address = []
-          this.fullAddress = ''
+          this.address0 = []
+          this.address1 = []
+          this.address2 = []
           this.extraAddress = ''
         }
       },
@@ -70,10 +85,32 @@ export default {
     }
   },
   methods: {
-    changeAreaCascader(val) {
-      console.log(val)
+    changeAreaCascader2() {
+      let fullAddress
+      if (this.extraAddress) {
+        fullAddress = this.address2.join('/') + '/' + this.extraAddress
+      } else {
+        fullAddress = this.address2.join('/')
+      }
+      this.$emit('input', fullAddress)
     },
-    changeExtra(e) {}
+
+    changeAreaCascader1() {
+      this.$emit('input', this.address1.join('/'))
+    },
+
+    changeAreaCascader0() {
+      this.$emit('input', this.address0.join('/'))
+    },
+    changeExtra() {
+      let fullAddress
+      if (this.extraAddress) {
+        fullAddress = this.address2.join('/') + '/' + this.extraAddress
+      } else {
+        fullAddress = this.address2.join('/')
+      }
+      this.$emit('input', fullAddress)
+    }
   }
 }
 </script>

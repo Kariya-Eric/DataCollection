@@ -9,27 +9,29 @@
     :maskClosable="false"
     :keyboard="false"
   >
-    <a-form-model ref="logicForm" :model="logicForm" :rules="rules">
-      <a-form-model-item prop="andOr" label="当满足以下" :labelCol="{ span: 4, offset: 0 }">
-        <a-select v-model="logicForm.andOr" class="andOr" style="width: 35%">
-          <a-select-option value="&&">全部</a-select-option>
-          <a-select-option value="||">任意</a-select-option>
-        </a-select>
-        <span style="margin-left: 8px">条件时</span>
-      </a-form-model-item>
-      <a-button icon="plus-circle" type="link" @click="addTerm"> 添加条件 </a-button>
-      <a-form-model-item v-for="(item, index) in logicForm.termList" :key="index" :prop="'termList.' + index" :rules="rules.termList">
-        <div class="termRow">
-          <logic-item :drawing-list="drawingList" v-model="logicForm.termList[index]" />
-          <a-icon v-if="logicForm.termList.length > 1" type="delete" @click="delTerm(index)" />
-        </div>
-      </a-form-model-item>
-      <a-form-model-item label="显示以下字段" prop="showList" :labelCol="{ span: 4, offset: 0 }" :wrapperCol="{ span: 20, offset: 0 }">
-        <a-select v-model="logicForm.showList" multiple>
-          <a-select-option v-for="(item, index) in showOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-        </a-select>
-      </a-form-model-item>
-    </a-form-model>
+    <div class="inner">
+      <a-form-model ref="logicForm" :model="logicForm" :rules="rules">
+        <a-form-model-item prop="andOr" label="当满足以下" :labelCol="{ span: 4, offset: 0 }">
+          <a-select v-model="logicForm.andOr" style="width: 35%">
+            <a-select-option value="&&">全部</a-select-option>
+            <a-select-option value="||">任意</a-select-option>
+          </a-select>
+          <span style="margin-left: 8px">条件时</span>
+        </a-form-model-item>
+        <a-button icon="plus-circle" type="link" @click="addTerm"> 添加条件 </a-button>
+        <a-form-model-item v-for="(item, index) in logicForm.termList" :key="index" :prop="'termList.' + index" :rules="rules.termList">
+          <a-row>
+            <a-col :span="22"><logic-item :drawing-list="drawingList" v-model="logicForm.termList[index]" /> </a-col>
+            <a-col :xs="{ span: 1, offset: 1 }"><a-icon v-if="logicForm.termList.length > 1" type="delete" @click="delTerm(index)" /></a-col>
+          </a-row>
+        </a-form-model-item>
+        <a-form-model-item label="显示以下字段" prop="showList" :labelCol="{ span: 4, offset: 0 }" :wrapperCol="{ span: 20, offset: 0 }">
+          <a-select v-model="logicForm.showList" mode="multiple" :getPopupContainer="target => target.parentNode">
+            <a-select-option v-for="(item, index) in showOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
+          </a-select>
+        </a-form-model-item>
+      </a-form-model>
+    </div>
   </a-modal>
 </template>
 
@@ -89,17 +91,17 @@ export default {
         this.index = index
         this.updateFlag = true
       } else {
+        this.logicForm = {
+          andOr: '',
+          termList: [{ term: '', calFlag: '', termVal: '' }],
+          showList: []
+        }
         this.updateFlag = false
       }
       this.visible = true
     },
 
     close() {
-      this.logicForm = {
-        andOr: '',
-        termList: [{ term: '', calFlag: '', termVal: '' }],
-        showList: []
-      }
       this.$refs.logicForm.clearValidate()
       this.visible = false
     },
@@ -136,16 +138,4 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.andOr {
-  margin-left: 12px;
-  margin-right: 12px;
-}
-.termRow {
-  i {
-    cursor: pointer;
-    float: right;
-    margin: -24px 4px;
-  }
-}
-</style>
+<style lang="less" scoped></style>

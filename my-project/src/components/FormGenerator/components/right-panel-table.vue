@@ -86,7 +86,7 @@
       >
         <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type">
           <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
-          <a-select-option value="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
+          <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
           <a-select-option value="省（直辖市、自治区）/市/区">省（直辖市、自治区）/市/区</a-select-option>
         </a-select>
       </a-form-model-item>
@@ -172,7 +172,9 @@ export default {
     }
   },
   methods: {
-    changeMultiple(val) {},
+    changeMultiple(val) {
+      this.activeData.columns[this.activeData.selectedCol - 1].type.mode = val ? 'multiple' : 'default'
+    },
     addCol() {
       this.activeData.selectedCol = -1
       let key = this.activeData.columns[this.activeData.columns.length - 1].key + 1
