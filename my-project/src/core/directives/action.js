@@ -1,5 +1,15 @@
 import Vue from 'vue'
-import store from '@/store'
+import storage from 'store'
+import { BUTTON_LIST } from '@/store/mutation-types'
+
+function hasStr(arr, str) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] == str) {
+      return true
+    }
+  }
+  return false
+}
 
 /**
  * Action 权限指令
@@ -15,19 +25,15 @@ import store from '@/store'
  *  @see https://github.com/vueComponent/ant-design-vue-pro/pull/53
  */
 const action = Vue.directive('action', {
-  inserted: function (el, binding, vnode) {
-    const actionName = binding.arg
-    const roles = store.getters.roles
-    const elVal = vnode.context.$route.meta.permission
-    const permissionId = Object.prototype.toString.call(elVal) === '[object String]' && [elVal] || elVal
-    roles.permissions.forEach(p => {
-      if (!permissionId.includes(p.permissionId)) {
-        return
-      }
-      if (p.actionList && !p.actionList.includes(actionName)) {
+  inserted: function (el, binding) {
+    let perVal = binding.value
+    const buttonList = storage.get(BUTTON_LIST) || []
+    if (binding.value) {
+      let hasPermision = hasStr(buttonList, perVal)
+      if (!hasPermision) {
         el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
       }
-    })
+    }
   }
 })
 

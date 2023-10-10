@@ -279,7 +279,8 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr)
   confGlobal = null
-  const alert = formConfig.formAlert === '' ? '' : `<a-alert message="填报提示" type="warning" show-icon description="${formConfig.formAlert}" />`
+  const alert =
+    formConfig.formAlert === '' ? '' : `<a-alert message="填报提示" type="warning" show-icon ><template slot="description">{{formConfig.formAlert}}</template></a-alert>`
   const str = `<div>${alert}${temp}</div>`
   return str
 }

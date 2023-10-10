@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-drawer v-if="visible" :visible="visible" width="80%" :body-style="{ padding: '0px' }"  @close="onClose">
+    <a-drawer v-if="visible" :visible="visible" width="80%" @close="onClose">
       <form-view :formConf="formConf" />
     </a-drawer>
   </div>

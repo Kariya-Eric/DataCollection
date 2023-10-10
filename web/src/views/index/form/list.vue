@@ -136,7 +136,7 @@ export default {
       let link = document.createElement('a')
       link.style.display = 'none'
       link.href = file.filePath
-      link.setAttribute('download', file.fileName)
+      link.setAttribute('download', file.name)
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)

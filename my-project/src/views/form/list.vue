@@ -54,6 +54,11 @@
         <template slot="name" slot-scope="text, record">
           <a @click="showCollectionDetail(record)">{{ record.name }}</a>
         </template>
+        <template slot="guidFiles" slot-scope="text, record">
+          <div v-for="(guidFile, index) in JSON.parse(record.guidFiles)" :key="index">
+            <a href="javascript:;" @click="downloadGuid(guidFile)" :title="guidFile.fileName">{{ guidFile.fileName }}</a>
+          </div>
+        </template>
         <template slot="enabledFlag" slot-scope="text, record">
           <dc-switch v-model="record.enabledFlag" @change="val => enableCollection(val, record.id)" />
         </template>
@@ -62,7 +67,7 @@
           <a-divider type="vertical" />
           <a @click="showCollection(record)">合集属性</a>
           <a-divider type="vertical" />
-          <a>指南管理</a>
+          <a @click="handleUpload(record)">指南管理</a>
           <a-divider type="vertical" />
           <a-popconfirm title="合集删除后不可恢复，是否确认删除？" @confirm="handleDelete(record.id)"> <a style="color: #e23322">删除合集</a></a-popconfirm>
         </template>
@@ -70,6 +75,7 @@
     </div>
 
     <collection-modal ref="modalForm" @ok="modalFormOk" />
+    <guild-files-modal ref="guideFilesDialog" @ok="loadData" />
   </a-card>
 </template>
 
@@ -77,8 +83,9 @@
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import CollectionModal from './components/collection/collection-modal.vue'
 import { enableCollection } from '@/api/form'
+import GuildFilesModal from './components/collection/guild-files-modal.vue'
 export default {
-  components: { CollectionModal },
+  components: { CollectionModal, GuildFilesModal },
   mixins: [DataCollectionListMixin],
   data() {
     return {
@@ -109,6 +116,17 @@ export default {
     }
   },
   methods: {
+    downloadGuid(file) {
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = file.filePath
+      link.setAttribute('download', file.name)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(file.filePath)
+    },
+
     showCollection(record) {
       this.handleEdit(record, '合集属性')
       this.$refs.modalForm.disabled = record.enabledFlag == 1
@@ -135,6 +153,10 @@ export default {
         path: '/form/detail',
         query: { collectionInfo: JSON.stringify(record) }
       })
+    },
+
+    handleUpload(record) {
+      this.$refs.guideFilesDialog.show(record)
     }
   }
 }

@@ -7,7 +7,7 @@
             <a-col :span="12">基础信息</a-col>
             <a-col :span="12">
               <div style="float: right">
-                <a-button type="primary" style="margin-right: 12px">编辑</a-button>
+                <a-button type="primary" style="margin-right: 12px" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag">编辑</a-button>
                 <a-button @click="$router.back(-1)">返回</a-button>
               </div>
             </a-col>

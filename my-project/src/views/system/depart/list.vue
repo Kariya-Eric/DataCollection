@@ -11,7 +11,7 @@
             :tree-data="treeData"
             :expanded-keys="expandedKeys"
             :replace-fields="replaceFields"
-            :blockNode="true"
+            blockNode
             :auto-expand-parent="autoExpandParent"
             @expand="onExpand"
             @select="onSelect"

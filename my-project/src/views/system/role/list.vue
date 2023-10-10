@@ -50,20 +50,22 @@
         <template slot="action" slot-scope="text, record">
           <a @click="handleEdit(record, '修改角色')">编辑</a>
           <a-divider type="vertical" />
-          <a>授权</a>
+          <a @click="showPermission(record)">授权</a>
         </template>
       </a-table>
     </div>
     <role-modal ref="modalForm" @ok="loadData" />
+    <permission-drawer ref="permissionDrawer" />
   </a-card>
 </template>
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import RoleModal from './components/role-modal'
+import PermissionDrawer from './components/permission-drawer.vue'
 export default {
   mixins: [DataCollectionListMixin],
-  components: { RoleModal },
+  components: { RoleModal, PermissionDrawer },
   data() {
     return {
       url: {
@@ -82,7 +84,11 @@ export default {
   created() {
     this.loadData(1)
   },
-  methods: {}
+  methods: {
+    showPermission(row) {
+      this.$refs.permissionDrawer.show(row)
+    }
+  }
 }
 </script>
 

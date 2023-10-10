@@ -1,20 +1,22 @@
 <template>
   <a-modal title="复制表单" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%">
-    <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
-      <a-form-model-item label="合集名称" prop="formCollectionId">
-        <a-select v-model="model.formCollectionId" placeholder="请选择合集名称" allowClear>
-          <a-select-option v-for="item in formCollectionList" :key="item.id" :value="item.id">{{ item.name }} </a-select-option>
-        </a-select>
-      </a-form-model-item>
-      <a-form-model-item label="表单名称" prop="formIds">
-        <a-select v-model="model.formIds" mode="multiple" placeholder="请选择表单名称" @change="changeFormIds" allowClear>
-          <a-select-opt-group>
-            <span slot="label" class="checkItem"><a-checkbox v-model="checked" :indeterminate="indeterminate" @change="selectAll">全选</a-checkbox></span>
-            <a-select-option v-for="item in formList" :key="item.id" :value="item.id">{{ item.name }} </a-select-option>
-          </a-select-opt-group>
-        </a-select>
-      </a-form-model-item>
-    </a-form-model>
+    <a-spin :spinning="loading">
+      <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
+        <a-form-model-item label="合集名称" prop="formCollectionId">
+          <a-select v-model="model.formCollectionId" placeholder="请选择合集名称" allowClear>
+            <a-select-option v-for="item in formCollectionList" :key="item.id" :value="item.id">{{ item.name }} </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="表单名称" prop="formIds">
+          <a-select v-model="model.formIds" mode="multiple" placeholder="请选择表单名称" @change="changeFormIds" allowClear>
+            <a-select-opt-group>
+              <span slot="label" class="checkItem"><a-checkbox v-model="checked" :indeterminate="indeterminate" @change="selectAll">全选</a-checkbox></span>
+              <a-select-option v-for="item in formList" :key="item.id" :value="item.id">{{ item.name }} </a-select-option>
+            </a-select-opt-group>
+          </a-select>
+        </a-form-model-item>
+      </a-form-model>
+    </a-spin>
   </a-modal>
 </template>
 

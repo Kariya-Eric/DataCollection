@@ -38,7 +38,7 @@
       <div class="table-operator">
         <span>合集详情</span>
         <div class="table-operator-button">
-          <a-button type="primary">配置表单大类</a-button>
+          <a-button type="primary" @click="updateFormCategory">配置表单大类</a-button>
           <a-button type="primary" @click="copyForm">复制表单</a-button>
           <a-button type="primary" @click="handleAdd('新建表单')">新建表单</a-button>
         </div>
@@ -81,6 +81,7 @@
     <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
     <form-generator-modal ref="formGeneratorModal" :categories="listCategories" />
     <form-copy-modal ref="formCopyModal" :formId="collectionDetail.id" @ok="refreshData" />
+    <form-category-modal ref="formCategoryModal" @ok="refreshData" />
   </div>
 </template>
 
@@ -91,9 +92,10 @@ import { listFormCategories, enableForm } from '@/api/form'
 import FormModal from './components/form/form-modal.vue'
 import FormGeneratorModal from './components/formDesign/form-generator-modal.vue'
 import FormCopyModal from './components/form/form-copy-modal.vue'
+import FormCategoryModal from './components/form/form-category-modal.vue'
 export default {
   name: 'FormDetail',
-  components: { FormModal, FormGeneratorModal, FormCopyModal },
+  components: { FormModal, FormGeneratorModal, FormCopyModal, FormCategoryModal },
   mixins: [DataCollectionListMixin],
   data() {
     return {
@@ -120,7 +122,6 @@ export default {
       handler(newRoute) {
         if (newRoute.name == 'formDetail') {
           this.collectionDetail = JSON.parse(newRoute.query.collectionInfo)
-          this.loadCategories()
           this.refreshData(1)
         }
       },
@@ -130,11 +131,16 @@ export default {
   },
 
   methods: {
+    updateFormCategory() {
+      this.$refs.formCategoryModal.show(this.collectionDetail)
+    },
+
     copyForm() {
       this.$refs.formCopyModal.show()
     },
 
     refreshData(args) {
+      this.loadCategories()
       this.url.list = listUrl + this.collectionDetail.id
       this.loadData(args)
     },

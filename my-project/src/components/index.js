@@ -5,6 +5,8 @@ import FormGenerator from './FormGenerator'
 import Tinymce from './Tinymce'
 import CustomComponents from './FormGenerator/layouts'
 import VueAreaLinkage from 'vue-area-linkage'
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/style.css'
 export default {
   install(Vue) {
     Vue.component('DcSwitch', DcSwitch)
@@ -14,5 +16,6 @@ export default {
     Vue.component('tinymce', Tinymce)
     Vue.use(CustomComponents)
     Vue.use(VueAreaLinkage)
+    Vue.use(VXETable)
   }
 }

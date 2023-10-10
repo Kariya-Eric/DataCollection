@@ -63,7 +63,7 @@
         <template slot="action" slot-scope="text, record">
           <a @click="showTaskInfo(record)">任务概览</a>
           <a-divider type="vertical" />
-          <a>任务详情</a>
+          <a @click="showTaskDetail(record)" v-if="record.enabledFlag !== 0">任务详情</a>
           <a-divider type="vertical" />
           <a-dropdown :trigger="['click']">
             <a>更多<a-icon type="down" /></a>
@@ -74,7 +74,7 @@
               <a-menu-item><a>指南下载</a></a-menu-item>
               <a-menu-item><a>导出数据</a></a-menu-item>
               <a-menu-item>
-                <a-popconfirm title="确认删除任务吗？">
+                <a-popconfirm title="确认删除任务吗？" @confirm="handleDelete(record.id)">
                   <a><span style="color: #e23322">删除任务</span></a>
                 </a-popconfirm>
               </a-menu-item>
@@ -95,7 +95,8 @@ export default {
   data() {
     return {
       url: {
-        list: '/uc/api/task/list'
+        list: '/uc/api/task/list',
+        delete: '/uc/api/task/delete'
       },
       columns: [
         { title: '任务名称', align: 'center', scopedSlots: { customRender: 'name' } },
@@ -143,6 +144,13 @@ export default {
       this.$router.push({
         path: '/task/info',
         query: { taskId: record.id }
+      })
+    },
+
+    showTaskDetail(record) {
+      this.$router.push({
+        path: '/task/detail',
+        query: { taskId: record.id, taskName: record.name }
       })
     }
   }

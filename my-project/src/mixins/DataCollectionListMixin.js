@@ -1,4 +1,4 @@
-import { postAction, deleteAction, downFile, getAction } from '@/api/api'
+import { postAction, deleteAction, downFile } from '@/api/api'
 
 export const DataCollectionListMixin = {
   data() {
@@ -43,6 +43,7 @@ export const DataCollectionListMixin = {
               } else {
                 this.ipagination.total = 0
               }
+              this.customMethod()
             } else {
               this.$message.warning(res.message)
             }
@@ -138,6 +139,8 @@ export const DataCollectionListMixin = {
       this.loadData()
     },
 
+    customMethod() {},
+    
     modalFormOk() {
       this.loadData()
       this.onClearSelected()
