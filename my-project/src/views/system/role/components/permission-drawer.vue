@@ -3,7 +3,7 @@
     <div class="title-operator" slot="title">
       <span>资源授权</span>
       <div class="title-operator-button">
-        <a-button type="primary">保存</a-button>
+        <a-button type="primary" @click="save">保存</a-button>
         <a-button @click="close">返回</a-button>
       </div>
     </div>
@@ -49,7 +49,7 @@
 
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
-import { getAllMenuByRoleCode, getAllMethodByRoleCode } from '@/api/system/role'
+import { getAllMenuByRoleCode, getAllMethodByRoleCode, saveRoleAuth } from '@/api/system/role'
 export default {
   name: 'PermissionDrawer',
   mixins: [DataCollectionModalMixin],
@@ -61,7 +61,10 @@ export default {
       selectedKeys: [],
       menuTree: [],
       roleInfo: {},
-      checkedKeys: [],
+      checkedKeys: {
+        checked: [],
+        halfChecked: []
+      },
       replaceFields: {
         title: 'name',
         key: 'id'
@@ -84,6 +87,46 @@ export default {
       this.visible = true
     },
 
+    save() {
+      let arrMethodAlias = []
+      if (this.selectedKeys.length == 0) {
+        arrMethodAlias = this.sysMethods.filter(item => item.isSelected == '1').map(item => item.id)
+      } else {
+        this.selectedRowKeys.forEach(id => {
+          let sysMethod = this.sysMethodDataSource.find(item => item.id == id)
+          arrMethodAlias.push(sysMethod.alias)
+        })
+      }
+      let arrMenuAlias = []
+      let flatMenu = []
+      this.renderMenu(this.menuTree, flatMenu)
+      this.checkedKeys.checked.forEach(id => {
+        let menu = flatMenu.find(item => item.id == id)
+        arrMenuAlias.push(menu.alias)
+      })
+      let param = { arrMenuAlias, arrMethodAlias, roleCode: this.roleInfo.code }
+      this.loading = true
+      saveRoleAuth(param)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.close()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    renderMenu(menu, flatMenu) {
+      menu.forEach(m => {
+        if (m.children && m.children.length > 0) {
+          this.renderMenu(m.children, flatMenu)
+        }
+        flatMenu.push(m)
+      })
+    },
+
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -91,6 +134,10 @@ export default {
     close() {
       this.$emit('close')
       this.selectedKeys = []
+      this.checkedKeys = {
+        checked: [],
+        halfChecked: []
+      }
       this.visible = false
     },
 
@@ -107,6 +154,7 @@ export default {
           this.loading = false
         })
     },
+
     initSysMethods() {
       this.loading = true
       getAllMethodByRoleCode(this.roleInfo.code)
@@ -120,10 +168,11 @@ export default {
           this.loading = false
         })
     },
+
     initExpandAndCheckedKeys(menu) {
       menu.forEach(ele => {
-        if (ele.checked == '1') {
-          this.checkedKeys.push(ele.id)
+        if (ele.checked != '0') {
+          this.checkedKeys.checked.push(ele.id)
         }
         if (ele.children && ele.children.length > 0) {
           this.expandedKeys.push(ele.id)
@@ -136,11 +185,30 @@ export default {
       this.expandedKeys = expandedKeys
       this.autoExpandParent = false
     },
+
     onCheck(checkedKeys) {
       this.checkedKeys = checkedKeys
     },
-    onSelect(selectedKeys) {
+
+    onSelect(selectedKeys, { selected, selectedNodes, node, event }) {
+      this.selectedRowKeys = []
       this.selectedKeys = selectedKeys
+      if (selected) {
+        const menu = selectedNodes.map(item => item.data.props.dataRef)
+        let aliasList = []
+        this.flatAlias(menu, aliasList)
+        this.sysMethodDataSource = this.sysMethods.filter(sysMethod => aliasList.includes(sysMethod.menuAlias))
+        this.selectedRowKeys = this.sysMethodDataSource.filter(item => item.isSelected == '1').map(item => item.id)
+      }
+    },
+
+    flatAlias(menu, aliasList) {
+      menu.forEach(m => {
+        if (m.children && m.children.length > 0) {
+          this.flatAlias(m.children, aliasList)
+        }
+        aliasList.push(m.alias)
+      })
     }
   }
 }

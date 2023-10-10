@@ -1,13 +1,14 @@
 import storage from 'store'
 import expirePlugin from 'store/plugins/expire'
 import { login, logout } from '@/api/login'
+import { getUserDetail } from '@/api/system/user'
 import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST } from '@/store/mutation-types'
 
 storage.addPlugin(expirePlugin)
 const user = {
   state: {
     token: '',
-    userInfo: {},
+    userInfo: {}
   },
 
   mutations: {
@@ -16,7 +17,7 @@ const user = {
     },
     SET_USERINFO: (state, userInfo) => {
       state.userInfo = userInfo
-    },
+    }
   },
 
   actions: {
@@ -24,7 +25,7 @@ const user = {
     Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo)
-          .then((response) => {
+          .then(response => {
             const data = response.data
             storage.set(ACCESS_TOKEN, data.token)
             storage.set(USER_INFO, data)
@@ -32,7 +33,7 @@ const user = {
             commit('SET_USERINFO', data)
             resolve()
           })
-          .catch((error) => {
+          .catch(error => {
             reject(error)
           })
       })
@@ -40,7 +41,7 @@ const user = {
 
     // 登出
     Logout({ commit, state }) {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         logout(state.token)
           .then(() => {
             commit('SET_TOKEN', '')
@@ -50,14 +51,14 @@ const user = {
             storage.remove(BUTTON_LIST)
             resolve()
           })
-          .catch((err) => {
+          .catch(err => {
             console.log('logout fail:', err)
             // resolve()
           })
           .finally(() => {})
       })
-    },
-  },
+    }
+  }
 }
 
 export default user

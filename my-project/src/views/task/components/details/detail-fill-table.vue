@@ -13,12 +13,19 @@
     >
       <template slot="expandIcon" slot-scope="props">
         <span style="margin-left: 12px; margin-right: 12px; font-size: 10px">
-          <a-icon type="up" v-if="props.expanded" @click="() => props.onExpand()" />
-          <a-icon type="down" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
+          <a-icon type="down" v-if="props.expanded" @click="() => props.onExpand()" />
+          <a-icon type="right" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
         </span>
       </template>
       <template slot="name" slot-scope="text, record">
         <span>{{ record.name }}</span>
+      </template>
+      <template slot="action" slot-scope="record">
+        <a>填报</a>
+        <a-divider type="vertical" />
+        <a>撤回</a>
+        <a-divider type="vertical" v-if="record.type === '总表'" />
+        <a v-if="record.type === '总表'">查看</a>
       </template>
     </a-table>
   </div>
@@ -68,7 +75,7 @@ export default {
     setExpandedKeys(dataSource) {
       dataSource.forEach(ele => {
         if (ele.children && ele.children.length > 0) {
-          this.expandedKeys.push(ele.id + ele.type)
+          this.expandedKeys.push(ele.id)
           this.setExpandedKeys(ele.children)
         }
       })

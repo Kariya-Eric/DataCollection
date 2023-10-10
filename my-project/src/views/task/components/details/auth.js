@@ -25,11 +25,11 @@ export function judgeAudit(row, currentUser) {
 // 判断查看按钮权限
 export function judgeShow(row, currentUser) {
   if (row.responsibleUserName == currentUser.username && row.fillUserName != currentUser.username) {
-    return row.status != 1 && row.status != -1
+    return row.status != 1 && row.status != -1 && row.type == '子表'
   } else if (row.responsibleUserName != currentUser.username && row.fillUserName == currentUser.username) {
-    return row.status != 0 && row.status != 3 && row.status != -1
+    return row.status != 0 && row.status != 3 && row.status != -1 && row.type == '子表'
   } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
-    return row.status != -1
+    return row.status != -1 && row.type == '子表'
   }
   return true
 }
@@ -45,7 +45,7 @@ export function judgeRedo(row, currentUser) {
 // 判断催办按钮权限
 export function judgeRemind(row, currentUser) {
   if (row.responsibleUserName == currentUser.username) {
-    return row.status == 0 || row.status == 3
+    return row.status == 0 || (row.status == 3 && row.type == '子表')
   }
   return false
 }
@@ -58,7 +58,7 @@ export function judgeProgress(row, currentUser) {
 // 判断配置人员按钮进度
 export function judgeConfig(row, currentUser) {
   if (row.responsibleUserName == currentUser.username || row.fillUserName == currentUser.username) {
-    return row.status == -1
+    return row.status == -1 && row.type == '子表'
   }
   return false
 }

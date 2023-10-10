@@ -13,12 +13,21 @@
     >
       <template slot="expandIcon" slot-scope="props">
         <span style="margin-left: 12px; margin-right: 12px; font-size: 10px">
-          <a-icon type="up" v-if="props.expanded" @click="() => props.onExpand()" />
-          <a-icon type="down" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
+          <a-icon type="down" v-if="props.expanded" @click="() => props.onExpand()" />
+          <a-icon type="right" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
         </span>
       </template>
       <template slot="name" slot-scope="text, record">
         <span>{{ record.name }}</span>
+      </template>
+      <template slot="action" slot-scope="record">
+        <a>审核</a>
+        <a-divider type="vertical" />
+        <a>查看</a>
+        <a-divider type="vertical" />
+        <a>催办</a>
+        <a-divider type="vertical" v-if="record.type === '总表'" />
+        <a v-if="record.type === '总表'">填报进度</a>
       </template>
     </a-table>
   </div>
