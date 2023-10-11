@@ -52,7 +52,7 @@ const err = error => {
         })
         break
     }
-  } else if (error.message) {
+  } else {
     Notification.error({
       title: '系统提示',
       message: error.message,

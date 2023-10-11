@@ -20,26 +20,29 @@
       <template slot="name" slot-scope="text, record">
         <span>{{ record.name }}</span>
       </template>
+      <template slot="status" slot-scope="text, record">
+        {{ caculateStatus(record.status).name }}
+      </template>
       <template slot="action" slot-scope="record">
-        <a-popconfirm
-          title="如何操作该表？"
-          v-if="judgeAudit(record, currentUser)"
-          @confirm="authForm(record.id, 2)"
-          okText="通过"
-          cancelText="驳回"
-          @cancel="authForm(record.id, 3)"
-        >
-          <a>审核</a>
-        </a-popconfirm>
-        <a-divider type="vertical" v-if="judgeAudit(record, currentUser) && judgeShow(record, currentUser)" />
-        <a v-if="judgeShow(record, currentUser)">查看</a>
-        <a-divider type="vertical" v-if="judgeRemind(record, currentUser) && judgeShow(record, currentUser)" />
-        <a v-if="judgeRemind(record, currentUser)" @click="pushNotice(record)">催办</a>
-        <a-divider type="vertical" v-if="judgeProgress(record, currentUser) && judgeRemind(record, currentUser)" />
-        <a v-if="judgeProgress(record, currentUser)">填报进度</a>
+        <span class="action-span">
+          <a-popconfirm
+            title="如何操作该表？"
+            v-if="judgeAudit(record, currentUser, roleList)"
+            @confirm="authForm(record.id, 2)"
+            okText="通过"
+            cancelText="驳回"
+            @cancel="authForm(record.id, 3)"
+          >
+            <a>审核</a>
+          </a-popconfirm>
+          <a v-if="judgeShow(record, currentUser, roleList)" @click="showForm(record)">查看</a>
+          <a v-if="judgeRemind(record, currentUser, roleList)" @click="pushNotice(record)">催办</a>
+          <a v-if="judgeProgress(record, currentUser, roleList)">填报进度</a>
+        </span>
       </template>
     </a-table>
     <progress-drawer ref="progressDrawer" />
+    <form-drawer ref="formDrawer" @refresh="refreshData" />
   </div>
 </template>
 
@@ -48,14 +51,17 @@ const listUrl = '/uc/api/taskFormDetail/list/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { judgeShow, judgeAudit, judgeProgress, judgeRemind } from './auth'
 import { handlerData } from './utils'
-import { approveForm } from '@/api/task'
+import { approveForm, taskFormDetail } from '@/api/task'
+import { USER_INFO, ROLE_LIST } from '@/store/mutation-types'
 import { pushNotice } from '@/api/notice'
+import storage from 'store'
+import FormDrawer from './form-drawer'
 import ProgressDrawer from './progress-drawer'
 export default {
   name: 'DetailApproveTable',
   mixins: [DataCollectionListMixin],
   props: ['taskId'],
-  components: { ProgressDrawer },
+  components: { ProgressDrawer, FormDrawer },
   data() {
     return {
       handlerData,
@@ -63,6 +69,8 @@ export default {
       judgeAudit,
       judgeProgress,
       judgeRemind,
+      currentUser: storage.get(USER_INFO),
+      roleList: storage.get(ROLE_LIST),
       url: {
         list: ''
       },
@@ -85,6 +93,21 @@ export default {
   },
 
   methods: {
+    showForm(row) {
+      this.loading = true
+      taskFormDetail(row.id)
+        .then(res => {
+          if (res.state) {
+            const formProperties = JSON.parse(res.value.formProperties)
+            const fields = JSON.parse(res.value.componentProperties)
+            const data = res.value.formData == null ? null : JSON.parse(res.value.formData)
+            let formData = { ...formProperties, fields, data }
+            this.$refs.formDrawer.show(formData, res.value.formName, res.value.id, res.value.status, row)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
     refreshData(args) {
       this.url.list = `${listUrl}?taskId=${this.taskId}&type=APPROVE`
       this.loadData(args)
@@ -107,6 +130,20 @@ export default {
         return 'child-row'
       }
       return ''
+    },
+
+    caculateStatus(status) {
+      if (status == 0) {
+        return { status: 2, name: '待提交' }
+      } else if (status == 1) {
+        return { status: 1, name: '审核中' }
+      } else if (status == 2) {
+        return { status: 3, name: '审核通过' }
+      } else if (status == 3) {
+        return { status: 0, name: '退回修改' }
+      } else {
+        return { status: 2, name: '待配置人员' }
+      }
     },
 
     authForm(id, status) {
@@ -147,5 +184,10 @@ export default {
 <style lang="less">
 .child-row {
   background: #f2f7ff;
+}
+.action-span {
+  a {
+    margin-right: 12px;
+  }
 }
 </style>

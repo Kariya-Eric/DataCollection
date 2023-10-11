@@ -31,7 +31,9 @@ router.beforeEach((to, from, next) => {
             store.dispatch('UpdateRouter', { constRouters }).then(() => {
               router.addRoutes(store.getters.permissionList)
               store.dispatch('GetButtonList').then(() => {
-                next({ ...to, replace: true })
+                store.dispatch('GetRoleList').then(() => {
+                  next({ ...to, replace: true })
+                })
               })
             })
           })

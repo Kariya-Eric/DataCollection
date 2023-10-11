@@ -7,58 +7,102 @@
 // -1 待配置人员
 
 // 判断填报按钮权限
-export function judgeApply(row, currentUser) {
-  if (row.status == 0 || row.status == 3) {
-    return currentUser.username == row.fillUserName && row.type != '总表'
+export function judgeApply(row, currentUser, roleList) {
+  if (roleList.indexOf('superAdmin') > -1) {
+    return true
+  } else {
+    if (row.status == 0 || row.status == 3) {
+      return currentUser.username == row.fillUserName && row.type != '总表'
+    }
+    return false
   }
-  return false
 }
 
 // 判断审核按钮权限
-export function judgeAudit(row, currentUser) {
-  if (row.status == 1) {
-    return currentUser.username == row.responsibleUserName && row.type != '总表'
+export function judgeAudit(row, currentUser, roleList) {
+  if (roleList.indexOf('superAdmin') > -1) {
+    return true
+  } else {
+    if (row.status == 1) {
+      return currentUser.username == row.responsibleUserName && row.type != '总表'
+    }
+    return false
   }
-  return false
 }
 
 // 判断查看按钮权限
-export function judgeShow(row, currentUser) {
-  if (row.responsibleUserName == currentUser.username && row.fillUserName != currentUser.username) {
-    return row.status != 1 && row.status != -1 && row.type != '总表'
-  } else if (row.responsibleUserName != currentUser.username && row.fillUserName == currentUser.username) {
-    return row.status != 0 && row.status != 3 && row.status != -1 && row.type != '总表'
-  } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
-    return row.status != -1 && row.type != '总表'
+export function judgeShow(row, currentUser, roleList) {
+  if (roleList.indexOf('superAdmin') > -1 || roleList.indexOf('admin') > -1) {
+    return true
+  } else {
+    if (row.responsibleUserName == currentUser.username && row.fillUserName != currentUser.username) {
+      return row.status != 1 && row.status != -1 && row.type != '总表'
+    } else if (row.responsibleUserName != currentUser.username && row.fillUserName == currentUser.username) {
+      return row.status != 0 && row.status != 3 && row.status != -1 && row.type != '总表'
+    } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
+      return row.status != -1 && row.type != '总表'
+    }
+    return true
   }
-  return true
 }
 
 // 判断撤回按钮权限
-export function judgeRedo(row, currentUser) {
-  if (row.fillUserName == currentUser.username) {
-    return row.status == 1 && row.type != '总表'
+export function judgeRedo(row, currentUser, roleList) {
+  if (roleList.indexOf('superAdmin') > -1) {
+    return true
+  } else {
+    if (row.fillUserName == currentUser.username) {
+      return row.status == 1 && row.type != '总表'
+    }
+    return false
   }
-  return false
 }
 
 // 判断催办按钮权限
-export function judgeRemind(row, currentUser) {
-  if (row.responsibleUserName == currentUser.username) {
-    return row.status == 0 || (row.status == 3 && row.type != '总表')
+export function judgeRemind(row, currentUser, roleList) {
+  if (roleList.indexOf('superAdmin') > -1) {
+    return true
+  } else {
+    if (roleList.indexOf('admin') > -1) {
+      return row.status != 2 && row.type != '总表'
+    } else {
+      if (row.responsibleUserName == currentUser.username && row.fillUserName != currentUser.username) {
+        return row.status == 0 || (row.status == 3 && row.type != '总表')
+      } else if (row.responsibleUserName != currentUser.username && row.fillUserName == currentUser.username) {
+        return false
+      } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
+        return row.status == 0 || (row.status == 3 && row.type != '总表')
+      } else {
+        return row.status != 1 && row.status != 2 && row.type != '总表'
+      }
+    }
   }
-  return false
 }
 
 // 判断填报进度按钮权限
-export function judgeProgress(row, currentUser) {
-  return row.responsibleUserName == currentUser.username && row.type == '总表'
+export function judgeProgress(row, currentUser, roleList) {
+  if (roleList.indexOf('superAdmin') > -1) {
+    return true
+  } else if (roleList.indexOf('admin') > -1) {
+    return row.status != -1 && row.type == '总表'
+  } else {
+    if (row.responsibleUserName == currentUser.username && row.fillUserName != currentUser.username) {
+      return row.status != -1 && row.type == '总表'
+    } else if (row.responsibleUserName != currentUser.username && row.fillUserName == currentUser.username) {
+      return false
+    } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
+      return row.status != -1 && row.type == '总表'
+    } else {
+      return row.status != -1 && row.type == '总表'
+    }
+  }
 }
 
 // 判断配置人员按钮进度
-export function judgeConfig(row, currentUser) {
-  if (row.responsibleUserName == currentUser.username || row.fillUserName == currentUser.username) {
+export function judgeConfig(row, currentUser, roleList) {
+  if (roleList.indexOf('superAdmin') > -1) {
+    return true
+  } else {
     return row.status == -1 && row.type != '总表'
   }
-  return false
 }

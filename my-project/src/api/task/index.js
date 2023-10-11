@@ -22,6 +22,10 @@ const taskList = params => postAction(`/uc/api/task/list`, params)
 const configAuthority = params => putAction('/uc/api/taskForm/configAuthority', params)
 //获取任务详情
 const getTask = params => getAction(`/uc/api/task/get/${params}`)
+const configAuthUser = params => putAction('/uc/api/taskFormDetail/configAuthUser', params)
+//表单详情-保存表单
+const updateTaskFormDetail = params => putAction('/uc/api/taskFormDetail/update', params)
+const submitForm = params => putAction(`/uc/api/taskFormDetail/submit`, params)
 export {
   configAuthority,
   enableTask,
@@ -37,5 +41,8 @@ export {
   configEndTime,
   copyAuthority,
   taskList,
-  getTask
+  getTask,
+  configAuthUser,
+  updateTaskFormDetail,
+  submitForm
 }

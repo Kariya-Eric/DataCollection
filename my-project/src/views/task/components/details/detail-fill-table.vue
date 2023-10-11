@@ -20,14 +20,17 @@
       <template slot="name" slot-scope="text, record">
         <span>{{ record.name }}</span>
       </template>
+      <template slot="status" slot-scope="text, record">
+        {{ caculateStatus(record.status).name }}
+      </template>
       <template slot="action" slot-scope="record">
-        <a v-if="judgeApply(record, currentUser)" @click="showForm(record)">填报</a>
-        <a-divider type="vertical" v-if="judgeApply(record, currentUser) && judgeRedo(record, currentUser)" />
-        <a-popconfirm v-if="judgeRedo(record, currentUser)" @confirm="redoForm(scope.row)" title="确认要撤回该表吗">
-          <a>撤回</a>
-        </a-popconfirm>
-        <a-divider type="vertical" v-if="judgeShow(record, currentUser) && judgeRedo(record, currentUser)" />
-        <a v-if="judgeShow(record, currentUser)">查看</a>
+        <span class="action-span">
+          <a v-if="judgeApply(record, currentUser, roleList)" @click="showForm(record)">填报</a>
+          <a-popconfirm v-if="judgeRedo(record, currentUser, roleList)" @confirm="redoForm(record.id)" title="确认要撤回该表吗">
+            <a>撤回</a>
+          </a-popconfirm>
+          <a v-if="judgeShow(record, currentUser, roleList)" @click="showForm(record)">查看</a>
+        </span>
       </template>
     </a-table>
     <form-drawer ref="formDrawer" @refresh="loadData" />
@@ -39,7 +42,9 @@ const listUrl = '/uc/api/taskFormDetail/list/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { handlerData } from './utils'
 import { judgeApply, judgeRedo, judgeShow } from './auth'
+import { USER_INFO, ROLE_LIST } from '@/store/mutation-types'
 import { taskFormDetail, recallForm } from '@/api/task'
+import storage from 'store'
 import FormDrawer from './form-drawer'
 export default {
   name: 'DetailApproveTable',
@@ -52,6 +57,8 @@ export default {
       judgeShow,
       judgeApply,
       judgeRedo,
+      currentUser: storage.get(USER_INFO),
+      roleList: storage.get(ROLE_LIST),
       url: {
         list: ''
       },
@@ -91,6 +98,20 @@ export default {
       })
     },
 
+    caculateStatus(status) {
+      if (status == 0) {
+        return { status: 2, name: '待提交' }
+      } else if (status == 1) {
+        return { status: 1, name: '审核中' }
+      } else if (status == 2) {
+        return { status: 3, name: '审核通过' }
+      } else if (status == 3) {
+        return { status: 0, name: '退回修改' }
+      } else {
+        return { status: 2, name: '待配置人员' }
+      }
+    },
+
     tableRowClassName(record) {
       if (record.type == '子表') {
         return 'child-row'
@@ -121,7 +142,7 @@ export default {
             const fields = JSON.parse(res.value.componentProperties)
             const data = res.value.formData == null ? null : JSON.parse(res.value.formData)
             let formData = { ...formProperties, fields, data }
-            this.$refs.formDrawer.show(formData, res.value.formName, res.value.id, res.value.status)
+            this.$refs.formDrawer.show(formData, res.value.formName, res.value.id, res.value.status, row)
           }
         })
         .finally(() => (this.loading = false))
@@ -133,5 +154,10 @@ export default {
 <style lang="less">
 .child-row {
   background: #f2f7ff;
+}
+.action-span {
+  a {
+    margin-right: 12px;
+  }
 }
 </style>

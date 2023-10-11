@@ -1,15 +1,21 @@
 import { getMenuList, getButtonList } from '@/api/system'
-import { BUTTON_LIST } from '../mutation-types'
+import { getRoleList } from '@/api/system/role'
+import { BUTTON_LIST, USER_INFO, ROLE_LIST } from '../mutation-types'
+import { getUserDetail } from '@/api/system/user'
 import { constantRouterMap } from '@/router'
 import storage from 'store'
 
 const permission = {
   state: {
-    permissionList: []
+    permissionList: [],
+    roleList: []
   },
   mutations: {
     SET_PERMISSIONLIST: (state, permissionList) => {
       state.permissionList = permissionList
+    },
+    SET_ROLELIST: (state, roleList) => {
+      state.roleList = roleList
     }
   },
   actions: {
@@ -45,6 +51,39 @@ const permission = {
             const buttons = response.value.curUserMethod
             storage.set(BUTTON_LIST, buttons)
             resolve()
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    },
+
+    // 后端不在用户登录信息里加角色有什么办法呢？
+    GetRoleList({ commit }) {
+      return new Promise((resolve, reject) => {
+        getRoleList({})
+          .then(res => {
+            getUserDetail(storage.get(USER_INFO).userId)
+              .then(response => {
+                const roleIds = response.value.roleIds
+                if (!roleIds) {
+                  storage.set(ROLE_LIST, ['superAdmin'])
+                } else {
+                  let roles = []
+                  roleIds.forEach(element => {
+                    res.value.rows.forEach(row => {
+                      if (row.id == element) {
+                        roles.push(row.code)
+                      }
+                    })
+                  })
+                  storage.set(ROLE_LIST, roles)
+                }
+                resolve()
+              })
+              .catch(error => {
+                reject(error)
+              })
           })
           .catch(error => {
             reject(error)

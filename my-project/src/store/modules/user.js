@@ -1,8 +1,7 @@
 import storage from 'store'
 import expirePlugin from 'store/plugins/expire'
 import { login, logout } from '@/api/login'
-import { getUserDetail } from '@/api/system/user'
-import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST } from '@/store/mutation-types'
+import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST, ROLE_LIST } from '@/store/mutation-types'
 
 storage.addPlugin(expirePlugin)
 const user = {
@@ -42,13 +41,16 @@ const user = {
     // 登出
     Logout({ commit, state }) {
       return new Promise(resolve => {
-        logout(state.token)
+        let logoutToken = state.token
+        commit('SET_TOKEN', '')
+        commit('SET_USERINFO', {})
+        storage.remove(ACCESS_TOKEN)
+        storage.remove(USER_INFO)
+        storage.remove(BUTTON_LIST)
+        storage.remove(ROLE_LIST)
+        logout(logoutToken)
           .then(() => {
-            commit('SET_TOKEN', '')
-            commit('SET_USERINFO', {})
-            storage.remove(ACCESS_TOKEN)
-            storage.remove(USER_INFO)
-            storage.remove(BUTTON_LIST)
+            window.location.reload()
             resolve()
           })
           .catch(err => {

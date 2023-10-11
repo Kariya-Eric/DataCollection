@@ -15,51 +15,49 @@ const request = axios.create({
 
 // 异常拦截处理器
 const errorHandler = error => {
+  console.log(error.response)
   if (error.response) {
-    if (error.response) {
-      const data = error.response.data
-      switch (error.response.status) {
-        case 404:
-          notification.error({
-            message: '系统提示',
-            description: '很抱歉,资源未找到！'
-          })
-          break
-        case 401:
-          Modal.confirm({
-            title: '登录已过期',
-            content: '登陆信息已失效，请重新登录',
-            okText: '重新登录',
-            mask: false,
-            onOk: () => {
-              store.dispatch('Logout').then(() => {
-                storage.remove(ACCESS_TOKEN)
-                try {
-                  let path = window.document.location.pathname
-                  console.log('location pathname -> ' + path)
-                  if (path != '/' && path.indexOf('/user/login') == -1) {
-                    window.location.reload()
-                  }
-                } catch (e) {
+    const data = error.response.data
+    switch (error.response.status) {
+      case 404:
+        notification.error({
+          message: '系统提示',
+          description: '很抱歉,资源未找到！'
+        })
+        break
+      case 401:
+        Modal.confirm({
+          title: '登录已过期',
+          content: '登陆信息已失效，请重新登录',
+          okText: '重新登录',
+          mask: false,
+          onOk: () => {
+            store.dispatch('Logout').then(() => {
+              storage.remove(ACCESS_TOKEN)
+              try {
+                let path = window.document.location.pathname
+                if (path != '/' && path.indexOf('/user/login') == -1) {
                   window.location.reload()
                 }
-              })
-            }
-          })
-          break
-        default:
-          notification.error({
-            message: '系统提示',
-            description: data.message
-          })
-          break
-      }
-    } else {
-      notification.error({
-        message: '系统提示',
-        description: data.message
-      })
+              } catch (e) {
+                window.location.reload()
+              }
+            })
+          }
+        })
+        break
+      default:
+        notification.error({
+          message: '系统提示',
+          description: data.message
+        })
+        break
     }
+  } else {
+    notification.error({
+      message: '系统提示',
+      description: data.message
+    })
   }
   return Promise.reject(error)
 }
