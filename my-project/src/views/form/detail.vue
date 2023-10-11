@@ -79,9 +79,10 @@
       </div>
     </a-card>
     <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
-    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" />
+    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" @refresh="refreshData" />
     <form-copy-modal ref="formCopyModal" :formId="collectionDetail.id" @ok="refreshData" />
     <form-category-modal ref="formCategoryModal" @ok="refreshData" />
+    <form-view-drawer ref="formViewDrawer" />
   </div>
 </template>
 
@@ -93,9 +94,10 @@ import FormModal from './components/form/form-modal.vue'
 import FormGeneratorModal from './components/formDesign/form-generator-modal.vue'
 import FormCopyModal from './components/form/form-copy-modal.vue'
 import FormCategoryModal from './components/form/form-category-modal.vue'
+import FormViewDrawer from './components/formDesign/form-view-drawer.vue'
 export default {
   name: 'FormDetail',
-  components: { FormModal, FormGeneratorModal, FormCopyModal, FormCategoryModal },
+  components: { FormModal, FormGeneratorModal, FormCopyModal, FormCategoryModal, FormViewDrawer },
   mixins: [DataCollectionListMixin],
   data() {
     return {
@@ -176,7 +178,14 @@ export default {
     },
 
     showForm(record) {
-      this.$refs.formGeneratorModal.show(record)
+      if (record.enabledFlag === 1) {
+        const componentProperties = JSON.parse(record.componentProperties)
+        const formProperties = JSON.parse(record.formProperties)
+        let formConf = { ...formProperties, fields: componentProperties }
+        this.$refs.formViewDrawer.show(formConf)
+      } else {
+        this.$refs.formGeneratorModal.show(record)
+      }
     }
   }
 }

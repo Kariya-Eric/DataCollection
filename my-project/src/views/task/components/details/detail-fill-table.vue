@@ -21,13 +21,16 @@
         <span>{{ record.name }}</span>
       </template>
       <template slot="action" slot-scope="record">
-        <a>填报</a>
-        <a-divider type="vertical" />
-        <a>撤回</a>
-        <a-divider type="vertical" v-if="record.type === '总表'" />
-        <a v-if="record.type === '总表'">查看</a>
+        <a v-if="judgeApply(record, currentUser)" @click="showForm(record)">填报</a>
+        <a-divider type="vertical" v-if="judgeApply(record, currentUser) && judgeRedo(record, currentUser)" />
+        <a-popconfirm v-if="judgeRedo(record, currentUser)" @confirm="redoForm(scope.row)" title="确认要撤回该表吗">
+          <a>撤回</a>
+        </a-popconfirm>
+        <a-divider type="vertical" v-if="judgeShow(record, currentUser) && judgeRedo(record, currentUser)" />
+        <a v-if="judgeShow(record, currentUser)">查看</a>
       </template>
     </a-table>
+    <form-drawer ref="formDrawer" @refresh="loadData" />
   </div>
 </template>
 
@@ -35,13 +38,20 @@
 const listUrl = '/uc/api/taskFormDetail/list/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { handlerData } from './utils'
+import { judgeApply, judgeRedo, judgeShow } from './auth'
+import { taskFormDetail, recallForm } from '@/api/task'
+import FormDrawer from './form-drawer'
 export default {
   name: 'DetailApproveTable',
   mixins: [DataCollectionListMixin],
+  components: { FormDrawer },
   props: ['taskId'],
   data() {
     return {
       handlerData,
+      judgeShow,
+      judgeApply,
+      judgeRedo,
       url: {
         list: ''
       },
@@ -80,11 +90,41 @@ export default {
         }
       })
     },
+
     tableRowClassName(record) {
       if (record.type == '子表') {
         return 'child-row'
       }
       return ''
+    },
+
+    redoForm(id) {
+      this.loading = true
+      recallForm(id)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.refreshData()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    showForm(row) {
+      this.loading = true
+      taskFormDetail(row.id)
+        .then(res => {
+          if (res.state) {
+            const formProperties = JSON.parse(res.value.formProperties)
+            const fields = JSON.parse(res.value.componentProperties)
+            const data = res.value.formData == null ? null : JSON.parse(res.value.formData)
+            let formData = { ...formProperties, fields, data }
+            this.$refs.formDrawer.show(formData, res.value.formName, res.value.id, res.value.status)
+          }
+        })
+        .finally(() => (this.loading = false))
     }
   }
 }

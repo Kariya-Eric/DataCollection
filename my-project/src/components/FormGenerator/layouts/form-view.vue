@@ -2,9 +2,8 @@
   <div style="height: 100vh">
     <a-row style="height: 100vh; overflow: auto">
       <a-col :md="24" :lg="24" class="right-preview">
-        <a-spin :spinning="!isIframeLoaded">
-          <iframe v-show="isIframeLoaded" ref="previewPage" class="result-wrapper" frameborder="0" :src="previewURL" @load="iframeLoad" />
-        </a-spin>
+        <a-spin :spinning="!isIframeLoaded"> </a-spin>
+        <iframe v-show="isIframeLoaded" ref="previewPage" class="result-wrapper" frameborder="0" :src="previewURL" @load="iframeLoad" />
       </a-col>
     </a-row>
   </div>

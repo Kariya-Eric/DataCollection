@@ -7,8 +7,8 @@
             <a-col :span="12">基础信息</a-col>
             <a-col :span="12">
               <div style="float: right">
-                <a-button type="primary" style="margin-right: 12px" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag">编辑</a-button>
-                <a-button @click="$router.back(-1)">返回</a-button>
+                <a-button type="primary" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag" @click="editTask">编辑</a-button>
+                <a-button @click="$router.back(-1)" style="margin-left: 12px">返回</a-button>
               </div>
             </a-col>
           </a-row>
@@ -34,13 +34,16 @@
       <template slot="title"> 表单分配 </template>
     </a-descriptions>
     <a-table bordered rowKey="formId" :dataSource="dataSource" :pagination="false" :loading="tableLoading" :columns="columns"></a-table>
+    <task-modal ref="modalForm" @ok="getTaskInfo" />
   </a-card>
 </template>
 
 <script>
+import TaskModal from './components/task-modal.vue'
 import { getTaskFormList, getTaskInfo } from '@/api/task'
 export default {
   name: 'TaskInfo',
+  components: { TaskModal },
   data() {
     return {
       taskId: '',
@@ -48,7 +51,21 @@ export default {
       infoLoading: false,
       tableLoading: false,
       columns: [
-        { dataIndex: 'formCategoriesName', title: '表单大类', align: 'center' },
+        {
+          dataIndex: 'formCategoriesName',
+          title: '表单大类',
+          align: 'center',
+          customRender: (text, row, index) => {
+            const obj = {
+              children: text !== null ? text : '',
+              attrs: {
+                rowSpan: 1
+              }
+            }
+            obj.attrs.rowSpan = this.renderCells(text, this.dataSource, 'formCategoriesName', index)
+            return obj
+          }
+        },
         { dataIndex: 'formName', title: '表单名称', align: 'center' },
         { dataIndex: 'responsibleOrgName', title: '负责部门', align: 'center' },
         { dataIndex: 'collaborateOrgName', title: '协作部门', align: 'center' },
@@ -70,6 +87,35 @@ export default {
   },
 
   methods: {
+    renderCells(text, data, key, index) {
+      if (data.length < 1) {
+        return 1
+      }
+      if (text === '' || text === null) {
+        data[index].rowNum = 1
+        return 1
+      }
+      // 上一行该列数据是否一样
+      if (index !== 0 && text === data[index - 1][key]) {
+        data[index].rowNum = 0
+        return 0
+      }
+      let rowSpan = 1
+      // 判断下一行是否相等
+      for (let i = index + 1; i < data.length; i++) {
+        if (text !== data[i][key]) {
+          break
+        }
+        rowSpan++
+      }
+      data[index].rowNum = rowSpan
+      return rowSpan
+    },
+
+    editTask() {
+      this.$refs.modalForm.edit(this.taskInfo, '编辑任务')
+    },
+
     getTaskInfo() {
       this.infoLoading = true
       getTaskInfo(this.taskId)

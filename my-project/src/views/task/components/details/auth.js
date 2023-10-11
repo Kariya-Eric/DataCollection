@@ -9,7 +9,7 @@
 // 判断填报按钮权限
 export function judgeApply(row, currentUser) {
   if (row.status == 0 || row.status == 3) {
-    return currentUser.username == row.fillUserName && row.type == '子表'
+    return currentUser.username == row.fillUserName && row.type != '总表'
   }
   return false
 }
@@ -17,7 +17,7 @@ export function judgeApply(row, currentUser) {
 // 判断审核按钮权限
 export function judgeAudit(row, currentUser) {
   if (row.status == 1) {
-    return currentUser.username == row.responsibleUserName && row.type == '子表'
+    return currentUser.username == row.responsibleUserName && row.type != '总表'
   }
   return false
 }
@@ -25,11 +25,11 @@ export function judgeAudit(row, currentUser) {
 // 判断查看按钮权限
 export function judgeShow(row, currentUser) {
   if (row.responsibleUserName == currentUser.username && row.fillUserName != currentUser.username) {
-    return row.status != 1 && row.status != -1 && row.type == '子表'
+    return row.status != 1 && row.status != -1 && row.type != '总表'
   } else if (row.responsibleUserName != currentUser.username && row.fillUserName == currentUser.username) {
-    return row.status != 0 && row.status != 3 && row.status != -1 && row.type == '子表'
+    return row.status != 0 && row.status != 3 && row.status != -1 && row.type != '总表'
   } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
-    return row.status != -1 && row.type == '子表'
+    return row.status != -1 && row.type != '总表'
   }
   return true
 }
@@ -37,7 +37,7 @@ export function judgeShow(row, currentUser) {
 // 判断撤回按钮权限
 export function judgeRedo(row, currentUser) {
   if (row.fillUserName == currentUser.username) {
-    return row.status == 1 && row.type == '子表'
+    return row.status == 1 && row.type != '总表'
   }
   return false
 }
@@ -45,7 +45,7 @@ export function judgeRedo(row, currentUser) {
 // 判断催办按钮权限
 export function judgeRemind(row, currentUser) {
   if (row.responsibleUserName == currentUser.username) {
-    return row.status == 0 || (row.status == 3 && row.type == '子表')
+    return row.status == 0 || (row.status == 3 && row.type != '总表')
   }
   return false
 }
@@ -58,7 +58,7 @@ export function judgeProgress(row, currentUser) {
 // 判断配置人员按钮进度
 export function judgeConfig(row, currentUser) {
   if (row.responsibleUserName == currentUser.username || row.fillUserName == currentUser.username) {
-    return row.status == -1 && row.type == '子表'
+    return row.status == -1 && row.type != '总表'
   }
   return false
 }

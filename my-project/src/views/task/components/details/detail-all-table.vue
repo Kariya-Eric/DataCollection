@@ -23,19 +23,32 @@
       <template slot="action" slot-scope="record">
         <a v-if="judgeConfig(record, currentUser)">配置人员</a>
         <a-divider type="vertical" v-if="judgeConfig(record, currentUser) && judgeApply(record, currentUser)" />
-        <a v-if="judgeApply(record, currentUser)">填报</a>
+        <a v-if="judgeApply(record, currentUser)" @click="showForm(record)">填报</a>
         <a-divider type="vertical" v-if="judgeRedo(record, currentUser) && judgeApply(record, currentUser)" />
-        <a v-if="judgeRedo(record, currentUser)">撤回</a>
+        <a-popconfirm v-if="judgeRedo(record, currentUser)" @confirm="redoForm(scope.row)" title="确认要撤回该表吗">
+          <a>撤回</a>
+        </a-popconfirm>
         <a-divider type="vertical" v-if="judgeRedo(record, currentUser) && judgeAudit(record, currentUser)" />
-        <a v-if="judgeAudit(record, currentUser)">审核</a>
+        <a-popconfirm
+          title="如何操作该表？"
+          v-if="judgeAudit(record, currentUser)"
+          @confirm="authForm(record.id, 2)"
+          okText="通过"
+          cancelText="驳回"
+          @cancel="authForm(record.id, 3)"
+        >
+          <a>审核</a>
+        </a-popconfirm>
         <a-divider type="vertical" v-if="judgeShow(record, currentUser) && judgeAudit(record, currentUser)" />
         <a v-if="judgeShow(record, currentUser)">查看</a>
         <a-divider type="vertical" v-if="judgeShow(record, currentUser) && judgeRemind(record, currentUser)" />
-        <a v-if="judgeRemind(record, currentUser)">催办</a>
+        <a v-if="judgeRemind(record, currentUser)" @click="pushNotice(record)">催办</a>
         <a-divider type="vertical" v-if="judgeProgress(record, currentUser) && judgeRemind(record, currentUser)" />
-        <a v-if="judgeProgress(record, currentUser)">填报进度</a>
+        <a v-if="judgeProgress(record, currentUser)" @click="$refs.progressDrawer.show(record)">填报进度</a>
       </template>
     </a-table>
+    <form-drawer ref="formDrawer" @ok="refreshData" />
+    <progress-drawer ref="progressDrawer" />
   </div>
 </template>
 
@@ -45,10 +58,15 @@ import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { handlerData } from './utils'
 import { judgeShow, judgeApply, judgeAudit, judgeProgress, judgeRedo, judgeRemind, judgeConfig } from './auth'
 import { USER_INFO } from '@/store/mutation-types'
+import { taskFormDetail, approveForm, recallForm } from '@/api/task'
+import { pushNotice } from '@/api/notice'
+import FormDrawer from './form-drawer'
+import ProgressDrawer from './progress-drawer'
 import storage from 'store'
 export default {
   name: 'DetailAllTable',
   mixins: [DataCollectionListMixin],
+  components: { FormDrawer, ProgressDrawer },
   props: ['taskId'],
   data() {
     return {
@@ -113,6 +131,67 @@ export default {
         return 'child-row'
       }
       return ''
+    },
+
+    authForm(id, status) {
+      this.loading = true
+      approveForm({ id, status })
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.refreshData()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    redoForm(id) {
+      this.loading = true
+      recallForm(id)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.refreshData()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    pushNotice(record) {
+      let userId = this.currentUser.userId
+      let param = {
+        messageType: 'PC',
+        content: `您有一个数据采集任务 “${record.formName}” 待完成`,
+        userId,
+        targetLink: `/task/detail?taskId=${this.taskId}`
+      }
+      pushNotice(param).then(res => {
+        if (res.state) {
+          this.$message.success(res.message)
+          this.loadData()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+
+    showForm(row) {
+      this.loading = true
+      taskFormDetail(row.id)
+        .then(res => {
+          if (res.state) {
+            const formProperties = JSON.parse(res.value.formProperties)
+            const fields = JSON.parse(res.value.componentProperties)
+            const data = res.value.formData == null ? null : JSON.parse(res.value.formData)
+            let formData = { ...formProperties, fields, data }
+            this.$refs.formDrawer.show(formData, res.value.formName, res.value.id, res.value.status)
+          }
+        })
+        .finally(() => (this.loading = false))
     }
   }
 }

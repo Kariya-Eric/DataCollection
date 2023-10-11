@@ -62,4 +62,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="less" scoped>
+/deep/.anticon {
+  color: rgba(0, 0, 0, 0.25);
+}
+</style>

@@ -38,7 +38,7 @@
       <div class="table-operator-button">
         <a-button type="primary">下载导入模板</a-button>
         <a-button type="primary">导入</a-button>
-        <a-button type="primary">添加任务</a-button>
+        <a-button type="primary" @click="handleAdd('添加任务')">添加任务</a-button>
       </div>
     </div>
 
@@ -71,7 +71,6 @@
               <a-menu-item><a>指南下载</a></a-menu-item>
               <a-menu-item><a>模板下载</a></a-menu-item>
               <a-menu-item><a>预览报告</a></a-menu-item>
-              <a-menu-item><a>指南下载</a></a-menu-item>
               <a-menu-item><a>导出数据</a></a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确认删除任务吗？" @confirm="handleDelete(record.id)">
@@ -83,15 +82,18 @@
         </template>
       </a-table>
     </div>
+    <task-modal ref="modalForm" @ok="loadData" :years="schoolYearList" />
   </a-card>
 </template>
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { enableTask } from '@/api/task'
+import TaskModal from './components/task-modal.vue'
 export default {
   name: 'TaskList',
   mixins: [DataCollectionListMixin],
+  components: { TaskModal },
   data() {
     return {
       url: {

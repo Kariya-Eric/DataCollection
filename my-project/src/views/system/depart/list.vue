@@ -26,7 +26,9 @@
               <span v-else>{{ item.name }}</span>
               <span class="custom-tree-node">
                 <a @click.stop="editDept(item)">修改</a>
-                <a>删除</a>
+                <a-popconfirm title="确认删除吗？" @confirm="delDept(item)">
+                  <a @click.stop>删除</a>
+                </a-popconfirm>
               </span>
             </template>
           </a-tree>
@@ -60,7 +62,7 @@ import DepartInfo from './components/depart-info.vue'
 import DepartUser from './components/depart-user.vue'
 import storage from 'store'
 import { USER_INFO } from '@/store/mutation-types'
-import { initDeptTree } from '@/api/system/depart'
+import { initDeptTree, delOrg } from '@/api/system/depart'
 import DepartModal from './components/depart-modal.vue'
 
 const dataList = []
@@ -214,6 +216,20 @@ export default {
 
     refreshUser() {
       this.initUserList()
+    },
+
+    delDept(item) {
+      delOrg({ id: item.id })
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.initDepart()
+            this.selectedKeys = []
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
     }
   }
 }

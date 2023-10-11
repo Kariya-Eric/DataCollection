@@ -36,7 +36,7 @@ export default {
       settings: {
         layout: 'topmenu',
         theme: 'light',
-        contentWidth: 'Fluid',
+        contentWidth: 'Fluid'
       },
       query: {}
     }

@@ -9,5 +9,7 @@ const getOrgUser = params => getAction(`/uc/api/org/getOrgUser/${params.orgId}?k
 const updateOrg = params => putAction('/uc/api/org/updateOrg', params)
 
 const addOrg = params => postAction('/uc/api/org/addOrg', params)
+//删除组织
+const delOrg = params => deleteAction('/uc/api/org/remove', params)
 
-export { initDeptTree, getOrg, getOrgUser, updateOrg, addOrg }
+export { initDeptTree, getOrg, getOrgUser, updateOrg, addOrg, delOrg }

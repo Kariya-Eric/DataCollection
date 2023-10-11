@@ -1,5 +1,5 @@
 <template>
-  <dc-modal :visible="visible" :confirmLoading="loading" @ok="handleOk">
+  <dc-modal :visible="visible">
     <template slot="title">
       <a-row type="flex" class="title-row" justify="space-between">
         <a-col class="left">
@@ -17,9 +17,9 @@
           </a-tabs>
         </a-col>
         <a-col class="right">
-          <a-button type="danger"> 清空</a-button>
+          <a-button type="danger" @click="empty"> 清空</a-button>
           <a-button type="primary" @click="view">预览</a-button>
-          <a-button type="primary">保存</a-button>
+          <a-button type="primary" @click="save">保存</a-button>
           <a-button @click="handleCancel">返回</a-button>
         </a-col>
       </a-row>
@@ -36,6 +36,7 @@
 
 <script>
 import FormViewDrawer from './form-view-drawer.vue'
+import { updateForm } from '@/api/form'
 export default {
   name: 'FormGeneratorModal',
   props: ['categories'],
@@ -44,14 +45,12 @@ export default {
     return {
       info: {},
       visible: false,
-      loading: false,
       drawingList: [],
       formConfig: null,
       activeTab: 0
     }
   },
   methods: {
-    handleOk() {},
     handleCancel() {
       this.info = {}
       this.formConfig = null
@@ -83,10 +82,44 @@ export default {
     },
 
     showView(formData) {
+      console.log('x', formData)
       this.$refs.formViewDrawer.show(formData)
     },
 
-    saveForm(formData) {}
+    empty() {
+      this.drawingList = []
+    },
+
+    saveForm(formData) {
+      const { fields } = formData
+      if (fields.length == 0) {
+        this.$message.error('请至少给表单配置一个组件后再保存！')
+        return
+      }
+      Reflect.deleteProperty(formData, 'fields')
+      Reflect.deleteProperty(formData, 'formBtns')
+      fields.forEach(field => {
+        field.__config__.defaultValue = undefined
+      })
+      const params = {
+        ...this.info,
+        formProperties: JSON.stringify(formData),
+        componentProperties: JSON.stringify(fields)
+      }
+      this.loading = true
+      updateForm(params)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.$emit('refresh')
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    }
   }
 }
 </script>
