@@ -13,8 +13,8 @@
                 'account',
                 {
                   rules: [{ required: true, message: '用户名不能为空' }],
-                  validateTrigger: 'blur',
-                },
+                  validateTrigger: 'blur'
+                }
               ]"
             >
               <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
@@ -22,29 +22,14 @@
           </a-form-item>
 
           <a-form-item>
-            <a-input-password
-              size="large"
-              placeholder="请输入密码"
-              v-decorator="[
-                'password',
-                { rules: [{ required: true, message: '密码不能为空' }], validateTrigger: 'blur' },
-              ]"
-            >
+            <a-input-password size="large" placeholder="请输入密码" v-decorator="['password', { rules: [{ required: true, message: '密码不能为空' }], validateTrigger: 'blur' }]">
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
             </a-input-password>
           </a-form-item>
         </a-tab-pane>
       </a-tabs>
       <a-form-item style="margin-top: 24px">
-        <a-button
-          size="large"
-          type="primary"
-          htmlType="submit"
-          class="login-button"
-          :loading="loginBtn"
-          :disabled="loginBtn"
-          >登录</a-button
-        >
+        <a-button size="large" type="primary" htmlType="submit" class="login-button" :loading="loginBtn" :disabled="loginBtn">登录</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -59,7 +44,7 @@ export default {
     return {
       isLoginError: false,
       form: this.$form.createForm(this),
-      loginBtn: false,
+      loginBtn: false
     }
   },
   methods: {
@@ -72,8 +57,8 @@ export default {
       this.form.validateFields({ force: true }, (err, values) => {
         if (!err) {
           Login(values)
-            .then((res) => this.loginSuccess(res))
-            .catch((err) => (this.isLoginError = false))
+            .then(res => this.loginSuccess(res))
+            .catch(err => (this.isLoginError = true))
             .finally(() => {
               this.loginBtn = false
             })
@@ -85,11 +70,11 @@ export default {
       this.$router.push({ path: '/' })
       this.$notification.success({
         message: '欢迎',
-        description: `${timeFix()}，欢迎回来`,
+        description: `${timeFix()}，欢迎回来`
       })
       this.isLoginError = false
-    },
-  },
+    }
+  }
 }
 </script>
 

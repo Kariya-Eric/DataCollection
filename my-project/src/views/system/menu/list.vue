@@ -263,18 +263,20 @@ export default {
 
     onSelect(selectedKeys, { selectedNodes }) {
       this.selectedKeys = selectedKeys
-      this.loading = true
-      this.$nextTick(() => this.$refs.form.clearValidate())
-      getMenu(selectedKeys[0])
-        .then(res => {
-          if (res.state) {
-            this.menuInfo = res.value
-            this.sysMethods = res.value.sysMethods
-          }
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      if (selectedKeys.length > 0) {
+        this.$nextTick(() => this.$refs.form.clearValidate())
+        this.loading = true
+        getMenu(selectedKeys[0])
+          .then(res => {
+            if (res.state) {
+              this.menuInfo = res.value
+              this.sysMethods = res.value.sysMethods
+            }
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      }
     },
 
     onExpand(expandedKeys) {

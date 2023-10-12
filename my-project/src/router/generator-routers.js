@@ -1,5 +1,4 @@
-import { RouteView, PageView } from '@/layouts'
-
+import { PageView } from '@/layouts'
 //菜单item生成路由页面
 function loadView(item) {
   let flag = item.children.length > 0

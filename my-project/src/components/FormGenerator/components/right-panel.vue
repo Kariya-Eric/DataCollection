@@ -45,12 +45,21 @@
         </a-form-model-item>
 
         <a-form-model-item
+          v-if="activeData.__config__.labelCol !== undefined && activeData.__config__.tag !== 'formDivider'"
+          label="标签宽度"
+          :labelCol="{ span: 6, offset: 0 }"
+          :wrapperCol="{ span: 18, offset: 0 }"
+        >
+          <a-slider v-model="activeData.__config__.labelCol.span" :min="1" :max="23" :marks="{ 12: '12' }" @change="changeLabelWidth"></a-slider>
+        </a-form-model-item>
+
+        <a-form-model-item
           v-if="activeData.style && activeData.style.width !== undefined"
           label="输入框宽度"
           :labelCol="{ span: 6, offset: 0 }"
           :wrapperCol="{ span: 18, offset: 0 }"
         >
-          <a-slider v-model="inputWidth" :marks="{ 50: '50%' }"></a-slider>
+          <a-slider v-model="inputWidth" :step="10" :marks="{ 50: '50%' }"></a-slider>
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="小数位数" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
@@ -137,6 +146,13 @@
           <a-form-model-item label="标题" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
             <a-input v-model="activeData.title" />
           </a-form-model-item>
+          <a-form-model-item label="标题位置" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+            <a-radio-group v-model="activeData.orientation" button-style="solid">
+              <a-radio-button value="left"> 居左 </a-radio-button>
+              <a-radio-button value="center"> 居中 </a-radio-button>
+              <a-radio-button value="right"> 居右 </a-radio-button>
+            </a-radio-group>
+          </a-form-model-item>
           <a-form-model-item label="字体大小" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
             <a-slider v-model="activeData.fontSize" :min="12" :max="30" :marks="{ 16: '16', 24: '24' }"></a-slider>
           </a-form-model-item>
@@ -171,9 +187,6 @@
             <a-radio-button value="left"> 左对齐 </a-radio-button>
             <a-radio-button value="right"> 右对齐 </a-radio-button>
           </a-radio-group>
-        </a-form-model-item>
-        <a-form-model-item label="标签宽度" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
-          <a-slider v-model="formConf.labelCol.span" @change="changeLabelWidth" :min="2" :max="22" />
         </a-form-model-item>
 
         <template v-if="baseInfo.type == '固定表单'">
@@ -263,7 +276,7 @@ export default {
     },
 
     changeLabelWidth(val) {
-      this.formConf.wrapperCol.span = 24 - val
+      this.activeData.__config__.wrapperCol.span = 24 - val
     },
 
     // end
@@ -278,6 +291,10 @@ export default {
     },
 
     delSelectItem(index) {
+      if (this.activeData.__slot__.options.length == 1) {
+        this.$message.warning('至少需要保留一条选项！')
+        return
+      }
       this.activeData.__slot__.options.splice(index, 1)
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
         this.activeData.__slot__.options[i].value = i + 1

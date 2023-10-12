@@ -31,14 +31,7 @@
               <h4>填报提示</h4>
               <tinymce v-model="formConf.formAlert" :height="100" />
             </div>
-            <a-form-model
-              :label-align="formConf.labelAlign"
-              layout="horizontal"
-              :label-col="formConf.labelCol"
-              :wrapper-col="formConf.wrapperCol"
-              :size="formConf.size"
-              :disabled="formConf.disabled"
-            >
+            <a-form-model :label-align="formConf.labelAlign" layout="horizontal" :size="formConf.size" :disabled="formConf.disabled">
               <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
                 <drag-item
                   v-for="(item, index) in drawingList"
@@ -133,6 +126,14 @@ export default {
   },
   methods: {
     addComponent(item) {
+      if (this.validateComponents().length > 0) {
+        this.$notification['warning']({
+          message: '以下组件中选项值重复！',
+          description: this.validateComponents().join('，'),
+          duration: 0
+        })
+        return
+      }
       const clone = this.cloneComponent(item)
       this.drawingList.push(clone)
       this.activeFormItem(clone)
@@ -175,6 +176,14 @@ export default {
     },
 
     drawingItemCopy(item, list) {
+      if (this.validateComponents().length > 0) {
+        this.$notification['warning']({
+          message: '以下组件中选项值重复！',
+          description: this.validateComponents().join('，'),
+          duration: 0
+        })
+        return
+      }
       let clone = deepClone(item)
       clone = this.createIdAndKey(clone)
       list.push(clone)
@@ -219,6 +228,14 @@ export default {
     },
 
     view() {
+      if (this.validateComponents().length > 0) {
+        this.$notification['warning']({
+          message: '以下组件中选项值重复！',
+          description: this.validateComponents().join('，'),
+          duration: 0
+        })
+        return
+      }
       let formData = {
         fields: deepClone(this.drawingList),
         ...this.formConf
@@ -227,11 +244,46 @@ export default {
     },
 
     save() {
+      if (this.validateComponents().length > 0) {
+        this.$notification['warning']({
+          message: '以下组件中选项值重复！',
+          description: this.validateComponents().join('，'),
+          duration: 0
+        })
+        return
+      }
       let formData = {
         fields: deepClone(this.drawingList),
         ...this.formConf
       }
       this.$emit('save', formData)
+    },
+
+    validateComponents() {
+      let valid = []
+      // 校验选择组件选项重复
+      this.drawingList.forEach(drawingItem => {
+        if (drawingItem.__slot__) {
+          let set = new Set(drawingItem.__slot__.options.map(opt => opt.label))
+          if (set.size != drawingItem.__slot__.options.length) {
+            valid.push(drawingItem.__config__.label)
+          }
+        } else if (drawingItem.__config__.layout === 'tableLayout') {
+          let validFlag = []
+          drawingItem.columns.forEach((col, index) => {
+            if (col.type.__slot__) {
+              let colSet = new Set(col.type.__slot__.options.map(opt => opt.label))
+              if (colSet.size != col.type.__slot__.options.length) {
+                validFlag.push(index + 1)
+              }
+            }
+          })
+          if (validFlag.length > 0) {
+            valid.push(drawingItem.__config__.label + '第' + validFlag.join('，') + '列')
+          }
+        }
+      })
+      return valid
     }
   }
 }

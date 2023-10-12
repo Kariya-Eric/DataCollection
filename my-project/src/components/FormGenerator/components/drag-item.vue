@@ -34,7 +34,8 @@ const layouts = {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
     const child = renderChildren.apply(this, arguments)
-    const dividerWrapper={span:24,offset:0}
+    let labelCol = config.labelCol ? { span: config.labelCol.span, offset: config.labelCol.offset ? config.labelCol.offset : 0 } : { span: 3 }
+    let wrapperCol = config.wrapperCol ? { span: config.wrapperCol.span, offset: config.wrapperCol.offset ? config.wrapperCol.offset : 0 } : { span: 21 }
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
     return (
       <a-col
@@ -45,20 +46,16 @@ const layouts = {
           event.stopPropagation()
         }}
       >
-        <a-form-model-item label={config.showLabel ? config.label : ''} required={config.required}
-          wrapperCol={config.tag==='formDivider'?dividerWrapper:null}
-        >
+        <a-form-model-item label={config.showLabel ? config.label : ''} required={config.required} wrapperCol={wrapperCol} labelCol={labelCol}>
           <render
             key={config.renderKey}
             conf={currentItem}
             onInput={event => {
               let value = event
-            if (config.tag === 'a-input'
-              || config.tag === 'a-textarea'
-              || config.tag === 'a-radio-group') {
-              value = event.target.value
-            }
-              this.$set(config, 'defaultValue',value)
+              if (config.tag === 'a-input' || config.tag === 'a-textarea' || config.tag === 'a-radio-group') {
+                value = event.target.value
+              }
+              this.$set(config, 'defaultValue', value)
             }}
           >
             {child}
@@ -73,6 +70,8 @@ const layouts = {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
     const child = renderChildren.apply(this, arguments)
+    let labelCol = config.labelCol ? { span: config.labelCol.span, offset: config.labelCol.offset ? config.labelCol.offset : 0 } : { span: 3 }
+    let wrapperCol = config.wrapperCol ? { span: config.wrapperCol.span, offset: config.wrapperCol.offset ? config.wrapperCol.offset : 0 } : { span: 21 }
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
     return (
       <a-col
@@ -83,7 +82,7 @@ const layouts = {
           event.stopPropagation()
         }}
       >
-        <a-form-model-item  label={config.showLabel ? config.label : ''} required={config.required}>
+        <a-form-model-item label={config.showLabel ? config.label : ''} required={config.required} wrapperCol={wrapperCol} labelCol={labelCol}>
           <render
             key={config.renderKey}
             conf={currentItem}
@@ -132,5 +131,4 @@ export default {
 }
 </script>
 
-<style scoped lang="less"
-</style>
+<style scoped lang="less"></style>

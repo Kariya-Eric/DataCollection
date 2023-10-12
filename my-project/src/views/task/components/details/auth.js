@@ -73,7 +73,7 @@ export function judgeRemind(row, currentUser, roleList) {
       } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
         return row.status == 0 || (row.status == 3 && row.type != '总表')
       } else {
-        return row.status != 1 && row.status != 2 && row.type != '总表'
+        return row.status != -1 && row.status != 2 && row.type != '总表'
       }
     }
   }

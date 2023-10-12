@@ -25,22 +25,12 @@ export function cssStyle(cssStr) {
 }
 
 function buildFormTemplate(scheme, child) {
-  let labelCol = ''
-  let wrapperCol = ''
   let labelAlign = ''
-  if (scheme.labelCol && (!scheme.layout || scheme.layout === 'horizontal')) {
-    labelCol = `:label-col="{ span: ${scheme.labelCol.span},
-      offset: ${scheme.labelCol.offset ? scheme.labelCol.offset : 0} }" `
-  }
-  if (scheme.wrapperCol && (!scheme.layout || scheme.layout === 'horizontal')) {
-    wrapperCol = `:wrapper-col="{ span: ${scheme.wrapperCol.span},
-      offset: ${scheme.wrapperCol.offset ? scheme.wrapperCol.offset : 0} }"`
-  }
   if (scheme.labelAlign && scheme.labelAlign !== 'right') {
     labelAlign = `label-align="${scheme.labelAlign}"`
   }
   const margin = scheme.formAlert === '' ? '' : `style="margin-top:24px"`
-  let str = `<a-form-model ${margin} ref="${scheme.formRef}" :model="${scheme.formModel}" :rules="${scheme.formRules}"  ${labelCol} ${wrapperCol} ${labelAlign}>
+  let str = `<a-form-model ${margin} ref="${scheme.formRef}" :model="${scheme.formModel}" :rules="${scheme.formRules}" ${labelAlign}>
       ${child}
     </a-form-model>`
   if (someSpanIsNot24) {
@@ -62,20 +52,24 @@ function colWrapper(scheme, str) {
 }
 
 function labelTooltip(scheme) {
-  if (scheme.__config__.tag == 'formDivider') {
-    return ''
-  }
+  let label = scheme.__config__.label
   const comment = scheme.comment
-  if (comment === '') {
-    return ''
-  } else {
+  if (scheme.__config__.showLabel === false) {
+    label = ''
+  }
+  if (scheme.__config__.tag != 'formDivider' && comment !== '') {
     const str = `<span slot="label">
-      <a-tooltip style="margin:4px" content="${comment}" placement="bottom">
-        <template slot="title"><span>${scheme.__config__.label}</span></template>
-        <a-icon type="question-circle" />
-      </a-tooltip>
-    </span>`
+    <a-tooltip style="margin:4px" placement="bottom">
+      <template slot="title">${comment}</template>
+      <a-icon type="question-circle" style="margin-right:8px" /><span>${label}</span>
+    </a-tooltip>
+  </span>`
     return str
+  } else if (scheme.__config__.tag != 'formDivider') {
+    const str = `<span slot="label">${label}</span>`
+    return str
+  } else {
+    return ''
   }
 }
 
@@ -86,17 +80,13 @@ const layouts = {
     let labelCol = ''
     let wrapperCol = ''
     let labelAlign = ''
-    let label = `label="${config.label}"`
-    if (config.labelCol && (!config.layout || scheme.layout === 'horizontal')) {
+    if (config.labelCol) {
       labelCol = `:label-col="{ span: ${config.labelCol.span},
         offset: ${config.labelCol.offset ? config.labelCol.offset : 0} }" `
     }
-    if (config.wrapperCol && (!config.layout || scheme.layout === 'horizontal')) {
+    if (config.wrapperCol) {
       wrapperCol = `:wrapper-col="{ span: ${config.wrapperCol.span},
         offset: ${config.wrapperCol.offset ? config.wrapperCol.offset : 0} }"`
-    }
-    if (config.showLabel === false) {
-      label = ''
     }
     if (config.labelAlign && config.labelAlign !== 'right') {
       labelAlign = `:label-align="${config.labelAlign}"`
@@ -104,7 +94,7 @@ const layouts = {
     const required = !ruleTrigger[config.tag] && config.required ? 'required' : ''
     const tooltip = labelTooltip(scheme)
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null
-    let str = `<a-form-model-item ${labelCol} ${wrapperCol} ${labelAlign} ${label} ${vif} prop="${scheme.__vModel__}" ${required}>
+    let str = `<a-form-model-item ${labelCol} ${wrapperCol} ${labelAlign} ${vif} prop="${scheme.__vModel__}" ${required}>
           ${tooltip}${tagDom}
       </a-form-model-item>`
     return colWrapper(scheme, str)
@@ -144,18 +134,18 @@ const layouts = {
 const tags = {
   'a-input': el => {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
-    return `<${tag} ${vModel} ${placeholder} ${width}></${tag}>`
+    return `<${tag} ${vModel} ${placeholder}  ${width} ></${tag}>`
   },
   'a-textarea': el => {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
-    return `<${tag} ${vModel} ${placeholder} ${width}></${tag}>`
+    return `<${tag} ${vModel} ${placeholder}  ${width} ></${tag}>`
   },
   'a-input-number': el => {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
     const min = el.min ? `:min="${el.min}"` : ''
     const max = el.max ? `:max="${el.max}"` : ''
     const precision = `:precision="${el.precision}"`
-    return `<${tag} ${vModel} ${placeholder} ${width} ${min} ${max} ${precision} />`
+    return `<${tag} ${vModel} ${placeholder}  ${min} ${max} ${precision}  ${width} />`
   },
   'a-select': el => {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
@@ -164,7 +154,7 @@ const tags = {
     const filterOption = `:filterOption="(inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0"`
     let child = buildElSelectChild(el)
     if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${placeholder} ${multiple} ${showSearch} ${filterOption} ${width}>${child}</${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${multiple} ${showSearch} ${filterOption}  ${width} >${child}</${tag}>`
   },
   'a-radio-group': el => {
     const { tag, vModel } = attrBuilder(el)
@@ -183,17 +173,18 @@ const tags = {
     const { tag, vModel, placeholder, width } = attrBuilder(el)
     const format = `format="${el.format}"`
     const mode = `mode="${el.mode}"`
-    return `<${tag}  ${vModel} ${format} ${mode} ${width} ${placeholder} ></${tag}>`
+    return `<${tag}  ${vModel} ${format} ${mode} ${placeholder} ${width}  ></${tag}>`
   },
   formDivider: el => {
     const title = `title="${el.title}"`
     const fontSize = `:fontSize="${el.fontSize}"`
-    return `<form-divider ${title} ${fontSize} />`
+    const orientation = `orientation="${el.orientation}"`
+    return `<form-divider ${title} ${fontSize} ${orientation} />`
   },
   formPhone: el => {
     const { vModel, placeholder, width } = attrBuilder(el)
     const isMobile = `:isMobile="${el.isMobile}"`
-    return `<form-phone ${vModel} ${placeholder} ${width} ${isMobile} />`
+    return `<form-phone ${vModel} ${placeholder} ${isMobile} ${width} />`
   },
   formLink: el => {
     const { vModel, placeholder, width } = attrBuilder(el)
@@ -205,7 +196,8 @@ const tags = {
   },
   formAddress: el => {
     const { vModel, placeholder, width } = attrBuilder(el)
-    return `<form-address ${vModel} ${placeholder} ${width} />`
+    const type = `type="${el.type}"`
+    return `<form-address ${vModel} ${placeholder} ${type} ${width} />`
   },
   floatTable: el => {
     return `<div>123</div>`
@@ -279,8 +271,8 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr)
   confGlobal = null
-  const alert =
-    formConfig.formAlert === '' ? '' : `<a-alert message="填报提示" type="warning" show-icon ><template slot="description">{{formConfig.formAlert}}</template></a-alert>`
+  const formAlert = formConfig.formAlert
+  const alert = formAlert === '' ? '' : `<a-alert message="填报提示" type="info" banner show-icon ><template slot="description">${formAlert}</template></a-alert>`
   const str = `<div>${alert}${temp}</div>`
   return str
 }

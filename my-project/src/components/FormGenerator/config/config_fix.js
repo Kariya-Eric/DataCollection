@@ -18,6 +18,8 @@ export const selectComponentsFix = [
       tagIcon: '单项选择',
       layout: 'colFormItem',
       span: 24,
+      labelCol: { span: 2 },
+      wrapperCol: { span: 22 },
       defaultValue: undefined,
       required: true
     },
@@ -43,6 +45,8 @@ export const selectComponentsFix = [
       tagIcon: '多项选择',
       defaultValue: [],
       span: 24,
+      labelCol: { span: 2 },
+      wrapperCol: { span: 22 },
       showLabel: true,
       layout: 'colFormItem',
       required: true
@@ -72,6 +76,8 @@ export const otherComponentsFix = [
       tag: 'fixedTable',
       showLabel: true,
       span: 24,
+      labelCol: { span: 2 },
+      wrapperCol: { span: 22 },
       required: true
     },
     selectedCol: -1,
@@ -107,8 +113,11 @@ export const layoutComponentsFix = [
       tagIcon: '分割线',
       label: '分割线',
       layout: 'colFormItem',
-      showLabel: false
+      showLabel: false,
+      labelCol: { span: 0 },
+      wrapperCol: { span: 24 }
     },
+    orientation: 'left',
     title: '标题',
     fontSize: 16
   }

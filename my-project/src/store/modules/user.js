@@ -25,12 +25,16 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo)
           .then(response => {
-            const data = response.data
-            storage.set(ACCESS_TOKEN, data.token)
-            storage.set(USER_INFO, data)
-            commit('SET_TOKEN', data.token)
-            commit('SET_USERINFO', data)
-            resolve()
+            if (response.success) {
+              const data = response.data
+              storage.set(ACCESS_TOKEN, data.token)
+              storage.set(USER_INFO, data)
+              commit('SET_TOKEN', data.token)
+              commit('SET_USERINFO', data)
+              resolve()
+            } else {
+              reject('登录出错')
+            }
           })
           .catch(error => {
             reject(error)

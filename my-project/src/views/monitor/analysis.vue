@@ -1,9 +1,9 @@
 <template>
-  <div>Analysis</div>
+  <div>analysis</div>
 </template>
 
 <script>
 export default {}
 </script>
 
-<style scoped lang="less"></style>
+<style></style>

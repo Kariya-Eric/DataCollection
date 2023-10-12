@@ -82,7 +82,6 @@ export default {
     },
 
     showView(formData) {
-      console.log('x', formData)
       this.$refs.formViewDrawer.show(formData)
     },
 

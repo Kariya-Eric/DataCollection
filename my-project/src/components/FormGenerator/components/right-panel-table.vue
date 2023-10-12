@@ -172,9 +172,11 @@ export default {
     }
   },
   methods: {
+    
     changeMultiple(val) {
       this.activeData.columns[this.activeData.selectedCol - 1].type.mode = val ? 'multiple' : 'default'
     },
+
     addCol() {
       this.activeData.selectedCol = -1
       let key = this.activeData.columns[this.activeData.columns.length - 1].key + 1
@@ -222,6 +224,10 @@ export default {
     },
 
     delOption(index) {
+      if (this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.length == 1) {
+        this.$message.warning('至少需要保留一条选项！')
+        return
+      }
       this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.splice(index, 1)
     },
 

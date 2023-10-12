@@ -9,10 +9,12 @@ export const input = {
     defaultValue: undefined,
     required: true,
     layout: 'colFormItem',
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     span: 24
   },
-  style: { width: '100%' },
   placeholder: '请输入',
+  style: { width: '100%' },
   comment: '',
   allowChar: false
 }
@@ -25,6 +27,8 @@ export const textarea = {
     tag: 'a-textarea',
     tagIcon: '多行文本',
     defaultValue: undefined,
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     required: true,
     layout: 'colFormItem',
     span: 24
@@ -32,6 +36,7 @@ export const textarea = {
   placeholder: '请输入',
   style: { width: '100%' },
   comment: '',
+  style: { width: '100%' },
   allowChar: false
 }
 
@@ -42,16 +47,18 @@ export const number = {
     showLabel: true,
     tag: 'a-input-number',
     defaultValue: undefined,
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     tagIcon: '数组',
     required: true,
     layout: 'colFormItem',
     span: 24
   },
-  style: { width: '100%' },
   placeholder: '请输入',
   precision: 0,
   min: undefined,
   max: undefined,
+  style: { width: '100%' },
   comment: ''
 }
 
@@ -62,13 +69,15 @@ export const link = {
     showLabel: true,
     tag: 'formLink',
     defaultValue: undefined,
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     tagIcon: '链接',
     required: true,
     layout: 'colFormItem',
     span: 24
   },
-  style: { width: '100%' },
   placeholder: '请输入',
+  style: { width: '100%' },
   comment: ''
 }
 
@@ -78,14 +87,16 @@ export const mail = {
     changeTag: true,
     showLabel: true,
     defaultValue: undefined,
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     tag: 'formMail',
     tagIcon: '邮箱',
     required: true,
     layout: 'colFormItem',
     span: 24
   },
-  style: { width: '100%' },
   placeholder: '请输入',
+  style: { width: '100%' },
   comment: ''
 }
 
@@ -99,11 +110,13 @@ export const phone = {
     tagIcon: '手机',
     required: true,
     layout: 'colFormItem',
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     span: 24
   },
   isMobile: false,
-  style: { width: '100%' },
   placeholder: '请输入',
+  style: { width: '100%' },
   comment: ''
 }
 
@@ -117,6 +130,8 @@ export const select = {
     layout: 'colFormItem',
     span: 24,
     defaultValue: undefined,
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     required: true
   },
   __slot__: {
@@ -132,9 +147,9 @@ export const select = {
     ]
   },
   placeholder: '请选择',
-  style: { width: '100%' },
   showSearch: false,
   mode: 'default',
+  style: { width: '100%' },
   comment: ''
 }
 
@@ -146,14 +161,16 @@ export const date = {
     tagIcon: '日期选择',
     showLabel: true,
     layout: 'colFormItem',
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     required: true,
     span: 24,
     defaultValue: undefined
   },
   placeholder: '请选择',
-  style: { width: '100%' },
   mode: 'month',
   format: 'YYYY-MM',
+  style: { width: '100%' },
   comment: ''
 }
 
@@ -166,6 +183,8 @@ export const address = {
     tagIcon: '地址',
     required: true,
     layout: 'colFormItem',
+    labelCol: { span: 2 },
+    wrapperCol: { span: 22 },
     span: 24
   },
   style: { width: '100%' },

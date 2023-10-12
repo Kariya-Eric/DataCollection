@@ -3,17 +3,17 @@
  * 未在此处声明无触发方式的组件将不生成rule！！
  */
 export default {
-  formMail: 'blur',
-  formPhone: 'blur',
-  formAddress: 'blur',
-  formNumber: 'blur',
-  formLink: 'blur',
+  formMail: 'change',
+  formPhone: 'change',
+  formAddress: 'change',
+  formNumber: 'change',
+  formLink: 'change',
   fixedTable: 'change',
   floatTable: 'change',
   dcDate: 'change',
-  'a-input': 'blur',
-  'a-textarea': 'blur',
-  'a-input-number': 'blur',
+  'a-input': 'change',
+  'a-textarea': 'change',
+  'a-input-number': 'change',
   'a-select': 'change',
   'a-radio-group': 'change',
   'a-checkbox-group': 'change'
