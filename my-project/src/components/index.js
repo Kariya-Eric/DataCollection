@@ -7,6 +7,10 @@ import CustomComponents from './FormGenerator/layouts'
 import VueAreaLinkage from 'vue-area-linkage'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
+import VXETablePluginAntd from 'vxe-table-plugin-antd'
+import 'vxe-table-plugin-antd/dist/style.css'
+import VXETablePluginExportPDF from 'vxe-table-plugin-export-pdf'
+import VXETablePluginExportXLSX from 'vxe-table-plugin-export-xlsx'
 export default {
   install(Vue) {
     Vue.component('DcSwitch', DcSwitch)
@@ -17,5 +21,8 @@ export default {
     Vue.use(CustomComponents)
     Vue.use(VueAreaLinkage)
     Vue.use(VXETable)
+    VXETable.use(VXETablePluginAntd)
+    VXETable.use(VXETablePluginExportXLSX)
+    VXETable.use(VXETablePluginExportPDF)
   }
 }

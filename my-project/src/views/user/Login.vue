@@ -70,7 +70,8 @@ export default {
       this.$router.push({ path: '/' })
       this.$notification.success({
         message: '欢迎',
-        description: `${timeFix()}，欢迎回来`
+        description: `${timeFix()}，欢迎回来`,
+        duration: 2
       })
       this.isLoginError = false
     }

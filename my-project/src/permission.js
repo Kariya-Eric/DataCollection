@@ -11,7 +11,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const allowList = ['/user/login', '/test'] // no redirect allowList
 const loginRoutePath = '/user/login'
-const defaultRoutePath = '/dashboard/workplace'
+const defaultRoutePath = '/home'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar

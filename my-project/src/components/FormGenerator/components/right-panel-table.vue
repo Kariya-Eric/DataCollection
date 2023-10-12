@@ -172,7 +172,6 @@ export default {
     }
   },
   methods: {
-    
     changeMultiple(val) {
       this.activeData.columns[this.activeData.selectedCol - 1].type.mode = val ? 'multiple' : 'default'
     },
@@ -232,9 +231,12 @@ export default {
     },
 
     addOption() {
+      for (let i = 0; i < this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.length; i++) {
+        this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options[i].value = i + 1
+      }
       this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.push({
         label: '选项',
-        value: ''
+        value: this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.length + 1
       })
     },
 

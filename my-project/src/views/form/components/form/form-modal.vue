@@ -27,7 +27,7 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="表单类型" prop="formType">
-          <a-radio-group v-model="model.formType">
+          <a-radio-group v-model="model.formType" :disabled="formTypeDisabled">
             <a-radio value="浮动表单">浮动表单</a-radio>
             <a-radio value="固定表单">固定表单</a-radio>
           </a-radio-group>
@@ -61,7 +61,8 @@ export default {
         formType: [{ required: true, message: '请选择表单类型' }],
         sort: [{ required: true, message: '请输入排序' }],
         collectTimeType: [{ required: true, message: '请选择统计时间类型', trigger: 'change' }]
-      }
+      },
+      formTypeDisabled: false
     }
   },
 
@@ -112,9 +113,11 @@ export default {
       this.title = title
       let collection = { ...this.collection }
       if (record.id) {
+        this.formTypeDisabled = true
         let form = { ...record, formName: record.name, formType: record.type }
         this.model = Object.assign({}, collection, form)
       } else {
+        this.formTypeDisabled = false
         let form = { ...collection, formCollectionId: this.collection.id }
         this.model = Object.assign(form, record, { id: undefined })
       }

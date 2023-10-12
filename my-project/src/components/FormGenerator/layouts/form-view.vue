@@ -109,11 +109,6 @@ export default {
       iframe.postMessage({ type: 'submitForm' })
     },
 
-    reset() {
-      let iframe = this.$refs.previewPage.contentWindow
-      iframe.postMessage({ type: 'resetForm' })
-    },
-
     save() {
       let iframe = this.$refs.previewPage.contentWindow
       iframe.postMessage({ type: 'saveForm' })

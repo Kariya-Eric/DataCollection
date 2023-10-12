@@ -34,8 +34,10 @@ const layouts = {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
     const child = renderChildren.apply(this, arguments)
-    let labelCol = config.labelCol ? { span: config.labelCol.span, offset: config.labelCol.offset ? config.labelCol.offset : 0 } : { span: 3 }
-    let wrapperCol = config.wrapperCol ? { span: config.wrapperCol.span, offset: config.wrapperCol.offset ? config.wrapperCol.offset : 0 } : { span: 21 }
+    let labelCol = config.labelCol ? { span: config.showLabel ? config.labelCol.span : 0, offset: config.labelCol.offset ? config.labelCol.offset : 0 } : { span: 3 }
+    let wrapperCol = config.wrapperCol
+      ? { span: config.showLabel ? config.wrapperCol.span : config.wrapperCol.span + config.labelCol.span, offset: config.wrapperCol.offset ? config.wrapperCol.offset : 0 }
+      : { span: 21 }
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
     return (
       <a-col
@@ -70,8 +72,10 @@ const layouts = {
     const { activeItem } = this.$listeners
     const config = currentItem.__config__
     const child = renderChildren.apply(this, arguments)
-    let labelCol = config.labelCol ? { span: config.labelCol.span, offset: config.labelCol.offset ? config.labelCol.offset : 0 } : { span: 3 }
-    let wrapperCol = config.wrapperCol ? { span: config.wrapperCol.span, offset: config.wrapperCol.offset ? config.wrapperCol.offset : 0 } : { span: 21 }
+    let labelCol = config.labelCol ? { span: config.showLabel ? config.labelCol.span : 0, offset: config.labelCol.offset ? config.labelCol.offset : 0 } : { span: 3 }
+    let wrapperCol = config.wrapperCol
+      ? { span: config.showLabel ? config.wrapperCol.span : config.wrapperCol.span + config.labelCol.span, offset: config.wrapperCol.offset ? config.wrapperCol.offset : 0 }
+      : { span: 21 }
     let className = this.activeId === config.formId ? 'drawing-item active-from-item' : 'drawing-item'
     return (
       <a-col

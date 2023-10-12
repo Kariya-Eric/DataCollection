@@ -1,7 +1,8 @@
 import storage from 'store'
 import expirePlugin from 'store/plugins/expire'
 import { login, logout } from '@/api/login'
-import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST, ROLE_LIST } from '@/store/mutation-types'
+import { getUserDetail } from '@/api/system/user'
+import { ACCESS_TOKEN, USER_INFO, BUTTON_LIST, ROLE_LIST, ORG_ID } from '@/store/mutation-types'
 
 storage.addPlugin(expirePlugin)
 const user = {
@@ -31,14 +32,21 @@ const user = {
               storage.set(USER_INFO, data)
               commit('SET_TOKEN', data.token)
               commit('SET_USERINFO', data)
-              resolve()
+              getUserDetail(data.userId)
+                .then(res => {
+                  if (res.state) {
+                    storage.set(ORG_ID, res.value.roleIds ? res.value.orgId : 'superAdmin')
+                    resolve()
+                  } else {
+                    reject('异常')
+                  }
+                })
+                .catch(error => reject(error))
             } else {
               reject('登录出错')
             }
           })
-          .catch(error => {
-            reject(error)
-          })
+          .catch(error => reject(error))
       })
     },
 
@@ -52,6 +60,7 @@ const user = {
         storage.remove(USER_INFO)
         storage.remove(BUTTON_LIST)
         storage.remove(ROLE_LIST)
+        storage.remove(ORG_ID)
         logout(logoutToken)
           .then(() => {
             window.location.reload()

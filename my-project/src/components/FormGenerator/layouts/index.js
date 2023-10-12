@@ -7,7 +7,7 @@ import FixedTable from './fixed-table'
 import FormTextarea from './form-textarea'
 import FormAddress from './form-address'
 import FormView from './form-view'
-
+import FormTable from './form-table'
 export default {
   install(Vue) {
     Vue.component('formDivider', FormDivider)
@@ -19,5 +19,6 @@ export default {
     Vue.component('formTextarea', FormTextarea)
     Vue.component('formAddress', FormAddress)
     Vue.component('formView', FormView)
+    Vue.component('formTable', FormTable)
   }
 }

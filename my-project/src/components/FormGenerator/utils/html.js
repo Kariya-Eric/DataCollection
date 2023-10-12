@@ -53,16 +53,17 @@ function colWrapper(scheme, str) {
 
 function labelTooltip(scheme) {
   let label = scheme.__config__.label
-  const comment = scheme.comment
   if (scheme.__config__.showLabel === false) {
-    label = ''
+    return ''
   }
+  const comment = scheme.comment
   if (scheme.__config__.tag != 'formDivider' && comment !== '') {
     const str = `<span slot="label">
-    <a-tooltip style="margin:4px" placement="bottom">
+    <a-tooltip placement="bottom">
       <template slot="title">${comment}</template>
-      <a-icon type="question-circle" style="margin-right:8px" /><span>${label}</span>
+      <a-icon type="question-circle" style="margin-right:8px" />
     </a-tooltip>
+    <span>${label}</span>
   </span>`
     return str
   } else if (scheme.__config__.tag != 'formDivider') {
@@ -80,12 +81,18 @@ const layouts = {
     let labelCol = ''
     let wrapperCol = ''
     let labelAlign = ''
-    if (config.labelCol) {
+    const showLabel = scheme.__config__.showLabel
+    if (config.labelCol && showLabel) {
       labelCol = `:label-col="{ span: ${config.labelCol.span},
         offset: ${config.labelCol.offset ? config.labelCol.offset : 0} }" `
+    } else {
+      labelCol = `:label-col="{ span: 0 }" `
     }
-    if (config.wrapperCol) {
+    if (config.wrapperCol && showLabel) {
       wrapperCol = `:wrapper-col="{ span: ${config.wrapperCol.span},
+        offset: ${config.wrapperCol.offset ? config.wrapperCol.offset : 0} }"`
+    } else {
+      wrapperCol = `:wrapper-col="{ span: ${config.wrapperCol.span}+${config.labelCol.span},
         offset: ${config.wrapperCol.offset ? config.wrapperCol.offset : 0} }"`
     }
     if (config.labelAlign && config.labelAlign !== 'right') {
@@ -106,17 +113,19 @@ const layouts = {
     let labelCol = ''
     let wrapperCol = ''
     let labelAlign = ''
-    let label = `label="${config.label}"`
-    if (config.labelCol && (!config.layout || scheme.layout === 'horizontal')) {
+    const showLabel = scheme.__config__.showLabel
+    if (config.labelCol && showLabel) {
       labelCol = `:label-col="{ span: ${config.labelCol.span},
         offset: ${config.labelCol.offset ? config.labelCol.offset : 0} }" `
+    } else {
+      labelCol = `:label-col="{ span: 0 }" `
     }
-    if (config.wrapperCol && (!config.layout || scheme.layout === 'horizontal')) {
+    if (config.wrapperCol && showLabel) {
       wrapperCol = `:wrapper-col="{ span: ${config.wrapperCol.span},
         offset: ${config.wrapperCol.offset ? config.wrapperCol.offset : 0} }"`
-    }
-    if (config.showLabel === false) {
-      label = ''
+    } else {
+      wrapperCol = `:wrapper-col="{ span: ${config.wrapperCol.span}+${config.labelCol.span},
+        offset: ${config.wrapperCol.offset ? config.wrapperCol.offset : 0} }"`
     }
     if (config.labelAlign && config.labelAlign !== 'right') {
       labelAlign = `:label-align="${config.labelAlign}"`
@@ -124,7 +133,7 @@ const layouts = {
     const required = !ruleTrigger[config.tag] && config.required ? 'required' : ''
     const tooltip = labelTooltip(scheme)
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null
-    let str = `<a-form-model-item ${labelCol} ${wrapperCol} ${labelAlign} ${label} ${vif} prop="${scheme.__vModel__}" ${required}>
+    let str = `<a-form-model-item ${labelCol} ${wrapperCol} ${labelAlign} ${vif} prop="${scheme.__vModel__}" ${required}>
           ${tooltip}${tagDom}
       </a-form-model-item>`
     return colWrapper(scheme, str)
@@ -207,7 +216,8 @@ const tags = {
     const ref = `ref='table_${el.__config__.formId}'`
     const columns = `:columns='${JSON.stringify(el.columns)}'`
     const required = `:required="${el.__config__.required}"`
-    return `<form-table ${ref} ${columns} ${vModel} ${required} @add="$emit('resize')" />`
+    const resetTable = `@resetTable="resetTable('${el.__vModel__}')"`
+    return `<form-table ${ref} ${columns} ${vModel} ${required} ${resetTable} />`
   }
   // ============自定义组件=============================
 }
