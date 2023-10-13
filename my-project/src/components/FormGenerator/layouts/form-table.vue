@@ -2,22 +2,35 @@
   <div>
     <div style="margin-bottom: 8px">
       <a-button type="primary" @click="insertEvent" style="margin-right: 12px">新增</a-button>
-      <a-button type="danger" @click="removeChecked">删除</a-button>
+      <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0">
+        <a-button type="danger" class="del-action">删除</a-button>
+      </a-popconfirm>
       <div style="float: right">
-        <a-button type="primary">导出</a-button>
+        <a-dropdown placement="topCenter">
+          <a-button type="primary" icon="cloud-download" @click="e => e.preventDefault()">数据导出</a-button>
+          <a-menu slot="overlay">
+            <a-menu-item key="1" @click="exportData('xlsx')"> <a-icon type="file-excel" />导出Excel</a-menu-item>
+            <a-menu-item key="2" @click="exportData('pdf')"> <a-icon type="file-pdf" />导出PDF </a-menu-item>
+          </a-menu>
+        </a-dropdown>
       </div>
     </div>
     <vxe-table
       border
       auto-resize
+      round
       show-overflow
       ref="xTable"
       :data="dataSource"
-      :edit-config="{ trigger: 'click', mode: 'row', showIcon: false }"
+      :edit-config="{ trigger: 'click', mode: 'cell', showIcon: false }"
       align="center"
       size="medium"
+      :import-config="importConfig"
+      :export-config="exportConfig"
       :edit-rules="rules"
       @edit-closed="editClosed"
+      @checkbox-all="checkboxAll"
+      @checkbox-change="checkboxChange"
     >
       <vxe-column type="checkbox" width="60"></vxe-column>
       <vxe-column type="seq" width="60" title="序号"> </vxe-column>
@@ -32,6 +45,7 @@
         <template #edit="scope">
           <template v-if="col.component == 'input'"><a-input v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
           <template v-if="col.component == 'textarea'"> <form-textarea v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
+          <template v-if="col.component == 'address'"> <form-address-pop v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
           <template v-if="col.component == 'number'">
             <a-input-number
               v-model="scope.row[col.props]"
@@ -62,7 +76,9 @@
       </vxe-column>
       <vxe-column title="操作" width="120">
         <template #default="{ row }">
-          <a><span style="color: red" @click="deleteRow(row)">删除</span></a>
+          <a-popconfirm @confirm="deleteRow(row)" title="您确定要删除选中的数据" overlayClassName="input-pop">
+            <a class="del-action"><span style="color: red">删除</span></a>
+          </a-popconfirm>
         </template>
       </vxe-column>
     </vxe-table>
@@ -70,13 +86,15 @@
 </template>
 
 <script>
-import VXETable from 'vxe-table'
 export default {
   name: 'FormTable',
   props: ['columns', 'value', 'required'],
   data() {
     return {
-      dataSource: this.value
+      dataSource: this.value,
+      selectedRows: [],
+      importConfig: { types: ['xlsx'] },
+      exportConfig: { types: ['xlsx', 'pdf'] }
     }
   },
 
@@ -186,6 +204,13 @@ export default {
   },
 
   methods: {
+    exportData(type) {
+      const $table = this.$refs.xTable
+      if ($table) {
+        $table.exportData({ filename: '导出', sheetName: 'Sheet1', type })
+      }
+    },
+
     // 处理多选择的回显
     getLabel(value, type, valueProp = 'value', labelField = 'label') {
       if (type.mode === 'default') {
@@ -204,24 +229,23 @@ export default {
         }
       }
     },
+    checkboxAll() {
+      const $table = this.$refs.xTable
+      this.selectedRows = $table.getCheckboxRecords()
+    },
+    checkboxChange() {
+      const $table = this.$refs.xTable
+      this.selectedRows = $table.getCheckboxRecords()
+    },
 
     async removeChecked() {
-      const $table = this.$refs.xTable
-      if ($table.getCheckboxRecords().length == 0) {
-        this.$message.warning('请至少选择一行数据！')
-        return
-      }
-      const type = await VXETable.modal.confirm({ content: '您确定要删除选中的数据?', mask: false, position: { top: 20 } })
-      if (type !== 'confirm') {
-        return
-      }
       this.$refs.xTable.removeCheckboxRow()
+      this.selectedRows = []
     },
 
     async deleteRow(row) {
-      const type = await VXETable.modal.confirm({ content: '您确定要删除选中的数据?', mask: false, position: { top: 20 } })
-      if (type !== 'confirm') {
-        return
+      if (this.selectedRows.includes(row)) {
+        this.selectedRows = this.selectedRows.filter(item => item != row)
       }
       const $table = this.$refs.xTable
       await $table.remove(row)
@@ -230,10 +254,10 @@ export default {
 
     async insertEvent() {
       const $table = this.$refs.xTable
-      const errMap = await $table.validate().catch(errMap => errMap)
-      if (errMap) {
-        return
-      }
+      // const errMap = await $table.validate().catch(errMap => errMap)
+      // if (errMap) {
+      //   return
+      // }
       const newRecord = {}
       this.columns.forEach(col => {
         if (col.type.__config__.label == '下拉选择' && col.type.mode == 'multiple') {
@@ -252,6 +276,7 @@ export default {
 
     async validate() {
       const $table = this.$refs.xTable
+      $table.clearCheckboxRow()
       const errMap = await $table.validate(true).catch(errMap => errMap)
       if (errMap) {
         return undefined

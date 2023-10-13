@@ -331,6 +331,9 @@ export default {
 .ant-form-item {
   margin-bottom: 10px;
 }
+/deep/.ant-tabs-nav-wrap {
+  text-align: center;
+}
 .right-header {
   position: relative;
   height: 48px;

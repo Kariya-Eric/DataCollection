@@ -53,7 +53,8 @@ const vueConfig = {
           'success-color': '#2B9E77',
           'border-radius-base': '4px',
           'card-shadow': '0px 4px 28px rgba(68, 57, 168, 0.15)',
-          'card-radius': '4px'
+          'card-radius': '4px',
+          'vxe-primary-color': '#2F68BD'
         },
         javascriptEnabled: true
       }

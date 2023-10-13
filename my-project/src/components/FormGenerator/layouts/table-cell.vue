@@ -27,8 +27,7 @@
       <form-phone :style="column.type.style" :isMobile="column.type.isMobile" :placeholder="`请输入${placeholder}`" />
     </template>
     <template v-if="column.type.__config__.label === '地址'">
-      <!-- <form-address :style="column.type.style" :placeholder="`请输入${placeholder}`" /> -->
-      <form-address :style="column.type.style" :placeholder="`请输入${placeholder}`" :type="column.type.type" />
+      <form-address-pop :style="column.type.style" :placeholder="`请输入${placeholder}`" :type="column.type.type" />
     </template>
     <template v-if="column.type.__config__.label === '下拉选择'">
       <a-select

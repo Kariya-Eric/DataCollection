@@ -91,6 +91,5 @@ export default {
 
 .tableDiv {
   overflow-x: auto;
-  overflow-y: hidden;
 }
 </style>

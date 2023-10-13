@@ -21,7 +21,7 @@ export function handleScrollHeader(callback) {
   callback = callback || function () {}
   window.addEventListener(
     'scroll',
-    (event) => {
+    event => {
       clearTimeout(timer)
       timer = setTimeout(() => {
         let direction = 'up'
@@ -41,7 +41,7 @@ export function handleScrollHeader(callback) {
 
 export function isIE() {
   const bw = window.navigator.userAgent
-  const compare = (s) => bw.indexOf(s) >= 0
+  const compare = s => bw.indexOf(s) >= 0
   const ie11 = (() => 'ActiveXObject' in window)()
   return compare('MSIE') || ie11
 }
@@ -76,7 +76,7 @@ export function scorePassword(pass) {
     digits: /\d/.test(pass),
     lower: /[a-z]/.test(pass),
     upper: /[A-Z]/.test(pass),
-    nonWords: /\W/.test(pass),
+    nonWords: /\W/.test(pass)
   }
 
   let variationCount = 0
@@ -86,4 +86,25 @@ export function scorePassword(pass) {
   score += (variationCount - 1) * 10
 
   return parseInt(score)
+}
+
+export function getEventPath(event) {
+  let target = event.target
+  let path = (event.composedPath && event.composedPath()) || event.path
+  if (path != null) {
+    return path.indexOf(window < 0) ? path.concat(window) : path
+  }
+  if (target === window) {
+    return [window]
+  }
+  let getParents = (node, memo) => {
+    memo = momo || []
+    const parentNode = node.parentNode
+    if (!parentNode) {
+      return memo
+    } else {
+      return getParents(parentNode, memo.concat(parentNode))
+    }
+  }
+  return [target].concat(getParents(target), window)
 }

@@ -1,7 +1,6 @@
 <template>
-  <a-popover trigger="contextmenu" v-model="visible" :placement="position">
+  <a-popover trigger="contextmenu" v-model="visible" :placement="position" overlayClassName="input-pop">
     <div slot="title">
-      <span>{{ title }}</span>
       <span style="float: right" title="关闭">
         <a-icon type="close" @click="visible = false" />
       </span>
@@ -19,11 +18,6 @@
 export default {
   name: 'FormTextarea',
   props: {
-    title: {
-      type: String,
-      default: '',
-      required: false
-    },
     position: {
       type: String,
       default: 'right',
@@ -31,7 +25,7 @@ export default {
     },
     height: {
       type: Number,
-      default: 180,
+      default: 150,
       required: false
     },
     width: {

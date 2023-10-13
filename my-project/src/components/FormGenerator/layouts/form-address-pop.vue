@@ -1,8 +1,20 @@
 <template>
   <div>
     <template v-if="typeNum === 2">
-      <a-cascader v-model="address2" :options="pcaTextArr" :placeholder="placeholder" @change="changeAreaCascader2" :showSearch="{ filter }" />
-      <a-textarea  v-model="extraAddress" :placeholder="placeholder" @change="changeExtra" />
+      <a-popover trigger="contextmenu" v-model="visible" placement="right" overlayClassName="input-pop">
+        <div slot="title">
+          <span style="float: right" title="关闭">
+            <a-icon type="close" @click="visible = false" />
+          </span>
+        </div>
+        <a-input :value="inputContent" readOnly :placeholder="placeholder" @focus="pop">
+          <a-icon slot="suffix" type="fullscreen" @click.stop="pop" />
+        </a-input>
+        <div slot="content">
+          <a-cascader v-model="address2" style="width: 100%" :options="pcaTextArr" :placeholder="placeholder" @change="changeAreaCascader2" :showSearch="{ filter }" />
+          <a-textarea style="margin-top: 4px" v-model="extraAddress" :placeholder="placeholder" @change="changeExtra" :style="{ height: '150px' }" />
+        </div>
+      </a-popover>
     </template>
     <template v-if="typeNum === 1">
       <a-cascader v-model="address1" :options="pcaTextArr" :placeholder="placeholder" @change="changeAreaCascader1" :showSearch="{ filter }" />
@@ -16,7 +28,7 @@
 <script>
 import { pcTextArr, pcaTextArr } from 'element-china-area-data'
 export default {
-  name: 'FormAddress',
+  name: 'FormAddressPop',
   props: ['value', 'placeholder', 'type'],
   data() {
     return {
@@ -25,7 +37,8 @@ export default {
       address0: [],
       address1: [],
       address2: [],
-      extraAddress: ''
+      extraAddress: '',
+      visible: false
     }
   },
   computed: {
@@ -37,6 +50,15 @@ export default {
       } else {
         return 2
       }
+    },
+    inputContent() {
+      let fullAddress
+      if (this.extraAddress) {
+        fullAddress = this.address2.length == 0 ? this.extraAddress : this.address2.join('/') + '/' + this.extraAddress
+      } else {
+        fullAddress = this.address2.join('/')
+      }
+      return fullAddress
     }
   },
   watch: {
@@ -81,6 +103,9 @@ export default {
     }
   },
   methods: {
+    pop() {
+      this.visible = true
+    },
     filter(inputValue, path) {
       return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)
     },
