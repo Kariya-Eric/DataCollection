@@ -26,9 +26,7 @@
       <template slot="action" slot-scope="record">
         <span class="action-span">
           <a v-if="judgeApply(record, currentUser, roleList)" @click="showForm(record)">填报</a>
-          <a-popconfirm v-if="judgeRedo(record, currentUser, roleList)" @confirm="redoForm(record.id)" title="确认要撤回该表吗">
-            <a>撤回</a>
-          </a-popconfirm>
+          <a v-if="judgeRedo(record, currentUser, roleList)" @click="showForm(record)">撤回</a>
           <a v-if="judgeShow(record, currentUser, roleList)" @click="showForm(record)">查看</a>
         </span>
       </template>
@@ -43,7 +41,7 @@ import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { handlerData } from './utils'
 import { judgeApply, judgeRedo, judgeShow } from './auth'
 import { USER_INFO, ROLE_LIST } from '@/store/mutation-types'
-import { taskFormDetail, recallForm } from '@/api/task'
+import { taskFormDetail } from '@/api/task'
 import storage from 'store'
 import FormDrawer from './form-drawer'
 export default {
@@ -117,20 +115,6 @@ export default {
         return 'child-row'
       }
       return ''
-    },
-
-    redoForm(id) {
-      this.loading = true
-      recallForm(id)
-        .then(res => {
-          if (res.state) {
-            this.$message.success(res.message)
-            this.refreshData()
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-        .finally(() => (this.loading = false))
     },
 
     showForm(row) {

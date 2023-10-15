@@ -25,16 +25,7 @@
       </template>
       <template slot="action" slot-scope="record">
         <span class="action-span">
-          <a-popconfirm
-            title="如何操作该表？"
-            v-if="judgeAudit(record, currentUser, roleList)"
-            @confirm="authForm(record.id, 2)"
-            okText="通过"
-            cancelText="驳回"
-            @cancel="authForm(record.id, 3)"
-          >
-            <a>审核</a>
-          </a-popconfirm>
+          <a v-if="judgeAudit(record, currentUser, roleList)" @click="showForm(record)">审核</a>
           <a v-if="judgeShow(record, currentUser, roleList)" @click="showForm(record)">查看</a>
           <a v-if="judgeRemind(record, currentUser, roleList)" @click="pushNotice(record)">催办</a>
           <a v-if="judgeProgress(record, currentUser, roleList)">填报进度</a>
@@ -51,7 +42,7 @@ const listUrl = '/uc/api/taskFormDetail/list/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { judgeShow, judgeAudit, judgeProgress, judgeRemind } from './auth'
 import { handlerData } from './utils'
-import { approveForm, taskFormDetail } from '@/api/task'
+import { taskFormDetail } from '@/api/task'
 import { USER_INFO, ROLE_LIST } from '@/store/mutation-types'
 import { pushNotice } from '@/api/notice'
 import storage from 'store'
@@ -144,20 +135,6 @@ export default {
       } else {
         return { status: 2, name: '待配置人员' }
       }
-    },
-
-    authForm(id, status) {
-      this.loading = true
-      approveForm({ id, status })
-        .then(res => {
-          if (res.state) {
-            this.$message.success(res.message)
-            this.refreshData()
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-        .finally(() => (this.loading = false))
     },
 
     pushNotice(record) {

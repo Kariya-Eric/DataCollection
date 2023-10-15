@@ -4,7 +4,7 @@ import store from './store'
 import storage from 'store'
 import NProgress from 'nprogress' // progress bar
 import '@/components/NProgress/nprogress.less' // progress bar custom style
-import notification from 'ant-design-vue/es/notification'
+import { Modal } from 'ant-design-vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -38,13 +38,35 @@ router.beforeEach((to, from, next) => {
             })
           })
           .catch(() => {
-            notification.error({
-              message: '错误',
-              description: '请求用户信息失败，请重试'
-            })
-            // 失败时，获取用户信息失败时，调用登出，来清空历史保留信息
-            store.dispatch('Logout').then(() => {
-              next({ path: loginRoutePath, query: { redirect: to.fullPath } })
+            Modal.confirm({
+              title: '登录已过期',
+              content: '登陆信息已失效，请重新登录',
+              okText: '重新登录',
+              mask: false,
+              onCancel: () => {
+                store.dispatch('Logout').then(() => {
+                  try {
+                    let path = window.document.location.pathname
+                    if (path != '/' && path.indexOf('/user/login') == -1) {
+                      window.location.reload()
+                    }
+                  } catch (e) {
+                    window.location.reload()
+                  }
+                })
+              },
+              onOk: () => {
+                store.dispatch('Logout').then(() => {
+                  try {
+                    let path = window.document.location.pathname
+                    if (path != '/' && path.indexOf('/user/login') == -1) {
+                      window.location.reload()
+                    }
+                  } catch (e) {
+                    window.location.reload()
+                  }
+                })
+              }
             })
           })
       } else {

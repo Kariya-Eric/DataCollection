@@ -28,15 +28,12 @@
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
 import { getUserList } from '@/api/system/user'
 import { configAuthUser } from '@/api/task'
-import storage from 'store'
-import { ORG_ID } from '@/store/mutation-types'
 export default {
   name: 'ConfigUserModal',
   mixins: [DataCollectionModalMixin],
   data() {
     return {
       userList: [],
-      currentOrg: storage.get(ORG_ID),
       rules: {
         fillUser: [{ required: true, message: '请选择填报人', trigger: 'change' }],
         responsibleUser: [
@@ -70,14 +67,10 @@ export default {
     }
   },
 
-  mounted() {
-    this.getUser()
-  },
   methods: {
-    getUser() {
-      let param = this.currentOrg === 'superAdmin' ? {} : { params: { orgId: this.currentOrg } }
+    getUser(orgId) {
       this.loading = true
-      getUserList(param)
+      getUserList({ params: { orgId } })
         .then(res => {
           if (res.state) {
             this.userList = res.value.rows
@@ -95,6 +88,7 @@ export default {
 
     show(info) {
       this.fillUserHidden = info.type == '总表'
+      this.getUser(info.orgId)
       this.model.id = info.id
       this.model.formName = info.formName
       this.model = Object.assign({}, this.model)

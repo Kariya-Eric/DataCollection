@@ -103,6 +103,9 @@ export function judgeConfig(row, currentUser, roleList) {
   if (roleList.indexOf('superAdmin') > -1) {
     return true
   } else {
+    if (roleList.indexOf('admin') > -1) {
+      return false
+    }
     return row.status == -1 && row.type != '总表'
   }
 }

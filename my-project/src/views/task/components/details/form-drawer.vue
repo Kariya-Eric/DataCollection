@@ -8,9 +8,14 @@
         <a-button type="primary" v-if="judgeYears(rowInfo, currentUser, roleList)">历年数据</a-button>
         <a-button type="primary" @click="$refs.formview.save()" v-if="judgeSave(rowInfo, currentUser, roleList)">保存</a-button>
         <a-button type="primary" @click="$refs.formview.submit()" v-if="judgeSave(rowInfo, currentUser, roleList)">提交</a-button>
-        <a-button type="primary" v-if="judgeRedo(rowInfo, currentUser, roleList)">撤回</a-button>
-        <a-button type="primary" v-if="judgeAuth(rowInfo, currentUser, roleList)">驳回</a-button>
-        <a-button type="primary" v-if="judgeAuth(rowInfo, currentUser, roleList)">通过</a-button>
+        <a-popconfirm title="确认撤回该张表单吗？" @confirm="authForm(3)" v-if="judgeRedo(rowInfo, currentUser, roleList)">
+          <a-button type="primary">撤回</a-button>
+        </a-popconfirm>
+        <a-popconfirm title="确认驳回该张表单吗？" @confirm="authForm(3)" v-if="judgeAuth(rowInfo, currentUser, roleList)">
+          <a-button type="primary">驳回</a-button>
+        </a-popconfirm>
+        <a-button type="primary" @click="authForm(2)" v-if="judgeAuth(rowInfo, currentUser, roleList)">通过</a-button>
+
         <a-button @click="close">返回</a-button>
       </div>
     </div>
@@ -29,7 +34,7 @@
 <script>
 import { judgeImport, judgeExport, judgeYears, judgeSave, judgeRedo, judgeAuth } from './authForm'
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
-import { updateTaskFormDetail, submitForm } from '@/api/task'
+import { updateTaskFormDetail, approveForm, submitForm, recallForm } from '@/api/task'
 import storage from 'store'
 import { USER_INFO, ROLE_LIST } from '@/store/mutation-types'
 export default {
@@ -48,7 +53,8 @@ export default {
       formId: '',
       rowInfo: {},
       currentUser: storage.get(USER_INFO),
-      roleList: storage.get(ROLE_LIST)
+      roleList: storage.get(ROLE_LIST),
+      showType: -1
     }
   },
   computed: {
@@ -65,7 +71,7 @@ export default {
   },
   methods: {
     show(formConf, formName, formId, showType, record) {
-      this.rowInfo = record
+      this.rowInfo = { ...record, status: showType }
       this.formName = formName
       this.formConf = JSON.parse(JSON.stringify(formConf))
       this.formId = formId
@@ -74,6 +80,7 @@ export default {
     },
 
     close() {
+      this.$emit('refresh')
       this.visible = false
     },
 
@@ -103,10 +110,37 @@ export default {
         .then(res => {
           if (res.state) {
             this.$message.success(res.message)
-            this.$emit('refresh')
             this.close()
           } else {
             this.$message.warning(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    authForm(status) {
+      this.loading = true
+      approveForm({ id: this.rowInfo.id, status })
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.close()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    redoForm() {
+      this.loading = true
+      recallForm(this.rowInfo.id)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.refreshData()
+          } else {
+            this.$message.error(res.message)
           }
         })
         .finally(() => (this.loading = false))

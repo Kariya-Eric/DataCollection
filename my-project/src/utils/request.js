@@ -15,8 +15,9 @@ const request = axios.create({
 
 // 异常拦截处理器
 const errorHandler = error => {
-  console.log(error.response)
+  console.log('errorH', error.response)
   if (error.response) {
+    console.log('switch', error.response.status)
     const data = error.response.data
     switch (error.response.status) {
       case 404:
@@ -33,7 +34,6 @@ const errorHandler = error => {
           mask: false,
           onOk: () => {
             store.dispatch('Logout').then(() => {
-              storage.remove(ACCESS_TOKEN)
               try {
                 let path = window.document.location.pathname
                 if (path != '/' && path.indexOf('/user/login') == -1) {
@@ -54,6 +54,7 @@ const errorHandler = error => {
         break
     }
   } else {
+    console.log('default')
     notification.error({
       message: '系统提示',
       description: data.message

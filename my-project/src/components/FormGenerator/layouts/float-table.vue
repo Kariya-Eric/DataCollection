@@ -74,6 +74,7 @@ export default {
         }
       }
       > th {
+        text-align: center;
         padding: 0 10px;
         border: 1px solid #dfe6ec;
         min-width: 220px;

@@ -28,19 +28,9 @@
         <span class="action-span">
           <a v-if="judgeConfig(record, currentUser, roleList)" @click="$refs.configUserModal.show(record)">配置人员</a>
           <a v-if="judgeApply(record, currentUser, roleList)" @click="showForm(record)">填报</a>
-          <a-popconfirm v-if="judgeRedo(record, currentUser, roleList)" @confirm="redoForm(record.id)" title="确认要撤回该表吗">
-            <a>撤回</a>
-          </a-popconfirm>
-          <a-popconfirm
-            title="如何操作该表？"
-            v-if="judgeAudit(record, currentUser, roleList)"
-            @confirm="authForm(record.id, 2)"
-            okText="通过"
-            cancelText="驳回"
-            @cancel="authForm(record.id, 3)"
-          >
-            <a>审核</a>
-          </a-popconfirm>
+          <a-popconfirm @confirm="redoForm(record.id)" title="确认要撤回该表吗"> </a-popconfirm>
+          <a v-if="judgeRedo(record, currentUser, roleList)" @click="showForm(record)">撤回</a>
+          <a v-if="judgeAudit(record, currentUser, roleList)" @click="showForm(record)">审核</a>
           <a v-if="judgeShow(record, currentUser, roleList)" @click="showForm(record)">查看</a>
           <a v-if="judgeRemind(record, currentUser, roleList)" @click="pushNotice(record)">催办</a>
           <a v-if="judgeProgress(record, currentUser, roleList)" @click="$refs.progressDrawer.show(record)">填报进度</a>
@@ -59,7 +49,7 @@ import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { handlerData } from './utils'
 import { judgeShow, judgeApply, judgeAudit, judgeProgress, judgeRedo, judgeRemind, judgeConfig } from './auth'
 import { USER_INFO, ROLE_LIST } from '@/store/mutation-types'
-import { taskFormDetail, approveForm, recallForm } from '@/api/task'
+import { taskFormDetail } from '@/api/task'
 import { pushNotice } from '@/api/notice'
 import FormDrawer from './form-drawer'
 import ProgressDrawer from './progress-drawer'
@@ -134,34 +124,6 @@ export default {
         return 'child-row'
       }
       return ''
-    },
-
-    authForm(id, status) {
-      this.loading = true
-      approveForm({ id, status })
-        .then(res => {
-          if (res.state) {
-            this.$message.success(res.message)
-            this.refreshData()
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-        .finally(() => (this.loading = false))
-    },
-
-    redoForm(id) {
-      this.loading = true
-      recallForm(id)
-        .then(res => {
-          if (res.state) {
-            this.$message.success(res.message)
-            this.refreshData()
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-        .finally(() => (this.loading = false))
     },
 
     pushNotice(record) {
