@@ -29,18 +29,21 @@
       <form-generator :formInfo="info" :drawingList="drawingList" :form-config="formConfig" ref="formGenerator" @view="showView" @save="saveForm" />
     </div>
 
-    <div class="container" v-if="activeTab === 1">123</div>
+    <div class="container" v-if="activeTab === 1">
+      <rule-detail :drawingList="drawingList" :formId="info.id" />
+    </div>
     <form-view-drawer ref="formViewDrawer" />
   </dc-modal>
 </template>
 
 <script>
 import FormViewDrawer from './form-view-drawer.vue'
+import RuleDetail from './rule-detail.vue'
 import { updateForm } from '@/api/form'
 export default {
   name: 'FormGeneratorModal',
   props: ['categories'],
-  components: { FormViewDrawer },
+  components: { FormViewDrawer, RuleDetail },
   data() {
     return {
       info: {},
