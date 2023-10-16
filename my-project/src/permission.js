@@ -32,7 +32,14 @@ router.beforeEach((to, from, next) => {
               router.addRoutes(store.getters.permissionList)
               store.dispatch('GetButtonList').then(() => {
                 store.dispatch('GetRoleList').then(() => {
-                  next({ ...to, replace: true })
+                  const redirect = decodeURIComponent(from.query.redirect || to.path)
+                  if (to.path === redirect) {
+                    // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+                    next({ ...to, replace: true })
+                  } else {
+                    // 跳转到目的路由
+                    next({ path: redirect })
+                  }
                 })
               })
             })

@@ -25,6 +25,8 @@ const getFormCategories = params => postAction(`/uc/api/formCategories/listByCol
 const saveFormCategories = params => postAction('/uc/api/formCategories/saveList', params)
 //上传指南
 const updateGuide = params => putAction('/uc/api/formCollection/updateGuid', params)
+const addRule = params => postAction('/uc/api/formVerification/add', params)
+const updateRule = params => putAction('/uc/api/formVerification/update', params)
 export {
   addFormCollection,
   updateFormCollection,
@@ -39,5 +41,7 @@ export {
   copyForm,
   getFormCategories,
   saveFormCategories,
-  updateGuide
+  updateGuide,
+  addRule,
+  updateRule
 }

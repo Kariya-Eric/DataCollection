@@ -194,6 +194,10 @@ export const DataCollectionListMixin = {
         .finally(() => {
           this.loading = false
         })
+    },
+
+    beforeUpload(){
+        return true
     }
   }
 }

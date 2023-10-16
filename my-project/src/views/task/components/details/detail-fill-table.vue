@@ -3,7 +3,7 @@
     <a-table
       bordered
       rowKey="id"
-      :dataSource="handlerData(dataSource)"
+      :dataSource="handlerData(dataSource, currentUser, roleList)"
       :pagination="ipagination"
       :loading="loading"
       :columns="columns"

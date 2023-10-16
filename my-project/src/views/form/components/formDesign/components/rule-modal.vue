@@ -1,5 +1,15 @@
 <template>
-  <a-modal :title="compuntedTitle" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false">
+  <a-modal
+    :title="compuntedTitle"
+    v-if="visible"
+    :visible="visible"
+    :confirmLoading="loading"
+    @cancel="handleCancel"
+    @ok="handleOk"
+    :maskClosable="false"
+    :keyboard="false"
+    width="35%"
+  >
     <a-spin :spinning="loading">
       <a-form-model :model="model" ref="form" v-bind="layout" :rules="rules">
         <a-form-model-item label="校验名称" prop="name">
@@ -17,13 +27,22 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="校验失败提示" prop="message">
-          <a-textarea v-model="model.message" placeholder="请输入校验失败提示"></a-textarea>
+          <a-textarea :rows="4" v-model="model.message" placeholder="请输入校验失败提示"></a-textarea>
         </a-form-model-item>
         <a-form-model-item label="启用">
           <dc-switch v-model="model.enabledFlag" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'dataRange'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
           <rule-range ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+        </a-form-model-item>
+        <a-form-model-item v-if="model.type == 'unique'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
+          <rule-unique ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+        </a-form-model-item>
+        <a-form-model-item v-if="model.type == 'dateTime'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
+          <rule-date ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+        </a-form-model-item>
+        <a-form-model-item v-if="model.type == 'other'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
+          <rule-other ref="verificationFormulas" v-model="model.verificationFormulas" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -32,14 +51,35 @@
 
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
-import RuleRange from './rule-range.vue'
+import RuleOther from './rule-other'
+import RuleRange from './rule-range'
+import RuleUnique from './rule-unique'
+import RuleDate from './rule-date'
+import { addRule, updateRule } from '@/api/form'
 export default {
   name: 'RuleModal',
-  components: { RuleRange },
+  components: { RuleOther, RuleRange, RuleUnique, RuleDate },
+  props: ['drawingList', 'formId'],
   mixins: [DataCollectionModalMixin],
   data() {
     return {
-      rules: {},
+      rules: {
+        name: [{ required: true, message: '请输入校验名称' }],
+        type: [{ required: true, message: '请输入校验类型' }],
+        verifyMode: [{ required: true, message: '请输入校验模式' }],
+        message: [{ required: true, message: '请输入校验失败提示' }],
+        verificationFormulas: [
+          {
+            validator: async (rule, value, callback) => {
+              let result = await this.$refs.verificationFormulas.validate()
+              if (result) {
+                callback(new Error(result))
+              }
+              callback()
+            }
+          }
+        ]
+      },
       typeList: [
         { name: '数据范围校验', value: 'dataRange' },
         { name: '唯一性校验', value: 'unique' },
@@ -59,9 +99,64 @@ export default {
       return `${this.title}${mode}`
     }
   },
+  watch: {
+    'model.verifyMode'(newVal, oldVal) {
+      if (oldVal) {
+        this.$set(this.model, 'type', '')
+      }
+      if (newVal == 'current') {
+        this.typeList = [
+          { name: '数据范围校验', value: 'dataRange' },
+          { name: '唯一性校验', value: 'unique' },
+          { name: '时间日期校验', value: 'dateTime' },
+          { name: '自定义校验', value: 'other' }
+        ]
+      } else {
+        this.typeList = [
+          { name: '数据范围校验', value: 'dataRange' },
+          { name: '排他性校验', value: 'exclusivity' },
+          { name: '一致性校验', value: 'consistency' },
+          { name: '自定义校验', value: 'other' }
+        ]
+      }
+    },
+    'model.type'(newVal) {
+      if (this.$refs.form) {
+        this.$refs.form.clearValidate('verificationFormulas')
+        if (newVal == 'dataRange') {
+          let dataRange = [
+            {
+              left: [{ operator: '', type: '', value: '' }],
+              operator: '',
+              right: [{ operator: '', type: '', value: '' }],
+              and_or: ''
+            }
+          ]
+          this.$set(this.model, 'verificationFormulas', dataRange)
+        } else if (newVal == 'unique') {
+          let unique = ['']
+          this.$set(this.model, 'verificationFormulas', unique)
+        } else if (newVal == 'dateTime') {
+          let dateTime = [
+            {
+              left: [{ operator: '', type: '', value: '' }],
+              operator: '',
+              right: [{ operator: '', type: '', value: '' }],
+              and_or: ''
+            }
+          ]
+          this.$set(this.model, 'verificationFormulas', dateTime)
+        } else if (newVal == 'other') {
+          this.$set(this.model, 'verificationFormulas', '')
+        } else if (newVal == 'exclusivity') {
+        } else if (newVal == 'consistency') {
+        }
+      }
+    }
+  },
   methods: {
     add(title) {
-      this.edit({}, title)
+      this.edit({ enabledFlag: 1 }, title)
     },
 
     edit(record, title) {
@@ -77,7 +172,35 @@ export default {
       this.visible = false
     },
 
-    handleOk() {}
+    handleOk() {
+      const that = this
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          that.loading = true
+          let handler
+          if (!this.model.formId) {
+            handler = addRule({ ...this.model, formId: this.formId })
+          } else {
+            handler = updateRule(this.model)
+          }
+          handler
+            .then(res => {
+              if (res.state) {
+                that.$message.success(res.message)
+                this.$emit('ok')
+                that.close()
+              } else {
+                that.$message.error(res.message)
+              }
+            })
+            .finally(() => {
+              that.loading = false
+            })
+        } else {
+          return
+        }
+      })
+    }
   }
 }
 </script>

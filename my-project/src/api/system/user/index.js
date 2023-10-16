@@ -1,4 +1,4 @@
-import { getAction, putAction, postAction, downFile, deleteAction } from '../../api'
+import { getAction, putAction, postAction, downFile, deleteAction, uploadAction } from '../../api'
 
 //获取用户详情
 const getUserDetail = params => getAction(`/uc/api/user/get/${params}`)
@@ -15,4 +15,6 @@ const deleteUser = params => deleteAction('/uc/api/user/deleteUserByIds', params
 //获取用户列表
 const getUserList = params => postAction('/uc/api/user/getUserPage', params)
 
-export { getUserDetail, updateUser, addUser, resetPwd, downloadUserTemp, deleteUser, getUserList }
+const importUser = params => uploadAction('/uc/api/user/import', params)
+
+export { getUserDetail, updateUser, addUser, resetPwd, downloadUserTemp, deleteUser, getUserList, importUser }

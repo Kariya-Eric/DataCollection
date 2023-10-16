@@ -1,6 +1,6 @@
 <template>
-  <div style="padding:24px 12px">
-    <a-button type="primary" style="float: right" @click="handleAdd('添加校验')">添加校验</a-button>
+  <div style="padding: 24px 12px">
+    <a-button type="primary" style="float: right; margin-bottom: 16px" @click="handleAdd('添加校验')">添加校验</a-button>
     <div style="clear: both">
       <a-table bordered rowKey="id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
         <template slot="verifyMode" slot-scope="text, record">
@@ -19,14 +19,14 @@
         </template>
         <template slot="action" slot-scope="text, record">
           <a @click="handleEdit(record, '修改校验')">查看</a>
-          <a-divider />
-          <a-popconfirm title="确认删除该校验规则吗？">
+          <a-divider type="vertical" />
+          <a-popconfirm title="确认删除该校验规则吗？" @confirm="handleDelete(record.id)">
             <a><span style="color: red">删除</span></a>
           </a-popconfirm>
         </template>
       </a-table>
     </div>
-    <rule-modal ref="modalForm" :drawingList="drawingList" :formId="formId" @refresh="refreshData" />
+    <rule-modal ref="modalForm" :drawingList="drawingList" :formId="formId" @ok="refreshData" />
   </div>
 </template>
 
@@ -50,7 +50,7 @@ export default {
         { title: '校验模式', align: 'center', scopedSlots: { customRender: 'verifyMode' } },
         { title: '前置表单', align: 'center', dataIndex: 'preFormNames' },
         { title: '校验类型', align: 'center', scopedSlots: { customRender: 'type' } },
-        { title: '校验失败提示信息', align: 'center', dataIndex: 'message', ellips: true },
+        { title: '校验失败提示信息', align: 'center', dataIndex: 'message', ellipsis: true },
         { title: '启用', align: 'center', scopedSlots: { customRender: 'enabledFlag' } },
         { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
       ]

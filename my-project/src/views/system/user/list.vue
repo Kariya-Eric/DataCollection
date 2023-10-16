@@ -47,7 +47,9 @@
           <a-button type="danger">批量删除</a-button>
         </a-popconfirm>
         <a-button type="primary" @click="handleAdd('添加用户')">添加用户</a-button>
-        <a-button type="primary">导入</a-button>
+        <a-upload style="display: inline-block" :showUploadList="false" :beforeUpload="beforeUpload" :customRequest="handleUpload">
+          <a-button type="primary"> <a-icon type="upload" /> 导入 </a-button>
+        </a-upload>
         <a-button type="primary" @click="handleExport('用户导出')">导出</a-button>
         <a href="javascript:;" @click="downloadTemp">下载导入模板</a>
       </div>
@@ -85,7 +87,7 @@ import UserModal from './components/user-modal.vue'
 import { getRoleList } from '@/api/system/role'
 import { initDeptTree } from '@/api/system/depart'
 import { USER_INFO } from '@/store/mutation-types'
-import { resetPwd, downloadUserTemp, deleteUser } from '@/api/system/user'
+import { resetPwd, downloadUserTemp, deleteUser, importUser } from '@/api/system/user'
 import storage from 'store'
 export default {
   mixins: [DataCollectionListMixin],
@@ -181,6 +183,14 @@ export default {
           }
         })
         .finally(() => (that.loading = false))
+    },
+
+    handleUpload(info) {
+      const formData = new FormData()
+      formData.append('file', info.file)
+      importUser(formData).then(res => {
+        console.log(res)
+      })
     }
   }
 }
