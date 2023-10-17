@@ -61,7 +61,7 @@ export default {
   watch: {
     $route: {
       handler(newRoute) {
-        if (newRoute.name == 'monitorDetail') {
+        if (newRoute.name == 'reportDetail') {
           console.log(newRoute.query.type)
         }
       },

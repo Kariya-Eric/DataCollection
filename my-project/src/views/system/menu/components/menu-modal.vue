@@ -69,9 +69,9 @@ export default {
       this.title = title
       this.hasParent = hasParent
       if (parentId) {
-        this.model = Object.assign(this.model, { enableMenu: 1, parentId })
+        this.model = Object.assign({}, { enableMenu: 1, parentId })
       } else {
-        this.model = Object.assign(this.model, { enableMenu: 1 })
+        this.model = Object.assign({}, { enableMenu: 1 })
       }
       this.visible = true
     },
