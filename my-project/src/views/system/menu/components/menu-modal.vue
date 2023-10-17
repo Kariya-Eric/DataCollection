@@ -29,7 +29,7 @@
         <a-form-model-item label="排序" prop="sn">
           <a-input-number v-model="model.sn" placeholder="请输入排序" :min="0" style="width: 40%" />
         </a-form-model-item>
-        <a-form-model-item label="在菜单中显示">
+        <a-form-model-item label="在菜单中显示" :label-col="{ span: 5 }" :wrapper-col="{ span: 19 }">
           <dc-switch v-model="model.enableMenu" />
         </a-form-model-item>
       </a-form-model>

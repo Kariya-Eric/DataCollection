@@ -2,7 +2,7 @@
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
       <a-card title="专业架构">
-        <a-button type="primary" slot="extra">添加专业</a-button>
+        <a-button type="primary" slot="extra" @click="handleAdd">添加专业</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="专业名称" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
             <a-input-search placeholder="请输入专业名称搜索" allowClear @change="searchSubject" />
@@ -31,6 +31,7 @@
             </template>
           </a-tree>
         </a-spin>
+        <subject-modal ref="modalForm" @refresh="initSubject" />
       </a-card>
     </a-col>
     <a-col :md="16" :sm="24">
@@ -39,7 +40,7 @@
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个专业! </span>
           </a-empty>
-          <subject-info v-else />
+          <subject-info v-else :orgs="[]" :isEdit="editFlag" @refresh="initSubject" />
         </p>
         <p v-if="activeKey === '2'">
           <a-empty v-if="selectedKeys.length == 0">
@@ -73,9 +74,10 @@ import storage from 'store'
 import { USER_INFO } from '@/store/mutation-types'
 import SubjectInfo from './components/subject-info'
 import { getSubjectTree, delSubject } from '@/api/system/subject'
+import SubjectModal from './components/subject-modal.vue'
 export default {
   name: 'SubjetList',
-  components: { SubjectInfo },
+  components: { SubjectInfo, SubjectModal },
   data() {
     return {
       userList: [],
@@ -105,6 +107,9 @@ export default {
   },
 
   methods: {
+    handleAdd() {
+      this.$refs.modalForm.add()
+    },
     initSubject() {
       this.loading = true
       getSubjectTree()
@@ -203,7 +208,7 @@ export default {
       }
     },
 
-    editSubject(){}
+    editSubject() {}
   }
 }
 </script>

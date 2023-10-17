@@ -78,18 +78,23 @@
                   </a-form-model-item>
                 </a-col>
                 <a-col :span="12">
-                  <a-form-model-item label="排序" prop="sn">
-                    <a-input-number v-model="menuInfo.sn" :min="0" style="width: 50%" />
+                  <a-form-model-item label="默认跳转地址" prop="load" :labelCol="{ span: 5 }" :wrapperCol="{ span: 19 }">
+                    <a-input v-model="menuInfo.load" placeholder="默认跳转地址（子菜单不建议配置）" />
                   </a-form-model-item>
                 </a-col>
               </a-row>
               <a-row>
                 <a-col :span="12">
-                  <a-form-model-item label="在菜单中显示" prop="enableMenu">
+                  <a-form-model-item label="在菜单中显示" prop="enableMenu" :labelCol="{ span: 5 }" :wrapperCol="{ span: 19 }">
                     <a-select v-model="menuInfo.enableMenu">
                       <a-select-option :value="1">是</a-select-option>
                       <a-select-option :value="0">否</a-select-option>
                     </a-select>
+                  </a-form-model-item>
+                </a-col>
+                <a-col :span="12">
+                  <a-form-model-item label="排序" prop="sn">
+                    <a-input-number v-model="menuInfo.sn" :min="0" style="width: 50%" />
                   </a-form-model-item>
                 </a-col>
               </a-row>

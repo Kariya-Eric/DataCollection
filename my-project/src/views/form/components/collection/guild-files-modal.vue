@@ -1,8 +1,8 @@
 <template>
-  <a-modal title="指南管理" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%">
+  <a-modal title="指南管理" v-if="visible" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%">
     <a-spin :spinning="loading">
       <a-alert message="可以一次选择多个文件,但是单个文件请勿超过5MB" type="info" show-icon style="margin-bottom: 12px" />
-      <a-upload :show-upload-list="false" :file-list="guides" :multiple="true" @change="onchange">
+      <a-upload :show-upload-list="false" :multiple="true" @change="onchange" :customRequest="() => {}">
         <a-button type="primary" icon="upload">选取文件</a-button>
       </a-upload>
       <div class="fileDiv">
@@ -53,7 +53,6 @@ export default {
       }
       const formData = new FormData()
       this.guides.forEach(f => {
-        console.log(f)
         if (f.originFileObj) {
           formData.append('files', f.originFileObj)
         }
@@ -84,8 +83,7 @@ export default {
     },
 
     onchange(info) {
-      let fileList = [...info.fileList]
-      this.guides = fileList
+      this.guides.push(info.file)
     }
   }
 }
@@ -111,6 +109,7 @@ export default {
     margin: 0 24px 12px 24px;
     .anticon-delete {
       float: right;
+      color: red;
       margin-right: 8px;
       margin-top: 4px;
       cursor: pointer;
@@ -118,7 +117,7 @@ export default {
     }
   }
   .fileListItem:hover {
-    background-color: #abcaf9;
+    background-color: #d0e3ff;
     .anticon-delete {
       opacity: 0.75;
     }

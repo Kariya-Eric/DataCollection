@@ -24,7 +24,7 @@ export function judgeAudit(row, currentUser, roleList) {
     return true
   } else {
     if (row.status == 1) {
-      return currentUser.username == row.responsibleUserName && row.type != '总表'
+      return currentUser.username == row.responsibleUserName
     }
     return false
   }
@@ -64,16 +64,16 @@ export function judgeRemind(row, currentUser, roleList) {
     return true
   } else {
     if (roleList.indexOf('admin') > -1) {
-      return row.status != 2 && row.type != '总表'
+      return row.status != 2
     } else if (row.orgContactUser == currentUser.userId || row.orgResponsibleUser == currentUser.userId) {
-      return row.status != -1 && row.status != 2 && row.type != '总表'
+      return row.status != -1 && row.status != 2
     } else {
       if (row.responsibleUserName == currentUser.username && row.fillUserName != currentUser.username) {
-        return row.status == 0 || (row.status == 3 && row.type != '总表')
+        return row.status == 0 || row.status == 3
       } else if (row.responsibleUserName != currentUser.username && row.fillUserName == currentUser.username) {
         return false
       } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
-        return row.status == 0 || (row.status == 3 && row.type != '总表')
+        return row.status == 0 || row.status == 3
       }
       return false
     }
@@ -103,5 +103,5 @@ export function judgeConfig(row, currentUser, roleList) {
   if (roleList.indexOf('superAdmin') > -1) {
     return true
   }
-  return row.status == -1 && row.type != '总表' && (row.orgContactUser == currentUser.userId || row.orgResponsibleUser == currentUser.userId)
+  return row.status == -1 && (row.orgContactUser == currentUser.userId || row.orgResponsibleUser == currentUser.userId)
 }

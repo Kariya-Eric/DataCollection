@@ -56,7 +56,7 @@
         </template>
         <template slot="guidFiles" slot-scope="text, record">
           <div v-for="(guidFile, index) in JSON.parse(record.guidFiles)" :key="index">
-            <a href="javascript:;" @click="downloadGuid(guidFile)" :title="guidFile.fileName">{{ guidFile.fileName }}</a>
+            <a download href="javascript:;" @click="downloadGuid(guidFile)" :title="guidFile.fileName">{{ guidFile.fileName }}</a>
           </div>
         </template>
         <template slot="enabledFlag" slot-scope="text, record">

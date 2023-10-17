@@ -10,7 +10,7 @@
       <a-form-model-item label="表单名称">
         <a-input disabled v-model="model.formName" />
       </a-form-model-item>
-      <a-form-model-item label="填报人" prop="fillUser" :hidden="fillUserHidden">
+      <a-form-model-item label="填报人" prop="fillUser" v-if="!fillUserHidden">
         <a-select v-model="model.fillUser" placeholder="请选择填报人" showSearch allowClear>
           <a-select-option v-for="user in userList" :key="user.id" :value="user.id">{{ user.name }}</a-select-option>
         </a-select>
@@ -35,17 +35,17 @@ export default {
     return {
       userList: [],
       rules: {
-        fillUser: [{ required: true, message: '请选择填报人', trigger: 'change' }],
-        responsibleUser: [
+        responsibleUser: [{ required: true, message: '请选择审核人', trigger: 'change' }],
+        fillUser: [
           {
             validator: (rule, value, callback) => {
               if (value) {
-                if (!this.fillUserHidden && value == this.model.fillUser) {
+                if (!this.fillUserHidden && value == this.model.responsibleUser) {
                   callback(new Error('审核人和填报人不能相同'))
                 }
                 callback()
               }
-              callback(new Error('请选择审核人'))
+              callback(new Error('请选择填报人'))
             },
             trigger: 'change'
           }

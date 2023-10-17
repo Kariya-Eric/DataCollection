@@ -36,9 +36,9 @@
     <div class="table-operator">
       <span>任务列表</span>
       <div class="table-operator-button">
-        <a-button type="primary">下载导入模板</a-button>
-        <a-button type="primary">导入</a-button>
-        <a-button type="primary" @click="handleAdd('添加任务')">添加任务</a-button>
+        <a-button v-action="'tasklist_download'">下载导入模板</a-button>
+        <a-button v-action="'tasklist_import'" type="primary">导入</a-button>
+        <a-button v-action="'tasklist_add'" type="primary" @click="handleAdd('添加任务')">添加任务</a-button>
       </div>
     </div>
 
@@ -50,7 +50,7 @@
         :pagination="ipagination"
         :loading="loading"
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-        :columns="columns"
+        :columns="renderColumns"
         @change="handleTableChange"
       >
         <template slot="name" slot-scope="text, record">
@@ -106,7 +106,7 @@ export default {
         { dataIndex: 'statisticsStartTime', title: '填报开始时间', align: 'center' },
         { dataIndex: 'year', title: '统计时间', align: 'center' },
         { dataIndex: 'status', title: '任务状态', align: 'center' },
-        { dataIndex: 'percentage', title: '完成进度', align: 'center', scopedSlots: { customRender: 'percentage' } },
+        { title: '完成进度', align: 'center', scopedSlots: { customRender: 'percentage' } },
         { title: '启用', align: 'center', scopedSlots: { customRender: 'enabled' } },
         { title: '操作', width: 290, align: 'center', scopedSlots: { customRender: 'action' } }
       ]
@@ -122,6 +122,23 @@ export default {
         yearList.push(option)
       }
       return yearList
+    },
+    renderColumns() {
+      let columns = []
+      this.columns.forEach(col => {
+        if (col.title === '完成进度') {
+          if (this.check('tasklist_progress')) {
+            columns.push(col)
+          }
+        } else if (col.title === '启用') {
+          if (this.check('tasklist_enable')) {
+            columns.push(col)
+          }
+        } else {
+          columns.push(col)
+        }
+      })
+      return columns
     }
   },
   created() {

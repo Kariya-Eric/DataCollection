@@ -7,6 +7,7 @@ function loadView(item) {
     name: item.alias,
     hidden: item.enableMenu == 0,
     component: flag ? PageView : () => import(`@/views${item.templateUrl}`),
+    redirect: item.load,
     meta: {
       title: item.name,
       icon: undefined,

@@ -1,4 +1,6 @@
 import { postAction, deleteAction, downFile } from '@/api/api'
+import storage from 'store'
+import { BUTTON_LIST } from '@/store/mutation-types'
 
 export const DataCollectionListMixin = {
   data() {
@@ -140,7 +142,7 @@ export const DataCollectionListMixin = {
     },
 
     customMethod() {},
-    
+
     modalFormOk() {
       this.loadData()
       this.onClearSelected()
@@ -196,8 +198,13 @@ export const DataCollectionListMixin = {
         })
     },
 
-    beforeUpload(){
-        return true
+    beforeUpload() {
+      return true
+    },
+
+    check(permission) {
+      const buttonList = storage.get(BUTTON_LIST) || []
+      return buttonList.indexOf(permission) > -1
     }
   }
 }
