@@ -28,10 +28,8 @@
     <div class="table-operator">
       <span>人员列表</span>
       <div class="table-operator-button" v-if="isEdit">
-        <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
-          <a-button type="danger">批量删除</a-button>
-        </a-popconfirm>
-        <a-button type="primary" @click="handleAdd('添加用户')">添加用户</a-button>
+        <a-button type="danger">批量解绑</a-button>
+        <a-button type="primary">绑定人员</a-button>
       </div>
     </div>
 
@@ -47,34 +45,23 @@
         @change="handleTableChange"
       >
         <template slot="action" slot-scope="text, record">
-          <a @click="handleDetail(record, '用户详情')">查看</a>
+          <a>查看</a>
           <a-divider type="vertical" v-if="isEdit" />
-          <a v-if="isEdit" @click="handleEdit(record, '编辑用户')">编辑</a>
-          <a-divider type="vertical" v-if="isEdit" />
-          <a-popconfirm title="确认删除吗？" @confirm="handleDelete(record.id)" v-if="isEdit"> <a>删除</a></a-popconfirm>
+          <a v-if="isEdit">解绑关系</a>
         </template>
       </a-table>
     </div>
-
-    <user-modal ref="modalForm" :depart="orgId" :role="roles" @ok="loadData" />
   </div>
 </template>
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
-import UserModal from '../../user/components/user-modal.vue'
-import { getOrgUser } from '@/api/system/depart'
-import { deleteUser } from '@/api/system/user'
 export default {
-  name: 'DepartUser',
+  name: 'SubjectUser',
+  props: ['subject', 'roles', 'isEdit'],
   mixins: [DataCollectionListMixin],
-  components: { UserModal },
-  props: ['roles', 'orgId', 'isEdit'],
   data() {
     return {
-      url: {
-        deleteBatch: '/uc/api/user/deleteUserByIds'
-      },
       columns: [
         { dataIndex: 'account', title: '账号', align: 'center' },
         { dataIndex: 'name', title: '姓名', align: 'center' },
@@ -85,48 +72,8 @@ export default {
         { dataIndex: 'action', title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
       ]
     }
-  },
-  watch: {
-    orgId: {
-      immediate: true,
-      handler(newVal) {
-        if (newVal) {
-          this.loadData()
-        }
-      }
-    },
-    dataSource(newVal) {
-      this.$emit('refresh')
-    }
-  },
-  methods: {
-    loadData() {
-      let param = { roleId: this.queryParam.roleId ? this.queryParam.roleId : '', keyword: this.queryParam.keyword ? this.queryParam.keyword : '', orgId: this.orgId }
-      this.loading = true
-      getOrgUser(param)
-        .then(res => (this.dataSource = res))
-        .finally(() => {
-          this.onClearSelected()
-          this.loading = false
-        })
-    },
-
-    handleDelete(id) {
-      let that = this
-      that.loading = true
-      deleteUser({ ids: id })
-        .then(res => {
-          if (res.state) {
-            that.$message.success(res.message)
-            that.loadData()
-          } else {
-            that.$message.error(res.message)
-          }
-        })
-        .finally(() => (that.loading = false))
-    }
   }
 }
 </script>
 
-<style scoped lang="less"></style>
+<style lang="less" scoped></style>

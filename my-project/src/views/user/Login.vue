@@ -53,12 +53,16 @@ export default {
     handleSubmit(e) {
       e.preventDefault()
       const { Login } = this
-      this.loginBtn = true
       this.form.validateFields({ force: true }, (err, values) => {
         if (!err) {
+          this.loginBtn = true
           Login(values)
             .then(res => this.loginSuccess(res))
-            .catch(err => (this.isLoginError = true))
+            .catch(err => {
+              if (err == '登录出错') {
+                this.isLoginError = true
+              }
+            })
             .finally(() => {
               this.loginBtn = false
             })

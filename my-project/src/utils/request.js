@@ -54,10 +54,9 @@ const errorHandler = error => {
         break
     }
   } else {
-    console.log('default')
     notification.error({
       message: '系统提示',
-      description: data.message
+      description: error.message
     })
   }
   return Promise.reject(error)

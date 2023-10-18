@@ -38,18 +38,18 @@
     </a-col>
     <a-col :md="16" :sm="24">
       <a-card :tab-list="tabList" :active-tab-key="activeKey" @tabChange="key => (activeKey = key)">
-        <p v-if="activeKey === '1'">
+        <div v-if="activeKey === '1'">
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个部门! </span>
           </a-empty>
           <depart-info v-else :users="userList" :isEdit="editFlag" :orgId="selectedKeys[0]" @refresh="initDepart" />
-        </p>
-        <p v-if="activeKey === '2'">
+        </div>
+        <div v-if="activeKey === '2'">
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个部门! </span>
           </a-empty>
-          <depart-user v-else :roles="roleList" :orgId="selectedKeys[0]" @refresh="refreshUser" />
-        </p>
+          <depart-user v-else :isEdit="editFlag" :roles="roleList" :orgId="selectedKeys[0]" @refresh="refreshUser" />
+        </div>
       </a-card>
     </a-col>
   </a-row>
@@ -219,6 +219,7 @@ export default {
     },
 
     delDept(item) {
+      this.loading=true
       delOrg({ id: item.id })
         .then(res => {
           if (res.state) {

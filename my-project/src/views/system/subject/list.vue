@@ -26,27 +26,30 @@
               <span v-else>{{ item.name }}</span>
               <span class="custom-tree-node">
                 <a @click.stop="editSubject(item)">修改</a>
-                <a>删除</a>
+                <a-popconfirm title="确认删除吗？" @confirm="delSubject(item)">
+                  <a @click.stop>删除</a>
+                </a-popconfirm>
               </span>
             </template>
           </a-tree>
         </a-spin>
-        <subject-modal ref="modalForm" @refresh="initSubject" />
+        <subject-modal ref="modalForm" :orgs="departList" @refresh="initSubject" />
       </a-card>
     </a-col>
     <a-col :md="16" :sm="24">
       <a-card :tab-list="tabList" :active-tab-key="activeKey" @tabChange="key => (activeKey = key)">
-        <p v-if="activeKey === '1'">
+        <div v-if="activeKey === '1'">
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个专业! </span>
           </a-empty>
-          <subject-info v-else :orgs="[]" :isEdit="editFlag" @refresh="initSubject" />
-        </p>
-        <p v-if="activeKey === '2'">
+          <subject-info v-else :orgs="departList" :subject="subjectInfo" :isEdit="editFlag" @refresh="initSubject" />
+        </div>
+        <div v-if="activeKey === '2'">
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个专业! </span>
           </a-empty>
-        </p>
+          <subject-user v-else :subject="subjectInfo" :roles="roleList" :isEdit="editFlag" @refresh="initSubject" />
+        </div>
       </a-card>
     </a-col>
   </a-row>
@@ -68,20 +71,23 @@ const getParentKey = (key, tree) => {
   }
   return parentKey
 }
-import { getUserList } from '@/api/system/user'
-import { getRoleList } from '@/api/system/role'
+
+import { initDeptTree } from '@/api/system/depart'
 import storage from 'store'
 import { USER_INFO } from '@/store/mutation-types'
 import SubjectInfo from './components/subject-info'
+import SubjectUser from './components/subject-user'
 import { getSubjectTree, delSubject } from '@/api/system/subject'
 import SubjectModal from './components/subject-modal.vue'
+import { getRoleList } from '@/api/system/role'
 export default {
   name: 'SubjetList',
-  components: { SubjectInfo, SubjectModal },
+  components: { SubjectInfo, SubjectModal, SubjectUser },
   data() {
     return {
-      userList: [],
       roleList: [],
+      subjectInfo: {},
+      departList: [],
       searchValue: '',
       editFlag: false,
       treeData: [],
@@ -102,11 +108,27 @@ export default {
   },
   created() {
     this.initSubject()
+    this.initDepart()
     this.initRoleList()
-    this.initUserList()
   },
 
   methods: {
+    initRoleList() {
+      getRoleList({}).then(res => {
+        if (res.state) {
+          this.roleList = res.value.rows.filter(role => role.enabled == 1)
+        }
+      })
+    },
+    initDepart() {
+      let userInfo = storage.get(USER_INFO)
+      initDeptTree(userInfo.userId).then(res => {
+        if (res.state) {
+          this.departList = res.value[0].children.find(item => item.name == '教学部门').children.filter(item => item.status == 1)
+        }
+      })
+    },
+
     handleAdd() {
       this.$refs.modalForm.add()
     },
@@ -142,22 +164,6 @@ export default {
         }
       })
       return subject
-    },
-
-    initUserList() {
-      getUserList({}).then(res => {
-        if (res.state) {
-          this.userList = res.value.rows
-        }
-      })
-    },
-
-    initRoleList() {
-      getRoleList({}).then(res => {
-        if (res.state) {
-          this.roleList = res.value.rows.filter(role => role.enabled == 1)
-        }
-      })
     },
 
     generateList(data) {
@@ -199,6 +205,7 @@ export default {
         if (selectedNodes[0].data.props.type !== 'SUBJECT') {
           this.selectedKeys = []
         } else {
+          this.subjectInfo = selectedNodes[0].data.props.dataRef
           this.selectedKeys = selectedKeys
           this.editFlag = false
         }
@@ -208,7 +215,26 @@ export default {
       }
     },
 
-    editSubject() {}
+    editSubject(item) {
+      this.subjectInfo = item
+      this.selectedKeys = [item.id]
+      this.editFlag = true
+    },
+
+    delSubject(item) {
+      this.loading = true
+      delSubject({ id: item.id })
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.initSubject()
+            this.selectedKeys = []
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    }
   }
 }
 </script>

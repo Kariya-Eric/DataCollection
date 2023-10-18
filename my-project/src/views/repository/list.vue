@@ -23,50 +23,40 @@
         </a-spin>
       </a-card>
     </a-col>
-    <a-col :span="9">
-      <a-card title="选项">
-        <template slot="extra">
-          <a-button type="primary">批量编辑</a-button>
-          <a-button type="primary" style="margin-left: 12px">添加</a-button>
-        </template>
-        <a-table
-          bordered
-          rowKey="id"
-          :dataSource="optionDataSource"
-          :pagination="optionPagination"
-          :loading="optionLoading"
-          :rowSelection="{ selectedRowKeys: optionSelectedRowKeys, onChange: optionOnSelectChange }"
-          :columns="optionColumns"
-          @change="handleOptionTableChange"
-        >
+    <a-col :span="18">
+      <a-card>
+        <div class="table-page-search-wrapper">
+          <a-form layout="inline">
+            <a-row :gutter="24">
+              <a-col :md="6" :sm="12">
+                <a-form-item label="业务表名">
+                  <a-input v-model="queryParam.tableName" placeholder="请输入业务表名" allowClear />
+                </a-form-item>
+              </a-col>
+              <a-col :md="6" :sm="12">
+                <a-form-item label="物理表名">
+                  <a-input v-model="queryParam.physicTableName" placeholder="请输入物理表名" allowClear />
+                </a-form-item>
+              </a-col>
+              <a-col :md="3" :sm="12">
+                <span class="table-page-search-buttons">
+                  <a-button type="primary" icon="search" @click="searchQuery">搜索</a-button>
+                  <a-button type="primary" icon="reload" @click="searchReset">重置</a-button>
+                </span>
+              </a-col>
+            </a-row>
+          </a-form>
+        </div>
+
+        <div class="table-operator">
+          <span>字典列表</span>
+        </div>
+
+        <a-table bordered rowKey="id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
           <template slot="action" slot-scope="text, record">
-            <a>编辑</a>
+            <a>查看数据</a>
             <a-divider type="vertical" />
-            <a><span style="color: red">删除</span></a>
-          </template>
-        </a-table>
-      </a-card>
-    </a-col>
-    <a-col :span="9">
-      <a-card title="选项值">
-        <template slot="extra">
-          <a-button type="primary">批量编辑</a-button>
-          <a-button type="primary" style="margin-left: 12px">添加</a-button>
-        </template>
-        <a-table
-          bordered
-          rowKey="id"
-          :dataSource="optionValueDataSource"
-          :pagination="optionValuePagination"
-          :loading="optionValueLoading"
-          :rowSelection="{ selectedRowKeys: optionValueSelectedRowKeys, onChange: optionValueOnSelectChange }"
-          :columns="optionValueColumns"
-          @change="handleOptionValueTableChange"
-        >
-          <template slot="action" slot-scope="text, record">
-            <a>编辑</a>
-            <a-divider type="vertical" />
-            <a><span style="color: red">删除</span></a>
+            <a>字段属性</a>
           </template>
         </a-table>
       </a-card>
@@ -75,45 +65,17 @@
 </template>
 
 <script>
+import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 export default {
+  mixins: [DataCollectionListMixin],
   data() {
     return {
-      optionDataSource: [],
-      optionPagination: {
-        current: 1,
-        pageSize: 10,
-        pageSizeOptions: ['10', '20', '30'],
-        showTotal: (total, range) => {
-          return range[0] + '-' + range[1] + '共' + total + '条'
-        },
-        showQuickJumper: true,
-        showSizeJumper: true,
-        total: 0
-      },
-      optionLoading: true,
-      optionSelectedRowKeys: [],
-      optionColumns: [
-        { title: '序号', width: '60', align: 'center', key: 'rowIndex', customRender: (t, r, index) => parseInt(index) + 1 },
-        { title: '选项', dataIndex: 'option', align: 'center', ellipsis: true },
-        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
-      ],
-      optionValueDataSource: [],
-      optionValuePagination: {
-        current: 1,
-        pageSize: 10,
-        pageSizeOptions: ['10', '20', '30'],
-        showTotal: (total, range) => {
-          return range[0] + '-' + range[1] + '共' + total + '条'
-        },
-        showQuickJumper: true,
-        showSizeJumper: true,
-        total: 0
-      },
-      optionValueLoading: true,
-      optionValueSelectedRowKeys: [],
-      optionValueColumns: [
-        { title: '序号', width: '60', align: 'center', key: 'rowIndex', customRender: (t, r, index) => parseInt(index) + 1 },
-        { title: '选项值', dataIndex: 'optionValue', align: 'center', ellipsis: true },
+      columns: [
+        { title: '序号', width: 70, align: 'center', key: 'rowIndex', customRender: (t, r, index) => parseInt(index) + 1 },
+        { title: '业务表名', dataIndex: 'option' },
+        { title: '物理表名', dataIndex: 'option1', align: 'center' },
+        { title: '表单类型', dataIndex: 'option2', align: 'center' },
+        { title: '前置表单', dataIndex: 'option3', align: 'center' },
         { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
       ],
       treeLoading: false,
@@ -144,34 +106,7 @@ export default {
       ]
     }
   },
-  created() {},
-  mounted() {},
   methods: {
-    optionOnSelectChange(selectedRowKeys, selectionRows) {
-      this.optionSelectedRowKeys = selectedRowKeys
-    },
-
-    optionOnClearSelected() {
-      this.optionSelectedRowKeys = []
-    },
-
-    handleOptionTableChange(pagination, filters, sorter) {
-      this.optionPagination = pagination
-      this.loadData()
-    },
-
-    optionValueOnSelectChange(selectedRowKeys, selectionRows) {
-      this.optionValueSelectedRowKeys = selectedRowKeys
-    },
-
-    optionValueOnClearSelected() {
-      this.optionSelectedRowKeys = []
-    },
-
-    handleOptionValueTableChange(pagination, filters, sorter) {
-      this.optionValuePagination = pagination
-    },
-
     onSelect(selectedKeys) {
       this.selectedKeys = selectedKeys
     },

@@ -2,7 +2,9 @@
   <a-spin :spinning="loading">
     <a-form-model ref="form" v-bind="layouts" :model="model" :rules="rules">
       <a-form-model-item label="所属院系">
-        <a-select v-model="model.orgId" :disabled="true"> </a-select>
+        <a-select v-model="model.orgId" :disabled="true">
+          <a-select-option v-for="item in orgs" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+        </a-select>
       </a-form-model-item>
       <a-form-model-item label="专业名称" prop="name">
         <a-input v-model="model.name" placeholder="请输入专业名称" :disabled="!isEdit" allowClear> </a-input>
@@ -11,10 +13,10 @@
         <a-input v-model="model.code" placeholder="请输入校内专业代码" :disabled="!isEdit" allowClear> </a-input>
       </a-form-model-item>
       <a-form-model-item label="国标专业代码" prop="internationalCode">
-        <a-select v-model="model.internationalCode" placeholder="请输入国标专业代码" :disabled="!isEdit" allowClear> </a-select>
+        <a-input v-model="model.internationalCode" placeholder="请输入国标专业代码" :disabled="!isEdit" allowClear> </a-input>
       </a-form-model-item>
-      <a-form-model-item label="排序" prop="orderNo">
-        <a-input-number v-model="model.orderNo" :min="0" :precision="0" placeholder="请输入排序" allowClear style="width: 15%" :disabled="!isEdit" />
+      <a-form-model-item label="排序" prop="sort">
+        <a-input-number v-model="model.sort" :min="0" :precision="0" placeholder="请输入排序" allowClear style="width: 15%" :disabled="!isEdit" />
       </a-form-model-item>
       <a-form-model-item label="状态">
         <dc-switch v-model="model.status" :disabled="!isEdit" />
@@ -29,23 +31,59 @@
 
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
+import { updateSubject } from '@/api/system/subject'
 export default {
   name: 'SubjectInfo',
   mixins: [DataCollectionModalMixin],
-  props: ['isEdit', 'orgs'],
+  props: ['isEdit', 'orgs', 'subject'],
   data() {
     return {
-      rules: {},
+      rules: {
+        orgId: [{ required: true, message: '请选择所属院系', trigger: 'change' }],
+        name: [{ required: true, message: '请输入专业名称' }],
+        code: [{ required: true, message: '请输入校内专业代码' }],
+        internationalCode: [{ required: true, message: '请输入国标专业代码' }],
+        sort: [{ required: true, message: '请输入排序' }]
+      },
       layouts: {
         labelCol: { span: 3 },
         wrapperCol: { span: 19 }
       }
     }
   },
-
+  watch: {
+    subject: {
+      handler(newVal) {
+        if (newVal) {
+          this.model = Object.assign({}, newVal)
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
-    handleSubmit() {},
-    resetForm() {}
+    handleSubmit() {
+      const that = this
+      this.$refs.form.validate(valid => {
+        that.loading = true
+        if (valid) {
+          updateSubject(this.model)
+            .then(res => {
+              if (res.state) {
+                that.$message.success(res.message)
+                this.$emit('refresh')
+              } else {
+                that.$message.error(res.message)
+              }
+            })
+            .finally(() => (that.loading = false))
+        }
+      })
+    },
+    resetForm() {
+      this.$refs.form.clearValidate()
+      this.model = Object.assign({}, this.subject)
+    }
   }
 }
 </script>

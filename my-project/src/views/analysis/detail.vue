@@ -62,14 +62,17 @@ export default {
     $route: {
       handler(newRoute) {
         if (newRoute.name == 'reportDetail') {
-          console.log(newRoute.query.type)
+          this.queryParam.type = newRoute.query.type
+          this.queryParam.year = '2023'
         }
       },
       immediate: true,
       deep: true
     }
   },
-  methods: {}
+  methods: {
+    
+  }
 }
 </script>
 
