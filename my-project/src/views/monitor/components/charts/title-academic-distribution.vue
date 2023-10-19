@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="echart" ref="titleAcademicDistribution"></div>
+    <a-row :gutter="6">
+      <a-col :span="12"> <div class="echart" ref="titleDistribution"></div></a-col>
+      <a-col :span="12"> <div class="echart" ref="academicDistribution"></div></a-col>
+    </a-row>
   </div>
 </template>
 
@@ -38,23 +41,22 @@ export default {
     }
   },
   mounted() {
-    this.initEcharts()
+    this.initTitleEcharts()
+    this.initAcademicEcharts()
   },
   methods: {
-    initEcharts() {
-      const parentNode = this.$refs.titleAcademicDistribution.parentNode.parentNode
+    initTitleEcharts() {
+      const parentNode = this.$refs.titleDistribution.parentNode.parentNode
       const option = {
-        title: [
-          {
-            text: '职称分布'
-          },
-          {
-            text: '最高学位分布',
-            left: '50%'
-          }
-        ],
+        title: [{ text: '职称分布' }],
         tooltip: { trigger: 'item' },
-        legend: { top: 'bottom' },
+        legend: {
+          top: 'bottom',
+          data: this.pieData1.map(item => {
+            let opt = { icon: 'circle', name: item.name }
+            return opt
+          })
+        },
         series: [
           {
             type: 'pie',
@@ -83,10 +85,38 @@ export default {
                   return ((params.value / this.total1) * 100).toFixed(2) + '%'
                 }
               }
-            },
-            left: 0,
-            right: '50%'
-          },
+            }
+          }
+        ]
+      }
+      const myChart = echarts.init(this.$refs.titleDistribution)
+      myChart.setOption(option)
+      myChart.resize({
+        width: parentNode.clientWidth / 2 - 48 + 'px',
+        height: parentNode.clientHeight - 48 + 'px'
+      })
+      //随着屏幕大小调节图表
+      window.addEventListener('resize', () => {
+        myChart.resize({
+          width: parentNode.clientWidth / 2 - 48 + 'px',
+          height: parentNode.clientHeight - 48 + 'px'
+        })
+      })
+    },
+
+    initAcademicEcharts() {
+      const parentNode = this.$refs.academicDistribution.parentNode.parentNode
+      const option = {
+        title: [{ text: '职称分布' }],
+        tooltip: { trigger: 'item' },
+        legend: {
+          top: 'bottom',
+          data: this.pieData2.map(item => {
+            let opt = { icon: 'circle', name: item.name }
+            return opt
+          })
+        },
+        series: [
           {
             type: 'pie',
             data: this.pieData2,
@@ -114,21 +144,22 @@ export default {
                   return ((params.value / this.total2) * 100).toFixed(2) + '%'
                 }
               }
-            },
-            left: '50%',
-            right: 0
+            }
           }
         ]
       }
-      const myChart = echarts.init(this.$refs.titleAcademicDistribution)
+      const myChart = echarts.init(this.$refs.academicDistribution)
       myChart.setOption(option)
       myChart.resize({
-        width: parentNode.clientWidth - 48 + 'px',
+        width: parentNode.clientWidth / 2 - 48 + 'px',
         height: parentNode.clientHeight - 48 + 'px'
       })
       //随着屏幕大小调节图表
       window.addEventListener('resize', () => {
-        myChart.resize()
+        myChart.resize({
+          width: parentNode.clientWidth / 2 - 48 + 'px',
+          height: parentNode.clientHeight - 48 + 'px'
+        })
       })
     }
   }

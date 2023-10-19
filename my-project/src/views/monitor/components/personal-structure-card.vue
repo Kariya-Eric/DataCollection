@@ -29,7 +29,7 @@
       </a-row>
     </div>
     <div v-if="activeKey === '2'">
-      <a-row :gutter="12">
+      <a-row :gutter="24">
         <a-col :span="6">
           <div class="row-div">
             <a-row :gutter="3">
@@ -65,10 +65,19 @@
             </a-row>
           </div>
         </a-col>
-        <a-col :span="12" style="height: 330px">
+        <a-col :span="12">
           <title-academic-distribution />
         </a-col>
-        <a-col :span="6"> </a-col>
+        <a-col :span="6"> <age-distribution-manager /> </a-col>
+      </a-row>
+    </div>
+
+    <div v-if="activeKey === '3'">
+      <a-row :gutter="24">
+        <a-col :span="6"> <teacher-team-amount /></a-col>
+        <a-col :span="6"> <professor-team-amount /></a-col>
+        <a-col :span="6"> <talent-team-amount /></a-col>
+        <a-col :span="6"> <new-team-amount /></a-col>
       </a-row>
     </div>
   </a-card>
@@ -77,10 +86,15 @@
 <script>
 import AgeDistribution from './charts/age-distribution.vue'
 import AcademicDistribution from './charts/academic-distribution.vue'
+import AgeDistributionManager from './charts/age-distribution-manager.vue'
 import TitleAcademicDistribution from './charts/title-academic-distribution.vue'
+import TeacherTeamAmount from './charts/teacher-team-amount.vue'
+import ProfessorTeamAmount from './charts/professor-team-amount.vue'
+import TalentTeamAmount from './charts/talent-team-amount.vue'
+import NewTeamAmount from './charts/new-team-amount.vue'
 export default {
   name: 'PersonalStructureCard',
-  components: { AgeDistribution, AcademicDistribution, TitleAcademicDistribution },
+  components: { AgeDistribution, AcademicDistribution, TitleAcademicDistribution, AgeDistributionManager, TeacherTeamAmount, ProfessorTeamAmount, TalentTeamAmount, NewTeamAmount },
   data() {
     return {
       tabList: [

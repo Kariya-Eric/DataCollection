@@ -22,3 +22,6 @@ process.env.NODE_ENV !== 'production' && console.warn('[antd-pro] WARNING: Antd 
 import DcComponents from '@/components'
 
 Vue.use(DcComponents)
+
+import { DcIcon } from './icon'
+Vue.component('dcIcon', DcIcon)

@@ -92,8 +92,13 @@ export default {
           }
         ],
         legend: {
-          top: 'bottom'
+          top: 'bottom',
+          data: this.pieData1.map(item => {
+            let opt = { icon: 'circle', name: item.name }
+            return opt
+          })
         },
+        tooltip: { trigger: 'item' },
         series: [
           {
             type: 'pie',
@@ -198,7 +203,10 @@ export default {
       })
       //随着屏幕大小调节图表
       window.addEventListener('resize', () => {
-        myChart.resize()
+        myChart.resize({
+          width: parentNode.clientWidth - 48 + 'px',
+          height: parentNode.clientHeight - 48 + 'px'
+        })
       })
     }
   }

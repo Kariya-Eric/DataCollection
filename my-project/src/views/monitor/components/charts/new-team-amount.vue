@@ -1,17 +1,17 @@
 <template>
   <div>
-    <div class="echart" ref="ageDistribution"></div>
+    <div class="echart" ref="newTeamAmount"></div>
   </div>
 </template>
 
 <script>
 import echarts from './echarts'
 export default {
-  name: 'AgeDistribution',
+  name: 'NewTeamAmount',
   data() {
     return {
-      yAxis: ['35岁以下', '36-45岁', '46-55岁', '56岁以上'],
-      yData: [20, 20, 50, 70]
+      xAxis: ['2019-2020', '2020-2021', '2021-2022'],
+      data: [23, 46, 50]
     }
   },
   mounted() {
@@ -19,17 +19,17 @@ export default {
   },
   methods: {
     initEcharts() {
-      const parentNode = this.$refs.ageDistribution.parentNode.parentNode
+      const parentNode = this.$refs.newTeamAmount.parentNode.parentNode
       // 基本柱状图
       const option = {
-        grid: { top: '15%', left: '16%', right: '8%', bottom: '15%' },
+        grid: { top: '18%', left: '16%', right: '8%', bottom: '12%' },
         tooltip: { trigger: 'item' },
-        title: { text: '年龄分布' },
-        xAxis: { type: 'value' },
-        yAxis: { type: 'category', data: this.yAxis },
-        series: [{ type: 'bar', data: this.yData, label: { show: true, position: 'right' } }]
+        title: { text: '新发展教职工党员' },
+        yAxis: { type: 'value', min: 20 },
+        xAxis: { type: 'category', data: this.xAxis },
+        series: [{ data: this.data, type: 'line' }]
       }
-      const myChart = echarts.init(this.$refs.ageDistribution)
+      const myChart = echarts.init(this.$refs.newTeamAmount)
       myChart.setOption(option)
       myChart.resize({
         width: parentNode.clientWidth + 'px',

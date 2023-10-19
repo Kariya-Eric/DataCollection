@@ -33,7 +33,14 @@ export default {
       const parentNode = this.$refs.academicDistribution.parentNode.parentNode
       const option = {
         title: { text: '学位分布', left: 'left' },
-        legend: { orient: 'vertical', right: 15 },
+        legend: {
+          orient: 'vertical',
+          right: 15,
+          data: this.pieData.map(item => {
+            let opt = { icon: 'circle', name: item.name }
+            return opt
+          })
+        },
         tooltip: { trigger: 'item' },
         series: [
           {
@@ -76,7 +83,10 @@ export default {
       })
       //随着屏幕大小调节图表
       window.addEventListener('resize', () => {
-        myChart.resize()
+        myChart.resize({
+          width: parentNode.clientWidth + 'px',
+          height: parentNode.clientHeight + 'px'
+        })
       })
     }
   }

@@ -1,5 +1,4 @@
 import { PageView } from '@/layouts'
-import * as icons from '@/core/icons'
 //菜单item生成路由页面
 function loadView(item) {
   let flag = item.children.length > 0
@@ -11,7 +10,7 @@ function loadView(item) {
     redirect: item.load,
     meta: {
       title: item.name,
-      icon: icons['baseInfo'],
+      icon: undefined,
       keepAlive: true
     },
     children: []
