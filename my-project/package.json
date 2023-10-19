@@ -16,6 +16,7 @@
     "axios": "^0.26.1",
     "babel-loader": "8",
     "core-js": "^3.21.1",
+    "echarts": "^5.4.1",
     "element-china-area-data": "^6.1.0",
     "enquire.js": "^2.1.6",
     "exceljs": "^4.3.0",
