@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-bottom: 8px">
-      <a-button type="primary" @click="insertEvent" style="margin-right: 12px">新增</a-button>
+      <a-button type="primary" icon="plus" @click="insertEvent" style="margin-right: 12px">新增</a-button>
       <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0">
         <a-button type="danger" class="del-action">删除</a-button>
       </a-popconfirm>
@@ -38,7 +38,7 @@
         <template #header="{ column }">
           <a-tooltip placement="bottom" v-if="col.comment.length > 0">
             <template slot="title">{{ col.comment }}</template>
-            <a-icon type="question-circle" style="margin: 0px 8px" />
+            <dc-icon type="icon-tooltip" style="margin: 0px 4px" />
           </a-tooltip>
           <span>{{ column.title }}</span>
         </template>

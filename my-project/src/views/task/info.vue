@@ -4,11 +4,16 @@
       <a-descriptions :column="4">
         <template slot="title">
           <a-row :gutter="24">
-            <a-col :span="12">基础信息</a-col>
+            <a-col :span="12">
+              <div class="img-div">
+                <img src="@/assets/icons/base_info.svg" />
+                <span style="margin-left: 12px">基础信息</span>
+              </div>
+            </a-col>
             <a-col :span="12">
               <div style="float: right">
-                <a-button type="primary" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag" @click="editTask">编辑</a-button>
-                <a-button @click="$router.back(-1)" style="margin-left: 12px">返回</a-button>
+                <a-button type="primary" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag" @click="editTask"><dc-icon type="icon-edit" />编辑</a-button>
+                <a-button @click="$router.back(-1)" style="margin-left: 12px"><dc-icon type="icon-back" />返回</a-button>
               </div>
             </a-col>
           </a-row>
@@ -20,7 +25,11 @@
         <a-descriptions-item label="统计时间"> ？？ </a-descriptions-item>
         <a-descriptions-item label="学年"> {{ taskInfo.schoolYear }}</a-descriptions-item>
         <a-descriptions-item label="自然年">{{ taskInfo.year }}</a-descriptions-item>
-        <a-descriptions-item label="学校专业类别"> </a-descriptions-item>
+        <a-descriptions-item label="学校专业类别">
+          <a-tag v-for="(item, index) in tagList" :key="index" class="normal-tag">
+            <span style="color: #ef722e; margin-left: 16px">{{ item }}</span>
+          </a-tag>
+        </a-descriptions-item>
         <a-descriptions-item label="合集名称"> ？？ </a-descriptions-item>
         <a-descriptions-item label="合集年份"> ？？ </a-descriptions-item>
         <a-descriptions-item label="任务状态"> </a-descriptions-item>
@@ -31,7 +40,12 @@
     </a-spin>
     <a-divider />
     <a-descriptions style="margin-top: 24px">
-      <template slot="title"> 表单分配 </template>
+      <template slot="title">
+        <div class="img-div">
+          <img src="@/assets/icons/form_assign.svg" />
+          <span style="margin-left: 12px">表单分配</span>
+        </div>
+      </template>
     </a-descriptions>
     <a-table bordered rowKey="formId" :dataSource="dataSource" :pagination="false" :loading="tableLoading" :columns="columns"></a-table>
     <task-modal ref="modalForm" @ok="getTaskInfo" />
@@ -48,6 +62,7 @@ export default {
     return {
       taskId: '',
       dataSource: [],
+      tagList: [],
       infoLoading: false,
       tableLoading: false,
       columns: [
@@ -122,6 +137,9 @@ export default {
         .then(res => {
           if (res.state) {
             this.taskInfo = res.value
+            if (this.taskInfo.professionalCategory) {
+              this.tagList = this.taskInfo.professionalCategory.split(',')
+            }
             if (this.taskInfo.formCollectionId) {
               this.getFormList()
             }
@@ -148,4 +166,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="less" scoped></style>

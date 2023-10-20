@@ -29,9 +29,9 @@
       <span>人员列表</span>
       <div class="table-operator-button" v-if="isEdit">
         <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
-          <a-button type="danger">批量删除</a-button>
+          <a-button type="danger"><dc-icon type="icon-empty" />批量删除</a-button>
         </a-popconfirm>
-        <a-button type="primary" @click="handleAdd('添加用户')">添加用户</a-button>
+        <a-button type="primary" @click="handleAdd('添加用户')"><dc-icon type="icon-new" />添加用户</a-button>
       </div>
     </div>
 
@@ -46,6 +46,10 @@
         :columns="columns"
         @change="handleTableChange"
       >
+        <template slot="status" slot-scope="text, record">
+          <dc-status v-if="record.status == 1" name="启用" color="blue" />
+          <dc-status v-else name="禁用" color="grey" />
+        </template>
         <template slot="action" slot-scope="text, record">
           <a @click="handleDetail(record, '用户详情')">查看</a>
           <a-divider type="vertical" v-if="isEdit" />
@@ -81,7 +85,7 @@ export default {
         { dataIndex: 'orgName', title: '所属部门', align: 'center' },
         { dataIndex: 'account1', title: '所属专业', align: 'center' },
         { dataIndex: 'roleName', title: '角色', align: 'center' },
-        { dataIndex: 'status', title: '状态', align: 'center' },
+        { title: '状态', align: 'center', scopedSlots: { customRender: 'status' } },
         { dataIndex: 'action', title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
       ]
     }

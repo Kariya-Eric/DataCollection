@@ -17,7 +17,7 @@
             @end="onEnd"
           >
             <div v-for="(element, index) in item.list" :key="index" class="components-item" @click="addComponent(element)">
-              <div class="components-body">{{ element.__config__.label }}</div>
+              <div class="components-body"><dc-icon :type="element.__config__.tagIcon" style="margin-right: 8px" />{{ element.__config__.label }}</div>
             </div>
           </draggable>
         </div>

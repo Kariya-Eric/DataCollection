@@ -15,7 +15,7 @@ export const selectComponentsFix = [
       changeTag: true,
       showLabel: true,
       tag: 'a-radio-group',
-      tagIcon: '单项选择',
+      tagIcon: 'icon-radio',
       layout: 'colFormItem',
       span: 24,
       labelCol: { span: 2 },
@@ -42,7 +42,7 @@ export const selectComponentsFix = [
       label: '多项选择',
       tag: 'a-checkbox-group',
       changeTag: true,
-      tagIcon: '多项选择',
+      tagIcon: 'icon-checkbox',
       defaultValue: [],
       span: 24,
       labelCol: { span: 2 },
@@ -70,7 +70,7 @@ export const selectComponentsFix = [
 export const otherComponentsFix = [
   {
     __config__: {
-      tagIcon: '表格',
+      tagIcon: 'icon-table',
       layout: 'tableLayout',
       label: '表格',
       tag: 'fixedTable',
@@ -110,7 +110,7 @@ export const layoutComponentsFix = [
   {
     __config__: {
       tag: 'formDivider',
-      tagIcon: '分割线',
+      tagIcon: 'icon-divider',
       label: '分割线',
       layout: 'colFormItem',
       showLabel: false,

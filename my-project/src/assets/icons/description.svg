@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="17px" viewBox="0 0 15 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>说明</title>
+    <defs>
+        <path d="M314,54 L1440,54 L1440,54 L1440,900 L314,900 C311.790861,900 310,898.209139 310,896 L310,58 C310,55.790861 311.790861,54 314,54 Z" id="path-1"></path>
+        <filter x="-2.1%" y="-2.1%" width="103.2%" height="104.3%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="-6" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-3" x="334" y="173" width="1082" height="42" rx="4"></rect>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1082" height="42" fill="white">
+            <use xlink:href="#path-3"></use>
+        </mask>
+        <linearGradient x1="50%" y1="17.0809659%" x2="50%" y2="100%" id="linearGradient-5">
+            <stop stop-color="#76A8F4" offset="0%"></stop>
+            <stop stop-color="#2F68BD" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="表单管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="表单详情-浮动表单" transform="translate(-344.000000, -185.000000)">
+            <rect fill="#F2F3F6" x="0" y="0" width="1440" height="900"></rect>
+            <path d="M24,139 L1416,139 C1418.20914,139 1420,140.790861 1420,143 L1420,828 C1420,830.209139 1418.20914,832 1416,832 L24,832 C21.790861,832 20,830.209139 20,828 L20,143 C20,140.790861 21.790861,139 24,139 Z" id="背景" fill="#FFFFFF"></path>
+            <g id="Group-32备份-2" transform="translate(356.000000, 159.000000)" fill="#4A4C51" font-family="PingFangSC-Regular, PingFang SC" font-size="14" font-weight="normal" line-spacing="22">
+                <text id="状态">
+                    <tspan x="0" y="20">状态</tspan>
+                </text>
+            </g>
+            <g id="矩形">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+            </g>
+            <use id="矩形" stroke="#BDCEEE" mask="url(#mask-4)" stroke-width="2" fill="#F4F8FF" stroke-dasharray="4,4" xlink:href="#path-3"></use>
+            <g id="说明-2" transform="translate(344.000000, 185.000000)">
+                <g id="说明" transform="translate(0.500000, 0.500000)">
+                    <path d="M11.4259064,16 L2.57498461,16 C1.15278381,16 0,14.9649406 0,13.6878083 L0,3.52274349 C0,2.24559332 1.15278381,1.21055177 2.57498461,1.21055177 L11.4250149,1.21055177 C12.8472157,1.21055177 14,2.24561116 14,3.52274349 L14,13.6878083 C14.000891,14.9649584 12.8481072,16 11.4259064,16 Z" id="路径" fill="url(#linearGradient-5)"></path>
+                    <path d="M10.7131948,13.2228077 L7.87662179,13.2228077 C7.47283979,13.2228077 7.14578171,12.8957496 7.14578171,12.4919676 C7.14578171,12.0881856 7.47283979,11.7611276 7.87662179,11.7611276 L10.7131948,11.7611276 C11.1169768,11.7611276 11.4440349,12.0881856 11.4440349,12.4919676 C11.4440349,12.8957496 11.1169768,13.2228077 10.7131948,13.2228077 Z" id="路径" fill="#FFFFFF" fill-rule="nonzero"></path>
+                    <path d="M7.35498826,7.07025948 L5.5717456,6.04228881 C5.40001548,5.94287091 5.19133013,5.94431693 5.02086776,6.04610595 L3.32166458,7.05396179 C2.93615358,7.28196104 2.46474745,6.98115547 2.46474745,6.506932 L2.46474745,0.624644964 C2.46474745,0.279755171 2.72328927,0 3.0430318,0 L7.62723332,0 C7.94697585,0 8.20551767,0.279736459 8.20551767,0.624644964 L8.20551767,6.51937513 C8.20551767,6.99169002 7.74049926,7.29251431 7.35498826,7.07024077 L7.35498826,7.07025948 Z" id="路径" fill="#97C1FF"></path>
+                    <path d="M2.63468205,1.21419169 C2.57712125,1.21419169 2.52048828,1.2160295 2.46383747,1.21968727 L2.46383747,6.53654883 C2.46383747,6.98875613 2.9352436,7.27652441 3.3207546,7.05818236 L5.02086776,6.09711696 C5.19145331,6.00051381 5.39989839,5.99913651 5.5717456,6.09347703 L7.35406043,7.07370558 C7.73958928,7.28565991 8.20551767,6.99787378 8.20551767,6.54841427 L8.20551767,1.21328171 L2.6346642,1.21328171 L2.63468205,1.21419169 Z" id="路径" fill="#2C6CCA" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

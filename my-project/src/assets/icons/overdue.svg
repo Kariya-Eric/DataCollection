@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="78px" height="78px" viewBox="0 0 78 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>已逾期</title>
+    <defs>
+        <linearGradient x1="26.1635064%" y1="0.748638773%" x2="99.7534152%" y2="73.8005151%" id="linearGradient-1">
+            <stop stop-color="#FF7373" offset="0%"></stop>
+            <stop stop-color="#DC3D2D" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="表单管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="我的待办" transform="translate(-986.000000, -112.000000)">
+            <g id="编组-13备份" transform="translate(986.000000, 112.000000)">
+                <polygon id="矩形" fill="url(#linearGradient-1)" points="5.15119329e-13 9.78661596e-14 46.6949519 -1.31294281e-13 78 31.4632591 78 78"></polygon>
+                <text id="已逾期" transform="translate(50.240855, 28.240855) rotate(-315.000000) translate(-50.240855, -28.240855) " font-family="PingFangSC-Semibold, PingFang SC" font-size="15" font-weight="500" line-spacing="20" fill="#FFFFFF">
+                    <tspan x="27.740855" y="34.240855">已逾期</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

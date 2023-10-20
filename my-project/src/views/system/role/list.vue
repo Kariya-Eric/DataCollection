@@ -30,9 +30,9 @@
       <span>角色管理</span>
       <div class="table-operator-button">
         <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
-          <a-button type="danger">批量删除</a-button>
+          <a-button type="danger"><dc-icon type="icon-empty" />批量删除</a-button>
         </a-popconfirm>
-        <a-button type="primary" @click="handleAdd('新增角色')">添加角色</a-button>
+        <a-button type="primary" @click="handleAdd('新增角色')"><dc-icon type="icon-new" />添加角色</a-button>
       </div>
     </div>
 
@@ -47,6 +47,10 @@
         :columns="columns"
         @change="handleTableChange"
       >
+        <template slot="enabled" slot-scope="text, record">
+          <dc-status v-if="record.enabled == 1" name="启用" color="blue" />
+          <dc-status v-else name="禁用" color="grey" />
+        </template>
         <template slot="action" slot-scope="text, record">
           <a @click="handleEdit(record, '修改角色')">编辑</a>
           <a-divider type="vertical" />
@@ -75,7 +79,7 @@ export default {
       columns: [
         { dataIndex: 'name', title: '角色名称', align: 'center' },
         { dataIndex: 'code', title: '角色编码', align: 'center' },
-        { dataIndex: 'enabled', title: '状态', align: 'center' },
+        { title: '状态', align: 'center', scopedSlots: { customRender: 'enabled' } },
         { dataIndex: 'updateTime', title: '更新时间', align: 'center' },
         { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
       ]

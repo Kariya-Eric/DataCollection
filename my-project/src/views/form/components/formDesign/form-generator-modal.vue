@@ -17,10 +17,12 @@
           </a-tabs>
         </a-col>
         <a-col class="right">
-          <a-button type="danger" @click="empty"> 清空</a-button>
-          <a-button type="primary" @click="view">预览</a-button>
-          <a-button type="primary" @click="save">保存</a-button>
-          <a-button @click="handleCancel">返回</a-button>
+          <a-popconfirm title="确认清空所有组件吗？" @confirm="empty" placement="bottom">
+            <a-button type="danger"><dc-icon type="icon-empty" />清空</a-button>
+          </a-popconfirm>
+          <a-button type="primary" @click="view"><dc-icon type="icon-view" /> 预览</a-button>
+          <a-button type="primary" @click="save"><dc-icon type="icon-save" /> 保存</a-button>
+          <a-button @click="handleCancel"><dc-icon type="icon-back" /> 返回</a-button>
         </a-col>
       </a-row>
     </template>

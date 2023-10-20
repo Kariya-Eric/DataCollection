@@ -38,9 +38,9 @@
       <div class="table-operator">
         <span>合集详情</span>
         <div class="table-operator-button">
-          <a-button type="primary" @click="updateFormCategory">配置表单大类</a-button>
-          <a-button type="primary" @click="copyForm">复制表单</a-button>
-          <a-button type="primary" @click="handleAdd('新建表单')">新建表单</a-button>
+          <a-button type="primary" @click="updateFormCategory"><dc-icon type="icon-config_category" />配置表单大类</a-button>
+          <a-button type="primary" @click="copyForm"><dc-icon type="icon-copy" />复制表单</a-button>
+          <a-button type="primary" @click="handleAdd('新建表单')"><dc-icon type="icon-new" />新建表单</a-button>
         </div>
       </div>
 
@@ -59,7 +59,9 @@
             {{ record.required ? `是` : `否` }}
           </template>
           <template slot="type" slot-scope="text, record">
-            {{ record.type }}
+            <a-tag :class="record.type == '固定表单' ? 'fixed-tag' : 'float-tag'">
+              <span :style="{ color: record.type == '固定表单' ? '#2b9e77' : '#2f68bd' }">{{ record.type }}</span>
+            </a-tag>
           </template>
           <template slot="enabled" slot-scope="text, record">
             <dc-switch v-model="record.enabledFlag" @change="val => enableForm(val, record.id)" />

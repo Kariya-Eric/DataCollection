@@ -45,7 +45,7 @@
           <a-button :class="{ active: activeName == 'APPROVE' }" @click="() => (activeName = 'APPROVE')">我审核的</a-button>
         </a-button-group>
         <div class="table-operator-button">
-          <a-button type="primary">一键催办</a-button>
+          <a-button type="primary"><dc-icon type="icon-remind" />一键催办</a-button>
         </div>
       </div>
 

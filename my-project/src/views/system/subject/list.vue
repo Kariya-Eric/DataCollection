@@ -2,7 +2,7 @@
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
       <a-card title="专业架构">
-        <a-button type="primary" slot="extra" @click="handleAdd">添加专业</a-button>
+        <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-new" />添加专业</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="专业名称" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
             <a-input-search placeholder="请输入专业名称搜索" allowClear @change="searchSubject" />
@@ -17,6 +17,17 @@
             @select="onSelect"
             :selected-keys="selectedKeys"
           >
+            <template slot="parent" slot-scope="item">
+              <div class="img-div">
+                <img src="@/assets/icons/depart.svg" />
+                <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
+                  {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
+                  <span style="color: #f50">{{ searchValue }}</span>
+                  {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
+                </span>
+                <span v-else>{{ item.name }}</span>
+              </div>
+            </template>
             <template slot="custom" slot-scope="item">
               <span v-if="item.name.indexOf(searchValue) > -1">
                 {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
@@ -25,9 +36,9 @@
               </span>
               <span v-else>{{ item.name }}</span>
               <span class="custom-tree-node">
-                <a @click.stop="editSubject(item)">修改</a>
+                <dc-icon type="icon-edit_empty" @click.stop="editSubject(item)" style="color: #2f68bd" />
                 <a-popconfirm title="确认删除吗？" @confirm="delSubject(item)">
-                  <a @click.stop>删除</a>
+                  <dc-icon type="icon-empty" @click.stop style="color: #e23322" />
                 </a-popconfirm>
               </span>
             </template>
@@ -161,6 +172,8 @@ export default {
         }
         if (subj.type === 'SUBJECT') {
           subj.scopedSlots = { title: 'custom' }
+        } else {
+          subj.scopedSlots = { title: 'parent' }
         }
       })
       return subject
@@ -242,7 +255,7 @@ export default {
 <style scoped lang="less">
 .custom-tree-node {
   float: right;
-  a {
+  .anticon {
     margin-right: 8px;
   }
   visibility: hidden;

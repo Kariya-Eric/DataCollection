@@ -16,12 +16,15 @@
           :selected-keys="selectedKeys"
         >
           <template slot="title" slot-scope="item">
-            <span v-if="item.name.indexOf(searchValue) > -1">
-              {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
-              <span style="color: #f50">{{ searchValue }}</span>
-              {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
-            </span>
-            <span v-else>{{ item.name }}</span>
+            <div class="img-div">
+              <img src="@/assets/icons/depart.svg" />
+              <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
+                {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
+                <span style="color: #f50">{{ searchValue }}</span>
+                {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
+              </span>
+              <span v-else style="margin-left: 8px">{{ item.name }}</span>
+            </div>
           </template>
         </a-tree>
       </a-col>
@@ -36,8 +39,8 @@
                 <a-select-option :value="2">未配置</a-select-option>
               </a-select>
               <div style="float: right">
-                <a-button type="primary" @click="copyPermission" style="margin-right: 12px">复制其他任务权限</a-button>
-                <a-button type="primary" @click="applyPermissionBatch">批量配置权限</a-button>
+                <a-button type="primary" @click="copyPermission" style="margin-right: 12px"><dc-icon type="icon-copy" />复制其他任务权限</a-button>
+                <a-button type="primary" @click="applyPermissionBatch"><dc-icon type="icon-batch_config" />批量配置权限</a-button>
               </div>
             </a-row>
           </div>
@@ -52,11 +55,12 @@
             :columns="columns"
           >
             <template slot="formName" slot-scope="text, record">
-              <span>{{ record.formName }}</span>
+              <dc-icon type="icon-form_table" :style="{ color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
+              <span style="margin-left: 8px">{{ record.formName }}</span>
             </template>
             <template slot="configStatus" slot-scope="text, record">
-              <a-tag v-if="record.configStatus" color="green">已配置</a-tag>
-              <a-tag v-else color="orange">未配置</a-tag>
+              <dc-status v-if="record.configStatus" color="green" name="已配置" />
+              <dc-status v-else color="grey" name="未配置" />
             </template>
             <template slot="action" slot-scope="text, record">
               <a @click="applyPermission(record)">配置权限</a>

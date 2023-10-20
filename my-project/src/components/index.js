@@ -1,6 +1,7 @@
 import DcSwitch from './DataCollection/DcSwitch'
 import DcDate from './DataCollection/DcDate'
-import DcModal from './DataCollection/DcModal.vue'
+import DcModal from './DataCollection/DcModal'
+import DcStatus from './DataCollection/DcStatus'
 import FormGenerator from './FormGenerator'
 import Tinymce from './Tinymce'
 import CustomComponents from './FormGenerator/layouts'
@@ -29,6 +30,7 @@ export default {
     Vue.component('DcSwitch', DcSwitch)
     Vue.component('DcDate', DcDate)
     Vue.component('DcModal', DcModal)
+    Vue.component('DcStatus', DcStatus)
     Vue.component('FormGenerator', FormGenerator)
     Vue.component('tinymce', Tinymce)
     Vue.use(CustomComponents)

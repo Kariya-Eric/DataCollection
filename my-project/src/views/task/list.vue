@@ -37,8 +37,8 @@
       <span>任务列表</span>
       <div class="table-operator-button">
         <a-button v-action="'tasklist_download'">下载导入模板</a-button>
-        <a-button v-action="'tasklist_import'" type="primary">导入</a-button>
-        <a-button v-action="'tasklist_add'" type="primary" @click="handleAdd('添加任务')">添加任务</a-button>
+        <a-button v-action="'tasklist_import'" type="primary"><dc-icon type="icon-import" />导入</a-button>
+        <a-button v-action="'tasklist_add'" type="primary" @click="handleAdd('添加任务')"><dc-icon type="icon-new" />添加任务</a-button>
       </div>
     </div>
 
@@ -57,6 +57,9 @@
           <a @click="showTaskInfo(record)">{{ record.name }}</a>
         </template>
         <template slot="percentage" slot-scope="text, record"> <a-progress :percent="record.percentage" size="small" /> </template>
+        <template slot="status" slot-scope="text, record">
+          <dc-status :name="caculateStatus(record).name" :color="caculateStatus(record).color" />
+        </template>
         <template slot="enabled" slot-scope="text, record">
           <dc-switch v-model="record.enabledFlag" @change="val => enableTask(record, val)" />
         </template>
@@ -105,7 +108,7 @@ export default {
         { dataIndex: 'type', title: '任务类型', align: 'center' },
         { dataIndex: 'statisticsStartTime', title: '填报开始时间', align: 'center' },
         { dataIndex: 'year', title: '统计时间', align: 'center' },
-        { dataIndex: 'status', title: '任务状态', align: 'center' },
+        { title: '任务状态', align: 'center', scopedSlots: { customRender: 'status' } },
         { title: '完成进度', align: 'center', scopedSlots: { customRender: 'percentage' } },
         { title: '启用', align: 'center', scopedSlots: { customRender: 'enabled' } },
         { title: '操作', width: 290, align: 'center', scopedSlots: { customRender: 'action' } }
@@ -171,6 +174,19 @@ export default {
         path: '/task/detail',
         query: { taskId: record.id, taskName: record.name }
       })
+    },
+
+    caculateStatus(record) {
+      if (record.status == 0 || record.status == '0') {
+        return { name: '停用', color: 'red' }
+      } else if (record.status == 1 || record.status == '1') {
+        return { name: '启用中', color: 'blue' }
+      } else if (record.status == 2 || record.status == '2') {
+        return { name: '未启用', color: 'grey' }
+      } else if (record.status == 3 || record.status == '3') {
+        return { name: '完成', color: 'green' }
+      }
+      return { name: '启用中', color: 'blue' }
     }
   }
 }

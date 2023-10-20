@@ -2,7 +2,7 @@
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
       <a-card title="组织架构">
-        <a-button type="primary" slot="extra" @click="handleAdd">添加组织</a-button>
+        <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-new" />添加组织</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="部门名称" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
             <a-input-search placeholder="请输入部门名称搜索" allowClear @change="searchDepart" />
@@ -17,19 +17,33 @@
             @select="onSelect"
             :selected-keys="selectedKeys"
           >
+            <template slot="parent" slot-scope="item">
+              <div class="img-div">
+                <img src="@/assets/icons/depart.svg" />
+                <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
+                  {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
+                  <span style="color: #f50">{{ searchValue }}</span>
+                  {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
+                </span>
+                <span v-else style="margin-left: 8px">{{ item.name }}</span>
+              </div>
+            </template>
             <template slot="custom" slot-scope="item">
-              <span v-if="item.name.indexOf(searchValue) > -1">
-                {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
-                <span style="color: #f50">{{ searchValue }}</span>
-                {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
-              </span>
-              <span v-else>{{ item.name }}</span>
-              <span class="custom-tree-node">
-                <a @click.stop="editDept(item)">修改</a>
-                <a-popconfirm title="确认删除吗？" @confirm="delDept(item)">
-                  <a @click.stop>删除</a>
-                </a-popconfirm>
-              </span>
+              <div class="img-div">
+                <img src="@/assets/icons/depart.svg" />
+                <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
+                  {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
+                  <span style="color: #f50">{{ searchValue }}</span>
+                  {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
+                </span>
+                <span v-else style="margin-left: 8px">{{ item.name }}</span>
+                <span class="custom-tree-node">
+                  <dc-icon type="icon-edit_empty" @click.stop="editDept(item)" style="color: #2f68bd" />
+                  <a-popconfirm title="确认删除吗？" @confirm="delDept(item)">
+                    <dc-icon type="icon-empty" @click.stop style="color: #e23322" />
+                  </a-popconfirm>
+                </span>
+              </div>
             </template>
           </a-tree>
         </a-spin>
@@ -169,6 +183,8 @@ export default {
         dept.disabled = dept.disabled !== '1' && dept.disabled !== 1
         if (dept.grade === 'ORG') {
           dept.scopedSlots = { title: 'custom' }
+        } else {
+          dept.scopedSlots = { title: 'parent' }
         }
       })
       return depart
@@ -219,7 +235,7 @@ export default {
     },
 
     delDept(item) {
-      this.loading=true
+      this.loading = true
       delOrg({ id: item.id })
         .then(res => {
           if (res.state) {
@@ -239,7 +255,7 @@ export default {
 <style scoped lang="less">
 .custom-tree-node {
   float: right;
-  a {
+  .anticon {
     margin-right: 8px;
   }
   visibility: hidden;

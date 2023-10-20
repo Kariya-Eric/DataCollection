@@ -7,7 +7,7 @@
           <a-select-option v-for="item in formCollectionList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
         </a-select>
         <a style="margin-left: 12px; color: red">{{ tips }}</a>
-        <a-button type="primary" style="float: right" @click="applyDeadlineBatch">批量配置统计截止时间</a-button>
+        <a-button type="primary" style="float: right" @click="applyDeadlineBatch"> <dc-icon type="icon-batch_config_time" />批量配置统计截止时间</a-button>
       </a-row>
     </div>
 
@@ -21,8 +21,8 @@
       :columns="columns"
     >
       <template slot="isCanFill" slot-scope="text, record">
-        <a-tag v-if="record.isCanFill" color="green">可填报</a-tag>
-        <a-tag v-else color="orange">不可填报</a-tag>
+        <dc-status v-if="record.isCanFill" color="green" name="可填报" />
+        <dc-status v-else color="red" name="不可填报" />
       </template>
       <template slot="action" slot-scope="text, record">
         <a @click="applyDeadline(record)">配置统计截止时间</a>

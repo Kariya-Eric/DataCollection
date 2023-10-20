@@ -61,7 +61,7 @@ function labelTooltip(scheme) {
     const str = `<span slot="label">
     <a-tooltip placement="bottom">
       <template slot="title">${comment}</template>
-      <a-icon type="question-circle" style="margin-right:8px" />
+      <dc-icon type="icon-tooltip" style="margin-right:4px" />
     </a-tooltip>
     <span>${label}</span>
   </span>`
@@ -282,7 +282,9 @@ export function makeUpHtml(formConfig) {
   let temp = buildFormTemplate(formConfig, htmlStr)
   confGlobal = null
   const formAlert = formConfig.formAlert
-  const alert = formAlert === '' ? '' : `<a-alert message="填报提示" type="info" banner show-icon ><template slot="description">${formAlert}</template></a-alert>`
+  const alert = formAlert === '' ? '' : `<a-alert message="填报提示" type="info" banner show-icon >
+    <template slot="icon"><dc-icon type="icon-tooltip"/></template>
+    <template slot="description">${formAlert}</template></a-alert>`
   const str = `<div>${alert}${temp}</div>`
   return str
 }

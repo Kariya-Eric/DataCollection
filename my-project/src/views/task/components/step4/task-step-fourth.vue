@@ -1,6 +1,9 @@
 <template>
   <div class="main-form">
-    <a-result status="success" title="任务配置完成!">
+    <a-result title="任务配置完成!">
+      <template #icon>
+        <img src="@/assets/icons/finish.svg" />
+      </template>
       <div class="desc" style="text-align: center">
         <p style="font-size: 16px">
           <strong>任务名称：{{ taskName }}</strong>

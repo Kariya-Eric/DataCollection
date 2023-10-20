@@ -2,7 +2,7 @@
   <div :class="wrpCls">
     <span class="badge">
       <a-badge :count="noticeNumber" :overflow-count="99">
-        <a-icon type="bell" @click="$refs.noticeModal.show()" />
+        <dc-icon type="icon-announce" @click="$refs.noticeModal.show()" />
       </a-badge>
     </span>
     <avatar-dropdown :current-user="currentUser" :class="prefixCls" />

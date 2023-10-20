@@ -13,15 +13,16 @@
     >
       <template slot="expandIcon" slot-scope="props">
         <span style="margin-left: 12px; margin-right: 12px; font-size: 10px">
-          <a-icon type="down" v-if="props.expanded" @click="() => props.onExpand()" />
-          <a-icon type="right" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
+          <dc-icon type="icon-arrow" v-if="props.expanded" @click="() => props.onExpand()" />
+          <dc-icon type="icon-arrow" class="right-icon" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
         </span>
       </template>
       <template slot="name" slot-scope="text, record">
+        <dc-icon type="icon-form_table" v-if="record.name" :style="{ 'font-size': '16px', color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
         <span>{{ record.name }}</span>
       </template>
       <template slot="status" slot-scope="text, record">
-        {{ caculateStatus(record.status).name }}
+        <dc-status :name="caculateStatus(record.status).name" :color="caculateStatus(record.status).color" />
       </template>
       <template slot="action" slot-scope="record">
         <span class="action-span">
@@ -98,15 +99,15 @@ export default {
 
     caculateStatus(status) {
       if (status == 0) {
-        return { status: 2, name: '待提交' }
+        return { color: 'grey', name: '待提交' }
       } else if (status == 1) {
-        return { status: 1, name: '审核中' }
+        return { color: 'blue', name: '审核中' }
       } else if (status == 2) {
-        return { status: 3, name: '审核通过' }
+        return { color: 'green', name: '审核通过' }
       } else if (status == 3) {
-        return { status: 0, name: '退回修改' }
+        return { color: 'red', name: '退回修改' }
       } else {
-        return { status: 2, name: '待配置人员' }
+        return { color: 'yellow', name: '待配置人员' }
       }
     },
 
@@ -143,5 +144,8 @@ export default {
   a {
     margin-right: 12px;
   }
+}
+.right-icon {
+  transform: rotate(-90deg);
 }
 </style>

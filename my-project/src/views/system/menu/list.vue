@@ -3,10 +3,10 @@
     <a-col :md="8" :sm="24">
       <a-card title="菜单管理">
         <template slot="extra">
-          <a-button type="primary" style="margin-right: 12px" v-if="selectedKeys.length > 0" @click="$refs.menuModal.show(false, '添加下级菜单', selectedKeys[0])"
-            >添加下级菜单</a-button
-          >
-          <a-button type="primary" @click="$refs.menuModal.show(true, '添加菜单')">添加菜单</a-button>
+          <a-button type="primary" style="margin-right: 12px" v-if="selectedKeys.length > 0" @click="$refs.menuModal.show(false, '添加下级菜单', selectedKeys[0])">
+            <dc-icon type="icon-new" />添加下级菜单
+          </a-button>
+          <a-button type="primary" @click="$refs.menuModal.show(true, '添加菜单')"><dc-icon type="icon-new" />添加菜单</a-button>
         </template>
         <a-spin :spinning="loading">
           <a-form-item label="菜单" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
@@ -39,9 +39,9 @@
       <a-card title="菜单详情">
         <template slot="extra" v-if="selectedKeys.length > 0">
           <a-popconfirm title="确认要删除该菜单吗？" @confirm="del">
-            <a-button type="danger">删除</a-button>
+            <a-button type="danger"><dc-icon type="icon-empty" />删除</a-button>
           </a-popconfirm>
-          <a-button type="primary" @click="save" style="margin-left: 12px">保存</a-button>
+          <a-button type="primary" @click="save" style="margin-left: 12px"><dc-icon type="icon-save" />保存</a-button>
         </template>
         <a-spin :spinning="loading">
           <a-empty v-if="selectedKeys.length == 0"> <span slot="description"> 请先选择一个菜单! </span></a-empty>
@@ -100,7 +100,7 @@
               </a-row>
             </a-form-model>
             <a-divider orientation="left"> 功能资源 </a-divider>
-            <a-button type="primary" @click="insertSysMethods" style="margin-bottom: 16px">添加</a-button>
+            <a-button type="primary" icon="plus" @click="insertSysMethods" style="margin-bottom: 16px">添加</a-button>
             <vxe-table
               border
               ref="xTable"

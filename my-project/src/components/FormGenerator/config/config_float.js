@@ -4,7 +4,7 @@ import { input } from './config_common'
 export const otherComponentsFloat = [
   {
     __config__: {
-      tagIcon: '表格',
+      tagIcon: 'icon-table',
       layout: 'tableLayout',
       label: '表格',
       tag: 'fixedTable',

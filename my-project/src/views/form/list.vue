@@ -36,7 +36,7 @@
     <div class="table-operator">
       <span>合集列表</span>
       <div class="table-operator-button">
-        <a-button type="primary" @click="handleAdd('新增合集')">新建合集</a-button>
+        <a-button type="primary" @click="handleAdd('新增合集')"><dc-icon type="icon-new" />新建合集</a-button>
       </div>
     </div>
 
