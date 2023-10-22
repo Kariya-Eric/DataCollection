@@ -1,6 +1,6 @@
 <template>
   <a-input-group id="logic-item">
-    <a-row>
+    <a-row :gutter="2">
       <a-col :span="5">
         <a-select v-model="term" @change="changeTerm" style="width: 100%" :getPopupContainer="target => target.parentNode">
           <a-select-option v-for="(item, index) in options" :key="index" :value="item.value">{{ item.label }}</a-select-option>

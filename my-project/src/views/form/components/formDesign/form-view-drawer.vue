@@ -4,10 +4,10 @@
       <div class="title-operator" slot="title">
         <span>表单预览</span>
         <div class="title-operator-button">
-          <a-button @click="close"><dc-icon type="icon-back" />返回</a-button>
+          <a-button @click="close"><dc-icon type="icon-dc_back" />返回</a-button>
         </div>
       </div>
-      <form-view :formConf="formConf" ref="formView" @save="saveForm" />
+      <form-view :formConf="formConf" ref="formView" />
     </a-drawer>
   </div>
 </template>
@@ -30,10 +30,6 @@ export default {
 
     close() {
       this.visible = false
-    },
-
-    saveForm(data) {
-      console.log(data)
     }
   }
 }

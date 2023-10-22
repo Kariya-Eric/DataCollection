@@ -34,6 +34,7 @@
             <a-form-model :label-align="formConf.labelAlign" layout="horizontal" :size="formConf.size" :disabled="formConf.disabled">
               <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
                 <drag-item
+                  class="center-drag-item"
                   v-for="(item, index) in drawingList"
                   :key="item.renderKey"
                   :drawing-list="drawingList"
@@ -54,6 +55,7 @@
     </a-layout>
     <a-layout-sider :collapsed-width="0" :width="350" theme="light" :style="{ overflow: 'auto', height: '100vh', position: 'fixed', right: 0 }">
       <right-panel
+        id="right-panel"
         :active-data="activeData"
         :form-conf="formConf"
         :show-field="drawingList.length != 0"
@@ -66,12 +68,15 @@
 </template>
 
 <script>
+import intro from './utils/intro'
 import draggable from 'vuedraggable'
 import { inputComponentsFix, selectComponentsFix, layoutComponentsFix, otherComponentsFix } from './config/config_fix'
 import { otherComponentsFloat } from './config/config_float'
 import { formConf } from './config/default'
 import DragItem from './components/drag-item.vue'
 import RightPanel from './components/right-panel.vue'
+import { USER_INFO, FORM_CACHE } from '@/store/mutation-types'
+import storage from 'store'
 import { deepClone } from './utils'
 
 let tempActiveData
@@ -89,7 +94,9 @@ export default {
       otherComponentsFix,
       otherComponentsFloat,
       activeId: this.drawingList.length == 0 ? 100 : this.drawingList[0].formId,
-      activeData: this.drawingList[0]
+      activeData: this.drawingList[0],
+      isEmpty: false,
+      currentUser: storage.get(USER_INFO)
     }
   },
   props: ['formInfo', 'drawingList', 'formConfig'],
@@ -122,6 +129,15 @@ export default {
           }
         ]
       }
+    }
+  },
+  mounted() {
+    if (this.isFirstUse()) {
+      if (this.drawingList.length == 0) {
+        this.isEmpty = true
+        this.addComponent(this.leftComponents[0].list[0])
+      }
+      this.$nextTick(() => this.guide())
     }
   },
   methods: {
@@ -284,6 +300,68 @@ export default {
         }
       })
       return valid
+    },
+
+    guide() {
+      intro.setOptions({
+        steps: [
+          {
+            title: '欢迎使用',
+            intro: '<div style="text-align:center">如何使数据采集系统的表单配置功能</div>'
+          },
+          {
+            element: document.querySelector('.left-main'),
+            intro: '<div style="text-align:center">此处为表单配置的组件面板</div>'
+          },
+          {
+            element: document.querySelector('.components-body'),
+            intro: '<div style="text-align:center">点击或拖拽组件到中央操作区来生成一个表单项</div>'
+          },
+          {
+            element: document.querySelector('.center-drag-item'),
+            intro: '<div style="text-align:center"><p>拖拽组件可以调整顺序</p><p>点击组件来调整组件配置</p></div>'
+          },
+          {
+            element: document.querySelector('#right-panel'),
+            intro: '<div style="text-align:center">此处用于调整表单项配置和表单全局配置</div>'
+          },
+          {
+            element: document.querySelector('.tinymce-div'),
+            intro: '<div style="text-align:center">在此处填写表单的填报提示</div>'
+          },
+          {
+            element: document.querySelector('#form-view'),
+            intro: '<div style="text-align:center">点击实时预览设计的组件</div>'
+          },
+          {
+            intro: `<div style="text-align:center;font-weight:600;font-size:18px">开始体验吧！</div>`
+          }
+        ]
+      })
+      intro
+        // 确认完毕之后执行的事件
+        .onbeforeexit(() => {
+          if (this.isEmpty) {
+            this.$emit('empty')
+          }
+        })
+        .start()
+    },
+
+    isFirstUse() {
+      let formCache = storage.get(FORM_CACHE)
+      if (formCache && formCache.length > 0) {
+        let flag = formCache.indexOf(this.currentUser.userId) == -1
+        if (flag) {
+          formCache.push(this.currentUser.userId)
+          storage.set(FORM_CACHE, formCache)
+          return true
+        } else {
+          return false
+        }
+      }
+      storage.set(FORM_CACHE, [this.currentUser.userId])
+      return true
     }
   }
 }
@@ -292,6 +370,10 @@ export default {
 <style lang="less">
 @import './styles/home';
 .tinymce-div {
+  h4 {
+    font-weight: 600;
+    font-size: 18px;
+  }
   margin-bottom: 24px;
 }
 </style>

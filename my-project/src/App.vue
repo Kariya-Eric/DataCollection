@@ -16,3 +16,7 @@ export default {
   }
 }
 </script>
+
+<style>
+@import './assets/icons/iconfont.css';
+</style>

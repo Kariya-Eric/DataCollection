@@ -11,7 +11,7 @@
   >
     <div class="inner">
       <a-form-model ref="logicForm" :model="logicForm" :rules="rules">
-        <a-form-model-item prop="andOr" label="当满足以下" :labelCol="{ span: 4, offset: 0 }">
+        <a-form-model-item prop="andOr" label="当满足以下" :labelCol="{ span: 4, offset: 0 }" style="margin: 0px 0px 8px 0px">
           <a-select v-model="logicForm.andOr" style="width: 35%">
             <a-select-option value="&&">全部</a-select-option>
             <a-select-option value="||">任意</a-select-option>
@@ -19,8 +19,8 @@
           <span style="margin-left: 8px">条件时</span>
         </a-form-model-item>
         <a-button icon="plus-circle" type="link" @click="addTerm"> 添加条件 </a-button>
-        <a-form-model-item v-for="(item, index) in logicForm.termList" :key="index" :prop="'termList.' + index" :rules="rules.termList">
-          <a-row>
+        <a-form-model-item v-for="(item, index) in logicForm.termList" :key="index" :prop="'termList.' + index" :rules="rules.termList" style="margin: 0px 0px 8px 0px">
+          <a-row :gutter="2">
             <a-col :span="22"><logic-item :drawing-list="drawingList" v-model="logicForm.termList[index]" /> </a-col>
             <a-col :xs="{ span: 1, offset: 1 }"><a-icon v-if="logicForm.termList.length > 1" type="delete" @click="delTerm(index)" /></a-col>
           </a-row>
@@ -39,7 +39,7 @@
 import LogicItem from './logic-item'
 
 export default {
-  name: 'LogicDialog',
+  name: 'LogicModal',
   props: ['drawingList', 'formConf'],
   components: { LogicItem },
   computed: {
@@ -138,4 +138,9 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.ant-form-explain,
+.ant-form-extra {
+  font-size: 12px;
+}
+</style>

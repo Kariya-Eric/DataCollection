@@ -38,9 +38,9 @@
       <div class="table-operator">
         <span>合集详情</span>
         <div class="table-operator-button">
-          <a-button type="primary" @click="updateFormCategory"><dc-icon type="icon-config_category" />配置表单大类</a-button>
-          <a-button type="primary" @click="copyForm"><dc-icon type="icon-copy" />复制表单</a-button>
-          <a-button type="primary" @click="handleAdd('新建表单')"><dc-icon type="icon-new" />新建表单</a-button>
+          <a-button type="primary" @click="updateFormCategory"><dc-icon type="icon-dc_config_category" />配置表单大类</a-button>
+          <a-button type="primary" @click="copyForm"><dc-icon type="icon-dc_copy" />复制表单</a-button>
+          <a-button type="primary" @click="handleAdd('新建表单')"><dc-icon type="icon-dc_new" />新建表单</a-button>
         </div>
       </div>
 

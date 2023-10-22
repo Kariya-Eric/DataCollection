@@ -50,13 +50,13 @@ export default {
     handleLogout(e) {
       Modal.confirm({
         title: '注销',
+        icon: 'exclamation-circle',
         content: '您确定要退出当前用户吗？',
         onOk: () => {
           return this.$store.dispatch('Logout').then(() => {
             this.$router.push({ name: 'login' })
           })
         },
-        onCancel() {}
       })
     }
   }

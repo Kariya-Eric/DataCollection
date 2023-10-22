@@ -3,26 +3,28 @@
     <div class="title-operator" slot="title">
       <span>{{ formName }}</span>
       <div class="title-operator-button">
-        <a-button type="primary" v-if="judgeImport(rowInfo, currentUser, roleList)">导入</a-button>
-        <a-button type="primary" v-if="judgeExport(rowInfo, currentUser, roleList)">导出</a-button>
-        <a-button type="primary" v-if="judgeYears(rowInfo, currentUser, roleList)">历年数据</a-button>
-        <a-button type="primary" @click="$refs.formview.save()" v-if="judgeSave(rowInfo, currentUser, roleList)">保存</a-button>
-        <a-button type="primary" @click="$refs.formview.submit()" v-if="judgeSave(rowInfo, currentUser, roleList)">提交</a-button>
+        <a-button type="primary" v-if="judgeImport(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_import" />导入</a-button>
+        <a-button type="primary" v-if="judgeExport(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_export" />导出</a-button>
+        <a-button type="primary" v-if="judgeYears(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_export" />历年数据</a-button>
+        <a-button type="primary" @click="$refs.formview.save()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_save" />保存</a-button>
+        <a-button type="primary" @click="$refs.formview.submit()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_submit" />提交</a-button>
         <a-popconfirm title="确认撤回该张表单吗？" @confirm="authForm(3)" v-if="judgeRedo(rowInfo, currentUser, roleList)">
-          <a-button type="primary">撤回</a-button>
+          <a-button type="primary"><dc-icon type="icon-dc_back" />撤回</a-button>
         </a-popconfirm>
         <a-popconfirm title="确认驳回该张表单吗？" @confirm="authForm(3)" v-if="judgeAuth(rowInfo, currentUser, roleList)">
-          <a-button type="primary">驳回</a-button>
+          <a-button type="danger"><dc-icon type="icon-dc_reject" />驳回</a-button>
         </a-popconfirm>
-        <a-button type="primary" @click="authForm(2)" v-if="judgeAuth(rowInfo, currentUser, roleList)">通过</a-button>
-
-        <a-button @click="close">返回</a-button>
+        <a-button class="success-btn" @click="authForm(2)" v-if="judgeAuth(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_pass" />通过</a-button>
+        <a-button @click="close"><dc-icon type="icon-dc_back" />返回</a-button>
       </div>
     </div>
 
     <div :class="`showType_${type.class}`" v-if="type.title">
-      <a-icon type="info-circle" />
+      <dc-icon v-if="type.class === 'redo'" type="icon-dc_reject" style="color: #e23322; font-size: 18px" />
+      <dc-icon v-if="type.class === 'audit'" type="icon-dc_waiting_audit" style="color: #2f68bd; font-size: 18px" />
+      <dc-icon v-if="type.class === 'fill'" type="icon-dc_waiting_submit" style="color: #666666; font-size: 18px" />
       <span style="margin-left: 12px">{{ type.title }}</span>
+      <a href="javascript:alert('驳回原因在何处填写？')" v-if="type.class === 'redo'" style="margin-left: 36px; font-size: 12px; text-decoration: underline">查看驳回原因</a>
     </div>
 
     <a-spin :spinning="loading">
@@ -170,6 +172,10 @@ export default {
   line-height: 36px;
   padding-left: 24px;
   margin: -24px -24px 12px -24px;
+  > span {
+    color: #666666;
+    font-weight: 600;
+  }
 }
 .showType_audit {
   background-color: #e6efff;
@@ -177,6 +183,10 @@ export default {
   line-height: 36px;
   padding-left: 24px;
   margin: -24px -24px 12px -24px;
+  > span {
+    color: #2f68bd;
+    font-weight: 600;
+  }
 }
 .showType_redo {
   background-color: #fde0dd;
@@ -184,5 +194,14 @@ export default {
   line-height: 36px;
   padding-left: 24px;
   margin: -24px -24px 12px -24px;
+  > span {
+    color: #e23322;
+    font-weight: 600;
+  }
+}
+.success-btn {
+  background-color: rgb(43, 158, 119);
+  color: #fff;
+  border-color: rgb(43, 158, 119);
 }
 </style>

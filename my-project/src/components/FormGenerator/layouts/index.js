@@ -9,6 +9,7 @@ import FormAddress from './form-address'
 import FormAddressPop from './form-address-pop'
 import FormView from './form-view'
 import FormTable from './form-table'
+import FormTooltip from './form-tooltip.vue'
 export default {
   install(Vue) {
     Vue.component('formDivider', FormDivider)
@@ -22,5 +23,6 @@ export default {
     Vue.component('formView', FormView)
     Vue.component('formTable', FormTable)
     Vue.component('formAddressPop', FormAddressPop)
+    Vue.component('formTooltip', FormTooltip)
   }
 }

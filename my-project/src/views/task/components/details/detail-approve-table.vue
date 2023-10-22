@@ -13,12 +13,12 @@
     >
       <template slot="expandIcon" slot-scope="props">
         <span style="margin-left: 12px; margin-right: 12px; font-size: 10px">
-          <dc-icon type="icon-arrow" v-if="props.expanded" @click="() => props.onExpand()" />
-          <dc-icon type="icon-arrow" class="right-icon" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
+          <dc-icon type="icon-dc_arrow" v-if="props.expanded" @click="() => props.onExpand()" />
+          <dc-icon type="icon-dc_arrow" class="right-icon" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
         </span>
       </template>
       <template slot="name" slot-scope="text, record">
-        <dc-icon type="icon-form_table" v-if="record.name" :style="{ 'font-size': '16px', color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
+        <dc-icon type="icon-dc_form_table" v-if="record.name" :style="{ 'font-size': '16px', color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
         <span>{{ record.name }}</span>
       </template>
       <template slot="status" slot-scope="text, record">

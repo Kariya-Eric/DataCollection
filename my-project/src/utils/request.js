@@ -30,6 +30,8 @@ const errorHandler = error => {
         Modal.confirm({
           title: '登录已过期',
           content: '登陆信息已失效，请重新登录',
+          icon: 'exclamation-circle',
+          cancelButtonProps: { style: { display: 'none' } },
           okText: '重新登录',
           mask: false,
           onOk: () => {

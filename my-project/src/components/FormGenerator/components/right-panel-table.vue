@@ -149,10 +149,11 @@
         </draggable>
         <div style="margin-top: 8px">
           <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addOption"> 添加选项 </a-button>
-          <a style="margin-left: 96px">设置选项来源</a>
+          <a style="margin-left: 96px" @click="$refs.optionModal.show()">设置选项来源</a>
         </div>
       </template>
     </template>
+    <option-modal ref="optionModal" @setOption="setOption" />
   </div>
 </template>
 
@@ -160,11 +161,13 @@
 // 表格组件的属性配置设置
 import draggable from 'vuedraggable'
 import { input, textarea, number, link, mail, phone, select, date, address } from '../config/config_common'
+import OptionModal from './option-modal.vue'
 export default {
   name: 'RightPanelTable',
   props: ['activeData'],
   components: {
-    draggable
+    draggable,
+    OptionModal
   },
   data() {
     return {
@@ -172,6 +175,10 @@ export default {
     }
   },
   methods: {
+    setOption(options) {
+      this.$set(this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__, 'options', options)
+    },
+
     changeMultiple(val) {
       this.activeData.columns[this.activeData.selectedCol - 1].type.mode = val ? 'multiple' : 'default'
     },

@@ -12,8 +12,8 @@
             </a-col>
             <a-col :span="12">
               <div style="float: right">
-                <a-button type="primary" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag" @click="editTask"><dc-icon type="icon-edit" />编辑</a-button>
-                <a-button @click="$router.back(-1)" style="margin-left: 12px"><dc-icon type="icon-back" />返回</a-button>
+                <a-button type="primary" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag" @click="editTask"><dc-icon type="icon-dc_edit" />编辑</a-button>
+                <a-button @click="$router.back(-1)" style="margin-left: 12px"><dc-icon type="icon-dc_back" />返回</a-button>
               </div>
             </a-col>
           </a-row>

@@ -38,7 +38,7 @@
         <template #header="{ column }">
           <a-tooltip placement="bottom" v-if="col.comment.length > 0">
             <template slot="title">{{ col.comment }}</template>
-            <dc-icon type="icon-tooltip" style="margin: 0px 4px" />
+            <dc-icon type="icon-dc_tooltip" style="margin: 0px 4px" />
           </a-tooltip>
           <span>{{ column.title }}</span>
         </template>

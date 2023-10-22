@@ -39,8 +39,8 @@
                 <a-select-option :value="2">未配置</a-select-option>
               </a-select>
               <div style="float: right">
-                <a-button type="primary" @click="copyPermission" style="margin-right: 12px"><dc-icon type="icon-copy" />复制其他任务权限</a-button>
-                <a-button type="primary" @click="applyPermissionBatch"><dc-icon type="icon-batch_config" />批量配置权限</a-button>
+                <a-button type="primary" @click="copyPermission" style="margin-right: 12px"><dc-icon type="icon-dc_copy" />复制其他任务权限</a-button>
+                <a-button type="primary" @click="applyPermissionBatch"><dc-icon type="icon-dc_batch_config" />批量配置权限</a-button>
               </div>
             </a-row>
           </div>
@@ -55,7 +55,7 @@
             :columns="columns"
           >
             <template slot="formName" slot-scope="text, record">
-              <dc-icon type="icon-form_table" :style="{ color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
+              <dc-icon type="icon-dc_form_table" :style="{ color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
               <span style="margin-left: 8px">{{ record.formName }}</span>
             </template>
             <template slot="configStatus" slot-scope="text, record">

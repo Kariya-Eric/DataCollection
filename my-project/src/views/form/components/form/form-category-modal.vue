@@ -12,7 +12,7 @@
           <a-input v-model="categoryForm.year" disabled />
         </a-form-model-item>
       </a-form-model>
-      <a-row> <span style="margin-right: 8px">表单大类</span> <a-button type="primary" @click="insertRow">添加</a-button> </a-row>
+      <a-row> <span style="margin-right: 8px">表单大类</span> <a-button type="primary" icon="plus" @click="insertRow">添加</a-button> </a-row>
       <vxe-table
         border
         align="center"
@@ -24,12 +24,12 @@
       >
         <vxe-column width="60">
           <template #default>
-            <span class="drag-btn"><a-icon type="drag" /></span>
+            <span class="drag-btn"><a-icon type="swap" style="font-size: 16px" /></span>
           </template>
           <template #header>
             <a-tooltip placement="right">
               <template slot="title">按住后可以上下拖动排序！</template>
-              <a-icon type="question-circle" />
+              <dc-icon type="icon-dc_tooltip" />
             </a-tooltip>
           </template>
         </vxe-column>

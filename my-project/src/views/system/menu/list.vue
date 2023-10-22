@@ -4,9 +4,9 @@
       <a-card title="菜单管理">
         <template slot="extra">
           <a-button type="primary" style="margin-right: 12px" v-if="selectedKeys.length > 0" @click="$refs.menuModal.show(false, '添加下级菜单', selectedKeys[0])">
-            <dc-icon type="icon-new" />添加下级菜单
+            <dc-icon type="icon-dc_new" />添加下级菜单
           </a-button>
-          <a-button type="primary" @click="$refs.menuModal.show(true, '添加菜单')"><dc-icon type="icon-new" />添加菜单</a-button>
+          <a-button type="primary" @click="$refs.menuModal.show(true, '添加菜单')"><dc-icon type="icon-dc_new" />添加菜单</a-button>
         </template>
         <a-spin :spinning="loading">
           <a-form-item label="菜单" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
@@ -39,9 +39,9 @@
       <a-card title="菜单详情">
         <template slot="extra" v-if="selectedKeys.length > 0">
           <a-popconfirm title="确认要删除该菜单吗？" @confirm="del">
-            <a-button type="danger"><dc-icon type="icon-empty" />删除</a-button>
+            <a-button type="danger"><dc-icon type="icon-dc_empty" />删除</a-button>
           </a-popconfirm>
-          <a-button type="primary" @click="save" style="margin-left: 12px"><dc-icon type="icon-save" />保存</a-button>
+          <a-button type="primary" @click="save" style="margin-left: 12px"><dc-icon type="icon-dc_save" />保存</a-button>
         </template>
         <a-spin :spinning="loading">
           <a-empty v-if="selectedKeys.length == 0"> <span slot="description"> 请先选择一个菜单! </span></a-empty>
@@ -74,7 +74,14 @@
               <a-row>
                 <a-col :span="12">
                   <a-form-model-item label="图标" prop="menuIcon">
-                    <a-input v-model="menuInfo.menuIcon" />
+                    <a-input v-model="menuInfo.menuIcon" placeholder="点击选择图标">
+                      <a-popover :visible="iconChooseVisible" trigger="click" slot="addonAfter" placement="bottom">
+                        <template slot="content">
+                          <icon-popover @choose="handleIconChoose" @close="iconChooseVisible = false" :iconChooseVisible="iconChooseVisible"></icon-popover>
+                        </template>
+                        <a-icon type="setting" @click="iconChooseVisible = true" />
+                      </a-popover>
+                    </a-input>
                   </a-form-model-item>
                 </a-col>
                 <a-col :span="12">
@@ -162,11 +169,13 @@ const getParentKey = (key, tree) => {
 }
 import { initMenuTree, saveMenu, delMenu, getMenu } from '@/api/system/menu'
 import MenuModal from './components/menu-modal'
+import IconPopover from './components/icon-popover'
 export default {
   name: 'MenuList',
-  components: { MenuModal },
+  components: { MenuModal, IconPopover },
   data() {
     return {
+      iconChooseVisible: false,
       searchValue: '',
       treeData: [],
       expandedKeys: [],
@@ -328,6 +337,11 @@ export default {
           }
         })
         .finally(() => (this.loading = false))
+    },
+
+    handleIconChoose(value) {
+      this.menuInfo.menuIcon = value
+      this.iconChooseVisible = false
     }
   }
 }

@@ -37,8 +37,8 @@
       <span>任务列表</span>
       <div class="table-operator-button">
         <a-button v-action="'tasklist_download'">下载导入模板</a-button>
-        <a-button v-action="'tasklist_import'" type="primary"><dc-icon type="icon-import" />导入</a-button>
-        <a-button v-action="'tasklist_add'" type="primary" @click="handleAdd('添加任务')"><dc-icon type="icon-new" />添加任务</a-button>
+        <a-button v-action="'tasklist_import'" type="primary"><dc-icon type="icon-dc_import" />导入</a-button>
+        <a-button v-action="'tasklist_add'" type="primary" @click="handleAdd('添加任务')"><dc-icon type="icon-dc_new" />添加任务</a-button>
       </div>
     </div>
 

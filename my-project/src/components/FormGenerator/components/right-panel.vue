@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-tabs v-model="currentTab" class="right-header">
+    <a-tabs v-model="currentTab" class="right-header" id="form-config">
       <a-tab-pane key="field" tab="组件属性" />
       <a-tab-pane key="form" tab="表单属性" />
     </a-tabs>
@@ -103,7 +103,7 @@
           </draggable>
           <div style="margin-top: 8px">
             <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addSelectItem"> 添加选项 </a-button>
-            <a style="margin-left: 96px">设置选项来源</a>
+            <a style="margin-left: 96px" @click="$refs.optionModal.show()">设置选项来源</a>
           </div>
           <a-divider />
         </template>
@@ -200,24 +200,27 @@
           <div>
             <a-button icon="plus-circle" type="link" @click="addRule"> 添加规则 </a-button>
           </div>
-          <logic-dialog ref="logicDialog" :drawing-list="drawingList" :form-conf="formConf" />
+          <logic-modal ref="logicModal" :drawing-list="drawingList" :form-conf="formConf" />
         </template>
       </a-form-model>
     </div>
+    <option-modal ref="optionModal" @setOption="setOption" />
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-import LogicDialog from './logic-dialog.vue'
+import LogicModal from './logic-modal.vue'
 import { inputComponentsFix, selectComponentsFix } from '../config/config_fix'
 import RightPanelTable from './right-panel-table.vue'
+import OptionModal from './option-modal.vue'
 export default {
   name: 'RightPanel',
   components: {
     draggable,
     RightPanelTable,
-    LogicDialog
+    LogicModal,
+    OptionModal
   },
   props: ['showField', 'activeData', 'formConf', 'baseInfo', 'drawingList'],
   data() {
@@ -253,6 +256,10 @@ export default {
 
   methods: {
     // start
+    setOption(options) {
+      this.$set(this.activeData.__slot__, 'options', options)
+    },
+
     changeTimeFormat(val) {
       if (val === 'YYYY-MM') {
         this.$set(this.activeData, 'mode', 'month')
@@ -264,7 +271,7 @@ export default {
     },
 
     addRule() {
-      this.$refs.logicDialog.show()
+      this.$refs.logicModal.show()
     },
 
     delRule(index) {
@@ -272,7 +279,7 @@ export default {
     },
 
     editRule(index) {
-      this.$refs.logicDialog.show(index)
+      this.$refs.logicModal.show(index)
     },
 
     changeLabelWidth(val) {

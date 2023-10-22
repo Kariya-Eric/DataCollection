@@ -19,7 +19,7 @@
     transition: all 0.3s;
     .anticon {
       color: #ffffff;
-      font-size: 18px;
+      font-size: 22px;
       vertical-align: top;
     }
   }
@@ -61,6 +61,7 @@
     }
   }
 }
+
 .table-page-search-buttons {
   display: block;
   margin-bottom: 24px;
@@ -186,4 +187,76 @@
   line-height: 26px !important;
   background: #fff1ea !important;
   border: 1px solid #ef722e !important;
+}
+
+.ant-menu-item {
+  font-size: 16px;
+  width: 170px;
+  text-align: center;
+  transition: none !important;
+  .anticon {
+    font-size: 20px !important;
+  }
+}
+.ant-menu-submenu {
+  font-size: 16px;
+  width: 170px;
+  text-align: center;
+  transition: none !important;
+  .anticon {
+    font-size: 20px !important;
+  }
+}
+
+.ant-menu,
+.ant-menu-sub,
+.ant-menu-inline {
+  color: white;
+  background-color: #2f68bd !important;
+}
+
+.ant-menu-submenu > .ant-menu {
+  background-color: #2f68bd !important;
+  .ant-menu-item {
+    height: 42px !important;
+
+    > a:focus {
+      color: white;
+    }
+  }
+  .ant-menu-item-active {
+    background-color: #2f68bd !important;
+  }
+  .ant-menu-item-selected {
+    background-color: #2f68bd !important;
+  }
+}
+
+// 选中菜单状态
+.ant-menu-item-selected {
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
+  background-position: center;
+  color: #2f68bd !important;
+  border-bottom: none !important;
+}
+// 设置未选中菜单项鼠标滑过样式
+.ant-menu-item-active {
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
+  background-position: center;
+  color: #2f68bd !important;
+  border-bottom: none !important;
+}
+
+.ant-menu-submenu-selected {
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
+  background-position: center;
+  color: #2f68bd !important;
+  border-bottom: none !important;
+}
+
+.ant-menu-submenu-active {
+  background: url('~@/assets/menu/menu-active.png') no-repeat;
+  background-position: center;
+  color: #2f68bd !important;
+  border-bottom: none !important;
 }

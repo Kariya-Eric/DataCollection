@@ -3,12 +3,17 @@
     <div class="title-operator" slot="title">
       <span>协作进度</span>
       <div class="title-operator-button">
-        <a-button type="primary">一键催办</a-button>
-        <a-button type="primary">查看表单</a-button>
-        <a-button @click="close">返回</a-button>
+        <a-button type="primary"><dc-icon type="icon-dc_remind" />一键催办</a-button>
+        <a-button type="primary"><dc-icon type="icon-dc_form_table" />查看表单</a-button>
+        <a-button @click="close"><dc-icon type="icon-dc_back" />返回</a-button>
       </div>
     </div>
     <a-spin :spinning="loading">
+      <a-divider dashed style="margin: 12px 0px" />
+      <div style="margin-bottom: 12px">
+        <div class="img-div" style="display: inline-block"><img src="@/assets/icons/depart.svg" /><span style="margin-left: 8px">负责部门</span></div>
+        <div class="img-div" style="display: inline-block; margin-left: 32px"><img src="@/assets/icons/depart_yellow.svg" /><span style="margin-left: 8px">协作部门</span></div>
+      </div>
       <a-table bordered rowKey="id" :dataSource="dataSource" :loading="loading" :columns="columns" :pagination="false" :expandedRowKeys="expandedKeys">
         <template slot="expandIcon" slot-scope="props">
           <span style="margin-left: 12px; margin-right: 12px; font-size: 10px">

@@ -7,7 +7,7 @@
           <a-select-option v-for="item in formCollectionList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
         </a-select>
         <a style="margin-left: 12px; color: red">{{ tips }}</a>
-        <a-button type="primary" style="float: right" @click="applyDeadlineBatch"> <dc-icon type="icon-batch_config_time" />批量配置统计截止时间</a-button>
+        <a-button type="primary" style="float: right" @click="applyDeadlineBatch"> <dc-icon type="icon-dc_batch_config" />批量配置统计截止时间</a-button>
       </a-row>
     </div>
 

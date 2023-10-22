@@ -36,7 +36,7 @@ export const constantRouterMap = [
         path: '/home',
         name: 'Home',
         component: () => import('@/views/home/index'),
-        meta: { title: '首页', icon: 'shujucaiji-white' }
+        meta: { title: '首页', icon: 'dc_home_page' }
       }
     ]
   }

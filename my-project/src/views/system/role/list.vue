@@ -30,9 +30,9 @@
       <span>角色管理</span>
       <div class="table-operator-button">
         <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
-          <a-button type="danger"><dc-icon type="icon-empty" />批量删除</a-button>
+          <a-button type="danger"><dc-icon type="icon-dc_empty" />批量删除</a-button>
         </a-popconfirm>
-        <a-button type="primary" @click="handleAdd('新增角色')"><dc-icon type="icon-new" />添加角色</a-button>
+        <a-button type="primary" @click="handleAdd('新增角色')"><dc-icon type="icon-dc_new" />添加角色</a-button>
       </div>
     </div>
 

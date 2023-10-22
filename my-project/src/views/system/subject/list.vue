@@ -2,7 +2,7 @@
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
       <a-card title="专业架构">
-        <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-new" />添加专业</a-button>
+        <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-dc_new" />添加专业</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="专业名称" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
             <a-input-search placeholder="请输入专业名称搜索" allowClear @change="searchSubject" />
@@ -36,9 +36,9 @@
               </span>
               <span v-else>{{ item.name }}</span>
               <span class="custom-tree-node">
-                <dc-icon type="icon-edit_empty" @click.stop="editSubject(item)" style="color: #2f68bd" />
+                <dc-icon type="icon-dc_edit_empty" @click.stop="editSubject(item)" style="color: #2f68bd" />
                 <a-popconfirm title="确认删除吗？" @confirm="delSubject(item)">
-                  <dc-icon type="icon-empty" @click.stop style="color: #e23322" />
+                  <dc-icon type="icon-dc_empty" @click.stop style="color: #e23322" />
                 </a-popconfirm>
               </span>
             </template>

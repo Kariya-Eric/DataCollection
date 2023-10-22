@@ -54,7 +54,9 @@ const vueConfig = {
           'border-radius-base': '4px',
           'card-shadow': '0px 4px 28px rgba(68, 57, 168, 0.15)',
           'card-radius': '4px',
-          'vxe-primary-color': '#2F68BD'
+          'menu-item-font-size': '16px',
+          'menu-item-color': '#FFFFFF',
+          'menu-bg': `url('~@/assets/head/head.png') repeat-x`
         },
         javascriptEnabled: true
       }

@@ -29,9 +29,9 @@
       <span>人员列表</span>
       <div class="table-operator-button" v-if="isEdit">
         <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
-          <a-button type="danger"><dc-icon type="icon-empty" />批量删除</a-button>
+          <a-button type="danger"><dc-icon type="icon-dc_empty" />批量删除</a-button>
         </a-popconfirm>
-        <a-button type="primary" @click="handleAdd('添加用户')"><dc-icon type="icon-new" />添加用户</a-button>
+        <a-button type="primary" @click="handleAdd('添加用户')"><dc-icon type="icon-dc_new" />添加用户</a-button>
       </div>
     </div>
 

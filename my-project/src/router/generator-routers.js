@@ -10,7 +10,7 @@ function loadView(item) {
     redirect: item.load,
     meta: {
       title: item.name,
-      icon: undefined,
+      icon: item.menuIcon ? item.menuIcon : undefined,
       keepAlive: true
     },
     children: []
@@ -39,7 +39,7 @@ function loadPageView(item) {
     component: () => import(`@/views${item.templateUrl}`),
     meta: {
       title: item.name,
-      icon: undefined,
+      icon: item.menuIcon ? item.menuIcon : undefined,
       keepAlive: true
     }
   }
