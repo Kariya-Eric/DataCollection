@@ -11,34 +11,24 @@
         </a-form-model-item>
         <a-form-model-item label="表单名称" prop="name">
           <a-select v-model="model.name" placeholder="请选择表单名称">
-            <a-select-option value="2022">1-1.学校概况</a-select-option>
+            <a-select-option v-for="item in formData" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="选项" prop="option">
-          <a-radio-group button-style="solid" v-model="model.option">
-            <a-radio-button value="a"> 办学类型 </a-radio-button>
-            <a-radio-button value="b"> 学校性质 </a-radio-button>
-            <a-radio-button value="c"> 举办者 </a-radio-button>
-            <a-radio-button value="d"> 主管部门 </a-radio-button>
-          </a-radio-group>
+          <a-select v-model="model.option" placeholder="请选择选项">
+            <a-select-option v-for="item in optionData" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+          </a-select>
         </a-form-model-item>
       </a-form-model>
       <a-divider>选项值</a-divider>
-      <a-table
-        bordered
-        rowKey="id"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-        :columns="columns"
-        :data-source="data"
-        :pagination="false"
-        :scroll="{ y: 380 }"
-      ></a-table>
+      <a-table bordered rowKey="id" :columns="columns" :data-source="optionValueData" :pagination="false" :scroll="{ y: 380 }"></a-table>
     </a-spin>
   </a-modal>
 </template>
 
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
+import { getDictionaryTree, listAll } from '@/api/system/option'
 export default {
   name: 'OptionModal',
   mixins: [DataCollectionModalMixin],
@@ -49,34 +39,37 @@ export default {
         { title: '选项名', align: 'center', dataIndex: 'label' },
         { title: '选项值', align: 'center', dataIndex: 'value' }
       ],
-      selectedRowKeys: [],
-      selectionRows: [],
       rules: {
-        year: [{ required: true, message: '请选择年份', trigger: 'change' }],
         name: [{ required: true, message: '请选择表单名称', trigger: 'change' }],
         option: [{ required: true, message: '请选择选项' }]
       },
-      data: []
+      formData: [],
+      optionData: [],
+      optionValueData: []
     }
   },
   methods: {
-    onSelectChange(selectedRowKeys, selectionRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectionRows = selectionRows
-    },
-
     show() {
       this.visible = true
-      for (let i = 0; i < 20; i++) {
-        this.data.push({ label: '选项值_' + (i + 1), value: i + 1 })
-      }
+    },
+
+    initDictionary() {
+      this.loading = true
+      getDictionaryTree()
+        .then(res => {
+          if (res.state) {
+            this.renderTreeData(res.value)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    renderTreeData(treeData) {
+        
     },
 
     close() {
       this.model = {}
-      this.selectedRowKeys = []
-      this.data = []
-      this.selectionRows = []
       this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
@@ -85,13 +78,8 @@ export default {
     handleOk() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          if (this.selectedRowKeys.length == 0) {
-            this.$message.warning('请至少选择一条数据！')
-            return
-          } else {
-            this.$emit('setOption', this.selectionRows)
-            this.close()
-          }
+          this.$emit('setOption', this.selectionRows)
+          this.close()
         } else {
           return
         }
