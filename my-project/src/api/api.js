@@ -82,3 +82,15 @@ export function uploadAction(url, parameter) {
     }
   })
 }
+
+//put
+export function putFormAction(url, parameter) {
+  return request({
+    url: url,
+    method: 'put',
+    params: parameter,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

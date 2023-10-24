@@ -21,6 +21,11 @@
             <a-select-option v-for="r in role" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
+        <a-form-model-item label="专业" prop="subjectId">
+          <a-select v-model="model.subjectId" m placeholder="请选择专业" :disabled="disabled" allowClear>
+            <a-select-option v-for="r in subjects" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
+          </a-select>
+        </a-form-model-item>
         <a-form-model-item label="邮箱" prop="email">
           <a-input v-model="model.email" placeholder="请输入邮箱" :disabled="disabled" allowClear><a-icon slot="suffix" type="mail" /></a-input>
         </a-form-model-item>
@@ -38,7 +43,7 @@ import { getUserDetail, addUser, updateUser } from '@/api/system/user'
 export default {
   name: 'UserModal',
   mixins: [DataCollectionModalMixin],
-  props: ['depart', 'role'],
+  props: ['depart', 'role', 'subjects'],
   data() {
     return {
       rules: {

@@ -83,7 +83,7 @@ export default {
         { dataIndex: 'account', title: '账号', align: 'center' },
         { dataIndex: 'name', title: '姓名', align: 'center' },
         { dataIndex: 'orgName', title: '所属部门', align: 'center' },
-        { dataIndex: 'account1', title: '所属专业', align: 'center' },
+        { dataIndex: 'subjectName', title: '所属专业', align: 'center' },
         { dataIndex: 'roleName', title: '角色', align: 'center' },
         { title: '状态', align: 'center', scopedSlots: { customRender: 'status' } },
         { dataIndex: 'action', title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }

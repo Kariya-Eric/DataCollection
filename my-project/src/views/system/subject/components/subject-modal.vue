@@ -38,8 +38,8 @@ export default {
     return {
       rules: {
         orgId: [{ required: true, message: '请选择所属院系', trigger: 'change' }],
-        name: [{ required: true, message: '请输入专业名称',  }],
-        code: [{ required: true, message: '请输入校内专业代码',}],
+        name: [{ required: true, message: '请输入专业名称' }],
+        code: [{ required: true, message: '请输入校内专业代码' }],
         internationalCode: [{ required: true, message: '请输入国标专业代码' }],
         sort: [{ required: true, message: '请输入排序' }]
       }
@@ -47,19 +47,21 @@ export default {
   },
   methods: {
     handleOk() {
-      const that=this
-      this.$refs.form.validate(valid=>{
-        if(valid){
-          that.loading=true
-          addSubject(this.model).then(res=>{
-            if (res.state) {
-              that.$message.success(res.message)
-              this.close()
-              this.$emit('refresh')
-            } else {
-              that.$message.error(res.message)
-            }
-          }).finally(()=>that.loading=false)
+      const that = this
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          that.loading = true
+          addSubject(this.model)
+            .then(res => {
+              if (res.state) {
+                that.$message.success(res.message)
+                this.close()
+                this.$emit('refresh')
+              } else {
+                that.$message.error(res.message)
+              }
+            })
+            .finally(() => (that.loading = false))
         }
       })
     },

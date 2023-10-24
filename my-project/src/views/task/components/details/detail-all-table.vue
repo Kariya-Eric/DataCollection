@@ -12,7 +12,7 @@
       :expanded-row-keys.sync="expandedKeys"
     >
       <template slot="expandIcon" slot-scope="props">
-        <span style="margin-left: 12px; margin-right: 12px; font-size: 10px">
+        <span class="array-span">
           <dc-icon type="icon-dc_arrow" v-if="props.expanded" @click="() => props.onExpand()" />
           <dc-icon type="icon-dc_arrow" class="right-icon" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
         </span>
@@ -189,5 +189,13 @@ export default {
 }
 .right-icon {
   transform: rotate(-90deg);
+}
+.array-span {
+  margin-left: 12px;
+  margin-right: 12px;
+  .anticon {
+    font-size: 10px;
+    vertical-align: 0.125em;
+  }
 }
 </style>

@@ -59,7 +59,7 @@
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个专业! </span>
           </a-empty>
-          <subject-user v-else :subject="subjectInfo" :roles="roleList" :isEdit="editFlag" @refresh="initSubject" />
+          <subject-user v-else :subject="subjectInfo" :roles="roleList" :isEdit="editFlag" @refresh="param => initUserList(param)" :users="userList" />
         </div>
       </a-card>
     </a-col>
@@ -84,6 +84,7 @@ const getParentKey = (key, tree) => {
 }
 
 import { initDeptTree } from '@/api/system/depart'
+import { getUserList } from '@/api/system/user'
 import storage from 'store'
 import { USER_INFO } from '@/store/mutation-types'
 import SubjectInfo from './components/subject-info'
@@ -96,6 +97,7 @@ export default {
   components: { SubjectInfo, SubjectModal, SubjectUser },
   data() {
     return {
+      userList: [],
       roleList: [],
       subjectInfo: {},
       departList: [],
@@ -121,9 +123,18 @@ export default {
     this.initSubject()
     this.initDepart()
     this.initRoleList()
+    this.initUserList({})
   },
 
   methods: {
+    initUserList(param) {
+      getUserList(param).then(res => {
+        if (res.state) {
+          this.userList = res.value.rows
+        }
+      })
+    },
+
     initRoleList() {
       getRoleList({}).then(res => {
         if (res.state) {

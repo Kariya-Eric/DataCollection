@@ -22,7 +22,9 @@
           </a-col>
           <a-col :md="3" :sm="12">
             <a-form-item label="专业">
-              <a-select v-model="queryParam.major" placeholder="请选择专业" allowClear> </a-select>
+              <a-select v-model="queryParam.subjectId" placeholder="请选择专业" allowClear>
+                <a-select-option v-for="subject in subjectList" :key="subject.id" :value="subject.id">{{ subject.name }}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="3" :sm="12">
@@ -81,7 +83,7 @@
         </template>
       </a-table>
     </div>
-    <user-modal ref="modalForm" :depart="departList" :role="roleList" @ok="loadData" />
+    <user-modal ref="modalForm" :depart="departList" :role="roleList" @ok="loadData" :subjects="subjectList" />
   </a-card>
 </template>
 
@@ -92,6 +94,7 @@ import { getRoleList } from '@/api/system/role'
 import { initDeptTree } from '@/api/system/depart'
 import { USER_INFO } from '@/store/mutation-types'
 import { resetPwd, downloadUserTemp, deleteUser, importUser } from '@/api/system/user'
+import { getSubjectTree } from '@/api/system/subject'
 import storage from 'store'
 export default {
   mixins: [DataCollectionListMixin],
@@ -107,7 +110,7 @@ export default {
         { dataIndex: 'account', title: '账号', align: 'center' },
         { dataIndex: 'name', title: '姓名', align: 'center' },
         { dataIndex: 'orgName', title: '所属部门', align: 'center' },
-        { dataIndex: 'account1', title: '所属专业', align: 'center' },
+        { dataIndex: 'subjectName', title: '所属专业', align: 'center' },
         { dataIndex: 'roleName', title: '角色', align: 'center' },
         { dataIndex: 'email', title: '邮箱', align: 'center' },
         { dataIndex: 'mobile', title: '手机号', align: 'center' },
@@ -115,15 +118,37 @@ export default {
         { title: '操作', width: 250, align: 'center', scopedSlots: { customRender: 'action' } }
       ],
       roleList: [],
-      departList: []
+      departList: [],
+      subjectList: []
     }
   },
   created() {
     this.loadData(1)
     this.initDepart()
     this.initRole()
+    this.initSubject()
   },
   methods: {
+    initSubject() {
+      getSubjectTree()
+        .then(res => {
+          if (res.state) {
+            this.renderSubject(res.value)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    renderSubject(subject) {
+      subject.forEach(sub => {
+        if (sub.type == 'SUBJECT') {
+          this.subjectList.push(sub)
+        }
+        if (sub.children && sub.children.length > 0) {
+          this.renderSubject(sub.children)
+        }
+      })
+    },
     initDepart() {
       let userInfo = storage.get(USER_INFO)
       initDeptTree(userInfo.userId).then(res => {
@@ -192,9 +217,17 @@ export default {
     handleUpload(info) {
       const formData = new FormData()
       formData.append('file', info.file)
-      importUser(formData).then(res => {
-        console.log(res)
-      })
+      this.loading = true
+      importUser(formData)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.loadData(1)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
     }
   }
 }
