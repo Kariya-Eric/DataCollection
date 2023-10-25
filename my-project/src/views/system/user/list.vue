@@ -3,7 +3,7 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="24">
-          <a-col :md="3" :sm="12">
+          <a-col :md="4" :sm="12">
             <a-form-item label="部门">
               <a-select v-model="queryParam.orgId" placeholder="请选择部门" allowClear>
                 <a-select-opt-group v-for="group in departList" :key="group.id">
@@ -13,21 +13,21 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="3" :sm="12">
+          <a-col :md="4" :sm="12">
             <a-form-item label="角色">
               <a-select v-model="queryParam.roleId" placeholder="请选择角色" allowClear>
                 <a-select-option v-for="role in roleList" :key="role.id" :value="role.id">{{ role.name }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="3" :sm="12">
+          <a-col :md="4" :sm="12">
             <a-form-item label="专业">
               <a-select v-model="queryParam.subjectId" placeholder="请选择专业" allowClear>
                 <a-select-option v-for="subject in subjectList" :key="subject.id" :value="subject.id">{{ subject.name }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="3" :sm="12">
+          <a-col :md="4" :sm="12">
             <a-form-item>
               <a-input v-model="queryParam.queryWord" placeholder="请输入姓名,帐号,手机" allowClear> </a-input>
             </a-form-item>

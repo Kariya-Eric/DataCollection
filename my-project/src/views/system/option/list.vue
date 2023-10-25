@@ -3,7 +3,7 @@
     <a-col :span="6">
       <a-card title="选项管理">
         <a-spin :spinning="treeLoading">
-          <a-form-item label="年份" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
+          <a-form-item label="年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-select v-model="searchYear" style="width: 100%" placeholder="请选择年份">
               <a-select-option value="2023">2023</a-select-option>
             </a-select>
@@ -95,6 +95,8 @@ import { getDictionaryTree, listAll, saveList } from '@/api/system/option'
 export default {
   data() {
     return {
+      labelCol: { style: 'width: 60px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 60px); display: inline-block;' },
       optDataSource: [],
       optLoading: false,
       optSelectedRowKeys: [],

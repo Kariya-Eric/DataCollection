@@ -21,7 +21,7 @@
     </div>
     <template v-if="activeData.selectedCol !== -1">
       <a-divider>已选中 : 第{{ activeData.selectedCol }}列</a-divider>
-      <a-form-model-item label="类型" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+      <a-form-model-item label="类型">
         <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.label" @change="tagChange">
           <a-select-option value="单行文本">单行文本</a-select-option>
           <a-select-option value="多行文本">多行文本</a-select-option>
@@ -35,12 +35,7 @@
         </a-select>
       </a-form-model-item>
 
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '电话'"
-        label="支持固话"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '电话'" label="支持固话">
         <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.isMobile" />
       </a-form-model-item>
       <a-form-model-item
@@ -48,42 +43,20 @@
           activeData.columns[activeData.selectedCol - 1].type.__config__.label === '单行文本' || activeData.columns[activeData.selectedCol - 1].type.__config__.label === '多行文本'
         "
         label="禁止汉字"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
       >
         <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.allowChar" />
       </a-form-model-item>
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'"
-        label="小数位数"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="小数位数">
         <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.precision" :min="0" placeholder="小数位数" />
       </a-form-model-item>
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'"
-        label="最小值"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="最小值">
         <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" />
       </a-form-model-item>
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'"
-        label="最大值"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="最大值">
         <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" />
       </a-form-model-item>
 
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '地址'"
-        label="地址格式"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '地址'" label="地址格式">
         <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type">
           <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
           <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
@@ -91,12 +64,7 @@
         </a-select>
       </a-form-model-item>
 
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '日期选择'"
-        label="时间格式"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '日期选择'" label="时间格式">
         <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.format" @change="val => changeTimeFormat(val, activeData.columns[activeData.selectedCol - 1].type)">
           <a-select-option value="YYYY">年（yyyy）</a-select-option>
           <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
@@ -104,29 +72,19 @@
         </a-select>
       </a-form-model-item>
 
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'"
-        label="能否搜索"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'" label="能否搜索">
         <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.showSearch" />
       </a-form-model-item>
 
-      <a-form-model-item
-        v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'"
-        label="能否多选"
-        :labelCol="{ span: 6, offset: 0 }"
-        :wrapperCol="{ span: 18, offset: 0 }"
-      >
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'" label="能否多选">
         <a-switch :value="activeData.columns[activeData.selectedCol - 1].type.mode === 'default'" @change="changeMultiple" />
       </a-form-model-item>
 
-      <a-form-model-item label="是否必填" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+      <a-form-model-item label="是否必填">
         <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.required" />
       </a-form-model-item>
 
-      <a-form-model-item label="注释" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+      <a-form-model-item label="注释">
         <a-textarea
           :rows="4"
           :placeholder="`请输入${activeData.columns[activeData.selectedCol - 1].label}注释`"

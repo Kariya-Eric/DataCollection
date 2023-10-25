@@ -6,8 +6,12 @@ export const DataCollectionModalMixin = {
       title: '编辑',
       disabled: false,
       layout: {
-        labelCol: { span: 5 },
-        wrapperCol: { span: 19 }
+        labelCol: { style: 'width: 85px; display: inline-block; vertical-align: inherit;' },
+        wrapperCol: { style: 'width: calc(100% - 85px); display: inline-block;' }
+      },
+      layoutForSix: {
+        labelCol: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
+        wrapperCol: { style: 'width: calc(100% - 110px); display: inline-block;' }
       },
       model: {}
     }

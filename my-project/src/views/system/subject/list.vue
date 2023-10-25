@@ -4,7 +4,7 @@
       <a-card title="专业架构">
         <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-dc_new" />添加专业</a-button>
         <a-spin :spinning="loading">
-          <a-form-item label="专业名称" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
+          <a-form-item label="专业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input-search placeholder="请输入专业名称搜索" allowClear @change="searchSubject" />
           </a-form-item>
           <a-tree
@@ -97,6 +97,8 @@ export default {
   components: { SubjectInfo, SubjectModal, SubjectUser },
   data() {
     return {
+      labelCol: { style: 'width: 80px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 80px); display: inline-block;' },
       userList: [],
       roleList: [],
       subjectInfo: {},

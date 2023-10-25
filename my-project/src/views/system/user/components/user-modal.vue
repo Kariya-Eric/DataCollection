@@ -1,5 +1,5 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false">
+  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%">
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="账号" prop="account">
@@ -31,6 +31,9 @@
         </a-form-model-item>
         <a-form-model-item label="手机" prop="mobile">
           <a-input v-model="model.mobile" placeholder="请输入手机" :disabled="disabled" allowClear> <a-icon slot="suffix" type="mobile" /></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="状态" prop="status">
+          <dc-switch v-model="model.status" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -72,7 +75,7 @@ export default {
   },
   methods: {
     add(title) {
-      this.edit(this.showDepart ? {} : { orgId: this.depart }, title)
+      this.edit(this.showDepart ? { status: 1 } : { orgId: this.depart, status: 1 }, title)
       this.$nextTick(() => (this.accountDisabled = false))
     },
 

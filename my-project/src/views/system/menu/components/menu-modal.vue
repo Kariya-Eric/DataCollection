@@ -29,7 +29,7 @@
         <a-form-model-item label="排序" prop="sn">
           <a-input-number v-model="model.sn" placeholder="请输入排序" :min="0" style="width: 40%" />
         </a-form-model-item>
-        <a-form-model-item label="在菜单中显示" :label-col="{ span: 5 }" :wrapper-col="{ span: 19 }">
+        <a-form-model-item label="在菜单中显示" :label-col="labelCol" :wrapper-col="wrapperCol">
           <dc-switch v-model="model.enableMenu" />
         </a-form-model-item>
       </a-form-model>
@@ -46,6 +46,8 @@ export default {
   props: ['menu'],
   data() {
     return {
+      labelCol: { style: 'width: 120px; display: inline-block;vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 120px); display: inline-block;' },
       hasParent: false,
       rules: {
         name: [{ required: true, message: '请输入菜单名称' }],

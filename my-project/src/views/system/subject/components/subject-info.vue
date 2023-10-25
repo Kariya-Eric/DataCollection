@@ -46,8 +46,8 @@ export default {
         sort: [{ required: true, message: '请输入排序' }]
       },
       layouts: {
-        labelCol: { span: 3 },
-        wrapperCol: { span: 19 }
+        labelCol: { style: 'width: 144px; display: inline-block; vertical-align: inherit;' },
+        wrapperCol: { style: 'width: calc(100% - 168px); display: inline-block;' }
       }
     }
   },

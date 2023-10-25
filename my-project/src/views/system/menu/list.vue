@@ -9,7 +9,7 @@
           <a-button type="primary" @click="$refs.menuModal.show(true, '添加菜单')"><dc-icon type="icon-dc_new" />添加菜单</a-button>
         </template>
         <a-spin :spinning="loading">
-          <a-form-item label="菜单" :labelCol="{ span: 3 }" :wrapperCol="{ span: 21 }">
+          <a-form-item label="菜单" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input-search placeholder="请输入菜单名称搜索" allowClear @change="searchMenu" />
           </a-form-item>
           <a-tree
@@ -46,7 +46,7 @@
         <a-spin :spinning="loading">
           <a-empty v-if="selectedKeys.length == 0"> <span slot="description"> 请先选择一个菜单! </span></a-empty>
           <template v-else>
-            <a-form-model ref="form" :model="menuInfo" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }" :rules="rules">
+            <a-form-model ref="form" :model="menuInfo" :labelCol="infoLabelCol" :wrapperCol="infoWrapperCol" :rules="rules">
               <a-row>
                 <a-col :span="12">
                   <a-form-model-item label="菜单名称" prop="name">
@@ -85,14 +85,14 @@
                   </a-form-model-item>
                 </a-col>
                 <a-col :span="12">
-                  <a-form-model-item label="默认跳转地址" prop="load" :labelCol="{ span: 5 }" :wrapperCol="{ span: 19 }">
+                  <a-form-model-item label="默认跳转地址" prop="load" :labelCol="infoLabelColForSix" :wrapperCol="infoWrapperColForSix">
                     <a-input v-model="menuInfo.load" placeholder="默认跳转地址（子菜单不建议配置）" />
                   </a-form-model-item>
                 </a-col>
               </a-row>
               <a-row>
                 <a-col :span="12">
-                  <a-form-model-item label="在菜单中显示" prop="enableMenu" :labelCol="{ span: 5 }" :wrapperCol="{ span: 19 }">
+                  <a-form-model-item label="在菜单中显示" prop="enableMenu" :labelCol="infoLabelColForSix" :wrapperCol="infoWrapperColForSix">
                     <a-select v-model="menuInfo.enableMenu">
                       <a-select-option :value="1">是</a-select-option>
                       <a-select-option :value="0">否</a-select-option>
@@ -175,6 +175,12 @@ export default {
   components: { MenuModal, IconPopover },
   data() {
     return {
+      labelCol: { style: 'width: 60px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 60px); display: inline-block;' },
+      infoLabelCol: { style: 'width: 85px; display: inline-block; vertical-align: inherit;' },
+      infoWrapperCol: { style: 'width: calc(100% - 85px); display: inline-block;' },
+      infoLabelColForSix: { style: 'width: 120px; display: inline-block; vertical-align: inherit;' },
+      infoWrapperColForSix: { style: 'width: calc(100% - 120px); display: inline-block;' },
       iconChooseVisible: false,
       searchValue: '',
       treeData: [],

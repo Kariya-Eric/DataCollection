@@ -6,8 +6,8 @@
     </a-tabs>
     <div class="right-main">
       <!-- 组件属性 -->
-      <a-form-model v-if="currentTab === 'field' && showField">
-        <a-form-model-item v-if="activeData.__config__.changeTag" label="组件类型" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+      <a-form-model v-if="currentTab === 'field' && showField" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-model-item v-if="activeData.__config__.changeTag" label="组件类型">
           <a-select v-model="activeData.__config__.tagIcon" placeholder="请选择组件类型" :style="{ width: '100%' }" @change="tagChange">
             <a-select-opt-group v-for="group in tagList" :key="group.label">
               <span slot="label">{{ group.label }}</span>
@@ -15,64 +15,44 @@
             </a-select-opt-group>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item v-if="activeData.__config__.tag == 'formDivider'" label="组件名" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag == 'formDivider'" label="组件名">
           {{ activeData.__config__.label }}
         </a-form-model-item>
-        <a-form-model-item
-          v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider'"
-          label="标题"
-          :labelCol="{ span: 6, offset: 0 }"
-          :wrapperCol="{ span: 18, offset: 0 }"
-        >
+        <a-form-model-item v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider'" label="标题">
           <a-input v-model="activeData.__config__.label" placeholder="请输入标题" />
         </a-form-model-item>
 
-        <a-form-model-item v-if="activeData.placeholder !== undefined" label="占位提示" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.placeholder !== undefined" label="占位提示">
           <a-input v-model="activeData.placeholder" placeholder="请输入占位提示" />
         </a-form-model-item>
 
-        <a-form-model-item label="注释" v-if="activeData.comment !== undefined" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item label="注释" v-if="activeData.comment !== undefined">
           <a-textarea :rows="4" placeholder="请输入组件注释" size="small" v-model="activeData.comment" />
         </a-form-model-item>
 
-        <a-form-model-item
-          v-if="activeData.__config__.span !== undefined && activeData.__config__.tag !== 'formDivider'"
-          label="组件宽度"
-          :labelCol="{ span: 6, offset: 0 }"
-          :wrapperCol="{ span: 18, offset: 0 }"
-        >
+        <a-form-model-item v-if="activeData.__config__.span !== undefined && activeData.__config__.tag !== 'formDivider'" label="组件宽度">
           <a-slider v-model="activeData.__config__.span" :min="1" :max="24" :marks="{ 12: '12' }" @change="spanChange"></a-slider>
         </a-form-model-item>
 
-        <a-form-model-item
-          v-if="activeData.__config__.labelCol !== undefined && activeData.__config__.tag !== 'formDivider'"
-          label="标签宽度"
-          :labelCol="{ span: 6, offset: 0 }"
-          :wrapperCol="{ span: 18, offset: 0 }"
-        >
+        <a-form-model-item v-if="activeData.__config__.labelCol !== undefined && activeData.__config__.tag !== 'formDivider'" label="标签宽度">
           <a-slider v-model="activeData.__config__.labelCol.span" :min="1" :max="23" :marks="{ 12: '12' }" @change="changeLabelWidth"></a-slider>
         </a-form-model-item>
 
-        <a-form-model-item
-          v-if="activeData.style && activeData.style.width !== undefined"
-          label="输入框宽度"
-          :labelCol="{ span: 6, offset: 0 }"
-          :wrapperCol="{ span: 18, offset: 0 }"
-        >
+        <a-form-model-item v-if="activeData.style && activeData.style.width !== undefined" label="输入框宽度">
           <a-slider v-model="inputWidth" :step="10" :marks="{ 50: '50%' }"></a-slider>
         </a-form-model-item>
 
-        <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="小数位数" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="小数位数">
           <a-input-number v-model="activeData.precision" :min="0" placeholder="小数位数" />
         </a-form-model-item>
-        <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最小值" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最小值">
           <a-input-number v-model="activeData.min" placeholder="最小值" />
         </a-form-model-item>
-        <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最大值" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最大值">
           <a-input-number v-model="activeData.max" placeholder="最大值" />
         </a-form-model-item>
 
-        <a-form-model-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式">
           <a-select v-model="activeData.type">
             <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
             <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
@@ -80,7 +60,7 @@
           </a-select>
         </a-form-model-item>
 
-        <a-form-model-item v-if="activeData.format !== undefined" label="时间格式" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.format !== undefined" label="时间格式">
           <a-select v-model="activeData.format" @change="changeTimeFormat">
             <a-select-option value="YYYY">年（yyyy）</a-select-option>
             <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
@@ -108,52 +88,42 @@
           <a-divider />
         </template>
 
-        <a-form-model-item v-if="activeData.__config__.tag === 'formPhone'" label="支持固话" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag === 'formPhone'" label="支持固话">
           <a-switch v-model="activeData.isMobile" />
         </a-form-model-item>
 
-        <a-form-model-item
-          v-if="activeData.__config__.tag === 'a-input' || activeData.__config__.tag === 'a-textarea'"
-          label="禁止汉字"
-          :labelCol="{ span: 6, offset: 0 }"
-          :wrapperCol="{ span: 18, offset: 0 }"
-        >
+        <a-form-model-item v-if="activeData.__config__.tag === 'a-input' || activeData.__config__.tag === 'a-textarea'" label="禁止汉字">
           <a-switch v-model="activeData.allowChar" />
         </a-form-model-item>
 
-        <a-form-model-item
-          v-if="activeData.__config__.showLabel !== undefined && activeData.__config__.tag !== 'formDivider'"
-          label="显示标签"
-          :labelCol="{ span: 6, offset: 0 }"
-          :wrapperCol="{ span: 18, offset: 0 }"
-        >
+        <a-form-model-item v-if="activeData.__config__.showLabel !== undefined && activeData.__config__.tag !== 'formDivider'" label="显示标签">
           <a-switch v-model="activeData.__config__.showLabel" />
         </a-form-model-item>
 
-        <a-form-model-item v-if="activeData.__config__.tag === 'a-select'" label="能否搜索" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag === 'a-select'" label="能否搜索">
           <a-switch v-model="activeData.showSearch" />
         </a-form-model-item>
-        <a-form-model-item v-if="activeData.__config__.tag === 'a-select'" label="是否多选" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.tag === 'a-select'" label="是否多选">
           <a-switch :value="activeData.mode === 'default'" @change="multipleChange" />
         </a-form-model-item>
-        <a-form-model-item v-if="activeData.__config__.required !== undefined" label="是否必填" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item v-if="activeData.__config__.required !== undefined" label="是否必填">
           <a-switch v-model="activeData.__config__.required" />
         </a-form-model-item>
 
         <!-- 自定义组件start -->
         <template v-if="activeData.__config__.tag === 'formDivider'">
           <a-divider>分割线设置</a-divider>
-          <a-form-model-item label="标题" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+          <a-form-model-item label="标题">
             <a-input v-model="activeData.title" />
           </a-form-model-item>
-          <a-form-model-item label="标题位置" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+          <a-form-model-item label="标题位置">
             <a-radio-group v-model="activeData.orientation" button-style="solid">
               <a-radio-button value="left"> 居左 </a-radio-button>
               <a-radio-button value="center"> 居中 </a-radio-button>
               <a-radio-button value="right"> 居右 </a-radio-button>
             </a-radio-group>
           </a-form-model-item>
-          <a-form-model-item label="字体大小" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+          <a-form-model-item label="字体大小">
             <a-slider v-model="activeData.fontSize" :min="12" :max="30" :marks="{ 16: '16', 24: '24' }"></a-slider>
           </a-form-model-item>
         </template>
@@ -163,26 +133,30 @@
       </a-form-model>
 
       <!-- 表单属性 -->
-      <a-form-model v-show="currentTab === 'form'">
-        <a-form-model-item label="表单名称" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+      <a-form-model v-show="currentTab === 'form'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-model-item label="表单名称">
           <a-input v-model="baseInfo.name" />
         </a-form-model-item>
-        <a-form-model-item label="表单大类" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item label="表单大类">
           <a-select v-model="baseInfo.formCategories">
             <a-select-option v-for="item in baseInfo.listCategories" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="统计时间类型" :labelCol="{ span: 8, offset: 0 }" :wrapperCol="{ span: 16, offset: 0 }">
+        <a-form-model-item
+          label="统计时间类型"
+          :labelCol="{ style: 'width: 110px; display: inline-block;' }"
+          :wrapperCol="{ style: 'width: calc(100% - 121px); display: inline-block;' }"
+        >
           <a-select v-model="baseInfo.collectTimeType">
             <a-select-option value="时点">时点</a-select-option>
             <a-select-option value="学年">学年</a-select-option>
             <a-select-option value="自然年">自然年</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="表单类型" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item label="表单类型">
           <a-input v-model="baseInfo.type" disabled />
         </a-form-model-item>
-        <a-form-model-item label="标签对齐" :labelCol="{ span: 6, offset: 0 }" :wrapperCol="{ span: 18, offset: 0 }">
+        <a-form-model-item label="标签对齐">
           <a-radio-group v-model="formConf.labelAlign" button-style="solid">
             <a-radio-button value="left"> 左对齐 </a-radio-button>
             <a-radio-button value="right"> 右对齐 </a-radio-button>
@@ -225,7 +199,9 @@ export default {
   props: ['showField', 'activeData', 'formConf', 'baseInfo', 'drawingList'],
   data() {
     return {
-      currentTab: 'field'
+      currentTab: 'field',
+      labelCol: { style: 'width: 80px; display: inline-block;vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 80px); display: inline-block;' }
     }
   },
   computed: {
