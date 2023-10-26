@@ -1,7 +1,7 @@
 <template>
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
-      <a-card title="组织架构">
+      <a-card title="组织架构" class="dc-card">
         <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-dc_new" />添加组织</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="部门名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -56,7 +56,7 @@
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个部门! </span>
           </a-empty>
-          <depart-info v-else :users="userList" :isEdit="editFlag" :orgId="selectedKeys[0]" @refresh="initDepart" />
+          <depart-info v-else :users="userList" :isEdit="editFlag" :orgId="selectedKeys[0]" @refresh="initDepart" @reset="editFlag = false" />
         </div>
         <div v-if="activeKey === '2'">
           <a-empty v-if="selectedKeys.length == 0">

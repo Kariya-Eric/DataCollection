@@ -1,7 +1,7 @@
 <template>
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
-      <a-card title="专业架构">
+      <a-card title="专业架构" class="dc-card">
         <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-dc_new" />添加专业</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="专业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
@@ -53,7 +53,7 @@
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个专业! </span>
           </a-empty>
-          <subject-info v-else :orgs="departList" :subject="subjectInfo" :isEdit="editFlag" @refresh="initSubject" />
+          <subject-info v-else :orgs="departList" :subject="subjectInfo" :isEdit="editFlag" @refresh="initSubject" @reset="editFlag = false" />
         </div>
         <div v-if="activeKey === '2'">
           <a-empty v-if="selectedKeys.length == 0">

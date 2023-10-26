@@ -13,7 +13,7 @@
           <a-icon type="close-circle" @click="delDateAndOr(index)" />
         </div>
         <a-row :gutter="12">
-          <a-col :span="3">公式左侧</a-col>
+          <a-col :span="4">公式左侧</a-col>
           <a-col :span="8">
             <a-select placeholder="请选择" v-model="item.left[0].type" style="width: 100%" @change="val => changeLeftType(val, index)">
               <a-select-option value="field">表单字段</a-select-option>
@@ -35,7 +35,7 @@
         </a-row>
 
         <a-row :gutter="12">
-          <a-col :span="3">判断符</a-col>
+          <a-col :span="4">判断符</a-col>
           <a-col :span="8">
             <a-select placeholder="请选择" v-model="item.operator" style="width: 100%" @change="val => changeOpt(val, index)">
               <a-select-option v-for="(item, index) in operatorList" :key="index" :value="item">{{ item }}</a-select-option>
@@ -44,7 +44,7 @@
         </a-row>
 
         <a-row :gutter="12">
-          <a-col :span="3">公式右侧</a-col>
+          <a-col :span="4">公式右侧</a-col>
           <a-col :span="8">
             <a-select placeholder="请选择" v-model="item.right[0].type" style="width: 100%" @change="val => changeRightType(val, index)">
               <a-select-option value="field">表单字段</a-select-option>

@@ -84,13 +84,13 @@ export default {
       },
       selectedRowKeys: [],
       columns: [
-        { dataIndex: 'account', title: '账号', align: 'center' },
-        { dataIndex: 'name', title: '姓名', align: 'center' },
-        { dataIndex: 'orgName', title: '所属部门', align: 'center' },
-        { dataIndex: 'roleName', title: '角色', align: 'center' },
-        { dataIndex: 'email', title: '邮箱', align: 'center' },
-        { dataIndex: 'mobile', title: '手机号', align: 'center' },
-        { title: '状态', align: 'center', scopedSlots: { customRender: 'status' } }
+        { dataIndex: 'account', title: '账号', align: 'center', ellipsis: true },
+        { dataIndex: 'name', title: '姓名', align: 'center', ellipsis: true },
+        { dataIndex: 'orgName', title: '所属部门', align: 'center', ellipsis: true },
+        { dataIndex: 'roleName', title: '角色', align: 'center', ellipsis: true },
+        { dataIndex: 'email', title: '邮箱', align: 'center', ellipsis: true },
+        { dataIndex: 'mobile', title: '手机号', align: 'center', ellipsis: true },
+        { title: '状态', align: 'center', scopedSlots: { customRender: 'status' }, ellipsis: true }
       ]
     }
   },

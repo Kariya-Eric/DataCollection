@@ -9,12 +9,19 @@
           <a-input v-model="model.name" placeholder="请输入姓名" :disabled="disabled" allowClear></a-input>
         </a-form-model-item>
         <a-form-model-item label="所属部门" prop="orgId" v-if="showDepart">
-          <a-select v-model="model.orgId" placeholder="请选择部门" :disabled="disabled" allowClear>
-            <a-select-opt-group v-for="group in depart" :key="group.id">
-              <span slot="label">{{ group.name }}</span>
-              <a-select-option v-for="item in group.children.filter(i => i.status == 1)" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
-            </a-select-opt-group>
-          </a-select>
+          <a-tree-select
+            :getPopupContainer="target => target.parentNode"
+            :disabled="disabled"
+            v-model="model.orgId"
+            show-search
+            placeholder="请选择请选择部门"
+            allow-clear
+            tree-default-expand-all
+            :tree-data="depart"
+            :replace-fields="replaceFields"
+            :filterTreeNode="filterTreeNode"
+            :dropdown-style="{ maxHeight: '320px', overflow: 'auto' }"
+          />
         </a-form-model-item>
         <a-form-model-item label="角色" prop="roleIds">
           <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
@@ -49,6 +56,12 @@ export default {
   props: ['depart', 'role', 'subjects'],
   data() {
     return {
+      replaceFields: {
+        title: 'name',
+        key: 'id',
+        value: 'id'
+      },
+      filterTreeNode: (inputValue, treeNode) => treeNode.data.props.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1,
       rules: {
         account: [{ required: true, message: '请输入账号' }],
         name: [{ required: true, message: '请输入姓名' }],

@@ -1,7 +1,7 @@
 <template>
   <a-row :gutter="12">
     <a-col :span="6">
-      <a-card title="选项管理">
+      <a-card title="选项管理" class="dc-card">
         <a-spin :spinning="treeLoading">
           <a-form-item label="年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-select v-model="searchYear" style="width: 100%" placeholder="请选择年份">
@@ -70,6 +70,8 @@ export default {
   mixins: [DataCollectionListMixin],
   data() {
     return {
+      labelCol: { style: 'width: 60px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 60px); display: inline-block;' },
       columns: [
         { title: '序号', width: 70, align: 'center', key: 'rowIndex', customRender: (t, r, index) => parseInt(index) + 1 },
         { title: '业务表名', dataIndex: 'option' },

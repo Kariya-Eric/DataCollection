@@ -73,11 +73,11 @@
           <draggable :list="activeData.__slot__.options" :animation="340" group="selectItem" handle=".option-drag">
             <div v-for="(item, index) in activeData.__slot__.options" :key="index" class="select-item">
               <div class="select-line-icon option-drag">
-                <a-icon type="unordered-list" style="font-size: 18px" />
+                <a-icon type="unordered-list" style="font-size: 16px" />
               </div>
               <a-input v-model="item.label" placeholder="选项名" />
               <div class="close-btn select-line-icon" @click="delSelectItem(index)">
-                <a-icon type="delete" style="font-size: 18px" />
+                <a-icon type="minus-circle" style="font-size: 16px" />
               </div>
             </div>
           </draggable>

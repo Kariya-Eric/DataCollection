@@ -84,20 +84,20 @@ export default {
       handler(newVal) {
         if (newVal) {
           this.columns = [
-            { dataIndex: 'account', title: '账号', align: 'center' },
-            { dataIndex: 'name', title: '姓名', align: 'center' },
-            { dataIndex: 'orgName', title: '所属部门', align: 'center' },
-            { dataIndex: 'roleName', title: '角色', align: 'center' },
-            { title: '状态', align: 'center', scopedSlots: { customRender: 'status' } },
+            { dataIndex: 'account', title: '账号', align: 'center', ellipsis: true },
+            { dataIndex: 'name', title: '姓名', align: 'center', ellipsis: true },
+            { dataIndex: 'orgName', title: '所属部门', align: 'center', ellipsis: true },
+            { dataIndex: 'roleName', title: '角色', align: 'center', ellipsis: true },
+            { title: '状态', align: 'center', scopedSlots: { customRender: 'status', ellipsis: true } },
             { dataIndex: 'action', title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
           ]
         } else {
           this.columns = [
-            { dataIndex: 'account', title: '账号', align: 'center' },
-            { dataIndex: 'name', title: '姓名', align: 'center' },
-            { dataIndex: 'orgName', title: '所属部门', align: 'center' },
-            { dataIndex: 'roleName', title: '角色', align: 'center' },
-            { title: '状态', align: 'center', scopedSlots: { customRender: 'status' } }
+            { dataIndex: 'account', title: '账号', align: 'center', ellipsis: true },
+            { dataIndex: 'name', title: '姓名', align: 'center', ellipsis: true },
+            { dataIndex: 'orgName', title: '所属部门', align: 'center', ellipsis: true },
+            { dataIndex: 'roleName', title: '角色', align: 'center', ellipsis: true },
+            { title: '状态', align: 'center', scopedSlots: { customRender: 'status' }, ellipsis: true }
           ]
         }
       },

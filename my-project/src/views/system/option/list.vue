@@ -4,8 +4,8 @@
       <a-card title="选项管理">
         <a-spin :spinning="treeLoading">
           <a-form-item label="年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-select v-model="searchYear" style="width: 100%" placeholder="请选择年份">
-              <a-select-option value="2023">2023</a-select-option>
+            <a-select v-model="searchYear" style="width: 100%" placeholder="请选择年份" @change="val => getDictionaryTree(val)">
+              <a-select-option v-for="(year, i) in yearList" :value="year" :key="i">{{ year }}</a-select-option>
             </a-select>
           </a-form-item>
           <a-tree
@@ -36,6 +36,7 @@
           v-else
           border
           align="center"
+          :loading="optLoading"
           ref="optTable"
           :edit-rules="optRules"
           :edit-config="{ trigger: 'click', mode: 'cell' }"
@@ -70,7 +71,16 @@
         <a-empty v-if="optSelectedRowKeys.length == 0">
           <span slot="description">请先选择一行选项！</span>
         </a-empty>
-        <vxe-table v-else border align="center" ref="optValueTable" :edit-rules="optValueRules" :edit-config="{ trigger: 'click', mode: 'cell' }" :data="optValueDataSource">
+        <vxe-table
+          v-else
+          :loading="optValueLoading"
+          border
+          align="center"
+          ref="optValueTable"
+          :edit-rules="optValueRules"
+          :edit-config="{ trigger: 'click', mode: 'cell' }"
+          :data="optValueDataSource"
+        >
           <vxe-column type="seq" width="60"></vxe-column>
           <vxe-column field="name" title="选项值" :edit-render="{ autofocus: '.ant-input' }">
             <template #edit="scope">
@@ -109,7 +119,7 @@ export default {
       optValueDataSource: [],
       optValueLoading: false,
       treeLoading: false,
-      searchYear: undefined,
+      searchYear: new Date().getFullYear(),
       selectedKeys: [],
       expandedKeys: [],
       autoExpandParent: true,
@@ -120,8 +130,19 @@ export default {
       treeData: []
     }
   },
+  computed: {
+    yearList() {
+      let startYear = 2018
+      let nowYear = new Date().getFullYear()
+      let years = []
+      for (let i = nowYear; i >= startYear; i--) {
+        years.push(i)
+      }
+      return years
+    }
+  },
   created() {
-    this.getDictionaryTree()
+    this.getDictionaryTree(this.searchYear)
   },
   methods: {
     async saveOptValue() {
@@ -197,8 +218,13 @@ export default {
     },
 
     radioChangeEvent({ row }) {
-      this.optSelectedRowKeys = [row.id]
-      this.getOptionValueData()
+      if (row.id) {
+        this.optSelectedRowKeys = [row.id]
+        this.getOptionValueData()
+      } else {
+        this.$message.warning('请先保存临时数据！')
+        this.onOptClearSelected()
+      }
     },
     onOptClearSelected() {
       this.optSelectedRowKeys = []
@@ -250,13 +276,14 @@ export default {
       this.autoExpandParent = false
     },
 
-    getDictionaryTree() {
+    getDictionaryTree(year) {
       this.treeLoading = true
-      getDictionaryTree()
+      getDictionaryTree(year)
         .then(res => {
           if (res.state) {
             this.treeData = res.value
             this.setExpandedKeys(res.value)
+            this.optSelectedRowKeys = []
           }
         })
         .finally(() => (this.treeLoading = false))

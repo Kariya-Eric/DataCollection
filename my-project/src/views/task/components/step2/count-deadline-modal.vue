@@ -1,7 +1,7 @@
 <template>
   <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false">
     <a-spin :spinning="loading">
-      <a-form-model ref="form" :labelCol="{ span: 6 }" :wrapperCol="{ span: 18 }" :model="model" :rules="rules">
+      <a-form-model ref="form" :labelCol="labelCol" :wrapperCol="wrapperCol" :model="model" :rules="rules">
         <a-form-model-item label="表单名称">
           <a-input v-model="model.name" disabled v-if="!isBatch" />
           <a-select v-model="model.formIds" disabled v-else mode="multiple">
@@ -25,6 +25,8 @@ export default {
   mixins: [DataCollectionModalMixin],
   data() {
     return {
+      labelCol: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 100px); display: inline-block;' },
       isBatch: false,
       rules: {
         statisticsEndTime: [{ required: true, message: '请选择统计截止时间' }]

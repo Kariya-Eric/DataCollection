@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card class="header-card">
+    <a-card class="header-card" >
       <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="24">
@@ -89,7 +89,7 @@ export default {
   }
   /deep/.ant-card-body {
     overflow-y: auto;
-    height: calc(64vh);
+    height: calc(70vh);
   }
 }
 </style>

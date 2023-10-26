@@ -6,11 +6,11 @@
         <draggable :list="activeData.columns" :animation="340" group="selectItem" handle=".option-drag" @end="dragEnd">
           <div v-for="item in activeData.columns" :key="item.key" class="select-item">
             <div class="select-line-icon option-drag">
-              <a-icon type="unordered-list" style="font-size: 18px" />
+              <a-icon type="unordered-list" style="font-size: 16px" />
             </div>
             <a-input v-model="item.label" />
             <div class="close-btn select-line-icon">
-              <a-icon type="delete" style="font-size: 18px" @click="delCol(item.key)" />
+              <a-icon type="minus-circle" style="font-size: 16px" @click="delCol(item.key)" />
             </div>
           </div>
         </draggable>
@@ -22,41 +22,41 @@
     <template v-if="activeData.selectedCol !== -1">
       <a-divider>已选中 : 第{{ activeData.selectedCol }}列</a-divider>
       <a-form-model-item label="类型">
-        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.label" @change="tagChange">
-          <a-select-option value="单行文本">单行文本</a-select-option>
-          <a-select-option value="多行文本">多行文本</a-select-option>
-          <a-select-option value="数字">数字</a-select-option>
-          <a-select-option value="邮箱">邮箱</a-select-option>
-          <a-select-option value="电话">电话</a-select-option>
-          <a-select-option value="链接">链接</a-select-option>
-          <a-select-option value="地址">地址</a-select-option>
-          <a-select-option value="下拉选择">下拉选择</a-select-option>
-          <a-select-option value="日期选择">日期选择</a-select-option>
+        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.tag" @change="tagChange">
+          <a-select-option value="a-input">单行文本</a-select-option>
+          <a-select-option value="a-textarea">多行文本</a-select-option>
+          <a-select-option value="a-input-number">数字</a-select-option>
+          <a-select-option value="formMail">邮箱</a-select-option>
+          <a-select-option value="formPhone">电话</a-select-option>
+          <a-select-option value="formLink">链接</a-select-option>
+          <a-select-option value="formAddress">地址</a-select-option>
+          <a-select-option value="a-select">下拉选择</a-select-option>
+          <a-select-option value="dc-date">日期选择</a-select-option>
         </a-select>
       </a-form-model-item>
 
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '电话'" label="支持固话">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'formPhone'" label="支持固话">
         <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.isMobile" />
       </a-form-model-item>
       <a-form-model-item
         v-if="
-          activeData.columns[activeData.selectedCol - 1].type.__config__.label === '单行文本' || activeData.columns[activeData.selectedCol - 1].type.__config__.label === '多行文本'
+          activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input' || activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-textarea'
         "
         label="禁止汉字"
       >
         <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.allowChar" />
       </a-form-model-item>
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="小数位数">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="小数位数">
         <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.precision" :min="0" placeholder="小数位数" />
       </a-form-model-item>
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="最小值">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="最小值">
         <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" />
       </a-form-model-item>
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '数字'" label="最大值">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="最大值">
         <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" />
       </a-form-model-item>
 
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '地址'" label="地址格式">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'formAddress'" label="地址格式">
         <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type">
           <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
           <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
@@ -64,7 +64,7 @@
         </a-select>
       </a-form-model-item>
 
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '日期选择'" label="时间格式">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'dc-date'" label="时间格式">
         <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.format" @change="val => changeTimeFormat(val, activeData.columns[activeData.selectedCol - 1].type)">
           <a-select-option value="YYYY">年（yyyy）</a-select-option>
           <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
@@ -72,11 +72,11 @@
         </a-select>
       </a-form-model-item>
 
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'" label="能否搜索">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-select'" label="能否搜索">
         <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.showSearch" />
       </a-form-model-item>
 
-      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'" label="能否多选">
+      <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-select'" label="能否多选">
         <a-switch :value="activeData.columns[activeData.selectedCol - 1].type.mode === 'default'" @change="changeMultiple" />
       </a-form-model-item>
 
@@ -92,16 +92,16 @@
         />
       </a-form-model-item>
 
-      <template v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.label === '下拉选择'">
+      <template v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-select'">
         <a-divider>选项</a-divider>
         <draggable :list="activeData.columns[activeData.selectedCol - 1].type.options" :animation="340" group="selectItem" handle=".option-drag">
           <div v-for="(item, index) in activeData.columns[activeData.selectedCol - 1].type.__slot__.options" :key="index" class="select-item">
             <div class="select-line-icon option-drag">
-              <a-icon type="unordered-list" style="font-size: 18px" />
+              <a-icon type="unordered-list" style="font-size: 16px; " />
             </div>
             <a-input v-model="item.label" placeholder="选项名" />
             <div class="close-btn select-line-icon">
-              <a-icon type="delete" style="font-size: 18px" @click="delOption(index)" />
+              <a-icon type="minus-circle" style="font-size: 16px" @click="delOption(index)" />
             </div>
           </div>
         </draggable>
@@ -166,23 +166,23 @@ export default {
     },
 
     tagChange(val) {
-      if (val == '单行文本') {
+      if (val == 'a-input') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(input))
-      } else if (val == '多行文本') {
+      } else if (val == 'a-textarea') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(textarea))
-      } else if (val == '数字') {
+      } else if (val == 'a-input-number') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(number))
-      } else if (val == '链接') {
+      } else if (val == 'formLink') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(link))
-      } else if (val == '邮箱') {
+      } else if (val == 'formMail') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(mail))
-      } else if (val == '电话') {
+      } else if (val == 'formPhone') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(phone))
-      } else if (val == '地址') {
+      } else if (val == 'formAddress') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(address))
-      } else if (val == '下拉选择') {
+      } else if (val == 'a-select') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(select))
-      } else if (val == '日期选择') {
+      } else if (val == 'dc-date') {
         this.activeData.columns[this.activeData.selectedCol - 1].type = JSON.parse(JSON.stringify(date))
       }
     },
@@ -239,8 +239,7 @@ export default {
 }
 .select-line-icon {
   line-height: 32px;
-  font-size: 22px;
-  padding: 0 4px;
+  padding: 0 8px;
   color: #777;
 }
 .option-drag {

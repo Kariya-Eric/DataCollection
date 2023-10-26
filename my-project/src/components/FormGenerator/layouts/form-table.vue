@@ -110,7 +110,7 @@ export default {
             trigger: 'change'
           })
         }
-        if (column.type.__config__.label == '单行文本' || column.type.__config__.label == '多行文本') {
+        if (column.type.__config__.tag == 'a-input' || column.type.__config__.tag == 'a-textarea') {
           if (column.type.allowChar) {
             ruleList.push({
               pattern: /^[^\u4E00-\u9FA5]+$/,
@@ -118,19 +118,19 @@ export default {
               trigger: 'change'
             })
           }
-        } else if (column.type.__config__.label == '链接') {
+        } else if (column.type.__config__.tag == 'formLink') {
           ruleList.push({
             pattern: /^[^\u4E00-\u9FA5]+$/,
             message: `${column.label}中不能包含汉字`,
             trigger: 'change'
           })
-        } else if (column.type.__config__.label == '邮箱') {
+        } else if (column.type.__config__.tag == 'formMail') {
           ruleList.push({
             pattern: /\w[-.\w]*@[-a-z0-9]+(\.[-a-z0-9]+)*\.(com|cn)/,
             message: '请输入正确的邮箱',
             trigger: 'change'
           })
-        } else if (column.type.__config__.label == '电话') {
+        } else if (column.type.__config__.tag == 'formPhone') {
           if (column.type.isMobile) {
             ruleList.push({
               pattern: /^(\+\d{2}-)?0\d{2,3}-\d{7,8}$/,
@@ -156,31 +156,31 @@ export default {
       return this.columns.map(column => {
         let component
         let autofocus
-        if (column.type.__config__.label == '单行文本') {
+        if (column.type.__config__.tag == 'a-input') {
           component = 'input'
           autofocus = '.ant-input'
-        } else if (column.type.__config__.label == '多行文本') {
+        } else if (column.type.__config__.tag == 'a-textarea') {
           component = 'textarea'
           autofocus = '.ant-input'
-        } else if (column.type.__config__.label == '数字') {
+        } else if (column.type.__config__.tag == 'a-input-number') {
           component = 'number'
           autofocus = '.ant-input-number-input'
-        } else if (column.type.__config__.label == '链接') {
+        } else if (column.type.__config__.tag == 'formLink') {
           component = 'link'
           autofocus = '.ant-input'
-        } else if (column.type.__config__.label == '邮箱') {
+        } else if (column.type.__config__.tag == 'formMail') {
           component = 'mail'
           autofocus = '.ant-input'
-        } else if (column.type.__config__.label == '电话') {
+        } else if (column.type.__config__.tag == 'formPhone') {
           component = 'phone'
           autofocus = '.ant-input'
-        } else if (column.type.__config__.label == '地址') {
+        } else if (column.type.__config__.tag == 'formAddress') {
           component = 'address'
           autofocus = '.ant-input'
-        } else if (column.type.__config__.label == '下拉选择') {
+        } else if (column.type.__config__.tag == 'a-select') {
           component = 'select'
           autofocus = '.ant-select-search__field'
-        } else if (column.type.__config__.label == '日期选择') {
+        } else if (column.type.__config__.tag == 'dc-date') {
           component = 'date'
           autofocus = '.ant-calendar-picker-input'
         } else {

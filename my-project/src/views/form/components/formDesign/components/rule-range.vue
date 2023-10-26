@@ -13,7 +13,7 @@
           <a-icon type="close-circle" @click="del(index)" />
         </div>
         <a-row v-for="(left, leftIndex) in range.left" :key="'left' + leftIndex" :gutter="12">
-          <a-col :span="3">
+          <a-col :span="4">
             <span v-if="leftIndex == 0"> 公式左侧 </span>
             <a-select v-else v-model="left.operator" placeholder="运算符" style="width: 100%" @change="val => changeLeftOpt(val, leftIndex, index)">
               <a-select-option :value="item" v-for="item in calculateList" :key="'left' + item">{{ item }}</a-select-option>
@@ -43,7 +43,7 @@
         </a-row>
 
         <a-row :gutter="12">
-          <a-col :span="3">判断符</a-col>
+          <a-col :span="4">判断符</a-col>
           <a-col :span="8">
             <a-select placeholder="请选择" v-model="range.operator" @change="val => changeOpt(val, index)">
               <a-select-option v-for="(opt, optIndex) in operatorList" :key="optIndex" :value="opt">{{ opt }}</a-select-option>
@@ -52,7 +52,7 @@
         </a-row>
 
         <a-row v-for="(right, rightIndex) in range.right" :key="'right' + rightIndex" :gutter="12">
-          <a-col :span="3">
+          <a-col :span="4">
             <span v-if="rightIndex == 0"> 公式右侧 </span>
             <a-select v-else v-model="right.operator" placeholder="运算符" style="width: 100%" @change="val => changeRightOpt(val, rightIndex, index)">
               <a-select-option :value="item" v-for="item in calculateList" :key="'right' + item">{{ item }}</a-select-option>

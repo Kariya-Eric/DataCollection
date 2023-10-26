@@ -11,7 +11,7 @@
   >
     <div class="inner">
       <a-form-model ref="logicForm" :model="logicForm" :rules="rules">
-        <a-form-model-item prop="andOr" label="当满足以下" :labelCol="{ span: 4, offset: 0 }" style="margin: 0px 0px 8px 0px">
+        <a-form-model-item prop="andOr" label="当满足以下" :labelCol="labelCol" :wrapperCol="wrapperCol" style="margin: 0px 0px 8px 0px">
           <a-select v-model="logicForm.andOr" style="width: 35%">
             <a-select-option value="&&">全部</a-select-option>
             <a-select-option value="||">任意</a-select-option>
@@ -22,10 +22,10 @@
         <a-form-model-item v-for="(item, index) in logicForm.termList" :key="index" :prop="'termList.' + index" :rules="rules.termList" style="margin: 0px 0px 8px 0px">
           <a-row :gutter="2">
             <a-col :span="22"><logic-item :drawing-list="drawingList" v-model="logicForm.termList[index]" /> </a-col>
-            <a-col :xs="{ span: 1, offset: 1 }"><a-icon v-if="logicForm.termList.length > 1" type="delete" @click="delTerm(index)" /></a-col>
+            <a-col :span="1"> <a-icon v-if="logicForm.termList.length > 1" style="color: red;margin-left:12px" type="minus-circle" @click="delTerm(index)" /></a-col>
           </a-row>
         </a-form-model-item>
-        <a-form-model-item label="显示以下字段" prop="showList" :labelCol="{ span: 4, offset: 0 }" :wrapperCol="{ span: 20, offset: 0 }">
+        <a-form-model-item label="显示以下字段" prop="showList" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-select v-model="logicForm.showList" mode="multiple" :getPopupContainer="target => target.parentNode">
             <a-select-option v-for="(item, index) in showOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
           </a-select>
@@ -55,6 +55,8 @@ export default {
   },
   data() {
     return {
+      labelCol: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 110px); display: inline-block;' },
       visible: false,
       updateFlag: false,
       index: 0,

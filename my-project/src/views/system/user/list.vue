@@ -5,12 +5,23 @@
         <a-row :gutter="24">
           <a-col :md="4" :sm="12">
             <a-form-item label="部门">
-              <a-select v-model="queryParam.orgId" placeholder="请选择部门" allowClear>
+              <a-tree-select
+                v-model="queryParam.orgId"
+                show-search
+                placeholder="请选择请选择部门"
+                allow-clear
+                tree-default-expand-all
+                :tree-data="departList"
+                :replace-fields="replaceFields"
+                :filterTreeNode="filterTreeNode"
+                :dropdown-style="{ maxHeight: '320px', overflow: 'auto' }"
+              />
+              <!-- <a-select v-model="queryParam.orgId" placeholder="请选择部门" allowClear>
                 <a-select-opt-group v-for="group in departList" :key="group.id">
                   <span slot="label">{{ group.name }}</span>
                   <a-select-option v-for="item in group.children.filter(i => i.status === 1)" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
                 </a-select-opt-group>
-              </a-select>
+              </a-select> -->
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="12">
@@ -101,6 +112,12 @@ export default {
   components: { UserModal },
   data() {
     return {
+      replaceFields: {
+        title: 'name',
+        key: 'id',
+        value: 'id'
+      },
+      filterTreeNode: (inputValue, treeNode) => treeNode.data.props.name.toLowerCase().indexOf(inputValue.toLowerCase()) > -1,
       url: {
         list: '/uc/api/user/getUserPage',
         deleteBatch: '/uc/api/user/deleteUserByIds',
@@ -153,9 +170,24 @@ export default {
       let userInfo = storage.get(USER_INFO)
       initDeptTree(userInfo.userId).then(res => {
         if (res.state) {
-          this.departList = res.value[0].children
+          let functional = res.value[0].children.find(item => item.name == '职能部门')
+          let teaching = res.value[0].children.find(item => item.name == '教学部门')
+          functional.children = functional.children.filter(item => item.status === 1)
+          teaching.children = teaching.children.filter(item => item.status === 1)
+          this.departList = this.renderDepart([teaching, functional])
         }
       })
+    },
+
+    //处理disable属性
+    renderDepart(depart) {
+      depart.forEach(dept => {
+        if (dept.children && dept.children.length > 0) {
+          this.renderDepart(dept.children)
+        }
+        dept.disabled = dept.grade !== 'ORG'
+      })
+      return depart
     },
 
     initRole() {

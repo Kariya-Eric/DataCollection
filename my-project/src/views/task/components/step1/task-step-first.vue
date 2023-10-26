@@ -1,6 +1,6 @@
 <template>
   <div class="main-form">
-    <a-form-model ref="taskForm" :model="taskForm" :rules="taskFormRules" :labelCol="{ span: 6 }" :wrapperCol="{ span: 18 }">
+    <a-form-model ref="taskForm" :model="taskForm" :rules="taskFormRules" :labelCol="labelCol" :wrapperCol="wrapperCol">
       <a-row>
         <h2>学校基本信息</h2>
       </a-row>
@@ -82,6 +82,8 @@ export default {
   components: { ExtraSwitch },
   data() {
     return {
+      labelCol: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 100px); display: inline-block;' },
       taskForm: JSON.parse(JSON.stringify(this.task)),
       loading: false,
       taskFormRules: {

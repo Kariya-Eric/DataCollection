@@ -1,7 +1,7 @@
 <template>
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
-      <a-card title="菜单管理">
+      <a-card title="菜单管理" class="dc-card">
         <template slot="extra">
           <a-button type="primary" style="margin-right: 12px" v-if="selectedKeys.length > 0" @click="$refs.menuModal.show(false, '添加下级菜单', selectedKeys[0])">
             <dc-icon type="icon-dc_new" />添加下级菜单

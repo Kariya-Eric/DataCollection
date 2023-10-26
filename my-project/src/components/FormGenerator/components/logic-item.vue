@@ -2,12 +2,12 @@
   <a-input-group id="logic-item">
     <a-row :gutter="2">
       <a-col :span="5">
-        <a-select v-model="term" @change="changeTerm" style="width: 100%" :getPopupContainer="target => target.parentNode">
+        <a-select v-model="term" @change="changeTerm" style="width: 100%">
           <a-select-option v-for="(item, index) in options" :key="index" :value="item.value">{{ item.label }}</a-select-option>
         </a-select>
       </a-col>
       <a-col :xs="{ span: 7, offset: 1 }">
-        <a-select v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag" style="width: 100%" :getPopupContainer="target => target.parentNode">
+        <a-select v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag" style="width: 100%">
           <a-select-option v-for="(item, index) in calFlagList" :key="index" :value="item.value">{{ item.label }}</a-select-option>
         </a-select>
       </a-col>
@@ -23,15 +23,7 @@
           mode="date"
           format="YYYY-MM-DD"
         />
-        <a-select
-          :disabled="calFlagList.length == 0"
-          v-else-if="inputType == 3"
-          multiple
-          v-model="termVals"
-          @change="changeTermVal"
-          style="width: 100%"
-          :getPopupContainer="target => target.parentNode"
-        >
+        <a-select :disabled="calFlagList.length == 0" v-else-if="inputType == 3" multiple v-model="termVals" @change="changeTermVal" style="width: 100%">
           <a-select-option v-for="(item, index) in termOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
         </a-select>
         <a-input v-else v-model="termVal" style="width: 100%" @change="changeInputTermVal" :disabled="calFlagList.length == 0" />

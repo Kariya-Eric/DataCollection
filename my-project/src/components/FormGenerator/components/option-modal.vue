@@ -3,19 +3,17 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="年份" prop="year">
-          <a-select v-model="model.year" placeholder="请选择年份">
-            <a-select-option value="2022">2022</a-select-option>
-            <a-select-option value="2021">2021</a-select-option>
-            <a-select-option value="2020">2020</a-select-option>
+          <a-select v-model="model.year" placeholder="请选择年份" @change="val => initDictionary(val)">
+            <a-select-option v-for="(year, i) in yearList" :key="i" :value="year">{{ year }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="表单名称" prop="name">
-          <a-select v-model="model.name" placeholder="请选择表单名称">
+          <a-select v-model="model.name" placeholder="请选择表单名称" @change="val => getOptionData(val)">
             <a-select-option v-for="item in formData" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="选项" prop="option">
-          <a-select v-model="model.option" placeholder="请选择选项">
+          <a-select v-model="model.option" placeholder="请选择选项" @change="val => getOptionValueData(val)">
             <a-select-option v-for="item in optionData" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
@@ -36,10 +34,10 @@ export default {
     return {
       columns: [
         { title: '序号', width: 70, align: 'center', key: 'rowIndex', customRender: (t, r, index) => parseInt(index) + 1 },
-        { title: '选项名', align: 'center', dataIndex: 'label' },
-        { title: '选项值', align: 'center', dataIndex: 'value' }
+        { title: '选项值', align: 'center', dataIndex: 'name' }
       ],
       rules: {
+        year: [{ required: true, message: '请选择年份', trigger: 'change' }],
         name: [{ required: true, message: '请选择表单名称', trigger: 'change' }],
         option: [{ required: true, message: '请选择选项' }]
       },
@@ -48,24 +46,78 @@ export default {
       optionValueData: []
     }
   },
+  computed: {
+    yearList() {
+      let startYear = 2018
+      let nowYear = new Date().getFullYear()
+      let years = []
+      for (let i = nowYear; i >= startYear; i--) {
+        years.push(i)
+      }
+      return years
+    }
+  },
   methods: {
     show() {
       this.visible = true
     },
 
-    initDictionary() {
+    getOptionData(val) {
       this.loading = true
-      getDictionaryTree()
+      listAll(val)
         .then(res => {
           if (res.state) {
-            this.renderTreeData(res.value)
+            this.$nextTick(() => {
+              this.optionData = res.value.map(item => {
+                let newItem = { ...item }
+                delete newItem.children
+                return newItem
+              })
+            })
           }
         })
         .finally(() => (this.loading = false))
     },
 
-    renderTreeData(treeData) {
-        
+    getOptionValueData(val) {
+      this.loading = true
+      listAll(val)
+        .then(res => {
+          if (res.state) {
+            this.$nextTick(() => {
+              this.optionValueData = res.value.map(item => {
+                let newItem = { ...item }
+                delete newItem.children
+                return newItem
+              })
+            })
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    initDictionary(year) {
+      this.loading = true
+      getDictionaryTree(year)
+        .then(res => {
+          if (res.state) {
+            let options = []
+            this.renderTreeData(res.value, options)
+            this.$nextTick(() => (this.formData = options))
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    renderTreeData(treeData, options) {
+      treeData.forEach(tree => {
+        if (tree.children || tree.children.length > 0) {
+          this.renderTreeData(tree.children, options)
+        }
+        if (tree.type == 'FormCollection') {
+          options.push(tree)
+        }
+      })
     },
 
     close() {
@@ -78,7 +130,6 @@ export default {
     handleOk() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$emit('setOption', this.selectionRows)
           this.close()
         } else {
           return

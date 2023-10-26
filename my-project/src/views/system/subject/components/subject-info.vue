@@ -23,7 +23,7 @@
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }" v-if="isEdit">
         <a-button type="primary" @click="handleSubmit"> 保存 </a-button>
-        <a-button style="margin-left: 10px" @click="resetForm"> 重置 </a-button>
+        <a-button style="margin-left: 10px" @click="resetForm"> 取消 </a-button>
       </a-form-model-item>
     </a-form-model>
   </a-spin>
@@ -72,6 +72,7 @@ export default {
               if (res.state) {
                 that.$message.success(res.message)
                 this.$emit('refresh')
+                this.$emit('reset')
               } else {
                 that.$message.error(res.message)
               }
@@ -83,6 +84,7 @@ export default {
     resetForm() {
       this.$refs.form.clearValidate()
       this.model = Object.assign({}, this.subject)
+      this.$emit('reset')
     }
   }
 }

@@ -26,22 +26,22 @@
             <a-radio v-for="item in typeList" :key="item.value" :value="item.value">{{ item.name }}</a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="校验失败提示" prop="message">
+        <a-form-model-item label="校验失败提示" prop="message" :labelCol="labelColForSix" :wrapperCol="wrapperColForSix">
           <a-textarea :rows="4" v-model="model.message" placeholder="请输入校验失败提示"></a-textarea>
         </a-form-model-item>
         <a-form-model-item label="启用">
           <dc-switch v-model="model.enabledFlag" />
         </a-form-model-item>
-        <a-form-model-item v-if="model.type == 'dataRange'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
+        <a-form-model-item v-if="model.type == 'dataRange'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
           <rule-range ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
         </a-form-model-item>
-        <a-form-model-item v-if="model.type == 'unique'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
+        <a-form-model-item v-if="model.type == 'unique'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
           <rule-unique ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
         </a-form-model-item>
-        <a-form-model-item v-if="model.type == 'dateTime'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
+        <a-form-model-item v-if="model.type == 'dateTime'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
           <rule-date ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
         </a-form-model-item>
-        <a-form-model-item v-if="model.type == 'other'" :labelCol="{ span: 0 }" :wrapperCol="{ span: 24 }" prop="verificationFormulas">
+        <a-form-model-item v-if="model.type == 'other'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
           <rule-other ref="verificationFormulas" v-model="model.verificationFormulas" />
         </a-form-model-item>
       </a-form-model>
@@ -63,6 +63,10 @@ export default {
   mixins: [DataCollectionModalMixin],
   data() {
     return {
+      labelCol: { style: 'width: 0px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100%); display: inline-block;' },
+      labelColForSix: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
+      wrapperColForSix: { style: 'width: calc(100% - 110px); display: inline-block;' },
       rules: {
         name: [{ required: true, message: '请输入校验名称' }],
         type: [{ required: true, message: '请输入校验类型' }],

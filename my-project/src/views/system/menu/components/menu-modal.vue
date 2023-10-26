@@ -7,6 +7,7 @@
         </a-form-model-item>
         <a-form-model-item label="上级菜单" prop="parentId" :hidden="!hasParent">
           <a-tree-select
+            :getPopupContainer="target => target.parentNode"
             v-model="model.parentId"
             show-search
             placeholder="请选择上级菜单"
@@ -15,6 +16,7 @@
             :tree-data="menu"
             :replace-fields="replaceFields"
             :filterTreeNode="filterTreeNode"
+            :dropdown-style="{ maxHeight: '320px', overflow: 'auto' }"
           />
         </a-form-model-item>
         <a-form-model-item label="别名" prop="alias">
@@ -57,6 +59,7 @@ export default {
         templateUrl: [{ required: true, message: '请输入模板Url' }],
         sn: [{ required: true, message: '请输入排序' }]
       },
+
       replaceFields: {
         title: 'name',
         key: 'id',

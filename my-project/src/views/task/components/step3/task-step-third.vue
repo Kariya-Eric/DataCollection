@@ -2,7 +2,7 @@
   <div class="main-form">
     <a-row :gutter="24">
       <a-col :span="6">
-        <a-form-item label="部门名称" :labelCol="{ span: 6 }" :wrapperCol="{ span: 18 }">
+        <a-form-item label="部门名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-search placeholder="请输入部门名称搜索" allowClear @change="searchDepart" />
         </a-form-item>
         <a-tree
@@ -107,6 +107,8 @@ export default {
   props: ['task'],
   data() {
     return {
+      labelCol: { style: 'width: 80px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 80px); display: inline-block;' },
       searchValue: '',
       treeData: [],
       expandedKeys: [],
