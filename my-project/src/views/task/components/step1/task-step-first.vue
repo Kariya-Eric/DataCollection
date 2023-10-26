@@ -82,8 +82,8 @@ export default {
   components: { ExtraSwitch },
   data() {
     return {
-      labelCol: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
-      wrapperCol: { style: 'width: calc(100% - 100px); display: inline-block;' },
+      labelCol: { style: 'width: 125px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 150px); display: inline-block;' },
       taskForm: JSON.parse(JSON.stringify(this.task)),
       loading: false,
       taskFormRules: {

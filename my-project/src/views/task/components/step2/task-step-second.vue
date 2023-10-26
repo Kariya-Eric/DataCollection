@@ -26,9 +26,9 @@
       </template>
       <template slot="action" slot-scope="text, record">
         <a @click="applyDeadline(record)">配置统计截止时间</a>
-        <a-divider v-if="!record.formRequired" />
+        <a-divider type="vertical" v-if="!record.formRequired" />
         <a @click="applyCanfill(record)" v-if="judgeCanfill(record)">申请不可填报</a>
-        <a-popconfirm v-if="judgeRedo(record)" @confirm="redoCanfill(record)" title="确定撤销不可填报吗？" type="question-circle-o" style="color: red">
+        <a-popconfirm v-if="judgeRedo(record)" @confirm="redoCanfill(record)" title="确定撤销不可填报吗？" type="question-circle-o">
           <a>撤销不可填报</a>
         </a-popconfirm>
       </template>
@@ -84,7 +84,7 @@ export default {
         { title: '是否可填报', align: 'center', scopedSlots: { customRender: 'isCanFill' } },
         { dataIndex: 'remark', title: '备注', ellipsis: true, align: 'center' },
         { dataIndex: 'statisticsEndTime', title: '统计截止日期', align: 'center' },
-        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' }, width: '320px' }
       ]
     }
   },
