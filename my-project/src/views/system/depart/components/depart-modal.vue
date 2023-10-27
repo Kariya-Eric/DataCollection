@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="添加组织" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%">
+  <a-modal title="添加组织" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item hidden>
@@ -80,10 +80,9 @@ export default {
     },
 
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.$refs.form.clearValidate()
     },
 
     add() {

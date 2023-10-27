@@ -1,5 +1,15 @@
 <template>
-  <a-modal title="配置表单大类" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%">
+  <a-modal
+    title="配置表单大类"
+    :visible="visible"
+    :confirmLoading="loading"
+    @cancel="handleCancel"
+    @ok="handleOk"
+    :maskClosable="false"
+    :keyboard="false"
+    width="35%"
+    destroyOnClose
+  >
     <a-spin :spinning="loading">
       <a-form-model :model="categoryForm" v-bind="layout">
         <a-form-model-item label="所属合集">
@@ -93,10 +103,10 @@ export default {
     },
 
     close() {
-      this.categoryForm = {}
-      this.dataSource = []
       this.$emit('close')
       this.visible = false
+      this.categoryForm = {}
+      this.dataSource = []
     },
 
     async handleOk() {

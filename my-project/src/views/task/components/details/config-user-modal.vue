@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="配置人员" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%">
+  <a-modal title="配置人员" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-form-model ref="form" :model="model" v-bind="layout" :rules="rules">
       <a-form-model-item :hidden="true">
         <a-input v-model="model.responsibleUserName" />
@@ -80,10 +80,9 @@ export default {
     },
 
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.$refs.form.clearValidate()
     },
 
     show(info) {

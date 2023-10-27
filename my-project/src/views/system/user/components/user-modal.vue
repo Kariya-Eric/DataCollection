@@ -1,5 +1,5 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%">
+  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="账号" prop="account">
@@ -112,11 +112,10 @@ export default {
     },
 
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
       this.accountDisabled = true
+      this.$refs.form.clearValidate()
     },
 
     handleOk() {

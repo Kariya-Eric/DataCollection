@@ -106,7 +106,8 @@ export default {
       columns: [
         { title: '任务名称', align: 'center', scopedSlots: { customRender: 'name' } },
         { dataIndex: 'type', title: '任务类型', align: 'center' },
-        { dataIndex: 'statisticsStartTime', title: '填报开始时间', align: 'center' },
+        { dataIndex: 'statisticsStartTime', title: '填报开始时间', align: 'center', sorter: true },
+        { dataIndex: 'statisticsEndTime', title: '填报截止时间', align: 'center', sorter: true },
         { dataIndex: 'year', title: '统计时间', align: 'center' },
         { title: '任务状态', align: 'center', scopedSlots: { customRender: 'status' } },
         { title: '完成进度', align: 'center', scopedSlots: { customRender: 'percentage' } },

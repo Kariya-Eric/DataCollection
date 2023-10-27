@@ -1,5 +1,16 @@
 <template>
-  <a-modal v-if="visible" title="绑定人员" :confirmLoading="loading" :visible="visible" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="70%">
+  <a-modal
+    v-if="visible"
+    title="绑定人员"
+    :confirmLoading="loading"
+    :visible="visible"
+    @cancel="handleCancel"
+    @ok="handleOk"
+    :maskClosable="false"
+    :keyboard="false"
+    width="70%"
+    destroyOnClose
+  >
     <a-spin :spinning="loading">
       <div class="table-page-search-wrapper">
         <a-form layout="inline">

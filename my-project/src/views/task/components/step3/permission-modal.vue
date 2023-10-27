@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="配置权限" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false">
+  <a-modal title="配置权限" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item prop="name" label="表单名称">
@@ -67,10 +67,9 @@ export default {
 
   methods: {
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.$refs.form.clearValidate()
     },
 
     edit(records) {

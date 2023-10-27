@@ -9,6 +9,7 @@
     :maskClosable="false"
     :keyboard="false"
     width="35%"
+    destroyOnClose
   >
     <a-spin :spinning="loading">
       <a-form-model :model="model" ref="form" v-bind="layout" :rules="rules">
@@ -170,10 +171,9 @@ export default {
     },
 
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.$refs.form.clearValidate()
     },
 
     handleOk() {

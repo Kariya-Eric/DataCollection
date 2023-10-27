@@ -1,5 +1,5 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%">
+  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="所属合集">
@@ -15,12 +15,12 @@
           <a-input v-model="model.formName" allowClear />
         </a-form-model-item>
         <a-form-model-item label="表单大类">
-          <a-select v-model="model.formCategories" allowClear>
+          <a-select v-model="model.formCategories" allowClear :getPopupContainer="target => target.parentNode">
             <a-select-option v-for="cate in categories" :key="cate.id" :value="cate.id">{{ cate.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="统计时间类型" prop="collectTimeType">
-          <a-select v-model="model.collectTimeType" placeholer="请输入统计时间类型" allowClear>
+        <a-form-model-item label="统计时间类型" prop="collectTimeType" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-select v-model="model.collectTimeType" placeholer="请输入统计时间类型" allowClear :getPopupContainer="target => target.parentNode">
             <a-select-option value="时点">时点</a-select-option>
             <a-select-option value="学年">学年</a-select-option>
             <a-select-option value="自然年">自然年</a-select-option>
@@ -32,7 +32,7 @@
             <a-radio value="固定表单">固定表单</a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="排序" prop="sort">
+        <a-form-model-item label="排序" prop="sort" v-if="formTypeDisabled">
           <a-input-number v-model="model.sort" placeholder="请输入排序" style="width: 35%" :min="0" />
         </a-form-model-item>
         <a-form-model-item label="是否必填">
@@ -52,10 +52,8 @@ export default {
   props: ['collection', 'categories'],
   data() {
     return {
-      layout: {
-        labelCol: { span: 5 },
-        wrapperCol: { span: 19 }
-      },
+      labelCol: { style: 'width: 120px; display: inline-block; vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 120px); display: inline-block;' },
       rules: {
         formName: [{ required: true, message: '请输入表单名称' }],
         formType: [{ required: true, message: '请选择表单类型' }],
@@ -68,10 +66,9 @@ export default {
 
   methods: {
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.$refs.form.clearValidate()
     },
 
     handleOk() {
@@ -115,7 +112,7 @@ export default {
       if (record.id) {
         this.formTypeDisabled = true
         let form = { ...record, formName: record.name, formType: record.type }
-        this.model = Object.assign({}, collection, form)
+        this.model = Object.assign({}, collection, form, { name: collection.name }, { type: collection.type })
       } else {
         this.formTypeDisabled = false
         let form = { ...collection, formCollectionId: this.collection.id }

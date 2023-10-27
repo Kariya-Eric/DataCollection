@@ -1,5 +1,5 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false">
+  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="角色编码" prop="code">
@@ -46,11 +46,10 @@ export default {
     },
 
     close() {
-      this.model = {}
-      this.disabled = false
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.disabled = false
+      this.$refs.form.clearValidate()
     },
 
     handleOk() {

@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="添加专业" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%">
+  <a-modal title="添加专业" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layoutForSix" :model="model" :rules="rules">
         <a-form-model-item label="所属院系" prop="orgId">
@@ -66,10 +66,9 @@ export default {
       })
     },
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.$refs.form.clearValidate()
     },
 
     add() {

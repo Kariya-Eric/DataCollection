@@ -96,7 +96,7 @@ export default {
       columns: [
         { title: '合集名称', align: 'center', scopedSlots: { customRender: 'name' } },
         { dataIndex: 'type', title: '合集类型', align: 'center' },
-        { dataIndex: 'year', title: '年份', align: 'center' },
+        { dataIndex: 'year', title: '年份', align: 'center', sorter: true },
         { dataIndex: 'guidFiles', title: '填报指南', align: 'center', scopedSlots: { customRender: 'guidFiles' } },
         { title: '启用', align: 'center', scopedSlots: { customRender: 'enabledFlag' } },
         { title: '操作', width: 340, align: 'center', scopedSlots: { customRender: 'action' } }

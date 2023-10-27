@@ -3,6 +3,7 @@
     <div class="title">
       <span class="title-icon">&nbsp;&nbsp;{{ collectionDetail.year }}</span>
       <span class="title-name"> {{ collectionDetail.name }}</span>
+      <a-button style="float: right" @click="$router.back(-1)"><dc-icon type="icon-dc_back" />返回</a-button>
     </div>
     <a-card>
       <div class="table-page-search-wrapper">
@@ -45,16 +46,7 @@
       </div>
 
       <div>
-        <a-table
-          bordered
-          rowKey="id"
-          :dataSource="dataSource"
-          :pagination="ipagination"
-          :loading="loading"
-          :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-          :columns="columns"
-          @change="handleTableChange"
-        >
+        <a-table bordered rowKey="id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
           <template slot="required" slot-scope="text, record">
             {{ record.required ? `是` : `否` }}
           </template>
@@ -70,8 +62,6 @@
             <a @click="showForm(record)">表单详情</a>
             <a-divider type="vertical" />
             <a @click="handleEdit(record, '表单属性')">表单属性</a>
-            <a-divider type="vertical" />
-            <a>下载模板</a>
             <a-divider type="vertical" />
             <a-popconfirm title="表单删除后不可恢复，是否确认删除？" @confirm="handleDelete(record.id)">
               <a><span style="color: #e23322">删除表单</span></a>

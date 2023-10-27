@@ -1,5 +1,5 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%">
+  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" :model="model" v-bind="layout" :rules="rules">
         <a-form-model-item label="菜单名称" prop="name">
@@ -82,10 +82,9 @@ export default {
     },
 
     close() {
-      this.model = {}
-      this.$refs.form.clearValidate()
       this.$emit('close')
       this.visible = false
+      this.$refs.form.clearValidate()
     },
 
     handleOk() {

@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="消息通知" :visible="visible" :confirmLoading="loading" @cancel="close" :footer="null" :maskClosable="false" :keyboard="false" width="35%">
+  <a-modal title="消息通知" :visible="visible" :confirmLoading="loading" @cancel="close" :footer="null" :maskClosable="false" :keyboard="false" width="35%" destroyOnClose>
     <a-tabs v-model="currentTab" @change="changeTabs">
       <a-tab-pane tab="全部" :key="1">
         <a-list item-layout="horizontal" :data-source="notices">

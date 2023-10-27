@@ -137,6 +137,10 @@ export const DataCollectionListMixin = {
     },
 
     handleTableChange(pagination, filters, sorter) {
+      if (Object.keys(sorter).length > 0) {
+        let sort = { direction: 'ascend' == sorter.order ? 'ASC' : 'DESC', property: sorter.field }
+        this.isorter = [sort]
+      }
       this.ipagination = pagination
       this.loadData()
     },
