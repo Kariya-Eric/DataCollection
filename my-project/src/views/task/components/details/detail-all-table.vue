@@ -194,8 +194,8 @@ export default {
   margin-left: 12px;
   margin-right: 12px;
   .anticon {
-    font-size: 10px;
-    vertical-align: 0.125em;
+    font-size: 10px !important;
+    vertical-align: 0.125em !important;
   }
 }
 </style>

@@ -178,13 +178,13 @@ export default {
     },
 
     caculateStatus(record) {
-      if (record.status == 0 || record.status == '0') {
+      if (record.status == 3 || record.status == '3') {
         return { name: '停用', color: 'red' }
       } else if (record.status == 1 || record.status == '1') {
         return { name: '启用中', color: 'blue' }
-      } else if (record.status == 2 || record.status == '2') {
+      } else if (record.status == 0 || record.status == '0') {
         return { name: '未启用', color: 'grey' }
-      } else if (record.status == 3 || record.status == '3') {
+      } else if (record.status == 2 || record.status == '2') {
         return { name: '完成', color: 'green' }
       }
       return { name: '启用中', color: 'blue' }

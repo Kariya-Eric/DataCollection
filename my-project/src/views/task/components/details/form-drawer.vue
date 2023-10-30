@@ -8,10 +8,10 @@
         <a-button type="primary" v-if="judgeYears(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_export" />历年数据</a-button>
         <a-button type="primary" @click="$refs.formview.save()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_save" />保存</a-button>
         <a-button type="primary" @click="$refs.formview.submit()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_submit" />提交</a-button>
-        <a-popconfirm title="确认撤回该张表单吗？" @confirm="authForm(3)" v-if="judgeRedo(rowInfo, currentUser, roleList)">
+        <a-popconfirm title="确认撤回该张表单吗？" @confirm="redoForm" v-if="judgeRedo(rowInfo, currentUser, roleList)">
           <a-button type="primary"><dc-icon type="icon-dc_back" />撤回</a-button>
         </a-popconfirm>
-        <a-popconfirm title="确认驳回该张表单吗？" @confirm="authForm(3)" v-if="judgeAuth(rowInfo, currentUser, roleList)">
+        <a-popconfirm title="确认驳回该张表单吗？" @confirm="showReject('', true)" v-if="judgeAuth(rowInfo, currentUser, roleList)">
           <a-button type="danger"><dc-icon type="icon-dc_reject" />驳回</a-button>
         </a-popconfirm>
         <a-button class="success-btn" @click="authForm(2)" v-if="judgeAuth(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_pass" />通过</a-button>
@@ -24,12 +24,25 @@
       <dc-icon v-if="type.class === 'audit'" type="icon-dc_waiting_audit" style="color: #2f68bd; font-size: 18px" />
       <dc-icon v-if="type.class === 'fill'" type="icon-dc_waiting_submit" style="color: #666666; font-size: 18px" />
       <span style="margin-left: 12px">{{ type.title }}</span>
-      <a href="javascript:alert('驳回原因在何处填写？')" v-if="type.class === 'redo'" style="margin-left: 36px; font-size: 12px; text-decoration: underline">查看驳回原因</a>
+      <a @click="showReject(rowInfo.rejectReason, false)" v-if="type.class === 'redo'" style="margin-left: 36px; font-size: 12px; text-decoration: underline">查看驳回原因</a>
     </div>
 
     <a-spin :spinning="loading">
       <form-view :formConf="formConf" ref="formview" @save="saveForm" @submit="submitForm" />
     </a-spin>
+    <a-modal title="驳回原因" :visible="rejectVisible" destroyOnClose @cancel="closeReject" :maskClosable="false" :keyboard="false" :confirmLoading="rejectLoading" :footer="null">
+      <a-form-model ref="rejectForm" :model="rejectForm" :rules="rejectRules">
+        <a-form-model-item prop="rejectReason">
+          <a-textarea v-model="rejectForm.rejectReason" placeholder="请输入驳回原因" :rows="6" />
+        </a-form-model-item>
+      </a-form-model>
+      <template v-if="rejectAddFlag">
+        <div style="text-align: center">
+          <a-button @click="closeReject" style="margin-right: 10px">取消</a-button>
+          <a-button type="primary" @click="handleReject">确定</a-button>
+        </div>
+      </template>
+    </a-modal>
   </a-drawer>
 </template>
 
@@ -56,7 +69,15 @@ export default {
       rowInfo: {},
       currentUser: storage.get(USER_INFO),
       roleList: storage.get(ROLE_LIST),
-      showType: -1
+      showType: -1,
+      rejectVisible: false,
+      rejectReson: '',
+      rejectForm: {},
+      rejectAddFlag: false,
+      rejectLoading: false,
+      rejectRules: {
+        rejectReason: [{ required: true, message: '请输入驳回原因' }]
+      }
     }
   },
   computed: {
@@ -72,6 +93,37 @@ export default {
     }
   },
   methods: {
+    showReject(rejectReason, addFlag) {
+      this.rejectForm = Object.assign({}, { rejectReason })
+      this.rejectAddFlag = addFlag
+      this.rejectVisible = true
+    },
+    closeReject() {
+      this.rejectVisible = false
+      this.$refs.rejectForm.clearValidate()
+    },
+
+    handleReject() {
+      this.$refs.rejectForm.validate(valid => {
+        if (valid) {
+          this.rejectLoading = true
+          approveForm({ id: this.rowInfo.id, status: 3, rejectReason: this.rejectForm.rejectReason })
+            .then(res => {
+              if (res.state) {
+                this.$message.success(res.message)
+                this.closeReject()
+                this.close()
+              } else {
+                this.$message.error(res.message)
+              }
+            })
+            .finally(() => (this.loading = false))
+        } else {
+          return
+        }
+      })
+    },
+
     show(formConf, formName, formId, showType, record) {
       this.rowInfo = { ...record, status: showType }
       this.formName = formName
@@ -122,7 +174,7 @@ export default {
 
     authForm(status) {
       this.loading = true
-      approveForm({ id: this.rowInfo.id, status })
+      approveForm({ id: this.rowInfo.id, status, rejectReason: '' })
         .then(res => {
           if (res.state) {
             this.$message.success(res.message)
@@ -140,7 +192,7 @@ export default {
         .then(res => {
           if (res.state) {
             this.$message.success(res.message)
-            this.refreshData()
+            this.close()
           } else {
             this.$message.error(res.message)
           }
