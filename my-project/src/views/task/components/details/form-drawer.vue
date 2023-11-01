@@ -33,7 +33,7 @@
     <a-modal title="驳回原因" :visible="rejectVisible" destroyOnClose @cancel="closeReject" :maskClosable="false" :keyboard="false" :confirmLoading="rejectLoading" :footer="null">
       <a-form-model ref="rejectForm" :model="rejectForm" :rules="rejectRules">
         <a-form-model-item prop="rejectReason">
-          <a-textarea v-model="rejectForm.rejectReason" placeholder="请输入驳回原因" :rows="6" />
+          <a-textarea v-model="rejectForm.rejectReason" placeholder="请输入驳回原因" :rows="6" :disabled="!rejectAddFlag" />
         </a-form-model-item>
       </a-form-model>
       <template v-if="rejectAddFlag">
