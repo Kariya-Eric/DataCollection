@@ -35,6 +35,7 @@ export const selectComponentsFix = [
         }
       ]
     },
+    source:false, //下拉选项值是手动设置or来源，source true为来源
     comment: ''
   },
   {
@@ -63,6 +64,7 @@ export const selectComponentsFix = [
         }
       ]
     },
+    source:false, //下拉选项值是手动设置or来源，source true为来源
     comment: ''
   }
 ]

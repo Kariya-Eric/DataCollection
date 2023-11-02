@@ -49,7 +49,7 @@ export default {
       rules: {
         year: [{ required: true, message: '请选择年份', trigger: 'change' }],
         name: [{ required: true, message: '请选择表单名称', trigger: 'change' }],
-        option: [{ required: true, message: '请选择选项' }]
+        option: [{ required: true, message: '请选择选项', trigger: 'change' }]
       },
       formData: [],
       optionData: [],
@@ -131,14 +131,19 @@ export default {
     },
 
     close() {
-      this.$emit('close')
       this.visible = false
+      this.$emit('close')
       this.$refs.form.clearValidate()
+      this.model = {}
+      this.formData = []
+      this.optionData = []
+      this.optionValueData = []
     },
 
     handleOk() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          this.$emit('setOption', this.optionValueData)
           this.close()
         } else {
           return

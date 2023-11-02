@@ -146,6 +146,7 @@ export const select = {
       }
     ]
   },
+  source:false, //下拉选项值是手动设置or来源，source true为来源
   placeholder: '请选择',
   showSearch: false,
   mode: 'default',

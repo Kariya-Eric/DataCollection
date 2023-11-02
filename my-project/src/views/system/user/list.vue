@@ -94,7 +94,7 @@
         </template>
       </a-table>
     </div>
-    <user-modal ref="modalForm" :depart="departList" :role="roleList" @ok="loadData" :subjects="subjectList" />
+    <user-modal ref="modalForm" :depart="departList" :role="roleList" @ok="loadData" :subjects="subjectList" :departs="departList" />
   </a-card>
 </template>
 

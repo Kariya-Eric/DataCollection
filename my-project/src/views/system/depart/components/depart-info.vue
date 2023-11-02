@@ -14,12 +14,12 @@
         <a-form-model-item label="部门编码">
           <a-input v-model="model.code" :disabled="true" />
         </a-form-model-item>
-        <a-form-model-item label="负责人">
+        <a-form-model-item label="负责人" prop="responsibleUser">
           <a-select v-model="model.responsibleUser" placeholder="请选择负责人" allowClear :disabled="!isEdit">
             <a-select-option v-for="user in users.filter(user => user.orgId == orgId)" :key="user.id" :value="user.id">{{ user.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="联系人">
+        <a-form-model-item label="联系人" prop="contactUser">
           <a-select v-model="model.contactUser" placeholder="请选择联系人" allowClear :disabled="!isEdit">
             <a-select-option v-for="user in users.filter(user => user.orgId == orgId)" :key="user.id" :value="user.id">{{ user.name }}</a-select-option>
           </a-select>
@@ -50,7 +50,35 @@ export default {
     return {
       rules: {
         name: [{ required: true, message: '请输入部门名称' }],
-        orderNo: [{ required: true, message: '请输入排序' }]
+        orderNo: [{ required: true, message: '请输入排序' }],
+        responsibleUser: [
+          {
+            validator: (rule, value, callback) => {
+              if (value) {
+                if (value == this.model.contactUser) {
+                  callback(new Error('联系人和负责人不能相同'))
+                }
+                callback()
+              }
+              callback()
+            },
+            trigger: 'change'
+          }
+        ],
+        contactUser: [
+          {
+            validator: (rule, value, callback) => {
+              if (value) {
+                if (value == this.model.responsibleUser) {
+                  callback(new Error('联系人和负责人不能相同'))
+                }
+                callback()
+              }
+              callback()
+            },
+            trigger: 'change'
+          }
+        ]
       },
       layouts: {
         labelCol: { style: 'width: 144px; display: inline-block; vertical-align: inherit;' },

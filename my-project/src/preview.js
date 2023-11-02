@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import './core/use' // use lazy load components
 import './layouts/BasicLayout.less' // global style
-
 const $previewApp = document.getElementById('previewApp')
 
 window.addEventListener('message', init, false)

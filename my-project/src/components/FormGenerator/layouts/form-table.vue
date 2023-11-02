@@ -2,7 +2,7 @@
   <div>
     <div style="margin-bottom: 8px">
       <a-button type="primary" icon="plus" @click="insertEvent" style="margin-right: 12px">新增</a-button>
-      <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0">
+      <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0" okText="确定" cancelText="取消">
         <a-button type="danger" class="del-action">删除</a-button>
       </a-popconfirm>
       <div style="float: right">
@@ -76,7 +76,7 @@
       </vxe-column>
       <vxe-column title="操作" width="120">
         <template #default="{ row }">
-          <a-popconfirm @confirm="deleteRow(row)" title="您确定要删除选中的数据" overlayClassName="input-pop">
+          <a-popconfirm @confirm="deleteRow(row)" title="您确定要删除选中的数据" overlayClassName="input-pop" okText="确定" cancelText="取消">
             <a class="del-action"><span style="color: red">删除</span></a>
           </a-popconfirm>
         </template>
@@ -290,4 +290,34 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style lang="less">
+.vxe-checkbox:not(.is--disabled):hover .vxe-checkbox--icon,
+.vxe-custom--checkbox-option:not(.is--disabled):hover .vxe-checkbox--icon,
+.vxe-export--panel-column-option:not(.is--disabled):hover .vxe-checkbox--icon,
+.vxe-table--filter-option:not(.is--disabled):hover .vxe-checkbox--icon,
+.vxe-table--render-default .vxe-cell--checkbox:not(.is--disabled):hover .vxe-checkbox--icon {
+  color: #2f68bd !important;
+}
+.is--checked.vxe-checkbox,
+.is--checked.vxe-checkbox .vxe-checkbox--icon,
+.is--checked.vxe-custom--checkbox-option,
+.is--checked.vxe-custom--checkbox-option .vxe-checkbox--icon,
+.is--checked.vxe-export--panel-column-option,
+.is--checked.vxe-export--panel-column-option .vxe-checkbox--icon,
+.is--checked.vxe-table--filter-option,
+.is--checked.vxe-table--filter-option .vxe-checkbox--icon,
+.is--indeterminate.vxe-checkbox,
+.is--indeterminate.vxe-checkbox .vxe-checkbox--icon,
+.is--indeterminate.vxe-custom--checkbox-option,
+.is--indeterminate.vxe-custom--checkbox-option .vxe-checkbox--icon,
+.is--indeterminate.vxe-export--panel-column-option,
+.is--indeterminate.vxe-export--panel-column-option .vxe-checkbox--icon,
+.is--indeterminate.vxe-table--filter-option,
+.is--indeterminate.vxe-table--filter-option .vxe-checkbox--icon,
+.vxe-table--render-default .is--checked.vxe-cell--checkbox,
+.vxe-table--render-default .is--checked.vxe-cell--checkbox .vxe-checkbox--icon,
+.vxe-table--render-default .is--indeterminate.vxe-cell--checkbox,
+.vxe-table--render-default .is--indeterminate.vxe-cell--checkbox .vxe-checkbox--icon {
+  color: #2f68bd !important;
+}
+</style>

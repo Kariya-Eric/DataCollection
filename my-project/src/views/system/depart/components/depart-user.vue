@@ -60,7 +60,7 @@
       </a-table>
     </div>
 
-    <user-modal ref="modalForm" :depart="orgId" :role="roles" @ok="loadData" />
+    <user-modal ref="modalForm" :depart="orgId" :role="roles" @ok="loadData" :departs="departs[0].children" />
   </div>
 </template>
 
@@ -73,7 +73,7 @@ export default {
   name: 'DepartUser',
   mixins: [DataCollectionListMixin],
   components: { UserModal },
-  props: ['roles', 'orgId', 'isEdit'],
+  props: ['roles', 'orgId', 'isEdit', 'departs'],
   data() {
     return {
       url: {

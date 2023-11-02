@@ -26,8 +26,8 @@
         <a-descriptions-item label="学年"> {{ taskInfo.schoolYear }}</a-descriptions-item>
         <a-descriptions-item label="自然年">{{ taskInfo.year }}</a-descriptions-item>
         <a-descriptions-item label="学校专业类别">
-          <a-tag v-for="(item, index) in tagList" :key="index" class="normal-tag">
-            <span style="color: #ef722e; margin-left: 16px">{{ item }}</span>
+          <a-tag v-for="(item, index) in tagList" :key="index">
+            <span style="color: #ef722e">{{ item }}</span>
           </a-tag>
         </a-descriptions-item>
         <a-descriptions-item label="合集名称"> ？？ </a-descriptions-item>

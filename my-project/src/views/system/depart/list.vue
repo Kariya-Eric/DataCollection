@@ -62,7 +62,7 @@
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个部门! </span>
           </a-empty>
-          <depart-user v-else :isEdit="editFlag" :roles="roleList" :orgId="selectedKeys[0]" @refresh="refreshUser" />
+          <depart-user v-else :isEdit="editFlag" :roles="roleList" :orgId="selectedKeys[0]" @refresh="refreshUser" :departs="treeData" />
         </div>
       </a-card>
     </a-col>

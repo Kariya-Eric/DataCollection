@@ -22,7 +22,7 @@
     <template v-if="activeData.selectedCol !== -1">
       <a-divider>已选中 : 第{{ activeData.selectedCol }}列</a-divider>
       <a-form-model-item label="类型">
-        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.tag" @change="tagChange">
+        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.tag" @change="tagChange" :getPopupContainer="target => target.parentNode">
           <a-select-option value="a-input">单行文本</a-select-option>
           <a-select-option value="a-textarea">多行文本</a-select-option>
           <a-select-option value="a-input-number">数字</a-select-option>
@@ -57,7 +57,7 @@
       </a-form-model-item>
 
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'formAddress'" label="地址格式">
-        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type">
+        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type" :getPopupContainer="target => target.parentNode">
           <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
           <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
           <a-select-option value="省（直辖市、自治区）/市/区">省（直辖市、自治区）/市/区</a-select-option>
@@ -65,7 +65,11 @@
       </a-form-model-item>
 
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'dc-date'" label="时间格式">
-        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.format" @change="val => changeTimeFormat(val, activeData.columns[activeData.selectedCol - 1].type)">
+        <a-select
+          v-model="activeData.columns[activeData.selectedCol - 1].type.format"
+          @change="val => changeTimeFormat(val, activeData.columns[activeData.selectedCol - 1].type)"
+          :getPopupContainer="target => target.parentNode"
+        >
           <a-select-option value="YYYY">年（yyyy）</a-select-option>
           <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
           <a-select-option value="YYYYMM">年月（yyyyMM）</a-select-option>
@@ -94,20 +98,29 @@
 
       <template v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-select'">
         <a-divider>选项</a-divider>
-        <draggable :list="activeData.columns[activeData.selectedCol - 1].type.options" :animation="340" group="selectItem" handle=".option-drag">
+        <draggable
+          :list="activeData.columns[activeData.selectedCol - 1].type.options"
+          :animation="340"
+          group="selectItem"
+          handle=".option-drag"
+          :disabled="activeData.columns[activeData.selectedCol - 1].type.source"
+        >
           <div v-for="(item, index) in activeData.columns[activeData.selectedCol - 1].type.__slot__.options" :key="index" class="select-item">
             <div class="select-line-icon option-drag">
-              <a-icon type="unordered-list" style="font-size: 16px; " />
+              <a-icon type="unordered-list" style="font-size: 16px" />
             </div>
-            <a-input v-model="item.label" placeholder="选项名" />
-            <div class="close-btn select-line-icon">
+            <a-input v-model="item.label" placeholder="选项名" :disabled="activeData.columns[activeData.selectedCol - 1].type.source" />
+            <div class="close-btn select-line-icon" v-if="!activeData.columns[activeData.selectedCol - 1].type.source">
               <a-icon type="minus-circle" style="font-size: 16px" @click="delOption(index)" />
             </div>
           </div>
         </draggable>
         <div style="margin-top: 8px">
           <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addOption"> 添加选项 </a-button>
-          <a style="margin-left: 96px" @click="$refs.optionModal.show()">设置选项来源</a>
+          <a-button style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show()"> 设置选项来源 </a-button>
+          <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left">
+            <a-button style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>
+          </a-popconfirm>
         </div>
       </template>
     </template>
@@ -133,8 +146,29 @@ export default {
     }
   },
   methods: {
+    clearOption() {
+      this.$set(this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__, 'options', [
+        {
+          label: '选项一',
+          value: 1
+        },
+        {
+          label: '选项二',
+          value: 2
+        }
+      ])
+      this.activeData.columns[this.activeData.selectedCol - 1].type.source = false
+    },
     setOption(options) {
-      this.$set(this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__, 'options', options)
+      this.$set(
+        this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__,
+        'options',
+        options.map(opt => {
+          let { name, id } = opt
+          return { label: name, value: id }
+        })
+      )
+      this.activeData.columns[this.activeData.selectedCol - 1].type.source = true
     },
 
     changeMultiple(val) {

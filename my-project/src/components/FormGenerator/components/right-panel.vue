@@ -8,7 +8,13 @@
       <!-- 组件属性 -->
       <a-form-model v-if="currentTab === 'field' && showField" :labelCol="labelCol" :wrapperCol="wrapperCol">
         <a-form-model-item v-if="activeData.__config__.changeTag" label="组件类型">
-          <a-select v-model="activeData.__config__.tagIcon" placeholder="请选择组件类型" :style="{ width: '100%' }" @change="tagChange">
+          <a-select
+            v-model="activeData.__config__.tagIcon"
+            placeholder="请选择组件类型"
+            :style="{ width: '100%' }"
+            @change="tagChange"
+            :getPopupContainer="target => target.parentNode"
+          >
             <a-select-opt-group v-for="group in tagList" :key="group.label">
               <span slot="label">{{ group.label }}</span>
               <a-select-option v-for="item in group.options" :key="item.__config__.label" :value="item.__config__.tagIcon">{{ item.__config__.label }}</a-select-option>
@@ -53,7 +59,7 @@
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式">
-          <a-select v-model="activeData.type">
+          <a-select v-model="activeData.type" :getPopupContainer="target => target.parentNode">
             <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
             <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
             <a-select-option value="省（直辖市、自治区）/市/区">省（直辖市、自治区）/市/区</a-select-option>
@@ -61,7 +67,7 @@
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.format !== undefined" label="时间格式">
-          <a-select v-model="activeData.format" @change="changeTimeFormat">
+          <a-select v-model="activeData.format" @change="changeTimeFormat" :getPopupContainer="target => target.parentNode">
             <a-select-option value="YYYY">年（yyyy）</a-select-option>
             <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
             <a-select-option value="YYYYMM">年月（yyyyMM）</a-select-option>
@@ -70,20 +76,23 @@
 
         <template v-if="['a-checkbox-group', 'a-radio-group', 'a-select'].indexOf(activeData.__config__.tag) > -1">
           <a-divider>选项</a-divider>
-          <draggable :list="activeData.__slot__.options" :animation="340" group="selectItem" handle=".option-drag">
+          <draggable :list="activeData.__slot__.options" :animation="340" group="selectItem" handle=".option-drag" :disabled="activeData.source">
             <div v-for="(item, index) in activeData.__slot__.options" :key="index" class="select-item">
               <div class="select-line-icon option-drag">
                 <a-icon type="unordered-list" style="font-size: 16px" />
               </div>
-              <a-input v-model="item.label" placeholder="选项名" />
-              <div class="close-btn select-line-icon" @click="delSelectItem(index)">
+              <a-input v-model="item.label" placeholder="选项名" :disabled="activeData.source" />
+              <div class="close-btn select-line-icon" @click="delSelectItem(index)" v-if="!activeData.source">
                 <a-icon type="minus-circle" style="font-size: 16px" />
               </div>
             </div>
           </draggable>
           <div style="margin-top: 8px">
             <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addSelectItem"> 添加选项 </a-button>
-            <a style="margin-left: 96px" @click="$refs.optionModal.show()">设置选项来源</a>
+            <a-button style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show()"> 设置选项来源 </a-button>
+            <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left">
+              <a-button style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>
+            </a-popconfirm>
           </div>
           <a-divider />
         </template>
@@ -232,8 +241,30 @@ export default {
 
   methods: {
     // start
+    clearOption() {
+      this.$set(this.activeData.__slot__, 'options', [
+        {
+          label: '选项一',
+          value: 1
+        },
+        {
+          label: '选项二',
+          value: 2
+        }
+      ])
+      this.activeData.source = false
+    },
+
     setOption(options) {
-      this.$set(this.activeData.__slot__, 'options', options)
+      this.$set(
+        this.activeData.__slot__,
+        'options',
+        options.map(opt => {
+          let { name, id } = opt
+          return { label: name, value: id }
+        })
+      )
+      this.activeData.source = true
     },
 
     changeTimeFormat(val) {

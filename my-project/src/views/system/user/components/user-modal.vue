@@ -8,6 +8,11 @@
         <a-form-model-item label="姓名" prop="name">
           <a-input v-model="model.name" placeholder="请输入姓名" :disabled="disabled" allowClear></a-input>
         </a-form-model-item>
+        <a-form-model-item label="角色" prop="roleIds">
+          <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
+            <a-select-option v-for="r in role" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
+          </a-select>
+        </a-form-model-item>
         <a-form-model-item label="所属部门" prop="orgId" v-if="showDepart">
           <a-tree-select
             :getPopupContainer="target => target.parentNode"
@@ -23,13 +28,8 @@
             :dropdown-style="{ maxHeight: '320px', overflow: 'auto' }"
           />
         </a-form-model-item>
-        <a-form-model-item label="角色" prop="roleIds">
-          <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
-            <a-select-option v-for="r in role" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-model-item label="专业" prop="subjectId">
-          <a-select v-model="model.subjectId" m placeholder="请选择专业" :disabled="disabled" allowClear>
+        <a-form-model-item label="专业" prop="subjectId" v-if="showSubject">
+          <a-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" allowClear>
             <a-select-option v-for="r in subjects" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
@@ -53,7 +53,7 @@ import { getUserDetail, addUser, updateUser } from '@/api/system/user'
 export default {
   name: 'UserModal',
   mixins: [DataCollectionModalMixin],
-  props: ['depart', 'role', 'subjects'],
+  props: ['depart', 'role', 'subjects', 'departs'],
   data() {
     return {
       replaceFields: {
@@ -86,6 +86,26 @@ export default {
       }
     }
   },
+  computed: {
+    showSubject() {
+      console.log(this.departs)
+      let teaching = this.departs.find(item => item.name == '教学部门')
+      if (teaching) {
+        if (this.showDepart) {
+          let item = teaching.children.find(item => item.id == this.model.orgId)
+          if (item) {
+            return true
+          }
+        } else {
+          let item = teaching.children.find(item => item.id == this.depart)
+          if (item) {
+            return true
+          }
+        }
+      }
+      return false
+    }
+  },
   methods: {
     add(title) {
       this.edit(this.showDepart ? { status: 1 } : { orgId: this.depart, status: 1 }, title)
@@ -94,6 +114,7 @@ export default {
 
     edit(record, title) {
       this.title = title
+      this.model = Object.assign({}, { roleId: [] })
       if (record.id) {
         this.loading = true
         getUserDetail(record.id)
@@ -116,6 +137,7 @@ export default {
       this.visible = false
       this.accountDisabled = true
       this.$refs.form.clearValidate()
+      this.model = { roleId: [] }
     },
 
     handleOk() {
