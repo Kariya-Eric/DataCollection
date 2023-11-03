@@ -1,5 +1,11 @@
 <template>
-  <a-drawer v-if="visible" :visible="visible" :width="1200" :closable="false">
+  <a-drawer v-if="visible" :visible="visible" :width="1000" :closable="false">
+    <a-descriptions :column="1">
+      <a-descriptions-item label="表单名称"> {{ formInfo.formName }}</a-descriptions-item>
+      <a-descriptions-item label="填报时间"> {{ formInfo.statisticsStartTime - formInfo.statisticsEndTime }} </a-descriptions-item>
+      <a-descriptions-item label="审核人"> {{ formInfo.responsibleUserName }} </a-descriptions-item>
+      <a-descriptions-item label="整体提交进度"><a-progress style="width: 35%" :percent="progress.percent" :format="() => progress.name" /> </a-descriptions-item>
+    </a-descriptions>
     <div class="title-operator" slot="title">
       <span>协作进度</span>
       <div class="title-operator-button">
@@ -21,6 +27,22 @@
             <a-icon type="right" v-if="!props.expanded && props.record.children.length > 0" @click="() => props.onExpand()" />
           </span>
         </template>
+        <template slot="orgName" slot-scope="text, record">
+          <div class="img-div" style="display: inline-block" v-if="record.responsibleOrgId == record.orgId">
+            <img src="@/assets/icons/depart.svg" /><span style="margin-left: 12px">{{ record.orgName }}</span>
+          </div>
+          <div class="img-div" style="display: inline-block" v-else>
+            <img src="@/assets/icons/depart_yellow.svg" /><span style="margin-left: 12px">{{ record.orgName }}</span>
+          </div>
+        </template>
+        <template slot="status" slot-scope="text, record">
+          <dc-status :name="caculateStatus(record.status).name" :color="caculateStatus(record.status).color" />
+        </template>
+        <template slot="action" slot-scope="text, record">
+          <a>查看</a>
+          <a-divider v-if="record.status != 2" type="vertical" />
+          <a v-if="record.status != 2">催办</a>
+        </template>
       </a-table>
     </a-spin>
   </a-drawer>
@@ -38,15 +60,20 @@ export default {
       dataSource: [],
       expandedKeys: [],
       columns: [
-        { title: '部门', dataIndex: 'orgName' },
-        { title: '填报人', dataIndex: 'fillUserName' },
-        { title: '最新提交时间', dataIndex: 'statisticsEndTime' },
-        { title: '审核状态', scopedSlots: { customRender: 'status' } },
-        { title: '操作', scopedSlots: { customRender: 'action' } }
+        { title: '部门', align: 'center', scopedSlots: { customRender: 'orgName' } },
+        { title: '填报人', dataIndex: 'responsibleUserName', align: 'center' },
+        { title: '最新提交时间', dataIndex: 'updateTime', align: 'center' },
+        { title: '审核状态', scopedSlots: { customRender: 'status' }, align: 'center' },
+        { title: '操作', scopedSlots: { customRender: 'action' }, align: 'center' }
       ]
     }
   },
-
+  computed: {
+    progress() {
+      let data = this.dataSource.filter(item => item.status == 2 || item.status == 1)
+      return { percent: (data.length / this.dataSource.length) * 100, name: `${data.length}/${this.dataSource.length}` }
+    }
+  },
   methods: {
     show(info) {
       this.loading = true
@@ -71,6 +98,20 @@ export default {
       })
     },
 
+    caculateStatus(status) {
+      if (status == 0) {
+        return { color: 'grey', name: '待提交' }
+      } else if (status == 1) {
+        return { color: 'blue', name: '审核中' }
+      } else if (status == 2) {
+        return { color: 'green', name: '审核通过' }
+      } else if (status == 3) {
+        return { color: 'red', name: '退回修改' }
+      } else {
+        return { color: 'yellow', name: '待配置人员' }
+      }
+    },
+
     close() {
       this.visible = false
     }
@@ -92,5 +133,13 @@ export default {
       margin-right: 6px;
     }
   }
+}
+/deep/.ant-descriptions-item-label {
+  font-size: 16px;
+  font-weight: bold;
+}
+/deep/.ant-descriptions-item-content {
+  font-size: 16px;
+  width: 82%;
 }
 </style>

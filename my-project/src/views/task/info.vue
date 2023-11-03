@@ -32,7 +32,9 @@
         </a-descriptions-item>
         <a-descriptions-item label="合集名称"> ？？ </a-descriptions-item>
         <a-descriptions-item label="合集年份"> ？？ </a-descriptions-item>
-        <a-descriptions-item label="任务状态"> </a-descriptions-item>
+        <a-descriptions-item label="任务状态">
+          <dc-status :name="caculateStatus(taskInfo).name" :color="caculateStatus(taskInfo).color" />
+        </a-descriptions-item>
         <a-descriptions-item label="任务进度">
           <a-progress :percent="taskInfo.percentage" />
         </a-descriptions-item>
@@ -161,9 +163,26 @@ export default {
           }
         })
         .finally(() => (this.tableLoading = false))
+    },
+
+    caculateStatus(record) {
+      if (record.status == 3 || record.status == '3') {
+        return { name: '停用', color: 'red' }
+      } else if (record.status == 1 || record.status == '1') {
+        return { name: '启用中', color: 'blue' }
+      } else if (record.status == 0 || record.status == '0') {
+        return { name: '未启用', color: 'grey' }
+      } else if (record.status == 2 || record.status == '2') {
+        return { name: '完成', color: 'green' }
+      }
+      return { name: '启用中', color: 'blue' }
     }
   }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+/deep/.ant-descriptions-item-content {
+  width: 50%;
+}
+</style>
