@@ -5,11 +5,17 @@
 // -1 待配置人员
 
 export function judgeImport(row, currentUser, roleList) {
-  return row.fillUserName == currentUser.username && (row.status == 0 || row.status == 3)
+  if (row.status == 0 || row.status == 3) {
+    if (roleList.indexOf('superAdmin') > -1) {
+      return true
+    }
+    return row.fillUserName == currentUser.username
+  }
+  return false
 }
 
 export function judgeExport(row, currentUser, roleList) {
-  if (row.fillUserName == currentUser.username) {
+  if (row.fillUserName == currentUser.username || roleList.indexOf('superAdmin') > -1) {
     return row.status != -1
   }
   return row.status == 2 || row.status == 3
@@ -26,21 +32,21 @@ export function judgeYears(row, currentUser, roleList) {
 }
 
 export function judgeSave(row, currentUser, roleList) {
-  if (row.fillUserName == currentUser.username) {
+  if (row.fillUserName == currentUser.username || roleList.indexOf('superAdmin') > -1) {
     return row.status == 0 || row.status == 3
   }
   return false
 }
 
 export function judgeRedo(row, currentUser, roleList) {
-  if (row.fillUserName == currentUser.username) {
+  if (row.fillUserName == currentUser.username || roleList.indexOf('superAdmin') > -1) {
     return row.status == 1
   }
   return false
 }
 
 export function judgeAuth(row, currentUser, roleList) {
-  if (row.responsibleUserName == currentUser.username) {
+  if (row.responsibleUserName == currentUser.username || roleList.indexOf('superAdmin') > -1) {
     return row.status == 1
   }
   return false

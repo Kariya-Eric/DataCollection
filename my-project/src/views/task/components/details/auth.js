@@ -8,8 +8,13 @@
 
 // 判断填报按钮权限
 export function judgeApply(row, currentUser, roleList) {
-  if (row.status == 0 || row.status == 3) {
-    return currentUser.username == row.fillUserName && row.type != '总表'
+  if (row.type != '总表') {
+    if (row.status == 0 || row.status == 3) {
+      if (roleList.indexOf('superAdmin') > -1) {
+        return true
+      }
+      return currentUser.username == row.fillUserName
+    }
   }
   return false
 }
@@ -17,6 +22,9 @@ export function judgeApply(row, currentUser, roleList) {
 // 判断审核按钮权限
 export function judgeAudit(row, currentUser, roleList) {
   if (row.status == 1) {
+    if (roleList.indexOf('superAdmin') > -1) {
+      return true
+    }
     return currentUser.username == row.responsibleUserName
   }
   return false
@@ -40,8 +48,13 @@ export function judgeShow(row, currentUser, roleList) {
 
 // 判断撤回按钮权限
 export function judgeRedo(row, currentUser, roleList) {
-  if (row.fillUserName == currentUser.username) {
-    return row.status == 1 && row.type != '总表'
+  if (row.type != '总表') {
+    if (row.fillUserName == currentUser.username) {
+      if (roleList.indexOf('superAdmin') > -1) {
+        return true
+      }
+      return row.status == 1
+    }
   }
   return false
 }
@@ -82,5 +95,10 @@ export function judgeProgress(row, currentUser, roleList) {
 
 // 判断配置人员按钮进度
 export function judgeConfig(row, currentUser, roleList) {
-  return row.status == -1 && (row.orgContactUser == currentUser.userId || row.orgResponsibleUser == currentUser.userId)
+  if (row.status == -1) {
+    if (roleList.indexOf('superAdmin') > -1) {
+      return true
+    }
+    return row.orgContactUser == currentUser.userId || row.orgResponsibleUser == currentUser.userId
+  }
 }

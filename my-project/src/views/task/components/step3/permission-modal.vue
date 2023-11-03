@@ -47,6 +47,16 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (value && value.length > 0) {
+                let fixedForm = []
+                this.model.formIds.forEach(id => {
+                  let form = this.forms.find(item => item.formId === id)
+                  if (form.formType === '固定表单') {
+                    fixedForm.push(form.formName)
+                  }
+                })
+                if (!this.showCollaborateOrg && fixedForm.length > 0) {
+                  callback(new Error(`【${fixedForm.join('，')}】为固定表单，无法配置协作部门`))
+                }
                 let index = value.indexOf(this.model.responsibleOrgId)
                 if (index != -1) {
                   callback(new Error('负责部门和协作部门不能相同！'))
@@ -110,17 +120,6 @@ export default {
     },
 
     handleOk() {
-      let fixedForm = []
-      this.model.formIds.forEach(id => {
-        let form = this.forms.find(item => item.formId === id)
-        if (form.formType === '固定表单') {
-          fixedForm.push(form.formName)
-        }
-      })
-      if (!this.showCollaborateOrg && fixedForm.length > 0) {
-        this.$message.error(`【${fixedForm.join('，')}】为固定表单，无法配置协作部门`)
-        return
-      }
       this.$refs.form.validate(valid => {
         if (valid) {
           let collaborateOrgId = this.model.collaborateOrgId ? this.model.collaborateOrgId.join(',') : ''
