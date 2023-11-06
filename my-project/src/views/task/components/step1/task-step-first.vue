@@ -144,7 +144,6 @@ export default {
       try {
         await this.$refs.taskForm.validate()
         await this.save()
-        this.$emit('change', 1)
       } catch (e) {
         return
       }
@@ -184,6 +183,7 @@ export default {
       await updateTask(this.taskForm).then(res => {
         if (res.state) {
           this.$message.success(res.message)
+          this.$emit('change', 1)
         } else {
           this.$message.error(res.message)
         }

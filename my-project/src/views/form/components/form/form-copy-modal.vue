@@ -42,6 +42,8 @@ export default {
   watch: {
     'model.formCollectionId'(val) {
       this.model.formIds = []
+      this.checked = false
+      this.indeterminate = false
       if (val) {
         this.getFormList(val)
       } else {
@@ -62,14 +64,11 @@ export default {
 
     getFormList(val) {
       let param = { id: val, searchParam: {} }
-      this.loading = true
-      getFormList(param)
-        .then(res => {
-          if (res.state) {
-            this.formList = res.value.rows
-          }
-        })
-        .finally(() => (this.loading = false))
+      getFormList(param).then(res => {
+        if (res.state) {
+          this.formList = res.value.rows
+        }
+      })
     },
 
     show() {

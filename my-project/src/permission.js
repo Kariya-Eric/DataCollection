@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
                     next({ ...to, replace: true })
                   } else {
                     // 跳转到目的路由
-                    next({ path: redirect })
+                    next({ path: defaultRoutePath })
                   }
                 })
               })

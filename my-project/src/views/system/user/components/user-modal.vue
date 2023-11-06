@@ -30,7 +30,7 @@
         </a-form-model-item>
         <a-form-model-item label="专业" prop="subjectId" v-if="showSubject">
           <a-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" allowClear>
-            <a-select-option v-for="r in subjects" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
+            <a-select-option v-for="r in subjectList" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="邮箱" prop="email">
@@ -56,6 +56,7 @@ export default {
   props: ['depart', 'role', 'subjects', 'departs'],
   data() {
     return {
+      subjectList: [],
       replaceFields: {
         title: 'name',
         key: 'id',
@@ -84,11 +85,20 @@ export default {
           this.showDepart = true
         }
       }
+    },
+    'model.orgId': {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.subjectList = this.subjects.filter(sub => sub.orgId == newVal)
+        } else {
+          this.subjectList = []
+        }
+      }
     }
   },
   computed: {
     showSubject() {
-      console.log(this.departs)
       let teaching = this.departs.find(item => item.name == '教学部门')
       if (teaching) {
         if (this.showDepart) {
