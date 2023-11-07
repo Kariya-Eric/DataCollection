@@ -1,9 +1,10 @@
-import { postAction } from './api'
+import { getAction, postAction } from './api'
 
-const login = (params) => postAction('/uc/api/auth/login', params)
+const login = params => postAction('/uc/api/auth/login', params)
+const refreshToken = params => getAction('/uc/api/auth/refreshtoken', params)
 
 export function logout() {
   return Promise.resolve()
 }
 
-export { login }
+export { login, refreshToken }
