@@ -12,6 +12,7 @@ import './core/use' // use lazy load components
 import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less' // global style
+import './utils/refreshToken'
 
 Vue.config.productionTip = false
 
