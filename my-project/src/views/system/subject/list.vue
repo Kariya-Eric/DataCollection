@@ -234,6 +234,7 @@ export default {
           this.subjectInfo = selectedNodes[0].data.props.dataRef
           this.selectedKeys = selectedKeys
           this.editFlag = false
+          this.initUserList({})
         }
       } else {
         this.selectedKeys = selectedKeys
@@ -242,6 +243,7 @@ export default {
     },
 
     editSubject(item) {
+      this.initUserList({})
       this.subjectInfo = item
       this.selectedKeys = [item.id]
       this.editFlag = true

@@ -25,8 +25,7 @@
         <dc-status v-else color="red" name="不可填报" />
       </template>
       <template slot="action" slot-scope="text, record">
-        <a @click="applyDeadline(record)">配置统计截止时间</a>
-        <a-divider type="vertical" v-if="!record.formRequired" />
+        <a @click="applyDeadline(record)" v-if="record.formRequired">配置统计截止时间</a>
         <a @click="applyCanfill(record)" v-if="judgeCanfill(record)">申请不可填报</a>
         <a-popconfirm v-if="judgeRedo(record)" @confirm="redoCanfill(record)" title="确定撤销不可填报吗？" type="question-circle-o">
           <a>撤销不可填报</a>

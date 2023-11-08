@@ -1,5 +1,5 @@
 <template>
-  <a-modal title="配置人员" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
+  <a-modal title="配置人员" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose :footer="null">
     <a-form-model ref="form" :model="model" v-bind="layout" :rules="rules">
       <a-form-model-item :hidden="true">
         <a-input v-model="model.responsibleUserName" />
@@ -21,6 +21,12 @@
         </a-select>
       </a-form-model-item>
     </a-form-model>
+    <div style="text-align: center; margin-bottom: 16px">
+      <a-button @click="handleCancel" style="margin-right: 10px">取消</a-button>
+      <a-popconfirm title="人员配置完成后不可调整，是否确认?" :visible="popconfirmVisible" @confirm="handleOk" @cancel="popconfirmVisible = false" placement="bottom">
+        <a-button type="primary" @click="popconfirmVisible = true">确定</a-button>
+      </a-popconfirm>
+    </div>
   </a-modal>
 </template>
 
@@ -33,10 +39,12 @@ export default {
   mixins: [DataCollectionModalMixin],
   data() {
     return {
+      popconfirmVisible: false,
       userList: [],
       rules: {
         responsibleUser: [{ required: true, message: '请选择审核人', trigger: 'change' }],
         fillUser: [
+          { required: true, message: '请选择填报人', trigger: 'change' },
           {
             validator: (rule, value, callback) => {
               if (value) {
@@ -83,6 +91,7 @@ export default {
       this.$emit('close')
       this.visible = false
       this.$refs.form.clearValidate()
+      this.model = {}
     },
 
     show(info) {
@@ -95,6 +104,7 @@ export default {
     },
 
     handleOk() {
+      this.popconfirmVisible = false
       this.$refs.form.validate(valid => {
         if (valid) {
           configAuthUser(this.model).then(res => {

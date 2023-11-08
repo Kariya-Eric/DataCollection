@@ -34,7 +34,7 @@
           <a v-if="judgeAudit(record, currentUser, roleList)" @click="showForm(record)">审核</a>
           <a v-if="judgeShow(record, currentUser, roleList)" @click="showForm(record)">查看</a>
           <a v-if="judgeRemind(record, currentUser, roleList)" @click="pushNotice(record)">催办</a>
-          <a v-if="judgeProgress(record, currentUser, roleList)" @click="$refs.progressDrawer.show(record)">填报进度</a>
+          <a v-if="judgeProgress(record, currentUser, roleList)" @click="$refs.progressDrawer.show(record)">协作进度</a>
         </span>
       </template>
     </a-table>
