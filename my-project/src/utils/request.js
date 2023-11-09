@@ -19,6 +19,7 @@ const errorHandler = error => {
   if (error.response) {
     console.log('switch', error.response.status)
     const data = error.response.data
+    let isRefreshing = false
     switch (error.response.status) {
       case 404:
         notification.error({
@@ -27,26 +28,30 @@ const errorHandler = error => {
         })
         break
       case 401:
-        Modal.confirm({
-          title: '登录已过期',
-          content: '登陆信息已失效，请重新登录',
-          icon: 'exclamation-circle',
-          cancelButtonProps: { style: { display: 'none' } },
-          okText: '重新登录',
-          mask: false,
-          onOk: () => {
-            store.dispatch('Logout').then(() => {
-              try {
-                let path = window.document.location.pathname
-                if (path != '/' && path.indexOf('/user/login') == -1) {
-                  window.location.reload()
-                }
-              } catch (e) {
-                window.location.reload()
-              }
-            })
-          }
-        })
+        if (!isRefreshing) {
+          isRefreshing = true
+          //刷新token
+        }
+        // Modal.confirm({
+        //   title: '登录已过期',
+        //   content: '登陆信息已失效，请重新登录',
+        //   icon: 'exclamation-circle',
+        //   cancelButtonProps: { style: { display: 'none' } },
+        //   okText: '重新登录',
+        //   mask: false,
+        //   onOk: () => {
+        //     store.dispatch('Logout').then(() => {
+        //       try {
+        //         let path = window.document.location.pathname
+        //         if (path != '/' && path.indexOf('/user/login') == -1) {
+        //           window.location.reload()
+        //         }
+        //       } catch (e) {
+        //         window.location.reload()
+        //       }
+        //     })
+        //   }
+        // })
         break
       default:
         notification.error({
