@@ -4,7 +4,7 @@ import storage from 'store'
 import notification from 'ant-design-vue/es/notification'
 import { Modal } from 'ant-design-vue'
 import { VueAxios } from './axios'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { ACCESS_TOKEN, USER_INFO } from '@/store/mutation-types'
 
 // 创建 axios 实例
 const request = axios.create({
@@ -15,9 +15,7 @@ const request = axios.create({
 
 // 异常拦截处理器
 const errorHandler = error => {
-  console.log('errorH', error.response)
   if (error.response) {
-    console.log('switch', error.response.status)
     const data = error.response.data
     let isRefreshing = false
     switch (error.response.status) {
@@ -30,28 +28,42 @@ const errorHandler = error => {
       case 401:
         if (!isRefreshing) {
           isRefreshing = true
-          //刷新token
+          let old_user_info = storage.get(USER_INFO)
+          axios
+            .get(process.env.VUE_APP_BASE_API + 'uc/api/auth/refreshtoken', {
+              headers: { Authorization: 'Bearer ' + storage.get(USER_INFO).refresh_token }
+            })
+            .then(res => {
+              if (res.data.success) {
+                let new_user_info = res.data
+                let refresh_user_info = { ...old_user_info, expire_in: new_user_info.expire_in, refresh_token: new_user_info.refresh_token, token: new_user_info.token }
+                storage.set(USER_INFO, refresh_user_info)
+                storage.set(ACCESS_TOKEN, new_user_info.token)
+                return axios(error.config)
+              } else {
+                Modal.confirm({
+                  title: '登录已过期',
+                  content: '登陆信息已失效，请重新登录',
+                  icon: 'exclamation-circle',
+                  cancelButtonProps: { style: { display: 'none' } },
+                  okText: '重新登录',
+                  mask: false,
+                  onOk: () => {
+                    store.dispatch('Logout').then(() => {
+                      try {
+                        let path = window.document.location.pathname
+                        if (path != '/' && path.indexOf('/user/login') == -1) {
+                          window.location.reload()
+                        }
+                      } catch (e) {
+                        window.location.reload()
+                      }
+                    })
+                  }
+                })
+              }
+            })
         }
-        // Modal.confirm({
-        //   title: '登录已过期',
-        //   content: '登陆信息已失效，请重新登录',
-        //   icon: 'exclamation-circle',
-        //   cancelButtonProps: { style: { display: 'none' } },
-        //   okText: '重新登录',
-        //   mask: false,
-        //   onOk: () => {
-        //     store.dispatch('Logout').then(() => {
-        //       try {
-        //         let path = window.document.location.pathname
-        //         if (path != '/' && path.indexOf('/user/login') == -1) {
-        //           window.location.reload()
-        //         }
-        //       } catch (e) {
-        //         window.location.reload()
-        //       }
-        //     })
-        //   }
-        // })
         break
       default:
         notification.error({

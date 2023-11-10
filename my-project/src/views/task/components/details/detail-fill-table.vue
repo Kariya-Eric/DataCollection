@@ -24,6 +24,9 @@
       <template slot="status" slot-scope="text, record">
         <dc-status :name="caculateStatus(record.status).name" :color="caculateStatus(record.status).color" />
       </template>
+      <template slot="statisticsEndTime" slot-scope="text, record">
+        <dc-endtime :remainTime="caculateTime(record)" />
+      </template>
       <template slot="action" slot-scope="record">
         <span class="action-span">
           <a v-if="judgeApply(record, currentUser, roleList)" @click="showForm(record)">填报</a>
@@ -131,6 +134,15 @@ export default {
           }
         })
         .finally(() => (this.loading = false))
+    },
+
+    caculateTime(record) {
+      if (!record.statisticsEndTime) {
+        return 0
+      }
+      let current = new Date().getTime()
+      let endTime = new Date(record.statisticsEndTime).getTime()
+      return (endTime - current) / 1000
     }
   }
 }

@@ -21,6 +21,9 @@
         <dc-icon type="icon-dc_form_table" v-if="record.name" :style="{ 'font-size': '16px', color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
         <span style="margin-left: 8px">{{ record.name }}</span>
       </template>
+      <template slot="statisticsEndTime" slot-scope="text, record">
+        <dc-endtime :remainTime="caculateTime(record)" />
+      </template>
       <template slot="status" slot-scope="text, record">
         <dc-status :name="caculateStatus(record.status).name" :color="caculateStatus(record.status).color" />
       </template>
@@ -173,6 +176,15 @@ export default {
       } else {
         return { color: 'yellow', name: '待配置人员' }
       }
+    },
+
+    caculateTime(record) {
+      if (!record.statisticsEndTime) {
+        return 0
+      }
+      let current = new Date().getTime()
+      let endTime = new Date(record.statisticsEndTime).getTime()
+      return (endTime - current) / 1000
     }
   }
 }

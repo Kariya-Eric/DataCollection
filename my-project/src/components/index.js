@@ -2,6 +2,7 @@ import DcSwitch from './DataCollection/DcSwitch'
 import DcDate from './DataCollection/DcDate'
 import DcModal from './DataCollection/DcModal'
 import DcStatus from './DataCollection/DcStatus'
+import DcEndTime from './DataCollection/DcEndTime'
 import FormGenerator from './FormGenerator'
 import Tinymce from './Tinymce'
 import CustomComponents from './FormGenerator/layouts'
@@ -27,6 +28,7 @@ VXETable.interceptor.add('event.clearActived', function ({ column, $event }) {
 
 export default {
   install(Vue) {
+    Vue.component('DcEndtime', DcEndTime)
     Vue.component('DcSwitch', DcSwitch)
     Vue.component('DcDate', DcDate)
     Vue.component('DcModal', DcModal)
