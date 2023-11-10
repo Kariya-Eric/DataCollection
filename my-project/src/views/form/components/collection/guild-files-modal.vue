@@ -12,7 +12,7 @@
     destroyOnClose
   >
     <a-spin :spinning="loading">
-      <a-alert message="可以一次选择多个文件,但是单个文件请勿超过5MB" type="info" show-icon style="margin-bottom: 12px"> </a-alert>
+      <a-alert message="可以一次选择多个文件,但是单个文件请勿超过15MB" type="info" show-icon style="margin-bottom: 12px"> </a-alert>
       <a-upload :show-upload-list="false" :multiple="true" @change="onchange" :customRequest="() => {}">
         <a-button type="primary" icon="upload">选取文件</a-button>
       </a-upload>

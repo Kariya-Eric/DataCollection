@@ -22,7 +22,7 @@
         <a-descriptions-item label="任务类型">{{ taskInfo.type }}</a-descriptions-item>
         <a-descriptions-item label="填报开始时间">{{ taskInfo.statisticsStartTime }} </a-descriptions-item>
         <a-descriptions-item label="填报截止时间">{{ taskInfo.statisticsEndTime }}</a-descriptions-item>
-        <a-descriptions-item label="统计时间"> ？？ </a-descriptions-item>
+        <a-descriptions-item label="统计时间"> ?? </a-descriptions-item>
         <a-descriptions-item label="学年"> {{ taskInfo.schoolYear }}</a-descriptions-item>
         <a-descriptions-item label="自然年">{{ taskInfo.year }}</a-descriptions-item>
         <a-descriptions-item label="学校专业类别">
@@ -159,7 +159,7 @@ export default {
       getTaskFormList(query)
         .then(res => {
           if (res.state) {
-            this.dataSource = res.value.sort((v1, v2) => (v1.formCategories < v2.formCategories ? -1 : v1.formCategories == v2.formCategories ? 0 : 1))
+            this.dataSource = res.value
           }
         })
         .finally(() => (this.tableLoading = false))
