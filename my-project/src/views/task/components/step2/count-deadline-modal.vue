@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       labelCol: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
-      wrapperCol: { style: 'width: calc(100% - 100px); display: inline-block;' },
+      wrapperCol: { style: 'width: calc(100% - 120px); display: inline-block;' },
       isBatch: false,
       rules: {
         statisticsEndTime: [{ required: true, message: '请选择统计截止时间' }]

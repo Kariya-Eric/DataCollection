@@ -22,7 +22,7 @@
         <a-descriptions-item label="任务类型">{{ taskInfo.type }}</a-descriptions-item>
         <a-descriptions-item label="填报开始时间">{{ taskInfo.statisticsStartTime }} </a-descriptions-item>
         <a-descriptions-item label="填报截止时间">{{ taskInfo.statisticsEndTime }}</a-descriptions-item>
-        <a-descriptions-item label="统计时间"> ?? </a-descriptions-item>
+        <a-descriptions-item label="统计时间"> {{ taskYear }} </a-descriptions-item>
         <a-descriptions-item label="学年"> {{ taskInfo.schoolYear }}</a-descriptions-item>
         <a-descriptions-item label="自然年">{{ taskInfo.year }}</a-descriptions-item>
         <a-descriptions-item label="学校专业类别">
@@ -30,8 +30,8 @@
             <span style="color: #ef722e">{{ item }}</span>
           </a-tag>
         </a-descriptions-item>
-        <a-descriptions-item label="合集名称"> ？？ </a-descriptions-item>
-        <a-descriptions-item label="合集年份"> ？？ </a-descriptions-item>
+        <a-descriptions-item label="合集名称"> {{ taskInfo.formCollectionName }} </a-descriptions-item>
+        <a-descriptions-item label="合集年份"> {{ taskInfo.formCollectionYear }} </a-descriptions-item>
         <a-descriptions-item label="任务状态">
           <dc-status :name="caculateStatus(taskInfo).name" :color="caculateStatus(taskInfo).color" />
         </a-descriptions-item>
@@ -63,6 +63,7 @@ export default {
   data() {
     return {
       taskId: '',
+      taskYear: '',
       dataSource: [],
       tagList: [],
       infoLoading: false,
@@ -96,6 +97,7 @@ export default {
       handler(newRoute) {
         if (newRoute.name == 'taskInfo') {
           this.taskId = newRoute.query.taskId
+          this.taskYear = newRoute.query.taskYear
           this.getTaskInfo()
         }
       },

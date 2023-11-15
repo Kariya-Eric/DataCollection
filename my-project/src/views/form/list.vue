@@ -56,7 +56,7 @@
         </template>
         <template slot="guidFiles" slot-scope="text, record">
           <div v-for="(guidFile, index) in JSON.parse(record.guidFiles)" :key="index">
-            <a download href="javascript:;" @click="downloadGuid(guidFile)" :title="guidFile.fileName">{{ guidFile.fileName }}</a>
+            <a @click="downloadGuid(guidFile)" :title="guidFile.fileName">{{ guidFile.fileName }}</a>
           </div>
         </template>
         <template slot="enabledFlag" slot-scope="text, record">
@@ -119,8 +119,8 @@ export default {
     downloadGuid(file) {
       let link = document.createElement('a')
       link.style.display = 'none'
+      link.download = decodeURI(file.fileName)
       link.href = file.filePath
-      link.download = file.fileName
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)

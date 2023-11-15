@@ -166,7 +166,7 @@ export default {
     showTaskInfo(record) {
       this.$router.push({
         path: '/task/info',
-        query: { taskId: record.id }
+        query: { taskId: record.id, taskYear: record.year }
       })
     },
 
