@@ -26,10 +26,10 @@
       </template>
       <template slot="action" slot-scope="text, record">
         <a @click="applyDeadline(record)" v-if="record.isCanFill">配置统计截止时间</a>
-        <a-divider type="vertical" v-if="record.isCanFill && (judgeCanfill(record) || judgeRedo(record))" />
-        <template v-else>
-          <a @click="applyCanfill(record)" v-if="judgeCanfill(record)">申请不可填报</a>
-          <a-popconfirm v-if="judgeRedo(record)" @confirm="redoCanfill(record)" title="确定撤销不可填报吗？" type="question-circle-o">
+        <a-divider type="vertical" v-if="record.isCanFill && !record.formRequired" />
+        <template v-if="!record.formRequired">
+          <a @click="applyCanfill(record)" v-if="record.isCanFill">申请不可填报</a>
+          <a-popconfirm v-else @confirm="redoCanfill(record)" title="确定撤销不可填报吗？" type="question-circle-o">
             <a>撤销不可填报</a>
           </a-popconfirm>
         </template>
@@ -155,14 +155,6 @@ export default {
 
     applyCanfill(row) {
       this.$refs.unfillModal.edit(row)
-    },
-
-    judgeCanfill(row) {
-      return row.isCanFill && !row.formRequired
-    },
-
-    judgeRedo(row) {
-      return !row.isCanFill && !row.formRequired
     },
 
     refreshUnfill(unfillForm) {
