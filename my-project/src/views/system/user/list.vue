@@ -174,7 +174,7 @@ export default {
           let teaching = res.value[0].children.find(item => item.name == '教学部门')
           functional.children = functional.children.filter(item => item.status === 1)
           teaching.children = teaching.children.filter(item => item.status === 1)
-          this.departList = this.renderDepart([teaching, functional])
+          this.departList = this.renderDepart([functional, teaching])
         }
       })
     },

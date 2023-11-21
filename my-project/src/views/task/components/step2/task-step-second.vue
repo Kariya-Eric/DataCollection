@@ -24,6 +24,9 @@
         <dc-status v-if="record.isCanFill" color="green" name="可填报" />
         <dc-status v-else color="red" name="不可填报" />
       </template>
+      <template slot="statisticsEndTime" slot-scope="text, record">
+        <span v-if="record.isCanFill">{{ record.statisticsEndTime }}</span>
+      </template>
       <template slot="action" slot-scope="text, record">
         <a @click="applyDeadline(record)" v-if="record.isCanFill">配置统计截止时间</a>
         <a-divider type="vertical" v-if="record.isCanFill && !record.formRequired" />
@@ -66,7 +69,7 @@
 import CountDeadlineModal from './count-deadline-modal'
 import UnfillModal from './unfill-modal'
 import { formCollectionList } from '@/api/form'
-import { updateTask, getTaskFormList, configFillStatus } from '@/api/task'
+import { updateTask, getTaskFormList, configFillStatus, configEndTime } from '@/api/task'
 export default {
   components: { CountDeadlineModal, UnfillModal },
   props: ['task'],
@@ -85,7 +88,7 @@ export default {
         { dataIndex: 'formName', title: '表单名称', align: 'center', ellipsis: true },
         { title: '是否可填报', align: 'center', scopedSlots: { customRender: 'isCanFill' } },
         { dataIndex: 'remark', title: '备注', ellipsis: true, align: 'center' },
-        { dataIndex: 'statisticsEndTime', title: '统计截止日期', align: 'center' },
+        { title: '统计截止日期', align: 'center', scopedSlots: { customRender: 'statisticsEndTime' } },
         { title: '操作', align: 'center', scopedSlots: { customRender: 'action' }, width: '320px' }
       ]
     }
@@ -161,6 +164,12 @@ export default {
       let form = this.formList.find(form => form.formId == unfillForm.formId)
       form.isCanFill = false
       form.remark = unfillForm.remark
+      form.statisticsEndTime = null
+      configEndTime({ taskId: this.taskInfo.id, statisticsEndTime: '', formIds: [form.formId] }).then(res => {
+        if (!res.state) {
+          this.$message.error(res.message)
+        }
+      })
     },
 
     applyDeadlineBatch() {
@@ -226,7 +235,7 @@ export default {
       formCollectionList({})
         .then(res => {
           if (res.state) {
-            this.formCollectionList = res.value.rows
+            this.formCollectionList = res.value.rows.filter(item => item.enabledFlag == 1)
           }
         })
         .finally(() => (this.loading = false))
@@ -250,6 +259,12 @@ export default {
             this.$message.success(res.message)
             row.isCanFill = !row.isCanFill
             row.remark = ''
+            row.statisticsEndTime = this.taskInfo.statisticsEndTime
+            configEndTime({ taskId: this.taskInfo.id, statisticsEndTime: this.taskInfo.statisticsEndTime, formIds: [row.formId] }).then(res => {
+              if (!res.state) {
+                this.$message.error(res.message)
+              }
+            })
           } else {
             this.$message.error(res.message)
           }

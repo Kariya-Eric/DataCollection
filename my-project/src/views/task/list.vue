@@ -66,7 +66,7 @@
         <template slot="action" slot-scope="text, record">
           <a @click="showTaskInfo(record)">任务概览</a>
           <a-divider type="vertical" />
-          <a @click="showTaskDetail(record)" v-if="record.enabledFlag !== 0">任务详情</a>
+          <a @click="showTaskDetail(record)" v-if="record.status === 1 || record.status === 2">任务详情</a>
           <a-divider type="vertical" />
           <a-dropdown :trigger="['click']">
             <a>更多<a-icon type="down" /></a>

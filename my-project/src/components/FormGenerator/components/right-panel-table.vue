@@ -3,26 +3,31 @@
     <div>
       <template>
         <a-divider>列名 - 属性</a-divider>
-        <draggable :list="activeData.columns" :animation="340" group="selectItem" handle=".option-drag" @end="dragEnd">
+        <draggable :list="activeData.columns" :animation="340" group="selectItem" handle=".option-drag" @end="dragEnd" :disabled="disabled">
           <div v-for="item in activeData.columns" :key="item.key" class="select-item">
             <div class="select-line-icon option-drag">
               <a-icon type="unordered-list" style="font-size: 16px" />
             </div>
-            <a-input v-model="item.label" />
-            <div class="close-btn select-line-icon">
+            <a-input v-model="item.label" :disabled="disabled" />
+            <div class="close-btn select-line-icon" v-if="!disabled">
               <a-icon type="minus-circle" style="font-size: 16px" @click="delCol(item.key)" />
             </div>
           </div>
         </draggable>
         <div style="margin-top: 8px">
-          <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addCol"> 添加列 </a-button>
+          <a-button :disabled="disabled" style="padding-bottom: 0" icon="plus-circle" type="link" @click="addCol"> 添加列 </a-button>
         </div>
       </template>
     </div>
     <template v-if="activeData.selectedCol !== -1">
       <a-divider>已选中 : 第{{ activeData.selectedCol }}列</a-divider>
       <a-form-model-item label="类型">
-        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.tag" @change="tagChange" :getPopupContainer="target => target.parentNode">
+        <a-select
+          v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.tag"
+          @change="tagChange"
+          :getPopupContainer="target => target.parentNode"
+          :disabled="disabled"
+        >
           <a-select-option value="a-input">单行文本</a-select-option>
           <a-select-option value="a-textarea">多行文本</a-select-option>
           <a-select-option value="a-input-number">数字</a-select-option>
@@ -36,7 +41,7 @@
       </a-form-model-item>
 
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'formPhone'" label="支持固话">
-        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.isMobile" />
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.isMobile" :disabled="disabled" />
       </a-form-model-item>
       <a-form-model-item
         v-if="
@@ -44,20 +49,20 @@
         "
         label="禁止汉字"
       >
-        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.allowChar" />
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.allowChar" :disabled="disabled" />
       </a-form-model-item>
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="小数位数">
-        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.precision" :min="0" placeholder="小数位数" />
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.precision" :min="0" placeholder="小数位数" :disabled="disabled" />
       </a-form-model-item>
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="最小值">
-        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" />
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" :disabled="disabled" />
       </a-form-model-item>
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="最大值">
-        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" />
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" :disabled="disabled" />
       </a-form-model-item>
 
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'formAddress'" label="地址格式">
-        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type" :getPopupContainer="target => target.parentNode">
+        <a-select v-model="activeData.columns[activeData.selectedCol - 1].type.type" :getPopupContainer="target => target.parentNode" :disabled="disabled">
           <a-select-option value="国/省（直辖市、自治区）/市">国/省（直辖市、自治区）/市</a-select-option>
           <a-select-option value="省（直辖市、自治区）/市/区-详细地址" title="省（直辖市、自治区）/市/区-详细地址">省（直辖市、自治区）/市/区-详细地址</a-select-option>
           <a-select-option value="省（直辖市、自治区）/市/区">省（直辖市、自治区）/市/区</a-select-option>
@@ -69,6 +74,7 @@
           v-model="activeData.columns[activeData.selectedCol - 1].type.format"
           @change="val => changeTimeFormat(val, activeData.columns[activeData.selectedCol - 1].type)"
           :getPopupContainer="target => target.parentNode"
+          :disabled="disabled"
         >
           <a-select-option value="YYYY">年（yyyy）</a-select-option>
           <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
@@ -77,15 +83,15 @@
       </a-form-model-item>
 
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-select'" label="能否搜索">
-        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.showSearch" />
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.showSearch" :disabled="disabled" />
       </a-form-model-item>
 
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-select'" label="能否多选">
-        <a-switch :value="activeData.columns[activeData.selectedCol - 1].type.mode === 'default'" @change="changeMultiple" />
+        <a-switch :value="activeData.columns[activeData.selectedCol - 1].type.mode === 'default'" @change="changeMultiple" :disabled="disabled" />
       </a-form-model-item>
 
       <a-form-model-item label="是否必填">
-        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.required" />
+        <a-switch v-model="activeData.columns[activeData.selectedCol - 1].type.__config__.required" :disabled="disabled" />
       </a-form-model-item>
 
       <a-form-model-item label="注释">
@@ -93,6 +99,7 @@
           :rows="4"
           :placeholder="`请输入${activeData.columns[activeData.selectedCol - 1].label}注释`"
           v-model="activeData.columns[activeData.selectedCol - 1].type.comment"
+          :disabled="disabled"
         />
       </a-form-model-item>
 
@@ -103,23 +110,23 @@
           :animation="340"
           group="selectItem"
           handle=".option-drag"
-          :disabled="activeData.columns[activeData.selectedCol - 1].type.source"
+          :disabled="disabled || activeData.columns[activeData.selectedCol - 1].type.source"
         >
           <div v-for="(item, index) in activeData.columns[activeData.selectedCol - 1].type.__slot__.options" :key="index" class="select-item">
             <div class="select-line-icon option-drag">
               <a-icon type="unordered-list" style="font-size: 16px" />
             </div>
-            <a-input v-model="item.label" placeholder="选项名" :disabled="activeData.columns[activeData.selectedCol - 1].type.source" />
-            <div class="close-btn select-line-icon" v-if="!activeData.columns[activeData.selectedCol - 1].type.source">
+            <a-input v-model="item.label" placeholder="选项名" :disabled="disabled || activeData.columns[activeData.selectedCol - 1].type.source" />
+            <div class="close-btn select-line-icon" v-if="!activeData.columns[activeData.selectedCol - 1].type.source && !disabled">
               <a-icon type="minus-circle" style="font-size: 16px" @click="delOption(index)" />
             </div>
           </div>
         </draggable>
         <div style="margin-top: 8px">
-          <a-button style="padding-bottom: 0" icon="plus-circle" type="link" @click="addOption"> 添加选项 </a-button>
-          <a-button style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show()"> 设置选项来源 </a-button>
-          <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left">
-            <a-button style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>
+          <a-button :disabled="disabled" style="padding-bottom: 0" icon="plus-circle" type="link" @click="addOption"> 添加选项 </a-button>
+          <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show()"> 设置选项来源 </a-button>
+          <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left" v-if="!disabled">
+            <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>
           </a-popconfirm>
         </div>
       </template>
@@ -135,7 +142,7 @@ import { input, textarea, number, link, mail, phone, select, date, address } fro
 import OptionModal from './option-modal.vue'
 export default {
   name: 'RightPanelTable',
-  props: ['activeData'],
+  props: ['activeData', 'disabled'],
   components: {
     draggable,
     OptionModal
@@ -189,6 +196,9 @@ export default {
     },
 
     delCol(key) {
+      if (this.disabled) {
+        return
+      }
       this.activeData.selectedCol = -1
       this.activeData.columns = this.activeData.columns.filter(column => column.key != key)
     },

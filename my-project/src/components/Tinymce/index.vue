@@ -28,6 +28,10 @@ export default {
         return []
       }
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     height: {
       type: Number,
       required: false,

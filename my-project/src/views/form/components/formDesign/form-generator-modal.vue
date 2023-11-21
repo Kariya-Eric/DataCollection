@@ -28,7 +28,17 @@
     </template>
 
     <div v-show="activeTab === 0">
-      <form-generator v-if="visible" :formInfo="info" :drawingList="drawingList" :form-config="formConfig" ref="formGenerator" @view="showView" @save="saveForm" @empty="empty" />
+      <form-generator
+        v-if="visible"
+        :disabled="info.enabledFlag == 1"
+        :formInfo="info"
+        :drawingList="drawingList"
+        :form-config="formConfig"
+        ref="formGenerator"
+        @view="showView"
+        @save="saveForm"
+        @empty="empty"
+      />
     </div>
 
     <div class="container" v-if="activeTab === 1">

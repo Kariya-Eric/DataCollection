@@ -8,6 +8,7 @@
             {{ item.title }}
           </a-divider>
           <draggable
+            :disabled="disabled"
             class="components-draggable"
             :list="item.list"
             :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
@@ -29,14 +30,15 @@
           <a-row class="center-board-row">
             <div class="tinymce-div">
               <h4>填报提示</h4>
-              <tinymce v-model="formConf.formAlert" :height="100" />
+              <tinymce v-model="formConf.formAlert" :height="100" :disabled="disabled" />
             </div>
-            <a-form-model :label-align="formConf.labelAlign" layout="horizontal" :size="formConf.size" :disabled="formConf.disabled">
-              <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
+            <a-form-model :label-align="formConf.labelAlign" layout="horizontal" :size="formConf.size">
+              <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup" :disabled="disabled">
                 <drag-item
                   class="center-drag-item"
                   v-for="(item, index) in drawingList"
                   :key="item.renderKey"
+                  :disabled="disabled"
                   :drawing-list="drawingList"
                   :current-item="item"
                   :index="index"
@@ -59,6 +61,7 @@
         :active-data="activeData"
         :form-conf="formConf"
         :show-field="drawingList.length != 0"
+        :disabled="disabled"
         :base-info="formInfo"
         :drawing-list="drawingList"
         @tag-change="tagChange"
@@ -99,7 +102,7 @@ export default {
       currentUser: storage.get(USER_INFO)
     }
   },
-  props: ['formInfo', 'drawingList', 'formConfig'],
+  props: ['formInfo', 'drawingList', 'formConfig', 'disabled'],
   computed: {
     leftComponents() {
       if (this.formInfo.type == '固定表单') {
@@ -142,6 +145,9 @@ export default {
   },
   methods: {
     addComponent(item) {
+      if (this.disabled) {
+        return
+      }
       if (this.validateComponents().length > 0) {
         this.$notification['warning']({
           message: '以下组件中选项值重复！',
@@ -192,6 +198,9 @@ export default {
     },
 
     drawingItemCopy(item, list) {
+      if (this.disabled) {
+        return
+      }
       if (this.validateComponents().length > 0) {
         this.$notification['warning']({
           message: '以下组件中选项值重复！',
@@ -207,6 +216,9 @@ export default {
     },
 
     drawingItemDelete(index, list) {
+      if (this.disabled) {
+        return
+      }
       list.splice(index, 1)
       this.$nextTick(() => {
         const len = this.drawingList.length

@@ -91,6 +91,7 @@ export default {
       let component = this.drawingList.filter(item => item.__config__.formId == val)[0]
       if (
         component.__config__.tag == 'a-input' ||
+        component.__config__.tag == 'a-textarea' ||
         component.__config__.tag == 'formLink' ||
         component.__config__.tag == 'formMail' ||
         component.__config__.tag == 'formAddress' ||

@@ -22,7 +22,7 @@
         <a-form-model-item v-for="(item, index) in logicForm.termList" :key="index" :prop="'termList.' + index" :rules="rules.termList" style="margin: 0px 0px 8px 0px">
           <a-row :gutter="2">
             <a-col :span="22"><logic-item :drawing-list="drawingList" v-model="logicForm.termList[index]" /> </a-col>
-            <a-col :span="1"> <a-icon v-if="logicForm.termList.length > 1" style="color: red;margin-left:12px" type="minus-circle" @click="delTerm(index)" /></a-col>
+            <a-col :span="1"> <a-icon v-if="logicForm.termList.length > 1" style="color: red; margin-left: 12px" type="minus-circle" @click="delTerm(index)" /></a-col>
           </a-row>
         </a-form-model-item>
         <a-form-model-item label="显示以下字段" prop="showList" :labelCol="labelCol" :wrapperCol="wrapperCol">

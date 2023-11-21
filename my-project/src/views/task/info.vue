@@ -161,7 +161,7 @@ export default {
       getTaskFormList(query)
         .then(res => {
           if (res.state) {
-            this.dataSource = res.value
+            this.dataSource = res.value.filter(item => item.isCanFill)
           }
         })
         .finally(() => (this.tableLoading = false))
