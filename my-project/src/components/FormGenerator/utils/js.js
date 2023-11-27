@@ -128,8 +128,8 @@ function buildRules(scheme, ruleList) {
     if (config.layout === 'tableLayout') {
       rules.push(`{ validator : async (rule,value,callback) => {
         let result=await this.$refs.table_${config.formId}.validate();
-        if(result===undefined){
-            callback(new Error('请确认表格数据是否合法！'));
+        if(typeof result==='string'){
+            callback(new Error(result));
         }
         if(${config.required}&&result.length==0){
           callback(new Error("请至少输入一条数据！"));

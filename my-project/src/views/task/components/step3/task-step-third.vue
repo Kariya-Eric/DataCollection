@@ -332,7 +332,6 @@ export default {
   margin: auto;
 }
 .right-side {
-  height: 580px;
   padding-left: 24px;
   border-left: 1px solid #e8e8e8;
 }

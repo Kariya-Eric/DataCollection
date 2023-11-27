@@ -7,11 +7,7 @@
       </a-popconfirm>
       <div style="float: right">
         <a-dropdown placement="topCenter">
-          <a-button type="primary" icon="cloud-download" @click="e => e.preventDefault()">数据导出</a-button>
-          <a-menu slot="overlay">
-            <a-menu-item key="1" @click="exportData('xlsx')"> <a-icon type="file-excel" />导出Excel</a-menu-item>
-            <a-menu-item key="2" @click="exportData('pdf')"> <a-icon type="file-pdf" />导出PDF </a-menu-item>
-          </a-menu>
+          <a-button type="primary" icon="cloud-download" @click="exportData('xlsx')">数据导出</a-button>
         </a-dropdown>
       </div>
     </div>
@@ -33,7 +29,7 @@
       @checkbox-change="checkboxChange"
     >
       <vxe-column type="checkbox" width="60"></vxe-column>
-      <vxe-column type="seq" width="60" title="序号"> </vxe-column>
+      <vxe-column width="60" title="序号" type="seq"> </vxe-column>
       <vxe-column v-for="(col, index) in renderColumns" :key="col.key" :field="col.props" :title="col.label" :min-width="220" :edit-render="{ autofocus: col.autofocus }">
         <template #header="{ column }">
           <a-tooltip placement="bottom" v-if="col.comment.length > 0">
@@ -86,6 +82,7 @@
 </template>
 
 <script>
+import { nanoid } from 'nanoid'
 export default {
   name: 'FormTable',
   props: ['columns', 'value', 'required'],
@@ -94,7 +91,7 @@ export default {
       dataSource: this.value,
       selectedRows: [],
       importConfig: { types: ['xlsx'] },
-      exportConfig: { types: ['xlsx', 'pdf'] }
+      exportConfig: { types: ['xlsx'] }
     }
   },
 
@@ -239,8 +236,10 @@ export default {
     },
 
     async removeChecked() {
-      this.$refs.xTable.removeCheckboxRow()
+      const $table = this.$refs.xTable
+      $table.removeCheckboxRow()
       this.selectedRows = []
+      this.$emit('input', $table.getTableData().tableData)
     },
 
     async deleteRow(row) {
@@ -258,7 +257,7 @@ export default {
       // if (errMap) {
       //   return
       // }
-      const newRecord = {}
+      const newRecord = { _X_ROW_KEY: nanoid() }
       this.columns.forEach(col => {
         if (col.type.__config__.label == '下拉选择' && col.type.mode == 'multiple') {
           newRecord[col.props] = []
@@ -277,9 +276,27 @@ export default {
     async validate() {
       const $table = this.$refs.xTable
       $table.clearCheckboxRow()
-      const errMap = await $table.validate(true).catch(errMap => errMap)
+      const errMap = await $table.fullValidate().catch(errMap => errMap)
       if (errMap) {
-        return undefined
+        $table.clearEdit()
+        const msgList = []
+        Object.values(errMap).forEach(errList => {
+          errList.forEach(params => {
+            const { column, rules, row } = params
+            let rowIndex = -1
+            $table.getTableData().tableData.find((item, index) => {
+              if (item._X_ROW_KEY === row._X_ROW_KEY) {
+                rowIndex = index
+                return item
+              }
+              return undefined
+            })
+            rules.forEach(rule => {
+              msgList.push(`第 ${rowIndex + 1} 行 ${column.title} ：${rule.message}`)
+            })
+          })
+        })
+        return msgList.join('\n')
       } else {
         $table.clearEdit()
         this.$emit('input', $table.getTableData().tableData)

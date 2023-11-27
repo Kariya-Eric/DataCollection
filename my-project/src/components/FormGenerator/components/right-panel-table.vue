@@ -191,7 +191,25 @@ export default {
         key,
         label,
         props,
-        type: input
+        type: {
+          __config__: {
+            label: '单行文本',
+            changeTag: true,
+            showLabel: true,
+            tag: 'a-input',
+            tagIcon: 'icon-dc_input',
+            defaultValue: undefined,
+            required: true,
+            layout: 'colFormItem',
+            labelCol: { span: 2 },
+            wrapperCol: { span: 22 },
+            span: 24
+          },
+          placeholder: '请输入',
+          style: { width: '100%' },
+          comment: '',
+          allowChar: false
+        }
       })
     },
 

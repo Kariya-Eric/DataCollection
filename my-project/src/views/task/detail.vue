@@ -10,7 +10,9 @@
           <a-row :gutter="24">
             <a-col :md="4" :sm="12">
               <a-form-item label="表单大类">
-                <a-select v-model="queryParam.listCategory" placeholder="请选择表单大类" allowClear> </a-select>
+                <a-select v-model="queryParam.listCategory" placeholder="请选择表单大类" allowClear>
+                  <a-select-option v-for="lc in listCategories" :key="lc.id" :value="lc.id">{{ lc.name }}</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="4" :sm="12">
@@ -20,7 +22,13 @@
             </a-col>
             <a-col :md="4" :sm="12">
               <a-form-item label="状态">
-                <a-select v-model="queryParam.status" placeholder="请选择状态" allowClear> </a-select>
+                <a-select v-model="queryParam.status" placeholder="请选择状态" allowClear>
+                  <a-select-option value="0">待提交</a-select-option>
+                  <a-select-option value="1">审核中</a-select-option>
+                  <a-select-option value="2">审核通过</a-select-option>
+                  <a-select-option value="3">退回修改</a-select-option>
+                  <a-select-option value="-1">待配置人员</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="4" :sm="12">
@@ -57,6 +65,7 @@
 </template>
 
 <script>
+import { listFormCategories } from '@/api/form'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import DetailAllTable from './components/details/detail-all-table'
 import DetailFillTable from './components/details/detail-fill-table.vue'
@@ -68,7 +77,8 @@ export default {
   data() {
     return {
       taskName: '',
-      activeName: 'ALL'
+      activeName: 'ALL',
+      listCategories: []
     }
   },
   watch: {
@@ -77,6 +87,7 @@ export default {
         if (newRoute.name == 'taskDetail') {
           this.taskId = newRoute.query.taskId
           this.taskName = newRoute.query.taskName
+          this.getListCategories(newRoute.query.formCollectionId)
           this.activeName = 'ALL'
         }
       },
@@ -100,6 +111,19 @@ export default {
     searchReset() {
       this.queryParam = {}
       this.searchQuery()
+    },
+
+    getListCategories(formCollectionId) {
+      listFormCategories(formCollectionId).then(res => {
+        if (res.state) {
+          this.listCategories = res.value
+            .sort((a, b) => a.sort - b.sort)
+            .map(item => ({
+              ...item,
+              name: item.sort + 1 + '.' + item.name
+            }))
+        }
+      })
     }
   }
 }

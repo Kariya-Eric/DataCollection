@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { UserLayout, BasicLayout } from '@/layouts'
+import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
 
 // hack router push callback
 const originalPush = Router.prototype.push
@@ -40,6 +40,19 @@ export const constantRouterMap = [
       }
     ]
   }
+  //   {
+  //     path: '/tk',
+  //     name: 'TaskSet',
+  //     component: BlankLayout,
+  //     hidden: true,
+  //     children: [
+  //       {
+  //         path: 'add',
+  //         name: 'taskAddUpdate',
+  //         component: () => import('@/views/task/components/task-add-update')
+  //       }
+  //     ]
+  //   }
 ]
 
 export default new Router({

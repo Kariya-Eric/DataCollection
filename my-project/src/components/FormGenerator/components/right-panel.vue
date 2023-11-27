@@ -369,7 +369,7 @@ export default {
   padding: 0px;
 }
 .right-main {
-  height: calc(100vh - 130px);
+  height: calc(100vh - 180px);
   overflow-y: auto;
   margin: 10px 10px 0;
   padding: 4px 8px 4px 8px;

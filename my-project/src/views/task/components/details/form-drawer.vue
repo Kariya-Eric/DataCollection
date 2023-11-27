@@ -8,10 +8,10 @@
         <a-button type="primary" v-if="judgeYears(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_export" />历年数据</a-button>
         <a-button type="primary" @click="$refs.formview.save()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_save" />保存</a-button>
         <a-button type="primary" @click="$refs.formview.submit()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_submit" />提交</a-button>
-        <a-popconfirm title="确认撤回该张表单吗？" @confirm="redoForm" v-if="judgeRedo(rowInfo, currentUser, roleList)">
+        <a-popconfirm title="确认撤回该张表单吗？" @confirm="redoForm" v-if="judgeRedo(rowInfo, currentUser, roleList)" placement="bottom">
           <a-button type="primary"><dc-icon type="icon-dc_back" />撤回</a-button>
         </a-popconfirm>
-        <a-popconfirm title="确认驳回该张表单吗？" @confirm="showReject('', true)" v-if="judgeAuth(rowInfo, currentUser, roleList)">
+        <a-popconfirm title="确认驳回该张表单吗？" @confirm="showReject('', true)" v-if="judgeAuth(rowInfo, currentUser, roleList)" placement="bottom">
           <a-button type="danger"><dc-icon type="icon-dc_reject" />驳回</a-button>
         </a-popconfirm>
         <a-button class="success-btn" @click="authForm(2)" v-if="judgeAuth(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_pass" />通过</a-button>

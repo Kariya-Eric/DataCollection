@@ -173,7 +173,7 @@ export default {
     showTaskDetail(record) {
       this.$router.push({
         path: '/task/detail',
-        query: { taskId: record.id, taskName: record.name }
+        query: { taskId: record.id, taskName: record.name, formCollectionId: record.formCollectionId }
       })
     },
 

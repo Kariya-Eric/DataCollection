@@ -46,7 +46,7 @@ export default {
     showTaskInfo(task) {
       this.$router.push({
         path: '/task/detail',
-        query: { taskId: task.id, taskName: task.name }
+        query: { taskId: task.id, taskName: task.name, formCollectionId: task.formCollectionId }
       })
     },
 
