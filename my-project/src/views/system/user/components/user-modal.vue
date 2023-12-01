@@ -9,12 +9,16 @@
           <a-input v-model="model.name" placeholder="请输入姓名" :disabled="disabled" allowClear></a-input>
         </a-form-model-item>
         <a-form-model-item label="角色" prop="roleIds">
+          <!-- <el-select v-model="model.roleIds" placeholder="请选择角色" :disabled="disabled" multiple clearable style="width: 100%" size="small">
+            <el-option v-for="r in role" :key="r.id" :label="r.name" :value="r.id"></el-option>
+          </el-select> -->
           <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
             <a-select-option v-for="r in role" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="所属部门" prop="orgId" v-if="showDepart">
-          <a-tree-select
+          <dc-tree-select :options="depart" :value="model.orgId" @getValue="val => (model.orgId = val)"></dc-tree-select>
+          <!-- <a-tree-select
             :getPopupContainer="target => target.parentNode"
             :disabled="disabled"
             v-model="model.orgId"
@@ -26,7 +30,7 @@
             :replace-fields="replaceFields"
             :filterTreeNode="filterTreeNode"
             :dropdown-style="{ maxHeight: '320px', overflow: 'auto' }"
-          />
+          /> -->
         </a-form-model-item>
         <a-form-model-item label="专业" prop="subjectId" v-if="showSubject">
           <a-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" allowClear>
@@ -181,4 +185,8 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+/deep/.ant-select-dropdown {
+  top: 32px !important;
+}
+</style>

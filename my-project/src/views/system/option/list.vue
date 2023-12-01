@@ -2,6 +2,9 @@
   <a-row :gutter="12">
     <a-col :span="6">
       <a-card title="选项管理">
+        <template slot="extra">
+          <a-button type="primary" @click="$refs.optionModal.add()">新增选项值</a-button>
+        </template>
         <a-spin :spinning="treeLoading">
           <a-form-item label="年份" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-select v-model="searchYear" style="width: 100%" placeholder="请选择年份" @change="val => getDictionaryTree(val)">
@@ -19,6 +22,15 @@
             :selected-keys="selectedKeys"
             :replace-fields="replaceFields"
           >
+            <template slot="custom" slot-scope="item">
+              <span style="margin-left: 8px">{{ item.name }}</span>
+              <span class="custom-tree-node">
+                <dc-icon type="icon-dc_edit_empty" style="color: #2f68bd" @click.stop="$refs.optionModal.edit(item.dataRef, '修改选项值')" />
+                <a-popconfirm title="确认删除吗？" @confirm="delOption(item.dataRef)">
+                  <dc-icon type="icon-dc_empty" @click.stop style="color: #e23322" />
+                </a-popconfirm>
+              </span>
+            </template>
           </a-tree>
         </a-spin>
       </a-card>
@@ -97,12 +109,15 @@
         </vxe-table>
       </a-card>
     </a-col>
+    <option-modal ref="optionModal" :treeData="treeData" @refresh="getDictionaryTree(searchYear)" />
   </a-row>
 </template>
 
 <script>
-import { getDictionaryTree, listAll, saveList } from '@/api/system/option'
+import OptionModal from './components/option-modal.vue'
+import { getDictionaryTree, listAll, saveList, delOption } from '@/api/system/option'
 export default {
+  components: { OptionModal },
   data() {
     return {
       labelCol: { style: 'width: 60px; display: inline-block; vertical-align: inherit;' },
@@ -278,15 +293,26 @@ export default {
 
     getDictionaryTree(year) {
       this.treeLoading = true
+      this.selectedKeys = []
       getDictionaryTree(year)
         .then(res => {
           if (res.state) {
-            this.treeData = res.value
+            this.treeData = this.renderTreeData(res.value)
             this.setExpandedKeys(res.value)
             this.optSelectedRowKeys = []
           }
         })
         .finally(() => (this.treeLoading = false))
+    },
+
+    renderTreeData(treeData) {
+      treeData.forEach(tree => {
+        if (tree.children && tree.children.length > 0) {
+          this.renderTreeData(tree.children)
+        }
+        tree.scopedSlots = { title: 'custom' }
+      })
+      return treeData
     },
 
     setExpandedKeys(treeData) {
@@ -296,9 +322,31 @@ export default {
           this.setExpandedKeys(tree.children)
         }
       })
+    },
+
+    delOption(record) {
+      delOption({ id: record.id }).then(res => {
+        if (res.state) {
+          this.$message.success(res.message)
+          this.getDictionaryTree(this.searchYear)
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.custom-tree-node {
+  float: right;
+  .anticon {
+    margin-right: 8px;
+  }
+  visibility: hidden;
+}
+.ant-tree-node-content-wrapper:hover .custom-tree-node {
+  visibility: visible;
+}
+</style>

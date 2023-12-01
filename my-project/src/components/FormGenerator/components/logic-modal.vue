@@ -145,4 +145,8 @@ export default {
 .ant-form-extra {
   font-size: 12px;
 }
+
+/deep/.ant-select-dropdown {
+  top: 32px !important;
+}
 </style>

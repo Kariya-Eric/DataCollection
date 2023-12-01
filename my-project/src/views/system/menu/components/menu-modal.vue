@@ -111,4 +111,8 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+/deep/.ant-select-dropdown {
+  top: 32px !important;
+}
+</style>

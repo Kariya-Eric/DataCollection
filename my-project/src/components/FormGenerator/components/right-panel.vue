@@ -440,4 +440,7 @@ export default {
     margin-top: 18px;
   }
 }
+/deep/.ant-select-dropdown {
+  top: 32px !important;
+}
 </style>

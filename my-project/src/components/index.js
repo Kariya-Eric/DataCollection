@@ -6,6 +6,7 @@ import DcEndTime from './DataCollection/DcEndTime'
 import FormGenerator from './FormGenerator'
 import Tinymce from './Tinymce'
 import CustomComponents from './FormGenerator/layouts'
+import DcTreeSelect from './DataCollection/DcTreeSelect'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 import VXETablePluginAntd from 'vxe-table-plugin-antd'
@@ -34,6 +35,7 @@ export default {
     Vue.component('DcModal', DcModal)
     Vue.component('DcStatus', DcStatus)
     Vue.component('FormGenerator', FormGenerator)
+    Vue.component('DcTreeSelect', DcTreeSelect)
     Vue.component('tinymce', Tinymce)
     Vue.use(CustomComponents)
     Vue.use(VXETable)
