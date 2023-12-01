@@ -10,16 +10,16 @@
           <a-row :gutter="24">
             <a-col :md="4" :sm="12">
               <a-form-item label="表单大类">
-                <a-select v-model="queryParam.listCategory" placeholder="请选择表单大类" allowClear>
+                <a-select v-model="queryParam.formCategories" placeholder="请选择表单大类" allowClear>
                   <a-select-option v-for="lc in listCategories" :key="lc.id" :value="lc.id">{{ lc.name }}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :md="4" :sm="12">
+            <!-- <a-col :md="4" :sm="12">
               <a-form-item label="前置表单">
                 <a-select v-model="queryParam.type" placeholder="请选择前置表单" allowClear> </a-select>
               </a-form-item>
-            </a-col>
+            </a-col> -->
             <a-col :md="4" :sm="12">
               <a-form-item label="状态">
                 <a-select v-model="queryParam.status" placeholder="请选择状态" allowClear>

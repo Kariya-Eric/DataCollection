@@ -1,5 +1,5 @@
 <template>
-  <a-config-provider :locale="locale">
+  <a-config-provider :locale="locale" :getPopupContainer="getPopupContainer">
     <div id="app">
       <router-view />
     </div>
@@ -30,6 +30,13 @@ export default {
   },
 
   methods: {
+    getPopupContainer(el, dialogContext) {
+      if (dialogContext) {
+        return dialogContext.getDialogWrap()
+      } else {
+        return document.body
+      }
+    },
     //储存当前时间
     setLastTime() {
       return storage.set(TIME_STORE, new Date().getTime())

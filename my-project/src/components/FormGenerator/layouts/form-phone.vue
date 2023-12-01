@@ -1,5 +1,5 @@
 <template>
-  <a-input clearable :placeholder="placeholder" v-model="inputVal" :maxlength="!isMobile ? 11 : null" @change="changeVal">
+  <a-input clearable :placeholder="placeholder" v-model="inputVal" :maxlength="!isMobile ? 11 : null" @change="changeVal" :disabled="disabled">
     <a-icon slot="prefix" type="phone" />
   </a-input>
 </template>
@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'FormPhone',
-  props: ['value', 'placeholder', 'isMobile'],
+  props: ['value', 'placeholder', 'isMobile', 'disabled'],
   watch: {
     value(val) {
       this.inputVal = val

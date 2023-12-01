@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin-bottom: 8px">
+    <div style="margin-bottom: 8px" v-if="!disabled">
       <a-button type="primary" icon="plus" @click="insertEvent" style="margin-right: 12px">新增</a-button>
       <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0" okText="确定" cancelText="取消">
         <a-button type="danger" class="del-action">删除</a-button>
@@ -18,7 +18,7 @@
       show-overflow
       ref="xTable"
       :data="dataSource"
-      :edit-config="{ trigger: 'click', mode: 'cell', showIcon: false }"
+      :edit-config="{ trigger: disabled ? 'manual' : 'click', mode: 'cell', showIcon: false }"
       align="center"
       size="medium"
       :import-config="importConfig"
@@ -28,7 +28,7 @@
       @checkbox-all="checkboxAll"
       @checkbox-change="checkboxChange"
     >
-      <vxe-column type="checkbox" width="60"></vxe-column>
+      <vxe-column type="checkbox" width="60" v-if="!disabled"></vxe-column>
       <vxe-column width="60" title="序号" type="seq"> </vxe-column>
       <vxe-column v-for="(col, index) in renderColumns" :key="col.key" :field="col.props" :title="col.label" :min-width="220" :edit-render="{ autofocus: col.autofocus }">
         <template #header="{ column }">
@@ -70,7 +70,7 @@
         </template>
         <template #default="{ row }" v-if="col.component == 'select'">{{ getLabel(row[col.props], columns[index].type) }}</template>
       </vxe-column>
-      <vxe-column title="操作" width="120">
+      <vxe-column title="操作" width="120" v-if="!disabled">
         <template #default="{ row }">
           <a-popconfirm @confirm="deleteRow(row)" title="您确定要删除选中的数据" overlayClassName="input-pop" okText="确定" cancelText="取消">
             <a class="del-action"><span style="color: red">删除</span></a>
@@ -85,7 +85,7 @@
 import { nanoid } from 'nanoid'
 export default {
   name: 'FormTable',
-  props: ['columns', 'value', 'required'],
+  props: ['columns', 'value', 'required', 'disabled'],
   data() {
     return {
       dataSource: this.value,

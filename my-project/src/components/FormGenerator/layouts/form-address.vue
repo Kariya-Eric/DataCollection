@@ -1,14 +1,14 @@
 <template>
   <div>
     <template v-if="typeNum === 2">
-      <a-cascader v-model="address2" :options="pcaTextArr" :placeholder="placeholder" @change="changeAreaCascader2" :showSearch="{ filter }" />
-      <a-textarea  v-model="extraAddress" :placeholder="placeholder" @change="changeExtra" />
+      <a-cascader v-model="address2" :options="pcaTextArr" :placeholder="placeholder" @change="changeAreaCascader2" :showSearch="{ filter }" :disabled="disabled" />
+      <a-textarea v-model="extraAddress" :placeholder="placeholder" @change="changeExtra" :disabled="disabled" />
     </template>
     <template v-if="typeNum === 1">
-      <a-cascader v-model="address1" :options="pcaTextArr" :placeholder="placeholder" @change="changeAreaCascader1" :showSearch="{ filter }" />
+      <a-cascader v-model="address1" :options="pcaTextArr" :placeholder="placeholder" @change="changeAreaCascader1" :showSearch="{ filter }" :disabled="disabled" />
     </template>
     <template v-if="typeNum === 0">
-      <a-cascader v-model="address0" :options="pcTextArr" :placeholder="placeholder" @change="changeAreaCascader0" :showSearch="{ filter }" />
+      <a-cascader v-model="address0" :options="pcTextArr" :placeholder="placeholder" @change="changeAreaCascader0" :showSearch="{ filter }" :disabled="disabled" />
     </template>
   </div>
 </template>
@@ -17,7 +17,7 @@
 import { pcTextArr, pcaTextArr } from 'element-china-area-data'
 export default {
   name: 'FormAddress',
-  props: ['value', 'placeholder', 'type'],
+  props: ['value', 'placeholder', 'type', 'disabled'],
   data() {
     return {
       pcTextArr,

@@ -1,5 +1,5 @@
 <template>
-  <a-input clearable :placeholder="placeholder" v-model="inputVal" @change="changeVal">
+  <a-input clearable :placeholder="placeholder" v-model="inputVal" @change="changeVal" :disabled="disabled">
     <a-icon slot="prefix" type="mail" />
   </a-input>
 </template>
@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'FormMail',
-  props: ['value', 'placeholder'],
+  props: ['value', 'placeholder', 'disabled'],
   watch: {
     value(val) {
       this.inputVal = val

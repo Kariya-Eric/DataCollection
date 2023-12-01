@@ -127,7 +127,7 @@ export default {
     show(formConf, formName, formId, showType, record) {
       this.rowInfo = { ...record, status: showType }
       this.formName = formName
-      this.formConf = JSON.parse(JSON.stringify(formConf))
+      this.formConf = { ...JSON.parse(JSON.stringify(formConf)), disabled: this.rowInfo.status != 0 && this.rowInfo.status != 3 }
       this.formId = formId
       this.showType = showType
       this.visible = true

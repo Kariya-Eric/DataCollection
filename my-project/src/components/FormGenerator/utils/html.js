@@ -142,47 +142,47 @@ const layouts = {
 
 const tags = {
   'a-input': el => {
-    const { tag, vModel, placeholder, width } = attrBuilder(el)
-    return `<${tag} ${vModel} ${placeholder}  ${width} ></${tag}>`
+    const { tag, vModel, placeholder, width, disabled } = attrBuilder(el)
+    return `<${tag} ${vModel} ${placeholder}  ${width} ${disabled}></${tag}>`
   },
   'a-textarea': el => {
-    const { tag, vModel, placeholder, width } = attrBuilder(el)
-    return `<${tag} ${vModel} ${placeholder}  ${width} ></${tag}>`
+    const { tag, vModel, placeholder, width, disabled } = attrBuilder(el)
+    return `<${tag} ${vModel} ${placeholder}  ${width} ${disabled}></${tag}>`
   },
   'a-input-number': el => {
-    const { tag, vModel, placeholder, width } = attrBuilder(el)
+    const { tag, vModel, placeholder, width, disabled } = attrBuilder(el)
     const min = el.min ? `:min="${el.min}"` : ''
     const max = el.max ? `:max="${el.max}"` : ''
     const precision = `:precision="${el.precision}"`
-    return `<${tag} ${vModel} ${placeholder}  ${min} ${max} ${precision}  ${width} />`
+    return `<${tag} ${vModel} ${placeholder}  ${min} ${max} ${precision}  ${width} ${disabled}/>`
   },
   'a-select': el => {
-    const { tag, vModel, placeholder, width } = attrBuilder(el)
+    const { tag, vModel, placeholder, width, disabled } = attrBuilder(el)
     const showSearch = el.showSearch ? 'showSearch' : ''
     const multiple = `mode="${el.mode}"`
     const filterOption = `:filterOption="(inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0"`
     let child = buildElSelectChild(el)
     if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} ${placeholder} ${multiple} ${showSearch} ${filterOption}  ${width} >${child}</${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${multiple} ${showSearch} ${filterOption}  ${width} ${disabled}>${child}</${tag}>`
   },
   'a-radio-group': el => {
-    const { tag, vModel } = attrBuilder(el)
+    const { tag, vModel, disabled } = attrBuilder(el)
     let child = buildElRadioGroupChild(el)
     if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel}>${child}</${tag}>`
+    return `<${tag} ${vModel} ${disabled}>${child}</${tag}>`
   },
   'a-checkbox-group': el => {
-    const { tag, vModel } = attrBuilder(el)
+    const { tag, vModel, disabled } = attrBuilder(el)
     let child = buildElCheckboxGroupChild(el)
     if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${vModel} >${child}</${tag}>`
+    return `<${tag} ${vModel} ${disabled}>${child}</${tag}>`
   },
   // ============自定义组件=============================
   'dc-date': el => {
-    const { tag, vModel, placeholder, width } = attrBuilder(el)
+    const { tag, vModel, placeholder, width, disabled } = attrBuilder(el)
     const format = `format="${el.format}"`
     const mode = `mode="${el.mode}"`
-    return `<${tag}  ${vModel} ${format} ${mode} ${placeholder} ${width}  ></${tag}>`
+    return `<${tag}  ${vModel} ${format} ${mode} ${placeholder} ${width} ${disabled} ></${tag}>`
   },
   formDivider: el => {
     const title = `title="${el.title}"`
@@ -191,33 +191,33 @@ const tags = {
     return `<form-divider ${title} ${fontSize} ${orientation} />`
   },
   formPhone: el => {
-    const { vModel, placeholder, width } = attrBuilder(el)
+    const { vModel, placeholder, width, disabled } = attrBuilder(el)
     const isMobile = `:isMobile="${el.isMobile}"`
-    return `<form-phone ${vModel} ${placeholder} ${isMobile} ${width} />`
+    return `<form-phone ${vModel} ${placeholder} ${isMobile} ${width} ${disabled}/>`
   },
   formLink: el => {
-    const { vModel, placeholder, width } = attrBuilder(el)
-    return `<form-link ${vModel} ${placeholder} ${width}  />`
+    const { vModel, placeholder, width, disabled } = attrBuilder(el)
+    return `<form-link ${vModel} ${placeholder} ${width} ${disabled} />`
   },
   formMail: el => {
-    const { vModel, placeholder, width } = attrBuilder(el)
-    return `<form-mail ${vModel} ${placeholder} ${width} />`
+    const { vModel, placeholder, width, disabled } = attrBuilder(el)
+    return `<form-mail ${vModel} ${placeholder} ${width} ${disabled}/>`
   },
   formAddress: el => {
-    const { vModel, placeholder, width } = attrBuilder(el)
+    const { vModel, placeholder, width, disabled } = attrBuilder(el)
     const type = `type="${el.type}"`
-    return `<form-address ${vModel} ${placeholder} ${type} ${width} />`
+    return `<form-address ${vModel} ${placeholder} ${type} ${width} ${disabled}/>`
   },
   floatTable: el => {
     return `<div>123</div>`
   },
   fixedTable: el => {
-    const { vModel } = attrBuilder(el)
+    const { vModel, disabled } = attrBuilder(el)
     const ref = `ref='table_${el.__config__.formId}'`
     const columns = `:columns='${JSON.stringify(el.columns)}'`
     const required = `:required="${el.__config__.required}"`
     const resetTable = `@resetTable="resetTable('${el.__vModel__}')"`
-    return `<form-table ${ref} ${columns} ${vModel} ${required} ${resetTable} />`
+    return `<form-table ${ref} ${columns} ${vModel} ${required} ${resetTable} ${disabled}/>`
   }
   // ============自定义组件=============================
 }
@@ -227,7 +227,8 @@ function attrBuilder(el) {
     tag: el.__config__.tag,
     vModel: `v-model="${confGlobal.formModel}.${el.__vModel__}"`,
     placeholder: el.placeholder ? `placeholder="${el.placeholder}"` : '',
-    width: el.style && el.style.width ? `:style="{width: '${el.style.width}'}"` : ''
+    width: el.style && el.style.width ? `:style="{width: '${el.style.width}'}"` : '',
+    disabled: `:disabled="${confGlobal.disabled}"`
   }
 }
 
