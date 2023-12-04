@@ -9,12 +9,12 @@
           <a-input v-model="model.name" placeholder="请输入姓名" :disabled="disabled" allowClear></a-input>
         </a-form-model-item>
         <a-form-model-item label="角色" prop="roleIds">
-          <!-- <el-select v-model="model.roleIds" placeholder="请选择角色" :disabled="disabled" multiple clearable style="width: 100%" size="small">
+          <el-select v-model="model.roleIds" placeholder="请选择角色" :disabled="disabled" multiple clearable style="width: 100%" size="small">
             <el-option v-for="r in role" :key="r.id" :label="r.name" :value="r.id"></el-option>
-          </el-select> -->
-          <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
+          </el-select>
+          <!-- <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
             <a-select-option v-for="r in role" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
-          </a-select>
+          </a-select> -->
         </a-form-model-item>
         <a-form-model-item label="所属部门" prop="orgId" v-if="showDepart">
           <dc-tree-select :options="depart" :value="model.orgId" @getValue="val => (model.orgId = val)"></dc-tree-select>

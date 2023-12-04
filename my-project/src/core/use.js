@@ -26,9 +26,7 @@ Vue.use(DcComponents)
 import { DcIcon } from './icon'
 Vue.component('dcIcon', DcIcon)
 
-import { Select, Option, Tree, Input } from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(Select)
-Vue.use(Option)
-Vue.use(Tree)
-Vue.use(Input)
+import Element from 'element-ui'
+import './element-variables.scss'
+
+Vue.use(Element)
