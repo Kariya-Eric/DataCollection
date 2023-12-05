@@ -12,10 +12,14 @@
     <div class="inner">
       <a-form-model ref="logicForm" :model="logicForm" :rules="rules">
         <a-form-model-item prop="andOr" label="当满足以下" :labelCol="labelCol" :wrapperCol="wrapperCol" style="margin: 0px 0px 8px 0px">
-          <a-select v-model="logicForm.andOr" style="width: 35%">
-            <a-select-option value="&&">全部</a-select-option>
-            <a-select-option value="||">任意</a-select-option>
-          </a-select>
+          <dc-select
+            v-model="logicForm.andOr"
+            width="35%"
+            :options="[
+              { name: '全部', id: '&&' },
+              { name: '任意', id: '||' }
+            ]"
+          />
           <span style="margin-left: 8px">条件时</span>
         </a-form-model-item>
         <a-button icon="plus-circle" type="link" @click="addTerm"> 添加条件 </a-button>
@@ -26,9 +30,7 @@
           </a-row>
         </a-form-model-item>
         <a-form-model-item label="显示以下字段" prop="showList" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-select v-model="logicForm.showList" mode="multiple" :getPopupContainer="target => target.parentNode">
-            <a-select-option v-for="(item, index) in showOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-          </a-select>
+          <dc-select v-model="logicForm.showList" multiple :options="showOptions" :fields="{ label: 'label', value: 'value' }" />
         </a-form-model-item>
       </a-form-model>
     </div>

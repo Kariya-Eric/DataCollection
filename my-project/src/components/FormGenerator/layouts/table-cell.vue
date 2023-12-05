@@ -35,6 +35,7 @@
         :placeholder="`请选择${placeholder}`"
         :mode="column.type.mode"
         :showSearch="column.type.showSearch"
+        :getPopupContainer="target => target.parentNode"
         v-model="selectVal"
         :filterOption="(inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0"
       >

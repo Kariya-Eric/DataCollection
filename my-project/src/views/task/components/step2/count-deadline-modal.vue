@@ -9,7 +9,7 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="统计截止时间" prop="statisticsEndTime">
-          <dc-date v-model="model.statisticsEndTime" format="YYYY-MM-DD" placeholder="请选择统计截止时间" />
+          <dc-date v-model="model.statisticsEndTime" format="yyyy-MM-dd" placeholder="请选择统计截止时间" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>

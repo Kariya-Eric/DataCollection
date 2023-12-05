@@ -1,5 +1,10 @@
 import Vue from 'vue'
 
+import Element from 'element-ui'
+import './element-variables.scss'
+
+Vue.use(Element)
+
 // base library
 import Antd from 'ant-design-vue'
 import Viser from 'viser-vue'
@@ -25,8 +30,3 @@ Vue.use(DcComponents)
 
 import { DcIcon } from './icon'
 Vue.component('dcIcon', DcIcon)
-
-import Element from 'element-ui'
-import './element-variables.scss'
-
-Vue.use(Element)

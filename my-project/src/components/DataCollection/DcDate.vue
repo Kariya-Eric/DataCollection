@@ -1,69 +1,66 @@
 <template>
-  <a-date-picker
-    drowdownClassName="dc-date-picker"
-    :disabled="disabled"
-    v-model="momVal"
-    :showTime="showTime"
-    :format="format"
-    :placeholder="placeholder"
+  <el-date-picker
+    v-model="dateVal"
     v-bind="$attrs"
-    @change="handleDateChange"
-    @panelChange="panelChange"
-    @openChange="openChange"
-    :open="isOpen"
-    style="width: 100%"
-  />
+    v-on="$listeners"
+    :clearable="clearable"
+    size="small"
+    :style="{ width }"
+    :type="mode"
+    :format="format"
+    :value-format="format"
+    popper-class="el-date-popover"
+  ></el-date-picker>
 </template>
 
 <script>
-import moment from 'moment'
 export default {
   name: 'DcDate',
   props: {
-    placeholder: { type: String, default: '', required: false },
-    value: { type: String, required: false },
-    format: { type: String, default: 'YYYY-MM-DD', required: false },
-    disabled: { type: Boolean, required: false, default: false },
-    showTime: { type: Boolean, required: false, default: false }
+    value: {
+      type: String,
+      default: undefined
+    },
+    mode: {
+      type: String,
+      default: 'date'
+    },
+    format: {
+      type: String,
+      default: 'yyyy-MM-dd'
+    },
+    clearable: {
+      type: Boolean,
+      default: true
+    },
+    width: {
+      type: String,
+      default: '100%',
+      required: false
+    }
   },
   data() {
-    let dateStr = this.value
     return {
-      isOpen: false,
-      momVal: !dateStr ? null : moment(dateStr, this.format)
-    }
-  },
-  watch: {
-    value(val) {
-      if (!val) {
-        this.momVal = null
-      } else {
-        this.momVal = moment(val, this.format)
-      }
-    }
-  },
-  methods: {
-    moment,
-    handleDateChange(mom, dateStr) {
-      this.$emit('change', dateStr)
-    },
-    panelChange(value) {
-      this.$emit('change', value.format(this.format))
-      this.isOpen = false
-    },
-    openChange(status) {
-      this.isOpen = status
+      dateVal: ''
     }
   },
   model: {
     prop: 'value',
     event: 'change'
+  },
+  watch: {
+    value: {
+      handler(newVal) {
+        this.dateVal = newVal
+      },
+      immediate: true
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
-/deep/.anticon {
-  color: rgba(0, 0, 0, 0.25);
+.el-date-popover {
+  background-color: red;
 }
 </style>

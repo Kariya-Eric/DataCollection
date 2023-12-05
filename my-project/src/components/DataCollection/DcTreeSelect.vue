@@ -1,16 +1,15 @@
 <template>
-  <el-select :value="valueTitle" :clearable="clearable" @clear="clearHandle" size="small" style="width: 100%">
-    <el-input class="selectInput" :placeholder="placeholder" v-model="filterText" size="small"> </el-input>
-    <el-option :value="valueTitle" :label="valueTitle" class="options">
+  <el-select v-model="valueId" :clearable="clearable" @clear="clearHandle" size="small" v-bind="$attrs" :style="{ width }" @focus="setOptionWidth">
+    <el-input class="selectInput" v-model="filterText" size="small"> </el-input>
+    <el-option :value="valueId" :label="valueTitle" class="options" :style="{ width: optionWidth }">
       <el-tree
         size="small"
         id="tree-option"
         ref="selectTree"
-        :accordion="accordion"
         :data="options"
         :props="props"
         :node-key="props.value"
-        :default-expanded-keys="defaultExpandedKey"
+        default-expand-all
         :filter-node-method="filterNode"
         @node-click="handleNodeClick"
       >
@@ -23,7 +22,11 @@
 export default {
   name: 'DcTreeSelect',
   props: {
-    /* 配置项 */
+    width: {
+      type: String,
+      default: '100%',
+      required: false
+    },
     props: {
       type: Object,
       default: () => {
@@ -34,62 +37,38 @@ export default {
         }
       }
     },
-    /* 选项列表数据(树形结构的对象数组) */
     options: {
       type: Array,
       default: () => {
         return []
       }
     },
-    /* 初始值 */
     value: {
-      type: Number,
-      default: () => {
-        return null
-      }
+      type: [Number, String],
+      default: undefined
     },
-    /* 可清空选项 */
     clearable: {
       type: Boolean,
       default: () => {
         return true
       }
-    },
-    /* 自动收起 */
-    accordion: {
-      type: Boolean,
-      default: () => {
-        return false
-      }
-    },
-    placeholder: {
-      type: String,
-      default: () => {
-        return '检索关键字'
-      }
     }
   },
+
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
+
   data() {
     return {
+      optionWidth: '',
       filterText: '',
-      valueId: this.value, // 初始值
-      valueTitle: '',
-      defaultExpandedKey: []
+      valueId: '',
+      valueTitle: undefined
     }
   },
-  mounted() {
-    this.initHandle()
-  },
   methods: {
-    // 初始化值
-    initHandle() {
-      if (this.valueId) {
-        this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label] // 初始化显示
-        this.$refs.selectTree.setCurrentKey(this.valueId) // 设置默认选中
-        this.defaultExpandedKey = [this.valueId] // 设置默认展开
-      }
-      this.initScroll()
-    },
     // 初始化滚动条
     initScroll() {
       this.$nextTick(() => {
@@ -101,18 +80,17 @@ export default {
     },
     // 切换选项
     handleNodeClick(node) {
-      this.valueTitle = node[this.props.label]
-      this.valueId = node[this.props.value]
-      this.$emit('getValue', this.valueId)
-      this.defaultExpandedKey = []
+      if (!node.disabled) {
+        this.valueTitle = node[this.props.label]
+        this.valueId = node[this.props.value]
+        this.$emit('change', this.valueId)
+      }
     },
     // 清除选中
     clearHandle() {
-      this.valueTitle = ''
-      this.valueId = null
-      this.defaultExpandedKey = []
+      this.valueTitle = undefined
+      this.valueId = undefined
       this.clearSelected()
-      this.$emit('getValue', null)
     },
     /* 清空选中样式 */
     clearSelected() {
@@ -122,12 +100,22 @@ export default {
     filterNode(value, data) {
       if (!value) return true
       return data.name.indexOf(value) !== -1
+    },
+    setOptionWidth(event) {
+      this.$nextTick(() => (this.optionWidth = event.srcElement.offsetWidth + 'px'))
     }
   },
   watch: {
-    value() {
-      this.valueId = this.value
-      this.initHandle()
+    value: {
+      handler(newVal) {
+        this.valueId = newVal
+        if (newVal) {
+          this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label] // 初始化显示
+          this.$refs.selectTree.setCurrentKey(this.valueTitle) // 设置默认选中
+        }
+        this.initScroll()
+      },
+      immediate: true
     },
     filterText(val) {
       this.$refs.selectTree.filter(val)
@@ -140,8 +128,7 @@ export default {
 <style scoped>
 .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
   height: auto;
-  max-height: 274px;
-  width: 100%;
+  max-height: 320px;
   padding: 0;
   overflow: hidden;
   overflow-y: auto;
@@ -157,7 +144,7 @@ ul li >>> .el-tree .el-tree-node__content {
   font-weight: normal;
 }
 .el-tree >>> .is-current .el-tree-node__label {
-  color: #409eff;
+  color: #2f68bd;
   font-weight: 700;
 }
 .el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {

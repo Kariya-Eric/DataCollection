@@ -110,6 +110,7 @@ export default {
   },
   render(h) {
     if (this.conf.__config__.tag === 'a-select') {
+      this.conf.getPopupContainer = target => target.parentNode || document
       if (this.conf.showSearch) {
         this.conf.filterOption = (inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
       }

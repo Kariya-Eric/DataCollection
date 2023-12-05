@@ -170,7 +170,7 @@ export const date = {
   },
   placeholder: '请选择',
   mode: 'month',
-  format: 'YYYY-MM',
+  format: 'yyyy-MM',
   style: { width: '100%' },
   comment: ''
 }

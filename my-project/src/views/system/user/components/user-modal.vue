@@ -9,33 +9,19 @@
           <a-input v-model="model.name" placeholder="请输入姓名" :disabled="disabled" allowClear></a-input>
         </a-form-model-item>
         <a-form-model-item label="角色" prop="roleIds">
-          <el-select v-model="model.roleIds" placeholder="请选择角色" :disabled="disabled" multiple clearable style="width: 100%" size="small">
-            <el-option v-for="r in role" :key="r.id" :label="r.name" :value="r.id"></el-option>
-          </el-select>
+          <dc-select multiple :disabled="disabled" placeholder="请选择角色" v-model="model.roleIds" :options="role"></dc-select>
+          <!-- <el-select v-model="model.roleIds" placeholder="请选择角色" :disabled="disabled" multiple clearable style="width: 100%" size="small">
+            <el-option v-for="r in role" :key="r.id" :label="r.name" :value="r.id" style="width: 100%"></el-option>
+          </el-select> -->
           <!-- <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
             <a-select-option v-for="r in role" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
           </a-select> -->
         </a-form-model-item>
         <a-form-model-item label="所属部门" prop="orgId" v-if="showDepart">
-          <dc-tree-select :options="depart" :value="model.orgId" @getValue="val => (model.orgId = val)"></dc-tree-select>
-          <!-- <a-tree-select
-            :getPopupContainer="target => target.parentNode"
-            :disabled="disabled"
-            v-model="model.orgId"
-            show-search
-            placeholder="请选择请选择部门"
-            allow-clear
-            tree-default-expand-all
-            :tree-data="depart"
-            :replace-fields="replaceFields"
-            :filterTreeNode="filterTreeNode"
-            :dropdown-style="{ maxHeight: '320px', overflow: 'auto' }"
-          /> -->
+          <dc-tree-select :options="depart" v-model="model.orgId"></dc-tree-select>
         </a-form-model-item>
         <a-form-model-item label="专业" prop="subjectId" v-if="showSubject">
-          <a-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" allowClear>
-            <a-select-option v-for="r in subjectList" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
-          </a-select>
+          <dc-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" :options="subjectList"></dc-select>
         </a-form-model-item>
         <a-form-model-item label="邮箱" prop="email">
           <a-input v-model="model.email" placeholder="请输入邮箱" :disabled="disabled" allowClear><a-icon slot="suffix" type="mail" /></a-input>

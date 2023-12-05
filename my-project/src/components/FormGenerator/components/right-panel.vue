@@ -69,9 +69,9 @@
 
         <a-form-model-item v-if="activeData.format !== undefined" label="时间格式">
           <a-select v-model="activeData.format" @change="changeTimeFormat" :getPopupContainer="target => target.parentNode" :disabled="disabled">
-            <a-select-option value="YYYY">年（yyyy）</a-select-option>
-            <a-select-option value="YYYY-MM">年-月（yyyy-MM）</a-select-option>
-            <a-select-option value="YYYYMM">年月（yyyyMM）</a-select-option>
+            <a-select-option value="yyyy">年（yyyy）</a-select-option>
+            <a-select-option value="yyyy-MM">年-月（yyyy-MM）</a-select-option>
+            <a-select-option value="yyyyMM">年月（yyyyMM）</a-select-option>
           </a-select>
         </a-form-model-item>
 
@@ -269,9 +269,9 @@ export default {
     },
 
     changeTimeFormat(val) {
-      if (val === 'YYYY-MM') {
+      if (val === 'yyyy-MM') {
         this.$set(this.activeData, 'mode', 'month')
-      } else if (val === 'YYYYMM') {
+      } else if (val === 'yyyyMM') {
         this.$set(this.activeData, 'mode', 'month')
       } else {
         this.$set(this.activeData, 'mode', 'year')

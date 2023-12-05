@@ -2,38 +2,32 @@
   <a-input-group id="logic-item">
     <a-row :gutter="2">
       <a-col :span="5">
-        <a-select v-model="term" @change="changeTerm" style="width: 100%" :getPopupContainer="target => target.parentNode">
-          <a-select-option v-for="(item, index) in options" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-        </a-select>
+        <dc-select v-model="term" @change="changeTerm" :options="options" :fields="{ label: 'label', value: 'value' }" />
       </a-col>
       <a-col :xs="{ span: 7, offset: 1 }">
-        <a-select v-model="calFlag" :disabled="calFlagList.length == 0" @change="changeCalFlag" style="width: 100%" :getPopupContainer="target => target.parentNode">
-          <a-select-option v-for="(item, index) in calFlagList" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-        </a-select>
+        <dc-select v-model="calFlag" @change="changeCalFlag" :options="calFlagList" :fields="{ label: 'label', value: 'value' }" :disabled="calFlagList.length == 0" />
       </a-col>
       <a-col :xs="{ span: 10, offset: 1 }">
         <a-input-number :disabled="calFlagList.length == 0" v-if="inputType == 1" v-model="termVal" @change="changeTermVal" style="width: 100%" />
         <dc-date
           :disabled="calFlagList.length == 0"
+          :mode="dateMode"
+          :format="dateFormat"
+          :value-format="dateFormat"
           v-else-if="inputType == 2"
           v-model="termVal"
           @change="changeTermVal"
-          :getCalendarContainer="target => target.parentNode"
           style="width: 100%"
-          mode="date"
-          format="YYYY-MM-DD"
         />
-        <a-select
-          :disabled="calFlagList.length == 0"
-          v-else-if="inputType == 3"
+        <dc-select
           multiple
+          v-else-if="inputType == 3"
           v-model="termVals"
           @change="changeTermVal"
-          style="width: 100%"
-          :getPopupContainer="target => target.parentNode"
-        >
-          <a-select-option v-for="(item, index) in termOptions" :key="index" :value="item.value">{{ item.label }}</a-select-option>
-        </a-select>
+          :options="termOptions"
+          :fields="{ label: 'label', value: 'value' }"
+          :disabled="calFlagList.length == 0"
+        />
         <a-input v-else v-model="termVal" style="width: 100%" @change="changeInputTermVal" :disabled="calFlagList.length == 0" />
       </a-col>
     </a-row>
@@ -52,7 +46,9 @@ export default {
       inputType: 0,
       termVal: '',
       termVals: [],
-      termOptions: []
+      termOptions: [],
+      dateMode: 'year',
+      dateFormat: 'yyyy'
     }
   },
   watch: {
@@ -111,6 +107,10 @@ export default {
         ]
         this.inputType = 0
       } else if (component.__config__.tag == 'a-input-number' || component.__config__.tag == 'dc-date') {
+        if (component.__config__.tag == 'dc-date') {
+          this.dateMode = component.mode
+          this.dateFormat = component.format
+        }
         this.inputType = component.__config__.tag == 'a-input-number' ? 1 : 2
         this.calFlagList = [
           { label: '等于', value: '==' },
@@ -142,6 +142,7 @@ export default {
     },
 
     changeTerm(val) {
+      this.resetTerm()
       this.term = val
       this.handlerVal()
     },

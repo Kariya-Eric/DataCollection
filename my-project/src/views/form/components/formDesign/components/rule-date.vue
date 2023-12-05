@@ -30,7 +30,7 @@
             >
               <a-select-option v-for="item in dateList" :key="item.__config__.formId" :value="item.__vModel__">{{ item.__config__.label }}</a-select-option>
             </a-select>
-            <dc-date v-else v-model="item.left[0].value" style="width: 100%" placeholder="请选择日期" mode="month" format="YYYY-MM" @change="val => changeLeftValue(val, index)" />
+            <dc-date v-else v-model="item.left[0].value" style="width: 100%" placeholder="请选择日期" mode="month" format="yyyy-MM" @change="val => changeLeftValue(val, index)" />
           </a-col>
         </a-row>
 

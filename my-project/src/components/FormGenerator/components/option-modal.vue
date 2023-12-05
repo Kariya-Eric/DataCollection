@@ -13,19 +13,13 @@
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="年份" prop="year">
-          <a-select v-model="model.year" placeholder="请选择年份" @change="val => initDictionary(val)">
-            <a-select-option v-for="(year, i) in yearList" :key="i" :value="year">{{ year }}</a-select-option>
-          </a-select>
+          <dc-select v-model="model.year" placeholder="请选择年份" @change="val => initDictionary(val)" :options="yearList" :fields="{}" />
         </a-form-model-item>
         <a-form-model-item label="表单名称" prop="name">
-          <a-select v-model="model.name" placeholder="请选择表单名称" @change="val => getOptionData(val)">
-            <a-select-option v-for="item in formData" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
-          </a-select>
+          <dc-select v-model="model.name" placeholder="请选择表单名称" @change="val => getOptionData(val)" :options="formData" />
         </a-form-model-item>
         <a-form-model-item label="选项" prop="option">
-          <a-select v-model="model.option" placeholder="请选择选项" @change="val => getOptionValueData(val)">
-            <a-select-option v-for="item in optionData" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
-          </a-select>
+          <dc-select v-model="model.option" placeholder="请选择选项" @change="val => getOptionValueData(val)" :options="optionData" />
         </a-form-model-item>
       </a-form-model>
       <a-divider>选项值</a-divider>

@@ -22,19 +22,19 @@
       <a-row>
         <a-col :span="12">
           <a-form-model-item label="填报开始时间" prop="statisticsStartTime">
-            <dc-date format="YYYY-MM-DD" v-model="taskForm.statisticsStartTime" placeholder="请选择填报开始时间" />
+            <dc-date format="yyyy-MM-dd" v-model="taskForm.statisticsStartTime" placeholder="请选择填报开始时间" />
           </a-form-model-item>
         </a-col>
         <a-col :span="12">
           <a-form-model-item label="填报截止时间" prop="statisticsEndTime">
-            <dc-date format="YYYY-MM-DD" v-model="taskForm.statisticsEndTime" placeholder="请选择填报截止时间" />
+            <dc-date format="yyyy-MM-dd" v-model="taskForm.statisticsEndTime" placeholder="请选择填报截止时间" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="12">
           <a-form-model-item label="统计时间" prop="year">
-            <dc-date format="YYYY" mode="year" v-model="taskForm.year" placeholder="请选择统计时间" />
+            <dc-date format="yyyy" mode="year" v-model="taskForm.year" placeholder="请选择统计时间" />
           </a-form-model-item>
         </a-col>
       </a-row>
