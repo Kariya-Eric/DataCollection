@@ -3,9 +3,13 @@
     <div style="margin-left: 24px">
       <a-button icon="plus-circle" type="link" @click="addUnique"> 添加唯一性组合 </a-button>
       <div v-for="(item, index) in uniqueValue" :key="index" class="uniqueForm">
-        <a-select v-model="uniqueValue[index]" placeholder="请选择表单字段" style="width: 85%" @change="val => change(val, index)">
-          <a-select-option v-for="item in drawingList" :key="item.__config__.formId" :value="item.__vModel__">{{ item.__config__.label }}</a-select-option>
-        </a-select>
+        <dc-select
+          v-model="uniqueValue[index]"
+          placeholder="请选择表单字段"
+          width="85%"
+          @change="val => change(val, index)"
+          :options="renderDrawingListOption(drawingList)"
+        ></dc-select>
         <a-icon type="minus-circle" @click="delUnique(index)" />
       </div>
     </div>
@@ -28,6 +32,14 @@ export default {
   },
 
   methods: {
+    renderDrawingListOption(drawingList) {
+      return drawingList.map(item => {
+        let name = item.__config__.label
+        let id = item.__vModel__
+        let key = item.__config__.formId
+        return { name, id, key }
+      })
+    },
     addUnique() {
       this.uniqueValue.push('')
       this.$emit('input', this.uniqueValue)

@@ -1,20 +1,22 @@
 <template>
   <el-select v-model="valueId" :clearable="clearable" @clear="clearHandle" size="small" v-bind="$attrs" :style="{ width }" @focus="setOptionWidth">
-    <el-input class="selectInput" v-model="filterText" size="small"> </el-input>
-    <el-option :value="valueId" :label="valueTitle" class="options" :style="{ width: optionWidth }">
-      <el-tree
-        size="small"
-        id="tree-option"
-        ref="selectTree"
-        :data="options"
-        :props="props"
-        :node-key="props.value"
-        default-expand-all
-        :filter-node-method="filterNode"
-        @node-click="handleNodeClick"
-      >
-      </el-tree>
-    </el-option>
+    <div class="optionClass">
+      <el-input class="selectInput" v-model="filterText" size="small"> </el-input>
+      <el-option :value="valueId" :label="valueTitle" class="options" :style="{ width: optionWidth }">
+        <el-tree
+          size="small"
+          id="tree-option"
+          ref="selectTree"
+          :data="options"
+          :props="props"
+          :node-key="props.value"
+          default-expand-all
+          :filter-node-method="filterNode"
+          @node-click="handleNodeClick"
+        >
+        </el-tree>
+      </el-option>
+    </div>
   </el-select>
 </template>
 
@@ -127,9 +129,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  height: auto;
   max-height: 320px;
-  padding: 0;
+  height: auto;
   overflow: hidden;
   overflow-y: auto;
 }

@@ -148,6 +148,14 @@ export default {
       if (this.disabled) {
         return
       }
+      if (this.formInfo.type == '浮动表单' && this.drawingList.length == 1) {
+        this.$notification['warning']({
+          message: '请勿重复添加组件!',
+          description: '浮动表单无法重复添加组件',
+          duration: 0
+        })
+        return
+      }
       if (this.validateComponents().length > 0) {
         this.$notification['warning']({
           message: '以下组件中选项值重复！',
@@ -199,6 +207,14 @@ export default {
 
     drawingItemCopy(item, list) {
       if (this.disabled) {
+        return
+      }
+      if (this.formInfo.type == '浮动表单' && this.drawingList.length == 1) {
+        this.$notification['warning']({
+          message: '请勿重复添加组件!',
+          description: '浮动表单无法重复添加组件',
+          duration: 0
+        })
         return
       }
       if (this.validateComponents().length > 0) {

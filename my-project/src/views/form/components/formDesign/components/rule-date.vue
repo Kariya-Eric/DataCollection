@@ -1,8 +1,8 @@
 <template>
   <div class="typeDiv">
     <div class="buttonDiv">
-      <a-button icon="plus-circle" type="link" @click="add(1)"> 且条件 </a-button>
-      <a-button icon="plus-circle" type="link" @click="add(0)"> 或条件 </a-button>
+      <a-button icon="plus-circle" type="link" @click="add(0)"> 且条件 </a-button>
+      <a-button icon="plus-circle" type="link" @click="add(1)"> 或条件 </a-button>
     </div>
     <div v-for="(item, index) in dateRule" :key="index">
       <div v-if="item.and_or != ''" style="margin-left: 24px">
@@ -15,61 +15,60 @@
         <a-row :gutter="12">
           <a-col :span="4">公式左侧</a-col>
           <a-col :span="8">
-            <a-select placeholder="请选择" v-model="item.left[0].type" style="width: 100%" @change="val => changeLeftType(val, index)">
-              <a-select-option value="field">表单字段</a-select-option>
-              <a-select-option value="fixed">固定值</a-select-option>
-            </a-select>
+            <dc-select
+              placeholder="请选择"
+              v-model="item.left[0].type"
+              @change="val => changeLeftType(val, index)"
+              :options="[
+                { name: '表单字段', id: 'field' },
+                { name: '固定值', id: 'fixed' }
+              ]"
+            ></dc-select>
           </a-col>
           <a-col :span="8" v-if="item.left[0].type != ''">
-            <a-select
+            <dc-select
               v-if="item.left[0].type == 'field'"
               v-model="item.left[0].value"
               placeholder="请选择表单字段"
-              style="width: 100%"
               @change="val => changeLeftValue(val, index)"
+              :options="renderDateList(dateList)"
             >
-              <a-select-option v-for="item in dateList" :key="item.__config__.formId" :value="item.__vModel__">{{ item.__config__.label }}</a-select-option>
-            </a-select>
-            <dc-date v-else v-model="item.left[0].value" style="width: 100%" placeholder="请选择日期" mode="month" format="yyyy-MM" @change="val => changeLeftValue(val, index)" />
+            </dc-select>
+            <dc-date v-else v-model="item.left[0].value" style="width: 100%" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeLeftValue(val, index)" />
           </a-col>
         </a-row>
 
         <a-row :gutter="12">
           <a-col :span="4">判断符</a-col>
           <a-col :span="8">
-            <a-select placeholder="请选择" v-model="item.operator" style="width: 100%" @change="val => changeOpt(val, index)">
-              <a-select-option v-for="(item, index) in operatorList" :key="index" :value="item">{{ item }}</a-select-option>
-            </a-select>
+            <dc-select placeholder="请选择" v-model="item.operator" @change="val => changeOpt(val, index)" :options="operatorList" :fields="{}"></dc-select>
           </a-col>
         </a-row>
 
         <a-row :gutter="12">
           <a-col :span="4">公式右侧</a-col>
           <a-col :span="8">
-            <a-select placeholder="请选择" v-model="item.right[0].type" style="width: 100%" @change="val => changeRightType(val, index)">
-              <a-select-option value="field">表单字段</a-select-option>
-              <a-select-option value="fixed">固定值</a-select-option>
-            </a-select>
+            <dc-select
+              placeholder="请选择"
+              v-model="item.right[0].type"
+              @change="val => changeRightType(val, index)"
+              :options="[
+                { name: '表单字段', id: 'field' },
+                { name: '固定值', id: 'fixed' }
+              ]"
+            >
+            </dc-select>
           </a-col>
           <a-col :span="8" v-if="item.right[0].type != ''">
-            <a-select
+            <dc-select
               v-if="item.right[0].type == 'field'"
               v-model="item.right[0].value"
               placeholder="请选择表单字段"
-              style="width: 100%"
               @change="val => changeRightValue(val, index)"
+              :options="renderDateList(dateList)"
             >
-              <a-select-option v-for="item in dateList" :key="item.__config__.formId" :value="item.__vModel__">{{ item.__config__.label }}</a-select-option>
-            </a-select>
-            <dc-date
-              v-else
-              style="width: 100%"
-              v-model="item.right[0].value"
-              placeholder="请选择日期"
-              type="month"
-              format="YYYY-MM"
-              @change="val => changeRightValue(val, index)"
-            />
+            </dc-select>
+            <dc-date v-else v-model="item.right[0].value" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeRightValue(val, index)" />
           </a-col>
         </a-row>
       </div>
@@ -100,6 +99,14 @@ export default {
   },
 
   methods: {
+    renderDateList(dateList) {
+      return dateList.map(item => {
+        let name = item.__config__.label
+        let id = item.__vModel__
+        let key = item.__config__.formId
+        return { name, id, key }
+      })
+    },
     delDateAndOr(index) {
       this.dateRule.splice(index, 1)
       this.dateRule[0].and_or = ''

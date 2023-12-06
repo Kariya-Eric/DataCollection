@@ -15,21 +15,34 @@
         <a-row v-for="(left, leftIndex) in range.left" :key="'left' + leftIndex" :gutter="12">
           <a-col :span="4">
             <span v-if="leftIndex == 0"> 公式左侧 </span>
-            <a-select v-else v-model="left.operator" placeholder="运算符" style="width: 100%" @change="val => changeLeftOpt(val, leftIndex, index)">
-              <a-select-option :value="item" v-for="item in calculateList" :key="'left' + item">{{ item }}</a-select-option>
-            </a-select>
+            <dc-select
+              v-else
+              v-model="left.operator"
+              placeholder="运算符"
+              @change="val => changeLeftOpt(val, leftIndex, index)"
+              :options="renderCalculateListOptions(calculateList, 'left')"
+            >
+            </dc-select>
           </a-col>
           <a-col :span="8">
-            <a-select placeholder="请选择" v-model="left.type" style="width: 100%" @change="val => changeLeftType(val, leftIndex, index)">
-              <a-select-option value="field">表单字段</a-select-option>
-              <a-select-option value="fixed">固定值</a-select-option>
-            </a-select>
+            <dc-select
+              placeholder="请选择"
+              v-model="left.type"
+              @change="val => changeLeftType(val, leftIndex, index)"
+              :options="[
+                { name: '表单字段', id: 'field' },
+                { name: '固定值', id: 'fixed' }
+              ]"
+            ></dc-select>
           </a-col>
 
           <a-col :span="8" v-if="left.type != ''">
-            <a-select v-if="left.type == 'field'" v-model="left.value" placeholder="请选择表单字段" @change="val => changeLeftValue(val, leftIndex, index)">
-              <a-select-option v-for="item in drawingList" :key="item.__config__.formId" :value="item.__vModel__">{{ item.__config__.label }}</a-select-option>
-            </a-select>
+            <dc-select
+              v-if="left.type == 'field'"
+              v-model="left.value"
+              @change="val => changeLeftValue(val, leftIndex, index)"
+              :options="renderDrawingListOption(drawingList)"
+            ></dc-select>
             <a-input v-else v-model="left.value" placeholder="请输入" @change="e => changeLeftInputValue(e, leftIndex, index)" />
           </a-col>
           <a-col :span="2">
@@ -45,29 +58,40 @@
         <a-row :gutter="12">
           <a-col :span="4">判断符</a-col>
           <a-col :span="8">
-            <a-select placeholder="请选择" v-model="range.operator" @change="val => changeOpt(val, index)">
-              <a-select-option v-for="(opt, optIndex) in operatorList" :key="optIndex" :value="opt">{{ opt }}</a-select-option>
-            </a-select>
+            <dc-select placeholder="请选择" v-model="range.operator" @change="val => changeOpt(val, index)" :options="operatorList" :fields="{}"></dc-select>
           </a-col>
         </a-row>
 
         <a-row v-for="(right, rightIndex) in range.right" :key="'right' + rightIndex" :gutter="12">
           <a-col :span="4">
             <span v-if="rightIndex == 0"> 公式右侧 </span>
-            <a-select v-else v-model="right.operator" placeholder="运算符" style="width: 100%" @change="val => changeRightOpt(val, rightIndex, index)">
-              <a-select-option :value="item" v-for="item in calculateList" :key="'right' + item">{{ item }}</a-select-option>
-            </a-select>
+            <dc-select
+              v-else
+              v-model="right.operator"
+              placeholder="运算符"
+              @change="val => changeRightOpt(val, rightIndex, index)"
+              :options="renderCalculateListOptions(calculateList, 'right')"
+            >
+            </dc-select>
           </a-col>
           <a-col :span="8">
-            <a-select placeholder="请选择" v-model="right.type" style="width: 100%" @change="val => changeRightType(val, rightIndex, index)">
-              <a-select-option value="field">表单字段</a-select-option>
-              <a-select-option value="fixed">固定值</a-select-option>
-            </a-select>
+            <dc-select
+              placeholder="请选择"
+              v-model="right.type"
+              @change="val => changeRightType(val, rightIndex, index)"
+              :options="[
+                { name: '表单字段', id: 'field' },
+                { name: '固定值', id: 'fixed' }
+              ]"
+            ></dc-select>
           </a-col>
           <a-col :span="8" v-if="right.type != ''">
-            <a-select v-if="right.type == 'field'" v-model="right.value" placeholder="请选择表单字段" style="width: 100%" @change="val => changeRightValue(val, rightIndex, index)">
-              <a-select-option v-for="item in drawingList" :key="item.__config__.formId" :value="item.__vModel__">{{ item.__config__.label }}</a-select-option>
-            </a-select>
+            <dc-select
+              v-if="right.type == 'field'"
+              v-model="right.value"
+              @change="val => changeRightValue(val, rightIndex, index)"
+              :options="renderDrawingListOption(drawingList)"
+            ></dc-select>
             <a-input v-else v-model="right.value" placeholder="请输入" @change="e => changeRightInputValue(e, rightIndex, index)" />
           </a-col>
           <a-col :span="2">
@@ -101,6 +125,22 @@ export default {
     }
   },
   methods: {
+    renderDrawingListOption(drawingList) {
+      return drawingList.map(item => {
+        let name = item.__config__.label
+        let id = item.__vModel__
+        let key = item.__config__.formId
+        return { name, id, key }
+      })
+    },
+    renderCalculateListOptions(calculateList, title) {
+      return calculateList.map(item => {
+        let name = item
+        let id = item
+        let key = title + 'item'
+        return { name, id, key }
+      })
+    },
     del(index) {
       this.dataRangeVal.splice(index, 1)
       this.dataRangeVal[0].and_or = ''
