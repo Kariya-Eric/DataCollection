@@ -1,22 +1,20 @@
 <template>
   <el-select v-model="valueId" :clearable="clearable" @clear="clearHandle" size="small" v-bind="$attrs" :style="{ width }" @focus="setOptionWidth">
-    <div class="optionClass">
-      <el-input class="selectInput" v-model="filterText" size="small"> </el-input>
-      <el-option :value="valueId" :label="valueTitle" class="options" :style="{ width: optionWidth }">
-        <el-tree
-          size="small"
-          id="tree-option"
-          ref="selectTree"
-          :data="options"
-          :props="props"
-          :node-key="props.value"
-          default-expand-all
-          :filter-node-method="filterNode"
-          @node-click="handleNodeClick"
-        >
-        </el-tree>
-      </el-option>
-    </div>
+    <el-input style="padding: 0px 8px" v-model="filterText" size="small" placeholder="请输入关键字搜索"> </el-input>
+    <el-option :value="valueId" :label="valueTitle" class="options" :style="{ width: optionWidth }">
+      <el-tree
+        size="small"
+        id="tree-option"
+        ref="selectTree"
+        :data="options"
+        :props="props"
+        :node-key="props.value"
+        default-expand-all
+        :filter-node-method="filterNode"
+        @node-click="handleNodeClick"
+      >
+      </el-tree>
+    </el-option>
   </el-select>
 </template>
 
@@ -126,11 +124,11 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
-  max-height: 320px;
   height: auto;
+  max-height: 274px;
+  padding: 0;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -151,9 +149,5 @@ ul li >>> .el-tree .el-tree-node__content {
 .el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {
   color: #606266;
   font-weight: normal;
-}
-.selectInput {
-  padding: 0 5px;
-  box-sizing: border-box;
 }
 </style>

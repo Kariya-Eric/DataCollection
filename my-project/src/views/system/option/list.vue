@@ -1,9 +1,9 @@
 <template>
   <a-row :gutter="12">
     <a-col :span="6">
-      <a-card title="选项管理">
+      <a-card title="选项目录">
         <template slot="extra">
-          <a-button type="primary" @click="$refs.optionModal.add()">新增选项值</a-button>
+          <a-button type="primary" @click="$refs.optionModal.add()">添加目录</a-button>
         </template>
         <a-spin :spinning="treeLoading">
           <a-form-item label="年份" :labelCol="labelCol" :wrapperCol="wrapperCol">

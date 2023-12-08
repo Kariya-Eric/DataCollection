@@ -83,7 +83,7 @@ export default {
       })
     },
     add() {
-      this.edit({}, '新增选项值')
+      this.edit({}, '添加目录')
     },
     close() {
       this.$emit('close')
@@ -97,7 +97,7 @@ export default {
       }
       this.model = Object.assign({}, record)
       this.title = title
-      this.hasParent = this.title.indexOf('新增') > -1
+      this.hasParent = this.title.indexOf('添加') > -1
       this.visible = true
     }
   }
