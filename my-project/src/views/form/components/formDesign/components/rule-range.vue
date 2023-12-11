@@ -35,7 +35,7 @@
               ]"
             ></dc-select>
           </a-col>
-
+  
           <a-col :span="10" v-if="left.type != ''">
             <dc-select
               v-if="left.type == 'field'"

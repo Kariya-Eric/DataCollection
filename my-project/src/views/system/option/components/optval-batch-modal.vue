@@ -23,6 +23,7 @@ import { saveList } from '@/api/system/option'
 export default {
   name: 'OptvalBatchModal',
   mixins: [DataCollectionModalMixin],
+  props: ['year'],
   data() {
     return {
       options: '',
@@ -43,7 +44,7 @@ export default {
 
     handleOk() {
       let opts = this.options.split('\n').map((item, index) => {
-        let opt = { parentId: this.parentId, name: item, sort: index + 1 }
+        let opt = { parentId: this.parentId, name: item, sort: index + 1, year: this.year }
         return opt
       })
       this.loading = true

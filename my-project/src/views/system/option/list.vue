@@ -96,8 +96,8 @@
     <category-modal ref="categoryModal" @refresh="getDictionaryTree(searchYear)" />
     <option-modal ref="optionModal" @refresh="getOptionData" />
     <optval-modal ref="optvalModal" :parentName="optSelectName" @refresh="getOptionValueData" />
-    <option-batch-modal ref="optionBatchModal" @refresh="getOptionData" />
-    <optval-batch-modal ref="optvalBatchModal" @refresh="getOptionValueData" />
+    <option-batch-modal ref="optionBatchModal" @refresh="getOptionData" :year="searchYear" />
+    <optval-batch-modal ref="optvalBatchModal" @refresh="getOptionValueData" :year="searchYear" />
   </a-row>
 </template>
 
