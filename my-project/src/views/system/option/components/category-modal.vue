@@ -2,10 +2,23 @@
   <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
-        <a-form-model-item label="选项名称" prop="name">
-          <a-input placeholder="请输入选项名称" v-model="model.name" allowClear />
-        </a-form-model-item> </a-form-model
-    ></a-spin>
+        <a-form-model-item label="年份" prop="year">
+          <a-input disabled v-model="model.year" />
+        </a-form-model-item>
+        <a-form-model-item label="类型" prop="parentId">
+          <a-select v-model="model.parentId" placeholder="请选择类型">
+            <a-select-option value="教学基本状态数据">教学基本状态数据</a-select-option>
+            <a-select-option value="其他数据">其他数据</a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="目录名称" prop="name">
+          <a-input v-model="model.name" placeholder="请输入目录名称" allowClear></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="排序" prop="sort" v-if="!hasParent">
+          <a-input-number v-model="model.sort" placeholder="请输入排序" style="width: 30%"></a-input-number>
+        </a-form-model-item>
+      </a-form-model>
+    </a-spin>
   </a-modal>
 </template>
 
@@ -13,14 +26,16 @@
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
 import { addOption, updateOption } from '@/api/system/option'
 export default {
-  name: 'OptionModal',
+  name: 'CategoryModal',
   mixins: [DataCollectionModalMixin],
+  props: ['treeData'],
   data() {
     return {
+      hasParent: false,
       rules: {
-        name: [{ required: true, message: '请输入选项名称' }]
+        parentId: [{ required: true, message: '请选择类型' }],
+        name: [{ required: true, message: '请输入目录名称' }]
       },
-      addFlag: false
     }
   },
   methods: {
@@ -28,13 +43,13 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true
-          if (this.addFlag) {
+          if (this.hasParent) {
             addOption(this.model)
               .then(res => {
                 if (res.state) {
                   this.$message.success(res.message)
-                  this.$emit('refresh')
                   this.close()
+                  this.$emit('refresh')
                 } else {
                   this.$message.error(res.message)
                 }
@@ -47,8 +62,8 @@ export default {
               .then(res => {
                 if (res.state) {
                   this.$message.success(res.message)
-                  this.$emit('refresh')
                   this.close()
+                  this.$emit('refresh')
                 } else {
                   this.$message.error(res.message)
                 }
@@ -60,30 +75,30 @@ export default {
         }
       })
     },
-
+    add(year) {
+      this.edit({}, '添加目录', year)
+    },
     close() {
       this.$emit('close')
       this.visible = false
       this.$refs.form.clearValidate()
     },
-    add(parentId, searchYear) {
-      this.edit({}, '添加选项', parentId, searchYear)
-    },
-    edit(record, title, parentId, searchYear) {
-      this.title = title
+
+    edit(record, title, year) {
       if (!record.sort) {
         record.sort = 0
       }
-      if (record.name) {
-        this.addFlag = false
-      } else {
-        this.addFlag = true
-      }
-      this.model = Object.assign({}, { ...record, parentId: parentId[0], year: searchYear })
+      this.model = Object.assign({}, { ...record, year: year })
+      this.title = title
+      this.hasParent = this.title.indexOf('添加') > -1
       this.visible = true
     }
   }
 }
 </script>
 
-<style></style>
+<style scoped lang="less">
+/deep/.ant-select-dropdown {
+  top: 32px !important;
+}
+</style>

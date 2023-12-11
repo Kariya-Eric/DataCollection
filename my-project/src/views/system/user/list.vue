@@ -8,7 +8,7 @@
               <a-tree-select
                 v-model="queryParam.orgId"
                 show-search
-                placeholder="请选择请选择部门"
+                placeholder="请选择所属部门"
                 allow-clear
                 tree-default-expand-all
                 :tree-data="departList"

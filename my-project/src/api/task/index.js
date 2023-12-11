@@ -26,6 +26,7 @@ const configAuthUser = params => putAction('/uc/api/taskFormDetail/configAuthUse
 //表单详情-保存表单
 const updateTaskFormDetail = params => putAction('/uc/api/taskFormDetail/update', params)
 const submitForm = params => putAction(`/uc/api/taskFormDetail/submit`, params)
+
 export {
   configAuthority,
   enableTask,

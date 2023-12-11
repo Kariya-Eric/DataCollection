@@ -2,10 +2,14 @@
   <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
-        <a-form-model-item label="选项名称" prop="name">
-          <a-input placeholder="请输入选项名称" v-model="model.name" allowClear />
-        </a-form-model-item> </a-form-model
-    ></a-spin>
+        <a-form-model-item label="选项名称" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-input v-model="parentName" disabled />
+        </a-form-model-item>
+        <a-form-model-item label="选项值名称" prop="name" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-input placeholder="请输入选项值名称" v-model="model.name" allowClear />
+        </a-form-model-item>
+      </a-form-model>
+    </a-spin>
   </a-modal>
 </template>
 
@@ -13,12 +17,15 @@
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
 import { addOption, updateOption } from '@/api/system/option'
 export default {
-  name: 'OptionModal',
+  name: 'OptvalModal',
   mixins: [DataCollectionModalMixin],
+  props: ['parentName'],
   data() {
     return {
+      labelCol: { style: 'width: 100px; display: inline-block;vertical-align: inherit;' },
+      wrapperCol: { style: 'width: calc(100% - 100px); display: inline-block;' },
       rules: {
-        name: [{ required: true, message: '请输入选项名称' }]
+        name: [{ required: true, message: '请输入选项值名称' }]
       },
       addFlag: false
     }
@@ -67,7 +74,7 @@ export default {
       this.$refs.form.clearValidate()
     },
     add(parentId, searchYear) {
-      this.edit({}, '添加选项', parentId, searchYear)
+      this.edit({}, '添加选项值', parentId, searchYear)
     },
     edit(record, title, parentId, searchYear) {
       this.title = title

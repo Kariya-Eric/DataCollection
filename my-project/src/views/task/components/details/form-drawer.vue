@@ -49,7 +49,7 @@
 <script>
 import { judgeImport, judgeExport, judgeYears, judgeSave, judgeRedo, judgeAuth } from './authForm'
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
-import { updateTaskFormDetail, approveForm, submitForm, recallForm } from '@/api/task'
+import { updateTaskFormDetail, approveForm, submitForm, recallForm, exportTaskForm } from '@/api/task'
 import storage from 'store'
 import { USER_INFO, ROLE_LIST } from '@/store/mutation-types'
 export default {

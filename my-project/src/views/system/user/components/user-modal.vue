@@ -9,16 +9,28 @@
           <a-input v-model="model.name" placeholder="请输入姓名" :disabled="disabled" allowClear></a-input>
         </a-form-model-item>
         <a-form-model-item label="角色" prop="roleIds">
-          <dc-select multiple :disabled="disabled" placeholder="请选择角色" v-model="model.roleIds" :options="role"></dc-select>
+          <!-- <dc-select multiple :disabled="disabled" placeholder="请选择角色" v-model="model.roleIds" :options="role"></dc-select> -->
           <!-- <el-select v-model="model.roleIds" placeholder="请选择角色" :disabled="disabled" multiple clearable style="width: 100%" size="small">
             <el-option v-for="r in role" :key="r.id" :label="r.name" :value="r.id" style="width: 100%"></el-option>
           </el-select> -->
-          <!-- <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
+          <a-select v-model="model.roleIds" mode="multiple" placeholder="请选择角色" :disabled="disabled" allowClear>
             <a-select-option v-for="r in role" :key="r.id" :value="r.id">{{ r.name }}</a-select-option>
-          </a-select> -->
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="所属部门" prop="orgId" v-if="showDepart">
-          <dc-tree-select :options="depart" v-model="model.orgId"></dc-tree-select>
+          <a-tree-select
+            :disabled="disabled"
+            v-model="model.orgId"
+            show-search
+            placeholder="请选择请选择部门"
+            allow-clear
+            tree-default-expand-all
+            :tree-data="depart"
+            :replace-fields="replaceFields"
+            :filterTreeNode="filterTreeNode"
+            :dropdown-style="{ maxHeight: '320px', overflow: 'auto' }"
+          />
+          <!-- <dc-tree-select :options="depart" v-model="model.orgId"></dc-tree-select> -->
         </a-form-model-item>
         <a-form-model-item label="专业" prop="subjectId" v-if="showSubject">
           <dc-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" :options="subjectList"></dc-select>
@@ -30,7 +42,7 @@
           <a-input v-model="model.mobile" placeholder="请输入手机" :disabled="disabled" allowClear> <a-icon slot="suffix" type="mobile" /></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态" prop="status">
-          <dc-switch v-model="model.status" />
+          <dc-switch v-model="model.status" :disabled="disabled" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>

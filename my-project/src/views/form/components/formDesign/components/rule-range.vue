@@ -24,7 +24,7 @@
             >
             </dc-select>
           </a-col>
-          <a-col :span="8">
+          <a-col :span="6">
             <dc-select
               placeholder="请选择"
               v-model="left.type"
@@ -36,7 +36,7 @@
             ></dc-select>
           </a-col>
 
-          <a-col :span="8" v-if="left.type != ''">
+          <a-col :span="10" v-if="left.type != ''">
             <dc-select
               v-if="left.type == 'field'"
               v-model="left.value"
@@ -74,7 +74,7 @@
             >
             </dc-select>
           </a-col>
-          <a-col :span="8">
+          <a-col :span="6">
             <dc-select
               placeholder="请选择"
               v-model="right.type"
@@ -85,7 +85,7 @@
               ]"
             ></dc-select>
           </a-col>
-          <a-col :span="8" v-if="right.type != ''">
+          <a-col :span="10" v-if="right.type != ''">
             <dc-select
               v-if="right.type == 'field'"
               v-model="right.value"
