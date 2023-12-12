@@ -116,7 +116,12 @@
             <div class="select-line-icon option-drag">
               <a-icon type="unordered-list" style="font-size: 16px" />
             </div>
-            <a-input v-model="item.label" placeholder="选项名" :disabled="disabled || activeData.columns[activeData.selectedCol - 1].type.source" />
+            <a-input
+              v-model="item.label"
+              placeholder="选项名"
+              :disabled="disabled || activeData.columns[activeData.selectedCol - 1].type.source"
+              @change="e => changeLabel(e, index)"
+            />
             <div class="close-btn select-line-icon" v-if="!activeData.columns[activeData.selectedCol - 1].type.source && !disabled">
               <a-icon type="minus-circle" style="font-size: 16px" @click="delOption(index)" />
             </div>
@@ -259,12 +264,18 @@ export default {
 
     addOption() {
       for (let i = 0; i < this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.length; i++) {
-        this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options[i].value = i + 1
+        this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options[i].value =
+          this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options[i].label
       }
       this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.push({
         label: '选项',
-        value: this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options.length + 1
+        value: '选项'
       })
+    },
+    
+    changeLabel(e, index) {
+      let label = e.target.value
+      this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options[index].value = label
     },
 
     changeTimeFormat(val, column) {

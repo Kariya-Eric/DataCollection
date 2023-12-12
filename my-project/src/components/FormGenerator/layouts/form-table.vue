@@ -5,11 +5,11 @@
       <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0" okText="确定" cancelText="取消">
         <a-button type="danger" class="del-action">删除</a-button>
       </a-popconfirm>
-      <div style="float: right">
+      <!-- <div style="float: right">
         <a-dropdown placement="topCenter">
           <a-button type="primary" icon="cloud-download" @click="exportData('xlsx')">数据导出</a-button>
         </a-dropdown>
-      </div>
+      </div> -->
     </div>
     <vxe-table
       border

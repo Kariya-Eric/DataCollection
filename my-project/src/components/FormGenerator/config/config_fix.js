@@ -27,11 +27,11 @@ export const selectComponentsFix = [
       options: [
         {
           label: '选项一',
-          value: 1
+          value: '选项一'
         },
         {
           label: '选项二',
-          value: 2
+          value: '选项二'
         }
       ]
     },
@@ -56,11 +56,11 @@ export const selectComponentsFix = [
       options: [
         {
           label: '选项一',
-          value: 1
+          value: '选项一'
         },
         {
           label: '选项二',
-          value: 2
+          value: '选项二'
         }
       ]
     },

@@ -82,7 +82,7 @@
               <div class="select-line-icon option-drag">
                 <a-icon type="unordered-list" style="font-size: 16px" />
               </div>
-              <a-input v-model="item.label" placeholder="选项名" :disabled="disabled || activeData.source" />
+              <a-input v-model="item.label" placeholder="选项名" :disabled="disabled || activeData.source" @change="e => changeOptionLabel(e, index)" />
               <div class="close-btn select-line-icon" @click="delSelectItem(index)" v-if="!activeData.source && !disabled">
                 <a-icon type="minus-circle" style="font-size: 16px" />
               </div>
@@ -246,11 +246,11 @@ export default {
       this.$set(this.activeData.__slot__, 'options', [
         {
           label: '选项一',
-          value: 1
+          value: '选项一'
         },
         {
           label: '选项二',
-          value: 2
+          value: '选项二'
         }
       ])
       this.activeData.source = false
@@ -300,14 +300,19 @@ export default {
       this.activeData.__config__.wrapperCol.span = 24 - val
     },
 
+    changeOptionLabel(e, index) {
+      let label = e.target.value
+      this.activeData.__slot__.options[index].value = label
+    },
+
     // end
     addSelectItem() {
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
-        this.activeData.__slot__.options[i].value = i + 1
+        this.activeData.__slot__.options[i].value = this.activeData.__slot__.options[i].label
       }
       this.activeData.__slot__.options.push({
         label: '选项',
-        value: this.activeData.__slot__.options.length + 1
+        value: '选项'
       })
     },
 
@@ -321,7 +326,7 @@ export default {
       }
       this.activeData.__slot__.options.splice(index, 1)
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {
-        this.activeData.__slot__.options[i].value = i + 1
+        this.activeData.__slot__.options[i].value = this.activeData.__slot__.options[i].label
       }
     },
     spanChange(val) {

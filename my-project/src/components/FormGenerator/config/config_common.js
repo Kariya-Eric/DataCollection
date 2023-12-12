@@ -138,15 +138,15 @@ export const select = {
     options: [
       {
         label: '选项一',
-        value: 1
+        value: '选项一'
       },
       {
         label: '选项二',
-        value: 2
+        value: '选项二'
       }
     ]
   },
-  source:false, //下拉选项值是手动设置or来源，source true为来源
+  source: false, //下拉选项值是手动设置or来源，source true为来源
   placeholder: '请选择',
   showSearch: false,
   mode: 'default',
