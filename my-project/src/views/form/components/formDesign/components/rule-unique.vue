@@ -1,8 +1,8 @@
 <template>
   <div class="typeDiv">
     <div style="margin-left: 24px">
-      <a-button icon="plus-circle" type="link" @click="addUnique"> 添加唯一性组合 </a-button>
-      <div v-for="(item, index) in uniqueValue" :key="index" class="uniqueForm">
+      <!-- <a-button icon="plus-circle" type="link" @click="addUnique"> 添加唯一性组合 </a-button> -->
+      <!-- <div v-for="(item, index) in uniqueValue" :key="index" class="uniqueForm">
         <dc-select
           v-model="uniqueValue[index]"
           placeholder="请选择表单字段"
@@ -11,7 +11,16 @@
           :options="renderDrawingListOption(drawingList)"
         ></dc-select>
         <a-icon type="minus-circle" @click="delUnique(index)" />
-      </div>
+      </div> -->
+      <a-row :gutter="12">
+        <a-col :span="4"><span>唯一性组合</span></a-col>
+        <a-col :span="8">
+          <dc-select v-model="uniqueValue['table']" placeholder="请选择表格" @change="changeTable" :options="renderDrawingListOption(drawingList)"></dc-select>
+        </a-col>
+        <a-col :span="10">
+          <dc-select multiple v-model="uniqueValue['fields']" placeholder="请选择表格列" @change="changeFields" :options="fieldsOptions"></dc-select>
+        </a-col>
+      </a-row>
     </div>
   </div>
 </template>
@@ -22,7 +31,8 @@ export default {
   props: ['value', 'drawingList'],
   data() {
     return {
-      uniqueValue: JSON.parse(JSON.stringify(this.value))
+      uniqueValue: JSON.parse(JSON.stringify(this.value)),
+      fieldsOptions: []
     }
   },
   watch: {
@@ -33,27 +43,41 @@ export default {
 
   methods: {
     renderDrawingListOption(drawingList) {
-      return drawingList.map(item => {
-        let name = item.__config__.label
-        let id = item.__vModel__
-        let key = item.__config__.formId
+      return drawingList
+        .filter(item => item.__config__.layout === 'tableLayout')
+        .map(item => {
+          let name = item.__config__.label
+          let id = item.__vModel__
+          let key = item.__config__.formId
+          return { name, id, key }
+        })
+    },
+    // addUnique() {
+    //   this.uniqueValue.push('')
+    //   this.$emit('input', this.uniqueValue)
+    // },
+
+    changeTable(val) {
+      this.uniqueValue['table'] = val
+      let item = this.drawingList.find(item => item.__vModel__ == val)
+      this.fieldsOptions = item.columns.map(item => {
+        let name = item.label
+        let id = item.props
+        let key = item.key
         return { name, id, key }
       })
-    },
-    addUnique() {
-      this.uniqueValue.push('')
       this.$emit('input', this.uniqueValue)
     },
 
-    change(val, index) {
-      this.uniqueValue[index] = val
+    changeFields(val) {
+      this.uniqueValue['fields'] = val
       this.$emit('input', this.uniqueValue)
     },
 
-    delUnique(index) {
-      this.uniqueValue.splice(index, 1)
-      this.$emit('input', this.uniqueValue)
-    },
+    // delUnique(index) {
+    //   this.uniqueValue.splice(index, 1)
+    //   this.$emit('input', this.uniqueValue)
+    // },
 
     //校验
     validate() {
@@ -79,7 +103,7 @@ export default {
 <style scoped lang="less">
 .typeDiv {
   background-color: #f5f8fd;
-  min-height: 200px;
+  min-height: 100px;
   border: 1px dashed #abcaf9;
   border-radius: 5px;
   padding-top: 12px;

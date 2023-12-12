@@ -42,7 +42,7 @@ export function judgeShow(row, currentUser, roleList) {
     } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
       return row.status != -1 && row.type != '总表'
     }
-    return false
+    return true
   }
 }
 
@@ -73,7 +73,7 @@ export function judgeRemind(row, currentUser, roleList) {
     } else if (row.responsibleUserName == currentUser.username && row.fillUserName == currentUser.username) {
       return row.status == 0 || row.status == 3
     }
-    return false
+    return true
   }
 }
 

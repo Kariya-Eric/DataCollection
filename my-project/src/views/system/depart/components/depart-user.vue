@@ -40,7 +40,7 @@
         bordered
         rowKey="id"
         :dataSource="dataSource"
-        :pagination="false"
+        :pagination="ipagination"
         :loading="loading"
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :columns="columns"
@@ -67,7 +67,7 @@
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import UserModal from '../../user/components/user-modal.vue'
-import { getOrgUser } from '@/api/system/depart'
+import { getUserList } from '@/api/system/user'
 import { deleteUser } from '@/api/system/user'
 export default {
   name: 'DepartUser',
@@ -105,14 +105,30 @@ export default {
   },
   methods: {
     loadData() {
-      let param = { roleId: this.queryParam.roleId ? this.queryParam.roleId : '', keyword: this.queryParam.keyword ? this.queryParam.keyword : '', orgId: this.orgId }
+      let param = {
+        params: { queryWord: this.queryParam.keyword ? this.queryParam.keyword : '', roleId: this.queryParam.roleId ? this.queryParam.roleId : '', orgId: this.orgId },
+        pageBean: { page: this.ipagination.current, pageSize: this.ipagination.pageSize, showTotal: true }
+      }
       this.loading = true
-      getOrgUser(param)
-        .then(res => (this.dataSource = res))
+      getUserList(param)
+        .then(res => {
+          if (res.state) {
+            this.dataSource = res.value.rows
+          }
+        })
         .finally(() => {
           this.onClearSelected()
           this.loading = false
         })
+
+      //   let param = { roleId: this.queryParam.roleId ? this.queryParam.roleId : '', keyword: this.queryParam.keyword ? this.queryParam.keyword : '', orgId: this.orgId }
+      //   this.loading = true
+      //   getOrgUser(param)
+      //     .then(res => (this.dataSource = res))
+      //   .finally(() => {
+      //     this.onClearSelected()
+      //     this.loading = false
+      //   })
     },
 
     handleDelete(id) {

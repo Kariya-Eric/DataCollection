@@ -33,7 +33,7 @@
             </a-col>
             <a-col :md="4" :sm="12">
               <a-form-item label="表单名称">
-                <a-input v-model="queryParam.name" placeholder="请选择状态" allowClear> </a-input>
+                <a-input v-model="queryParam.name" placeholder="请输入表单名称" allowClear> </a-input>
               </a-form-item>
             </a-col>
             <a-col :md="3" :sm="12">

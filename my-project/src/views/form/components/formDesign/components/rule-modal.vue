@@ -139,7 +139,7 @@ export default {
           ]
           this.$set(this.model, 'verificationFormulas', dataRange)
         } else if (newVal == 'unique') {
-          let unique = ['']
+          let unique = [{ table: '', fields: [] }]
           this.$set(this.model, 'verificationFormulas', unique)
         } else if (newVal == 'dateTime') {
           let dateTime = [
