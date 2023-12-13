@@ -8,7 +8,7 @@
     @ok="handleOk"
     :maskClosable="false"
     :keyboard="false"
-    width="35%"
+    width="45%"
     destroyOnClose
   >
     <a-spin :spinning="loading">
@@ -118,7 +118,7 @@ export default {
         ]
       } else {
         this.typeList = [
-          { name: '数据范围校验', value: 'dataRange' },
+          { name: '数据范围校验', value: 'dataRangeOther' },
           { name: '排他性校验', value: 'exclusivity' },
           { name: '一致性校验', value: 'consistency' },
           { name: '自定义校验', value: 'other' }
@@ -131,9 +131,9 @@ export default {
         if (newVal == 'dataRange') {
           let dataRange = [
             {
-              left: [{ operator: '', type: '', value: '' }],
+              left: [{ operator: '', type: '', value: '', field: '' }],
               operator: '',
-              right: [{ operator: '', type: '', value: '' }],
+              right: [{ operator: '', type: '', value: '', field: '' }],
               and_or: ''
             }
           ]
@@ -144,9 +144,9 @@ export default {
         } else if (newVal == 'dateTime') {
           let dateTime = [
             {
-              left: [{ operator: '', type: '', value: '' }],
+              left: [{ operator: '', type: '', value: '', field: '' }],
               operator: '',
-              right: [{ operator: '', type: '', value: '' }],
+              right: [{ operator: '', type: '', value: '', field: '' }],
               and_or: ''
             }
           ]
@@ -174,6 +174,7 @@ export default {
       this.$emit('close')
       this.visible = false
       this.$refs.form.clearValidate()
+      this.$emit('ok')
     },
 
     handleOk() {

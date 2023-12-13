@@ -144,7 +144,7 @@ export default {
         showTotal: true
       }
       return {
-        params: Object.assign(this.queryParam),
+        params: Object.assign({ orgId: this.subject.orgId }, this.queryParam),
         pageBean
       }
     },

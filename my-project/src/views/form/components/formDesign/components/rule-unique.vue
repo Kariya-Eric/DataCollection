@@ -1,7 +1,7 @@
 <template>
   <div class="typeDiv">
     <div style="margin-left: 24px">
-      <!-- <a-button icon="plus-circle" type="link" @click="addUnique"> 添加唯一性组合 </a-button> -->
+      <a-button icon="plus-circle" type="link" @click="addUnique"> 添加唯一性组合 </a-button>
       <!-- <div v-for="(item, index) in uniqueValue" :key="index" class="uniqueForm">
         <dc-select
           v-model="uniqueValue[index]"
@@ -12,15 +12,31 @@
         ></dc-select>
         <a-icon type="minus-circle" @click="delUnique(index)" />
       </div> -->
-      <a-row :gutter="12">
-        <a-col :span="4"><span>唯一性组合</span></a-col>
-        <a-col :span="8">
-          <dc-select v-model="uniqueValue['table']" placeholder="请选择表格" @change="changeTable" :options="renderDrawingListOption(drawingList)"></dc-select>
-        </a-col>
-        <a-col :span="10">
-          <dc-select multiple v-model="uniqueValue['fields']" placeholder="请选择表格列" @change="changeFields" :options="fieldsOptions"></dc-select>
-        </a-col>
-      </a-row>
+      <div v-for="(item, index) in uniqueValue" :key="index" class="uniqueForm">
+        <a-row :gutter="12">
+          <a-col :span="4"><span>唯一性组合</span></a-col>
+          <a-col :span="8">
+            <dc-select
+              v-model="uniqueValue[index]['table']"
+              placeholder="请选择表格"
+              @change="val => changeTable(val, index)"
+              :options="renderDrawingListOption(drawingList)"
+            ></dc-select>
+          </a-col>
+          <a-col :span="10">
+            <dc-select
+              multiple
+              v-model="uniqueValue[index]['fields']"
+              placeholder="请选择表格列"
+              @change="val => changeFields(val, index)"
+              :options="fieldsOptions[index]"
+            ></dc-select>
+          </a-col>
+          <a-col :span="1">
+            <a-icon type="minus-circle" @click="delUnique(index)" />
+          </a-col>
+        </a-row>
+      </div>
     </div>
   </div>
 </template>
@@ -36,8 +52,22 @@ export default {
     }
   },
   watch: {
-    value(newVal) {
-      this.uniqueValue = newVal
+    value: {
+      handler(newVal) {
+        this.uniqueValue = newVal
+        newVal.forEach((ele, index) => {
+          if (ele['table']) {
+            let item = this.drawingList.find(item => item.__vModel__ == ele['table'])
+            this.fieldsOptions[index] = item.columns.map(item => {
+              let name = item.label
+              let id = item.props
+              let key = item.key
+              return { name, id, key }
+            })
+          }
+        })
+      },
+      immediate: true
     }
   },
 
@@ -52,38 +82,44 @@ export default {
           return { name, id, key }
         })
     },
-    // addUnique() {
-    //   this.uniqueValue.push('')
-    //   this.$emit('input', this.uniqueValue)
-    // },
 
-    changeTable(val) {
-      this.uniqueValue['table'] = val
-      let item = this.drawingList.find(item => item.__vModel__ == val)
-      this.fieldsOptions = item.columns.map(item => {
-        let name = item.label
-        let id = item.props
-        let key = item.key
-        return { name, id, key }
-      })
+    addUnique() {
+      this.uniqueValue.push({ table: '', fields: [] })
       this.$emit('input', this.uniqueValue)
     },
 
-    changeFields(val) {
-      this.uniqueValue['fields'] = val
+    changeTable(val, index) {
+      this.uniqueValue[index]['table'] = val
+      this.uniqueValue[index]['fields'] = []
+      if (val) {
+        let item = this.drawingList.find(item => item.__vModel__ == val)
+        this.fieldsOptions[index] = item.columns.map(item => {
+          let name = item.label
+          let id = item.props
+          let key = item.key
+          return { name, id, key }
+        })
+      } else {
+        this.fieldsOptions = []
+      }
       this.$emit('input', this.uniqueValue)
     },
 
-    // delUnique(index) {
-    //   this.uniqueValue.splice(index, 1)
-    //   this.$emit('input', this.uniqueValue)
-    // },
+    changeFields(val, index) {
+      this.uniqueValue[index]['fields'] = val
+      this.$emit('input', this.uniqueValue)
+    },
+
+    delUnique(index) {
+      this.uniqueValue.splice(index, 1)
+      this.$emit('input', this.uniqueValue)
+    },
 
     //校验
     validate() {
       let flag = true
       for (let i = 0; i < this.uniqueValue.length; i++) {
-        if (this.uniqueValue[i] == '') {
+        if (this.uniqueValue[i]['table'] == '' || this.uniqueValue[i]['fields'].length == 0) {
           flag = false
           break
         }

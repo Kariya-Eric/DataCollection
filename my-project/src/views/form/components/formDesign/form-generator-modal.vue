@@ -17,11 +17,11 @@
           </a-tabs>
         </a-col>
         <a-col class="right">
-          <a-popconfirm title="确认清空所有组件吗？" @confirm="empty" placement="bottom">
+          <a-popconfirm title="确认清空所有组件吗？" @confirm="empty" placement="bottom" v-if="info.enabledFlag != 1">
             <a-button type="danger"><dc-icon type="icon-dc_empty" />清空</a-button>
           </a-popconfirm>
           <a-button type="primary" @click="view" id="form-view"><dc-icon type="icon-dc_view" /> 预览</a-button>
-          <a-button type="primary" @click="save"><dc-icon type="icon-dc_save" /> 保存</a-button>
+          <a-button type="primary" @click="save" v-if="info.enabledFlag != 1"><dc-icon type="icon-dc_save" /> 保存</a-button>
           <a-button @click="handleCancel"><dc-icon type="icon-dc_back" /> 返回</a-button>
         </a-col>
       </a-row>

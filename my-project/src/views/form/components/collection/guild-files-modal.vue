@@ -57,7 +57,7 @@ export default {
     },
 
     handleOk() {
-      let bigFile = this.guides.find(f => f.raw && f.size / 1024 / 1024 > 5)
+      let bigFile = this.guides.find(f => f.size / 1024 / 1024 > 15)
       if (bigFile) {
         this.$message.error('文件【' + bigFile.name + '】过大，请压缩后再上传！')
         return

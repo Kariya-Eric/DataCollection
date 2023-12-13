@@ -24,7 +24,7 @@
             >
             </dc-select>
           </a-col>
-          <a-col :span="6">
+          <a-col :span="4">
             <dc-select
               placeholder="请选择"
               v-model="left.type"
@@ -35,15 +35,18 @@
               ]"
             ></dc-select>
           </a-col>
-  
-          <a-col :span="10" v-if="left.type != ''">
+
+          <a-col :span="4" v-if="left.type != ''">
             <dc-select
               v-if="left.type == 'field'"
-              v-model="left.value"
-              @change="val => changeLeftValue(val, leftIndex, index)"
+              v-model="left.field"
+              @change="val => changeLeftField(val, leftIndex, index)"
               :options="renderDrawingListOption(drawingList)"
             ></dc-select>
-            <a-input v-else v-model="left.value" placeholder="请输入" @change="e => changeLeftInputValue(e, leftIndex, index)" />
+            <a-input v-else v-model="left.field" placeholder="请输入" @change="e => changeLeftInputField(e, leftIndex, index)" />
+          </a-col>
+          <a-col :span="8" v-if="left.type != '' && showLeftOption[index][leftIndex]">
+            <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="leftIndex == 0">
@@ -74,7 +77,7 @@
             >
             </dc-select>
           </a-col>
-          <a-col :span="6">
+          <a-col :span="4">
             <dc-select
               placeholder="请选择"
               v-model="right.type"
@@ -85,14 +88,17 @@
               ]"
             ></dc-select>
           </a-col>
-          <a-col :span="10" v-if="right.type != ''">
+          <a-col :span="4" v-if="right.type != ''">
             <dc-select
               v-if="right.type == 'field'"
-              v-model="right.value"
-              @change="val => changeRightValue(val, rightIndex, index)"
+              v-model="right.field"
+              @change="val => changeRightField(val, rightIndex, index)"
               :options="renderDrawingListOption(drawingList)"
             ></dc-select>
-            <a-input v-else v-model="right.value" placeholder="请输入" @change="e => changeRightInputValue(e, rightIndex, index)" />
+            <a-input v-else v-model="right.field" placeholder="请输入" @change="e => changeRightInputField(e, rightIndex, index)" />
+          </a-col>
+          <a-col :span="8" v-if="right.type != '' && showRightOption[index][rightIndex]">
+            <dc-select v-model="right.value" placeholder="请选择" :options="rightOptions[index][rightIndex]"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="rightIndex == 0">
@@ -116,12 +122,65 @@ export default {
     return {
       dataRangeVal: JSON.parse(JSON.stringify(this.value)),
       operatorList: ['<', '<=', '=', '>=', '>', '!='],
-      calculateList: ['+', '-', '*', '/']
+      calculateList: ['+', '-', '*', '/'],
+      showLeftOption: [[]],
+      showRightOption: [[]],
+      leftOptions: [[]],
+      rightOptions: [[]]
     }
   },
   watch: {
-    value(newVal) {
-      this.dataRangeVal = newVal
+    value: {
+      handler(newVal) {
+        this.dataRangeVal = newVal
+        let leftOptions = []
+        let rightOptions = []
+        let showRightOption = []
+        let showLeftOption = []
+        this.dataRangeVal.forEach((data, i) => {
+          let left = data.left
+          leftOptions[i] = []
+          rightOptions[i] = []
+          showRightOption[i] = []
+          showLeftOption[i] = []
+          left.forEach((l, j) => {
+            if (l.value) {
+              let item = this.drawingList.find(d => d.__vModel__ == l.field)
+              leftOptions[i][j] = item.columns.map(item => {
+                let name = item.label
+                let id = item.props
+                let key = item.key
+                return { name, id, key }
+              })
+              showLeftOption[i][j] = true
+            } else {
+              leftOptions[i][j] = []
+              showLeftOption[i][j] = false
+            }
+          })
+          let right = data.right
+          right.forEach((r, j) => {
+            if (r.value) {
+              let item = this.drawingList.find(d => d.__vModel__ == r.field)
+              rightOptions[i][j] = item.columns.map(item => {
+                let name = item.label
+                let id = item.props
+                let key = item.key
+                return { name, id, key }
+              })
+              showRightOption[i][j] = true
+            } else {
+              rightOptions[i][j] = []
+              showRightOption[i][j] = false
+            }
+          })
+        })
+        this.leftOptions = leftOptions
+        this.showLeftOption = showLeftOption
+        this.rightOptions = rightOptions
+        this.showRightOption = showRightOption
+      },
+      immediate: true
     }
   },
   methods: {
@@ -144,47 +203,86 @@ export default {
     del(index) {
       this.dataRangeVal.splice(index, 1)
       this.dataRangeVal[0].and_or = ''
+      this.showLeftOption.splice(index, 1)
+      this.showRightOption.splice(index, 1)
+      this.leftOptions.splice(index, 1)
+      this.rightOptions.splice(index, 1)
       this.$emit('input', this.dataRangeVal)
     },
 
     add(andOr) {
       let range = {
-        left: [{ operator: '', type: '', value: '' }],
+        left: [{ operator: '', type: '', value: '', field: '' }],
         operator: '',
-        right: [{ operator: '', type: '', value: '' }],
+        right: [{ operator: '', type: '', value: '', field: '' }],
         and_or: andOr == 0 ? 'and' : 'or'
       }
       this.dataRangeVal.push(range)
+      this.showLeftOption.push([])
+      this.showRightOption.push([])
+      this.leftOptions.push([])
+      this.rightOptions.push([])
       this.$emit('input', this.dataRangeVal)
     },
 
     changeLeftType(val, leftIndex, index) {
       this.dataRangeVal[index].left[leftIndex].type = val
+      this.dataRangeVal[index].left[leftIndex].field = ''
       this.dataRangeVal[index].left[leftIndex].value = ''
       this.$emit('input', this.dataRangeVal)
     },
     changeRightType(val, rightIndex, index) {
       this.dataRangeVal[index].right[rightIndex].type = val
+      this.dataRangeVal[index].right[rightIndex].field = ''
       this.dataRangeVal[index].right[rightIndex].value = ''
       this.$emit('input', this.dataRangeVal)
     },
 
-    changeLeftInputValue(e, leftIndex, index) {
-      this.dataRangeVal[index].left[leftIndex].value = e.target.value
+    changeLeftInputField(e, leftIndex, index) {
+      this.dataRangeVal[index].left[leftIndex].field = e.target.value
       this.$emit('input', this.dataRangeVal)
     },
 
-    changeRightInputValue(e, rightIndex, index) {
-      this.dataRangeVal[index].right[rightIndex].value = e.target.value
+    changeRightInputField(e, rightIndex, index) {
+      this.dataRangeVal[index].right[rightIndex].field = e.target.value
       this.$emit('input', this.dataRangeVal)
     },
 
-    changeLeftValue(val, leftIndex, index) {
-      this.dataRangeVal[index].left[leftIndex].value = val
+    changeLeftField(val, leftIndex, index) {
+      this.dataRangeVal[index].left[leftIndex].field = val
+      this.dataRangeVal[index].left[leftIndex].value = ''
+      let item = this.drawingList.find(item => item.__vModel__ == val)
+      if (val && item.__config__.layout === 'tableLayout') {
+        this.showLeftOption[index][leftIndex] = true
+        this.leftOptions[index][leftIndex] = item.columns.map(item => {
+          let name = item.label
+          let id = item.props
+          let key = item.key
+          return { name, id, key }
+        })
+      } else {
+        this.showLeftOption[index][leftIndex] = false
+        this.leftOptions[index][leftIndex] = []
+      }
       this.$emit('input', this.dataRangeVal)
     },
-    changeRightValue(val, rightIndex, index) {
-      this.dataRangeVal[index].right[rightIndex].value = val
+    changeRightField(val, rightIndex, index) {
+      this.dataRangeVal[index].right[rightIndex].field = val
+      this.dataRangeVal[index].right[rightIndex].value = ''
+      let item = this.drawingList.find(item => item.__vModel__ == val)
+      if (val && item.__config__.layout === 'tableLayout') {
+        this.showRightOption[index][rightIndex] = true
+        this.rightOptions[index][rightIndex] = item.columns.map(item => {
+          let name = item.label
+          let id = item.props
+          let key = item.key
+          return { name, id, key }
+        })
+      } else {
+        this.showRightOption[index][rightIndex] = false
+        this.rightOptions[index][rightIndex] = []
+      }
+
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -205,22 +303,30 @@ export default {
     addLeft(index) {
       let left = { operator: '', type: '', value: '' }
       this.dataRangeVal[index].left.push(left)
+      this.showLeftOption[index].push(false)
+      this.leftOptions[index].push([])
       this.$emit('input', this.dataRangeVal)
     },
 
     addRight(index) {
       let right = { operator: '', type: '', value: '' }
       this.dataRangeVal[index].right.push(right)
+      this.showRightOption[index].push(false)
+      this.rightOptions[index].push([])
       this.$emit('input', this.dataRangeVal)
     },
 
     delLeft(leftIndex, index) {
       this.dataRangeVal[index].left.splice(leftIndex, 1)
+      this.showLeftOption[index].splice(leftIndex, 1)
+      this.leftOptions[index].splice(leftIndex, 1)
       this.$emit('input', this.dataRangeVal)
     },
 
     delRight(rightIndex, index) {
       this.dataRangeVal[index].right.splice(rightIndex, 1)
+      this.showRightOption[index].splice(rightIndex, 1)
+      this.rightOptions[index].splice(rightIndex, 1)
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -232,7 +338,7 @@ export default {
           break
         }
         for (let j = 0; j < this.dataRangeVal[i].left.length; j++) {
-          if (this.dataRangeVal[i].left[j].type == '' || this.dataRangeVal[i].left[j].value == '') {
+          if (this.dataRangeVal[i].left[j].type == '' || this.dataRangeVal[i].left[j].field == '') {
             flag = false
             break outer
           }
@@ -242,7 +348,7 @@ export default {
           }
         }
         for (let j = 0; j < this.dataRangeVal[i].right.length; j++) {
-          if (this.dataRangeVal[i].right[j].type == '' || this.dataRangeVal[i].right[j].value == '') {
+          if (this.dataRangeVal[i].right[j].type == '' || this.dataRangeVal[i].right[j].field == '') {
             flag = false
             break outer
           }

@@ -14,7 +14,7 @@
         </div>
         <a-row :gutter="12">
           <a-col :span="4">公式左侧</a-col>
-          <a-col :span="8">
+          <a-col :span="4">
             <dc-select
               placeholder="请选择"
               v-model="item.left[0].type"
@@ -25,16 +25,19 @@
               ]"
             ></dc-select>
           </a-col>
-          <a-col :span="8" v-if="item.left[0].type != ''">
+          <a-col :span="6" v-if="item.left[0].type != ''">
             <dc-select
               v-if="item.left[0].type == 'field'"
-              v-model="item.left[0].value"
+              v-model="item.left[0].field"
               placeholder="请选择表单字段"
-              @change="val => changeLeftValue(val, index)"
+              @change="val => changeLeftField(val, index)"
               :options="renderDateList(dateList)"
             >
             </dc-select>
-            <dc-date v-else v-model="item.left[0].value" style="width: 100%" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeLeftValue(val, index)" />
+            <dc-date v-else v-model="item.left[0].field" style="width: 100%" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeLeftField(val, index)" />
+          </a-col>
+          <a-col :span="6" v-if="item.left[0].type != '' && showLeftOption[index]">
+            <dc-select v-model="item.left[0].value" placeholder="请选择" :options="leftOptions[index]"></dc-select>
           </a-col>
         </a-row>
 
@@ -47,7 +50,7 @@
 
         <a-row :gutter="12">
           <a-col :span="4">公式右侧</a-col>
-          <a-col :span="8">
+          <a-col :span="4">
             <dc-select
               placeholder="请选择"
               v-model="item.right[0].type"
@@ -59,16 +62,19 @@
             >
             </dc-select>
           </a-col>
-          <a-col :span="8" v-if="item.right[0].type != ''">
+          <a-col :span="6" v-if="item.right[0].type != ''">
             <dc-select
               v-if="item.right[0].type == 'field'"
-              v-model="item.right[0].value"
+              v-model="item.right[0].field"
               placeholder="请选择表单字段"
-              @change="val => changeRightValue(val, index)"
+              @change="val => changeRightField(val, index)"
               :options="renderDateList(dateList)"
             >
             </dc-select>
-            <dc-date v-else v-model="item.right[0].value" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeRightValue(val, index)" />
+            <dc-date v-else v-model="item.right[0].field" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeRightField(val, index)" />
+          </a-col>
+          <a-col :span="6" v-if="item.right[0].type != '' && showRightOption[index]">
+            <dc-select v-model="item.right[0].value" placeholder="请选择" :options="rightOptions[index]"></dc-select>
           </a-col>
         </a-row>
       </div>
@@ -84,17 +90,68 @@ export default {
   data() {
     return {
       dateRule: JSON.parse(JSON.stringify(this.value)),
-      operatorList: ['<', '<=', '=', '>=', '>', '!=']
+      operatorList: ['<', '<=', '=', '>=', '>', '!='],
+      leftOptions: [[]],
+      showLeftOption: [false],
+      showRightOption: [false],
+      rightOptions: [[]]
     }
   },
   watch: {
-    value(newVal) {
-      this.dateRule = newVal
+    value: {
+      handler(newVal) {
+        this.dateRule = newVal
+        let leftOptions = []
+        let showLeftOption = []
+        let showRightOption = []
+        let rightOptions = []
+        this.dateRule.forEach(dr => {
+          let left = dr.left[0]
+          let right = dr.right[0]
+          let leftItem = this.drawingList.find(item => item.__vModel__ == left.field)
+          let rightItem = this.drawingList.find(item => item.__vModel__ == right.field)
+          if (leftItem) {
+            showLeftOption.push(true)
+            let options = leftItem.columns
+              .filter(item => item.type.__config__.tag == 'dc-date')
+              .map(item => {
+                let name = item.label
+                let id = item.props
+                let key = item.key
+                return { name, id, key }
+              })
+            leftOptions.push(options)
+          } else {
+            showLeftOption.push(false)
+            leftOptions.push([])
+          }
+          if (rightItem) {
+            showRightOption.push(true)
+            let options = rightItem.columns
+              .filter(item => item.type.__config__.tag == 'dc-date')
+              .map(item => {
+                let name = item.label
+                let id = item.props
+                let key = item.key
+                return { name, id, key }
+              })
+            rightOptions.push(options)
+          } else {
+            showRightOption.push(false)
+            rightOptions.push([])
+          }
+        })
+        this.showLeftOption = showLeftOption
+        this.showRightOption = showRightOption
+        this.leftOptions = leftOptions
+        this.rightOptions = rightOptions
+      },
+      immediate: true
     }
   },
   computed: {
     dateList() {
-      return this.drawingList.filter(item => item.__config__.tag == 'dc-date')
+      return this.drawingList.filter(item => item.__config__.tag == 'dc-date' || item.__config__.layout === 'tableLayout')
     }
   },
 
@@ -115,12 +172,16 @@ export default {
 
     add(andOr) {
       let newRule = {
-        left: [{ operator: '', type: '', value: '' }],
+        left: [{ operator: '', type: '', value: '', field: '' }],
         operator: '',
-        right: [{ operator: '', type: '', value: '' }],
+        right: [{ operator: '', type: '', value: '', field: '' }],
         and_or: andOr == 0 ? 'and' : 'or'
       }
       this.dateRule.push(newRule)
+      this.leftOptions.push([])
+      this.showLeftOption.push(false)
+      this.showRightOption.push(false)
+      this.rightOptions.push([])
       this.$emit('input', this.dateRule)
     },
 
@@ -132,22 +193,56 @@ export default {
     changeLeftType(val, index) {
       this.dateRule[index].left[0].type = val
       this.dateRule[index].left[0].value = ''
+      this.dateRule[index].left[0].field = ''
       this.$emit('input', this.dateRule)
     },
 
     changeRightType(val, index) {
       this.dateRule[index].right[0].type = val
+      this.dateRule[index].right[0].field = ''
       this.dateRule[index].right[0].value = ''
       this.$emit('input', this.dateRule)
     },
 
-    changeLeftValue(val, index) {
-      this.dateRule[index].left[0].value = val
+    changeLeftField(val, index) {
+      this.dateRule[index].left[0].field = val
+      this.dateRule[index].left[0].value = ''
+      let item = this.drawingList.find(item => item.__vModel__ == val)
+      if (val && item && item.__config__.layout === 'tableLayout') {
+        this.showLeftOption[index] = true
+        this.leftOptions[index] = item.columns
+          .filter(item => item.type.__config__.tag == 'dc-date')
+          .map(item => {
+            let name = item.label
+            let id = item.props
+            let key = item.key
+            return { name, id, key }
+          })
+      } else {
+        this.showLeftOption[index] = false
+        this.leftOptions[index] = []
+      }
       this.$emit('input', this.dateRule)
     },
 
-    changeRightValue(val, index) {
-      this.dateRule[index].right[0].value = val
+    changeRightField(val, index) {
+      this.dateRule[index].right[0].field = val
+      this.dateRule[index].right[0].value = ''
+      let item = this.drawingList.find(item => item.__vModel__ == val)
+      if (val && item && item.__config__.layout === 'tableLayout') {
+        this.showRightOption[index] = true
+        this.rightOptions[index] = item.columns
+          .filter(item => item.type.__config__.tag == 'dc-date')
+          .map(item => {
+            let name = item.label
+            let id = item.props
+            let key = item.key
+            return { name, id, key }
+          })
+      } else {
+        this.showRightOption[index] = false
+        this.rightOptions[index] = []
+      }
       this.$emit('input', this.dateRule)
     },
 
@@ -158,11 +253,11 @@ export default {
           flag = false
           break
         }
-        if (this.dateRule[i].left[0].type == '' || this.dateRule[i].left[0].value == '') {
+        if (this.dateRule[i].left[0].type == '' || this.dateRule[i].left[0].field == '') {
           flag = false
           break
         }
-        if (this.dateRule[i].right[0].type == '' || this.dateRule[i].right[0].value == '') {
+        if (this.dateRule[i].right[0].type == '' || this.dateRule[i].right[0].field == '') {
           flag = false
           break
         }
