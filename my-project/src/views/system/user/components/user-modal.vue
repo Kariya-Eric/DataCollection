@@ -33,7 +33,9 @@
           <!-- <dc-tree-select :options="depart" v-model="model.orgId"></dc-tree-select> -->
         </a-form-model-item>
         <a-form-model-item label="专业" prop="subjectId" v-if="showSubject">
-          <dc-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" :options="subjectList"></dc-select>
+          <a-select v-model="model.subjectId" placeholder="请选择专业" :disabled="disabled" allowClear>
+            <a-select-option v-for="item in subjectList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="邮箱" prop="email">
           <a-input v-model="model.email" placeholder="请输入邮箱" :disabled="disabled" allowClear><a-icon slot="suffix" type="mail" /></a-input>

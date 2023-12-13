@@ -15,6 +15,16 @@
         <a-form-model-item label="年份" prop="year">
           <dc-select v-model="model.year" placeholder="请选择年份" @change="val => initDictionary(val)" :options="yearList" :fields="{}" />
         </a-form-model-item>
+        <a-form-model-item label="类型" prop="type">
+          <dc-select
+            v-model="model.type"
+            placeholder="请选择类型"
+            :options="[
+              { name: '教学基本状态数据', id: '教学基本状态数据' },
+              { name: '其他数据', id: '其他数据' }
+            ]"
+          />
+        </a-form-model-item>
         <a-form-model-item label="表单名称" prop="name">
           <dc-select v-model="model.name" placeholder="请选择表单名称" @change="val => getOptionData(val)" :options="formData" />
         </a-form-model-item>
@@ -42,11 +52,13 @@ export default {
       ],
       rules: {
         year: [{ required: true, message: '请选择年份', trigger: 'change' }],
+        type: [{ required: true, message: '请选择类型', trigger: 'change' }],
         name: [{ required: true, message: '请选择表单名称', trigger: 'change' }],
         option: [{ required: true, message: '请选择选项', trigger: 'change' }]
       },
       formData: [],
       optionData: [],
+      tempFormData: [],
       optionValueData: []
     }
   },
@@ -61,56 +73,88 @@ export default {
       return years
     }
   },
+  watch: {
+    'model.type': {
+      handler(newVal) {
+        this.model = Object.assign({}, { year: this.model.year, type: newVal })
+        this.optionData = []
+        this.optionValueData = []
+        if (newVal) {
+          this.formData = this.tempFormData.filter(item => item.parentId == newVal)
+        } else {
+          this.formData = []
+        }
+        console.log(newVal, this.formData)
+      },
+      immediate: true
+    }
+  },
+
   methods: {
     show() {
       this.visible = true
     },
 
     getOptionData(val) {
-      this.loading = true
-      listAll(val)
-        .then(res => {
-          if (res.state) {
-            this.$nextTick(() => {
-              this.optionData = res.value.map(item => {
-                let newItem = { ...item }
-                delete newItem.children
-                return newItem
+      this.model.option = ''
+      this.optionValueData = []
+      this.optionData = []
+      if (val) {
+        this.loading = true
+        listAll({ parentId: val, year: this.model.year })
+          .then(res => {
+            if (res.state) {
+              this.$nextTick(() => {
+                this.optionData = res.value.map(item => {
+                  let newItem = { ...item }
+                  delete newItem.children
+                  return newItem
+                })
               })
-            })
-          }
-        })
-        .finally(() => (this.loading = false))
+            }
+          })
+          .finally(() => (this.loading = false))
+      }
     },
 
     getOptionValueData(val) {
-      this.loading = true
-      listAll(val)
-        .then(res => {
-          if (res.state) {
-            this.$nextTick(() => {
-              this.optionValueData = res.value.map(item => {
-                let newItem = { ...item }
-                delete newItem.children
-                return newItem
+      this.optionValueData = []
+      if (val) {
+        this.loading = true
+        listAll({ parentId: val, year: this.model.year })
+          .then(res => {
+            if (res.state) {
+              this.$nextTick(() => {
+                this.optionValueData = res.value.map(item => {
+                  let newItem = { ...item }
+                  delete newItem.children
+                  return newItem
+                })
               })
-            })
-          }
-        })
-        .finally(() => (this.loading = false))
+            }
+          })
+          .finally(() => (this.loading = false))
+      }
     },
 
     initDictionary(year) {
-      this.loading = true
-      getDictionaryTree(year)
-        .then(res => {
-          if (res.state) {
-            let options = []
-            this.renderTreeData(res.value, options)
-            this.$nextTick(() => (this.formData = options))
-          }
-        })
-        .finally(() => (this.loading = false))
+      this.model = Object.assign({}, { year })
+      this.formData = []
+      this.optionData = []
+      this.tempFormData = []
+      this.optionValueData = []
+      if (year) {
+        this.loading = true
+        getDictionaryTree(year)
+          .then(res => {
+            if (res.state) {
+              let options = []
+              this.renderTreeData(res.value, options)
+              this.$nextTick(() => (this.tempFormData = options))
+            }
+          })
+          .finally(() => (this.loading = false))
+      }
     },
 
     renderTreeData(treeData, options) {
@@ -131,6 +175,7 @@ export default {
       this.model = {}
       this.formData = []
       this.optionData = []
+      this.tempFormData = []
       this.optionValueData = []
     },
 
