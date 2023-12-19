@@ -84,7 +84,6 @@ export default {
         } else {
           this.formData = []
         }
-        console.log(newVal, this.formData)
       },
       immediate: true
     }

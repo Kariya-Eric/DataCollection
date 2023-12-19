@@ -40,6 +40,7 @@
             <dc-select
               v-if="left.type == 'field'"
               v-model="left.field"
+              placeholder="请选择"
               @change="val => changeLeftField(val, leftIndex, index)"
               :options="renderDrawingListOption(drawingList)"
             ></dc-select>
@@ -132,7 +133,7 @@ export default {
   watch: {
     value: {
       handler(newVal) {
-        this.dataRangeVal = newVal
+        this.dataRangeVal = JSON.parse(JSON.stringify(newVal))
         let leftOptions = []
         let rightOptions = []
         let showRightOption = []

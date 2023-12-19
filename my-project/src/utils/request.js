@@ -36,9 +36,9 @@ const errorHandler = error => {
             .then(res => {
               if (res.data.success) {
                 let new_user_info = res.data
-                let refresh_user_info = { ...old_user_info, expire_in: new_user_info.expire_in, refresh_token: new_user_info.refresh_token, token: new_user_info.token }
+                let refresh_user_info = { ...old_user_info, expire_in: new_user_info.expire_in, refresh_token: new_user_info.refresh_token, token: new_user_info.access_token }
                 storage.set(USER_INFO, refresh_user_info)
-                storage.set(ACCESS_TOKEN, new_user_info.token)
+                storage.set(ACCESS_TOKEN, new_user_info.access_token)
                 return axios(error.config)
               } else {
                 Modal.confirm({

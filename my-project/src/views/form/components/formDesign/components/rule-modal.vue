@@ -45,6 +45,12 @@
         <a-form-model-item v-if="model.type == 'other'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
           <rule-other ref="verificationFormulas" v-model="model.verificationFormulas" />
         </a-form-model-item>
+        <a-form-model-item v-if="model.type == 'exclusivity'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
+          <rule-exclusivity ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+        </a-form-model-item>
+        <a-form-model-item v-if="model.type == 'consistency'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
+          <rule-consistency ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+        </a-form-model-item>
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -56,10 +62,12 @@ import RuleOther from './rule-other'
 import RuleRange from './rule-range'
 import RuleUnique from './rule-unique'
 import RuleDate from './rule-date'
+import RuleExclusivity from './rule-exclusivity'
+import RuleConsistency from './rule-consistency'
 import { addRule, updateRule } from '@/api/form'
 export default {
   name: 'RuleModal',
-  components: { RuleOther, RuleRange, RuleUnique, RuleDate },
+  components: { RuleOther, RuleRange, RuleUnique, RuleDate, RuleExclusivity, RuleConsistency },
   props: ['drawingList', 'formId'],
   mixins: [DataCollectionModalMixin],
   data() {
@@ -154,7 +162,23 @@ export default {
         } else if (newVal == 'other') {
           this.$set(this.model, 'verificationFormulas', '')
         } else if (newVal == 'exclusivity') {
+          let dataExclusivity = {
+            left: [{ operator: '', type: '', value: '', field: '', formId: '' }],
+            operator: '',
+            right: [{ operator: '', type: '', value: '', field: '', formId: '' }],
+            and_or: ''
+          }
+          this.$set(this.model, 'verificationFormulas', dataExclusivity)
         } else if (newVal == 'consistency') {
+          let dataConsistency = [
+            {
+              left: [{ operator: '', type: 'field', value: '', field: '', formId: 'current' }],
+              operator: '',
+              right: [{ operator: '', type: 'field', value: '', field: '', formId: '' }],
+              and_or: ''
+            }
+          ]
+          this.$set(this.model, 'verificationFormulas', dataConsistency)
         }
       }
     }
