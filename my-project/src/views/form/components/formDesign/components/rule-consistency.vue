@@ -25,14 +25,14 @@
             ></dc-select>
           </a-col>
           <a-col :span="8" v-if="showLeftOption[index][leftIndex]">
-            <dc-select v-model="left.value" placeholder="请选择" :options="[]"></dc-select>
+            <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="leftIndex == 0">
               <a-icon type="plus-circle" @click="addLeft(index)" />
             </div>
             <div v-else class="rowIconDel">
-              <a-icon type="minus-circle" />
+              <a-icon type="minus-circle" @click="delLeft(leftIndex, index)" />
             </div>
           </a-col>
         </a-row>
@@ -47,7 +47,7 @@
             <dc-select v-model="right.field" :options="[]" placeholder="请选择关联表字段"></dc-select>
           </a-col>
           <a-col :span="5" v-if="showRightOption[index][rightIndex]">
-            <dc-select v-model="right.value" :options="[]" placeholder="请选择"></dc-select>
+            <dc-select v-model="right.value" :options="rightOptions" placeholder="请选择"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="rightIndex == 0">
@@ -71,7 +71,9 @@ export default {
     return {
       dataConsistencyVal: JSON.parse(JSON.stringify(this.value)),
       showLeftOption: [[]],
-      showRightOption: [[]]
+      showRightOption: [[]],
+      leftOptions: [[]],
+      rightOptions: [[]]
     }
   },
   watch: {
@@ -83,15 +85,24 @@ export default {
     }
   },
   methods: {
+    delLeft(leftIndex, index) {
+      this.dataConsistencyVal[index].left.splice(leftIndex, 1)
+      this.showLeftOption[index].splice(leftIndex, 1)
+      this.leftOptions[index].splice(leftIndex, 1)
+      this.$emit('input', this.dataConsistencyVal)
+    },
     addLeft(index) {
-      let left = { operator: '', type: 'field', value: '', field: '', formId: 'cuurent' }
+      let left = { operator: '', type: 'field', value: '', field: '', formId: 'current' }
       this.dataConsistencyVal[index].left.push(left)
+      this.showLeftOption[index].push(false)
       this.$emit('input', this.dataConsistencyVal)
     },
     addRight(index) {},
     del(index) {
       this.dataConsistencyVal.splice(index, 1)
       this.dataConsistencyVal[0].and_or = ''
+      this.showLeftOption.splice(index, 1)
+      this.showRightOption.splice(index, 1)
       this.$emit('input', this.dataConsistencyVal)
     },
     add(andOr) {
@@ -102,6 +113,10 @@ export default {
         and_or: andOr == 0 ? 'and' : 'or'
       }
       this.dataConsistencyVal.push(consistency)
+      this.showLeftOption.push([])
+      this.showRightOption.push([])
+      this.leftOptions.push([])
+      this.rightOptions.push([])
       this.$emit('input', this.dataConsistencyVal)
     },
 
@@ -114,7 +129,24 @@ export default {
       })
     },
 
-    changeLeftField(val, leftIndex, index) {}
+    changeLeftField(val, leftIndex, index) {
+      this.dataConsistencyVal[index].left[leftIndex].field = val
+      this.dataConsistencyVal[index].left[leftIndex].value = ''
+      let item = this.drawingList.find(item => item.__vModel__ == val)
+      if (val && item.__config__.layout === 'tableLayout') {
+        this.showLeftOption[index][leftIndex] = true
+        this.leftOptions[index][leftIndex] = item.columns.map(item => {
+          let name = item.label
+          let id = item.props
+          let key = item.key
+          return { name, id, key }
+        })
+      } else {
+        this.showLeftOption[index][leftIndex] = false
+        this.leftOptions[index][leftIndex] = []
+      }
+      this.$emit('input', this.dataConsistencyVal)
+    }
   }
 }
 </script>

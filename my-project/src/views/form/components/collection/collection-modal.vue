@@ -12,7 +12,8 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="年份" prop="year">
-          <dc-date v-model="model.year" placeholder="请输入年份" mode="year" format="yyyy" :disabled="disabled" />
+          <dc-date-ant v-model="model.year" placeholder="请输入年份" mode="year" format="YYYY" :disabled="disabled" />
+          <!-- <dc-date v-model="model.year" placeholder="请输入年份" mode="year" format="yyyy" :disabled="disabled" /> -->
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -27,6 +28,7 @@ export default {
   mixins: [DataCollectionModalMixin],
   data() {
     return {
+      disabled: false,
       rules: {
         name: [{ required: true, message: '请输入合集名称' }],
         type: [{ required: true, message: '请选择合集类型' }],
@@ -40,7 +42,10 @@ export default {
     },
     edit(record, title) {
       this.title = title
-      this.model = Object.assign({}, record)
+      this.$nextTick(() => {
+        this.disabled = record.enabledFlag == 1
+        this.model = Object.assign({}, record)
+      })
       this.visible = true
     },
     close() {

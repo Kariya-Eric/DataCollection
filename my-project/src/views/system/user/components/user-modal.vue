@@ -147,8 +147,8 @@ export default {
     },
 
     close() {
-      this.$emit('close')
       this.visible = false
+      this.$emit('close')
       this.accountDisabled = true
       this.$refs.form.clearValidate()
       this.model = { roleId: [] }

@@ -60,7 +60,7 @@
       </a-table>
     </div>
 
-    <user-modal ref="modalForm" :depart="orgId" :role="roles" @ok="loadData" :departs="departs[0].children" />
+    <user-modal ref="modalForm" :depart="orgId" :role="roles" @ok="loadData" :departs="departs[0].children" :subjects="subjectList" />
   </div>
 </template>
 
@@ -69,6 +69,7 @@ import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import UserModal from '../../user/components/user-modal.vue'
 import { getUserList } from '@/api/system/user'
 import { deleteUser } from '@/api/system/user'
+import { getSubjectTree } from '@/api/system/subject'
 export default {
   name: 'DepartUser',
   mixins: [DataCollectionListMixin],
@@ -76,6 +77,7 @@ export default {
   props: ['roles', 'orgId', 'isEdit', 'departs'],
   data() {
     return {
+      subjectList: [],
       url: {
         deleteBatch: '/uc/api/user/deleteUserByIds'
       },
@@ -95,6 +97,7 @@ export default {
       immediate: true,
       handler(newVal) {
         if (newVal) {
+          this.initSubject()
           this.loadData()
         }
       }
@@ -144,6 +147,27 @@ export default {
           }
         })
         .finally(() => (that.loading = false))
+    },
+
+    initSubject() {
+      getSubjectTree()
+        .then(res => {
+          if (res.state) {
+            this.renderSubject(res.value)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    renderSubject(subject) {
+      subject.forEach(sub => {
+        if (sub.type == 'SUBJECT') {
+          this.subjectList.push(sub)
+        }
+        if (sub.children && sub.children.length > 0) {
+          this.renderSubject(sub.children)
+        }
+      })
     }
   }
 }

@@ -1,5 +1,6 @@
 import DcSwitch from './DataCollection/DcSwitch'
 import DcDate from './DataCollection/DcDate'
+import DcDateAnt from './DataCollection/DcDateAnt'
 import DcModal from './DataCollection/DcModal'
 import DcStatus from './DataCollection/DcStatus'
 import DcEndTime from './DataCollection/DcEndTime'
@@ -33,6 +34,7 @@ export default {
     Vue.component('DcEndtime', DcEndTime)
     Vue.component('DcSwitch', DcSwitch)
     Vue.component('DcDate', DcDate)
+    Vue.component('DcDateAnt', DcDateAnt)
     Vue.component('DcModal', DcModal)
     Vue.component('DcStatus', DcStatus)
     Vue.component('FormGenerator', FormGenerator)

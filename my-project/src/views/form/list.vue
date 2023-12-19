@@ -129,7 +129,6 @@ export default {
 
     showCollection(record) {
       this.handleEdit(record, '合集属性')
-      this.$refs.modalForm.disabled = record.enabledFlag == 1
     },
 
     enableCollection(val, id) {
