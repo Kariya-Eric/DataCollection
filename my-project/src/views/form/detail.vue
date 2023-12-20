@@ -71,7 +71,7 @@
       </div>
     </a-card>
     <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
-    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" @refresh="refreshData" />
+    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" @refresh="refreshData" :formList="dataSource" />
     <form-copy-modal ref="formCopyModal" :formId="collectionDetail.id" @ok="refreshData" />
     <form-category-modal ref="formCategoryModal" @ok="refreshData" />
   </div>

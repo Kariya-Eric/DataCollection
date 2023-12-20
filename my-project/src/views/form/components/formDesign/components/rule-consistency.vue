@@ -41,20 +41,25 @@
             <span v-if="rightIndex == 0"> 与关联表 </span>
           </a-col>
           <a-col :span="5">
-            <dc-select v-model="right.formId" :options="[]" placeholder="请选择关联表"></dc-select>
+            <dc-select v-model="right.formId" :options="selectedFormList" placeholder="请选择关联表" @change="val => changeForm(val, rightIndex, index)"></dc-select>
           </a-col>
           <a-col :span="6">
-            <dc-select v-model="right.field" :options="[]" placeholder="请选择关联表字段"></dc-select>
+            <dc-select
+              v-model="right.field"
+              @change="val => changeRightField(val, rightIndex, index)"
+              :options="rightFieldOptions[index][rightIndex]"
+              placeholder="请选择关联表字段"
+            ></dc-select>
           </a-col>
           <a-col :span="5" v-if="showRightOption[index][rightIndex]">
-            <dc-select v-model="right.value" :options="rightOptions" placeholder="请选择"></dc-select>
+            <dc-select v-model="right.value" :options="rightOptions[index][rightIndex]" placeholder="请选择"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="rightIndex == 0">
               <a-icon type="plus-circle" @click="addRight(index)" />
             </div>
             <div v-else class="rowIconDel">
-              <a-icon type="minus-circle" />
+              <a-icon type="minus-circle" @click="delRight(rightIndex, index)" />
             </div>
           </a-col>
         </a-row>
@@ -66,25 +71,116 @@
 <script>
 export default {
   name: 'RuleConsistency',
-  props: ['value', 'drawingList'],
+  props: ['value', 'drawingList', 'formList'],
   data() {
     return {
       dataConsistencyVal: JSON.parse(JSON.stringify(this.value)),
       showLeftOption: [[]],
       showRightOption: [[]],
       leftOptions: [[]],
-      rightOptions: [[]]
+      rightOptions: [[]],
+      rightFieldOptions: [[]]
+    }
+  },
+  computed: {
+    selectedFormList() {
+      return this.formList.map(item => {
+        const { name, id } = item
+        return { name, id }
+      })
     }
   },
   watch: {
     value: {
       handler(newVal) {
         this.dataConsistencyVal = JSON.parse(JSON.stringify(newVal))
+        let showLeftOption = [[]]
+        let showRightOption = [[]]
+        let leftOptions = [[]]
+        let rightOptions = [[]]
+        let rightFieldOptions = [[]]
+        this.dataConsistencyVal.forEach((data, i) => {
+          let left = data.left
+          leftOptions[i] = []
+          rightOptions[i] = []
+          showRightOption[i] = []
+          showLeftOption[i] = []
+          rightFieldOptions[i] = []
+          left.forEach((l, j) => {
+            if (l.value) {
+              let item = this.drawingList.find(d => d.__vModel__ == l.field)
+              leftOptions[i][j] = item.columns.map(item => {
+                let name = item.label
+                let id = item.props
+                let key = item.key
+                return { name, id, key }
+              })
+              showLeftOption[i][j] = true
+            } else {
+              leftOptions[i][j] = []
+              showLeftOption[i][j] = false
+            }
+          })
+          let right = data.right
+          right.forEach((r, j) => {
+            let form = this.formList.find(f => (f.id = r.formId))
+            if (form) {
+              let rightList = JSON.parse(form.componentProperties)
+              rightFieldOptions[i][j] = rightList.map(item => {
+                let name = item.__config__.label
+                let id = item.__vModel__
+                let key = item.__config__.formId
+                return { name, id, key }
+              })
+              if (r.value) {
+                let item = rightList.find(d => d.__vModel__ == r.field)
+                rightOptions[i][j] = item.columns.map(item => {
+                  let name = item.label
+                  let id = item.props
+                  let key = item.key
+                  return { name, id, key }
+                })
+                showRightOption[i][j] = true
+              } else {
+                rightOptions[i][j] = []
+                showRightOption[i][j] = false
+              }
+            } else {
+              rightFieldOptions[i][j] = []
+              rightOptions[i][j] = []
+              showRightOption[i][j] = false
+            }
+          })
+        })
+        this.rightFieldOptions = rightFieldOptions
+        this.leftOptions = leftOptions
+        this.showLeftOption = showLeftOption
+        this.rightOptions = rightOptions
+        this.showRightOption = showRightOption
+        console.log('w', this.dataConsistencyVal)
       },
       immediate: true
     }
   },
   methods: {
+    changeForm(val, rightIndex, index) {
+      this.rightFieldOptions[index][rightIndex] = []
+      this.dataConsistencyVal[index].right[rightIndex].formId = val
+      this.dataConsistencyVal[index].right[rightIndex].field = ''
+      this.dataConsistencyVal[index].right[rightIndex].value = ''
+      if (val) {
+        let form = this.formList.find(f => (f.id = val))
+        let options = JSON.parse(form.componentProperties).map(item => {
+          let name = item.__config__.label
+          let id = item.__vModel__
+          let key = item.__config__.formId
+          return { name, id, key }
+        })
+        this.rightFieldOptions[index][rightIndex] = options
+      }
+      this.$emit('input', this.dataConsistencyVal)
+    },
+
     delLeft(leftIndex, index) {
       this.dataConsistencyVal[index].left.splice(leftIndex, 1)
       this.showLeftOption[index].splice(leftIndex, 1)
@@ -95,16 +191,35 @@ export default {
       let left = { operator: '', type: 'field', value: '', field: '', formId: 'current' }
       this.dataConsistencyVal[index].left.push(left)
       this.showLeftOption[index].push(false)
+      this.leftOptions[index].push([])
       this.$emit('input', this.dataConsistencyVal)
     },
-    addRight(index) {},
+    addRight(index) {
+      let right = { operator: '', type: 'field', value: '', field: '', formId: '' }
+      this.dataConsistencyVal[index].right.push(right)
+      this.showRightOption[index].push(false)
+      this.rightFieldOptions[index].push([])
+      this.rightOptions[index].push([])
+      this.$emit('input', this.dataConsistencyVal)
+    },
+    delRight(rightIndex, index) {
+      this.dataConsistencyVal[index].right.splice(rightIndex, 1)
+      this.showRightOption[index].splice(rightIndex, 1)
+      this.rightOptions[index].splice(rightIndex, 1)
+      this.rightFieldOptions[index].splice[(rightIndex, 1)]
+      this.$emit('input', this.dataConsistencyVal)
+    },
     del(index) {
       this.dataConsistencyVal.splice(index, 1)
       this.dataConsistencyVal[0].and_or = ''
       this.showLeftOption.splice(index, 1)
       this.showRightOption.splice(index, 1)
+      this.leftOptions.splice(index, 1)
+      this.rightOptions.splice(index, 1)
+      this.rightFieldOptions.splice(index, 1)
       this.$emit('input', this.dataConsistencyVal)
     },
+
     add(andOr) {
       let consistency = {
         left: [{ operator: '', type: 'field', value: '', field: '', formId: 'current' }],
@@ -117,6 +232,7 @@ export default {
       this.showRightOption.push([])
       this.leftOptions.push([])
       this.rightOptions.push([])
+      this.rightFieldOptions.push(JSON.parse(JSON.stringify(this.selectedFormList)))
       this.$emit('input', this.dataConsistencyVal)
     },
 
@@ -146,6 +262,51 @@ export default {
         this.leftOptions[index][leftIndex] = []
       }
       this.$emit('input', this.dataConsistencyVal)
+    },
+
+    changeRightField(val, rightIndex, index) {
+      this.dataConsistencyVal[index].right[rightIndex].field = val
+      this.dataConsistencyVal[index].right[rightIndex].value = ''
+      let form = this.formList.find(f => (f.id = this.dataConsistencyVal[index].right[rightIndex].formId))
+      let item = JSON.parse(form.componentProperties).find(item => item.__vModel__ == val)
+      if (val && item.__config__.layout === 'tableLayout') {
+        this.showRightOption[index][rightIndex] = true
+        this.rightOptions[index][rightIndex] = item.columns.map(item => {
+          let name = item.label
+          let id = item.props
+          let key = item.key
+          return { name, id, key }
+        })
+      } else {
+        this.showRightOption[index][rightIndex] = false
+        this.rightOptions[index][rightIndex] = []
+      }
+      this.$emit('input', this.dataConsistencyVal)
+    },
+
+    validate() {
+      let flag = true
+      outer: for (let i = 0; i < this.dataConsistencyVal.length; i++) {
+        for (let j = 0; j < this.dataConsistencyVal[i].left.length; j++) {
+          if (this.dataConsistencyVal[i].left[j].field == '') {
+            flag = false
+            break outer
+          }
+        }
+        for (let j = 0; j < this.dataConsistencyVal[i].right.length; j++) {
+          if (this.dataConsistencyVal[i].right[j].field == '' || this.dataConsistencyVal[i].right[j].formId == '') {
+            flag = false
+            break outer
+          }
+        }
+      }
+      return new Promise((resolve, reject) => {
+        if (flag) {
+          resolve(undefined)
+        } else {
+          resolve('一致性校验组合中不能为空！')
+        }
+      })
     }
   }
 }

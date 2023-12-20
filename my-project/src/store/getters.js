@@ -3,6 +3,7 @@ import storage from 'store'
 const getters = {
   username: state => state.user.userInfo.username,
   token: state => state.user.token,
+  refreshToken: state => state.user.refreshToken,
   userInfo: state => {
     state.user.userInfo = storage.get(USER_INFO)
     return state.user.userInfo

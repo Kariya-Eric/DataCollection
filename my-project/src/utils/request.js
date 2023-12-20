@@ -4,20 +4,21 @@ import storage from 'store'
 import notification from 'ant-design-vue/es/notification'
 import { Modal } from 'ant-design-vue'
 import { VueAxios } from './axios'
-import { ACCESS_TOKEN, USER_INFO } from '@/store/mutation-types'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/store/mutation-types'
 
 // 创建 axios 实例
 const request = axios.create({
   // API 请求的默认前缀
-  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
-  timeout: 6000 // 请求超时时间
+  baseURL: process.env.VUE_APP_BASE_API // api 的 base_url
 })
 
 // 异常拦截处理器
-const errorHandler = error => {
+let isRefreshing = false
+// 重试队列，每一项将是一个待执行的函数形式
+let requests = []
+const errorHandler = async error => {
   if (error.response) {
     const data = error.response.data
-    let isRefreshing = false
     switch (error.response.status) {
       case 404:
         notification.error({
@@ -27,44 +28,31 @@ const errorHandler = error => {
         break
       case 401:
         if (!isRefreshing) {
+          const config = error.config
           isRefreshing = true
-          let old_user_info = storage.get(USER_INFO)
-          axios
-            .get(process.env.VUE_APP_BASE_API + 'uc/api/auth/refreshtoken', {
-              headers: { Authorization: 'Bearer ' + storage.get(USER_INFO).refresh_token }
+          try {
+            const result = await refreshToken()
+            console.log('refresh', result)
+            if (result.data.success) {
+              storage.set(ACCESS_TOKEN, result.data.token)
+              storage.set(REFRESH_TOKEN, result.data.refreshToken)
+              return request(config)
+            } else {
+              showModal()
+            }
+          } catch (e) {
+            showModal()
+          } finally {
+            isRefreshing = false
+          }
+        } else {
+          return new Promise(resolve => {
+            requests.push(token => {
+              config.headers['Authorization'] = 'Bearer ' + token
+              resolve(request(config))
             })
-            .then(res => {
-              if (res.data.success) {
-                let new_user_info = res.data
-                let refresh_user_info = { ...old_user_info, expire_in: new_user_info.expire_in, refresh_token: new_user_info.refresh_token, token: new_user_info.access_token }
-                storage.set(USER_INFO, refresh_user_info)
-                storage.set(ACCESS_TOKEN, new_user_info.access_token)
-                return axios(error.config)
-              } else {
-                Modal.confirm({
-                  title: '登录已过期',
-                  content: '登陆信息已失效，请重新登录',
-                  icon: 'exclamation-circle',
-                  cancelButtonProps: { style: { display: 'none' } },
-                  okText: '重新登录',
-                  mask: false,
-                  onOk: () => {
-                    store.dispatch('Logout').then(() => {
-                      try {
-                        let path = window.document.location.pathname
-                        if (path != '/' && path.indexOf('/user/login') == -1) {
-                          window.location.reload()
-                        }
-                      } catch (e) {
-                        window.location.reload()
-                      }
-                    })
-                  }
-                })
-              }
-            })
+          })
         }
-        break
       default:
         notification.error({
           message: '系统提示',
@@ -102,6 +90,34 @@ const installer = {
   install(Vue) {
     Vue.use(VueAxios, request)
   }
+}
+
+async function refreshToken() {
+  storage.set(ACCESS_TOKEN, storage.get(REFRESH_TOKEN))
+  return await request({ method: 'get', url: '/uc/api/auth/refreshtoken', headers: { Authorization: 'Bearer ' + storage.get(REFRESH_TOKEN) } })
+}
+
+function showModal() {
+  Modal.confirm({
+    title: '登录已过期',
+    content: '登陆信息已失效，请重新登录',
+    icon: 'exclamation-circle',
+    cancelButtonProps: { style: { display: 'none' } },
+    okText: '重新登录',
+    mask: false,
+    onOk: () => {
+      store.dispatch('Logout').then(() => {
+        try {
+          let path = window.document.location.pathname
+          if (path != '/' && path.indexOf('/user/login') == -1) {
+            window.location.reload()
+          }
+        } catch (e) {
+          window.location.reload()
+        }
+      })
+    }
+  })
 }
 
 export default request

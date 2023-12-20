@@ -46,10 +46,10 @@
           <rule-other ref="verificationFormulas" v-model="model.verificationFormulas" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'exclusivity'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-exclusivity ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+          <rule-exclusivity ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :formList="formList" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'consistency'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-consistency ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+          <rule-consistency ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :formList="formList" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -68,7 +68,7 @@ import { addRule, updateRule } from '@/api/form'
 export default {
   name: 'RuleModal',
   components: { RuleOther, RuleRange, RuleUnique, RuleDate, RuleExclusivity, RuleConsistency },
-  props: ['drawingList', 'formId'],
+  props: ['drawingList', 'formId', 'formList'],
   mixins: [DataCollectionModalMixin],
   data() {
     return {
