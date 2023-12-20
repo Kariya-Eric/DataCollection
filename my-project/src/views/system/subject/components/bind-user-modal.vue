@@ -75,7 +75,7 @@
 import { getUserList, updateUserSubjectByIds } from '@/api/system/user'
 export default {
   name: 'BindUserModal',
-  props: ['roleList', 'subject'],
+  props: ['roleList', 'subject', 'bindList'],
   data() {
     return {
       visible: false,
@@ -127,11 +127,11 @@ export default {
       updateUserSubjectByIds({ userIds, subjectId: this.subject.id })
         .then(res => {
           if (res.state) {
-            this.$message.success(res.message)
+            this.$message.success('绑定成功')
             this.$emit('refresh')
             this.handleCancel()
           } else {
-            this.$message.error(res.message)
+            this.$message.error('绑定失败')
           }
         })
         .finally(() => (this.loading = false))
@@ -158,7 +158,11 @@ export default {
       getUserList(params)
         .then(res => {
           if (res.state) {
-            this.dataSource = res.value.rows || res.value
+            let userList = res.value.rows || res.value
+            this.dataSource = userList.filter(user => {
+              let item = this.bindList.find(item => item.id == user.id)
+              return item == undefined
+            })
             if (res.value.total) {
               this.ipagination.total = res.value.total
             } else {

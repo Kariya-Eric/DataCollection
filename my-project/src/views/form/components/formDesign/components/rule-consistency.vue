@@ -74,7 +74,7 @@ export default {
   props: ['value', 'drawingList', 'formList'],
   data() {
     return {
-      dataConsistencyVal: JSON.parse(JSON.stringify(this.value)),
+      dataConsistencyVal: undefined,
       showLeftOption: [[]],
       showRightOption: [[]],
       leftOptions: [[]],
@@ -157,13 +157,13 @@ export default {
         this.showLeftOption = showLeftOption
         this.rightOptions = rightOptions
         this.showRightOption = showRightOption
-        console.log('w', this.dataConsistencyVal)
       },
       immediate: true
     }
   },
   methods: {
     changeForm(val, rightIndex, index) {
+      console.log('x', val)
       this.rightFieldOptions[index][rightIndex] = []
       this.dataConsistencyVal[index].right[rightIndex].formId = val
       this.dataConsistencyVal[index].right[rightIndex].field = ''
@@ -178,6 +178,7 @@ export default {
         })
         this.rightFieldOptions[index][rightIndex] = options
       }
+      console.log(this.dataConsistencyVal)
       this.$emit('input', this.dataConsistencyVal)
     },
 

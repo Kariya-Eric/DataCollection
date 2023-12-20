@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <bind-user-modal ref="bindUserModal" :roleList="roles" :subject="subject" @refresh="getUser()" />
+    <bind-user-modal ref="bindUserModal" :roleList="roles" :subject="subject" @refresh="getUser()" :bindList="dataSource"/>
 
     <div>
       <a-table
