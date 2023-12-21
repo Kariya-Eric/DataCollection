@@ -41,7 +41,12 @@
             <span v-if="rightIndex == 0"> 与关联表 </span>
           </a-col>
           <a-col :span="5">
-            <dc-select v-model="right.formId" :options="selectedFormList" placeholder="请选择关联表" @change="val => changeForm(val, rightIndex, index)"></dc-select>
+            <dc-select
+              v-model="right.formId"
+              :options="rightFormOptions[index][rightIndex]"
+              placeholder="请选择关联表"
+              @change="val => changeForm(val, rightIndex, index)"
+            ></dc-select>
           </a-col>
           <a-col :span="6">
             <dc-select
@@ -79,7 +84,8 @@ export default {
       showRightOption: [[]],
       leftOptions: [[]],
       rightOptions: [[]],
-      rightFieldOptions: [[]]
+      rightFieldOptions: [[]],
+      rightFormOptions: [[]]
     }
   },
   computed: {
@@ -94,11 +100,12 @@ export default {
     value: {
       handler(newVal) {
         this.dataConsistencyVal = JSON.parse(JSON.stringify(newVal))
-        let showLeftOption = [[]]
-        let showRightOption = [[]]
-        let leftOptions = [[]]
-        let rightOptions = [[]]
-        let rightFieldOptions = [[]]
+        let showLeftOption = []
+        let showRightOption = []
+        let leftOptions = []
+        let rightOptions = []
+        let rightFieldOptions = []
+        let rightFormOptions = []
         this.dataConsistencyVal.forEach((data, i) => {
           let left = data.left
           leftOptions[i] = []
@@ -106,16 +113,17 @@ export default {
           showRightOption[i] = []
           showLeftOption[i] = []
           rightFieldOptions[i] = []
+          rightFormOptions[i] = []
           left.forEach((l, j) => {
-            if (l.value) {
-              let item = this.drawingList.find(d => d.__vModel__ == l.field)
+            let item = this.drawingList.find(d => d.__vModel__ == l.field)
+            if (item && item.__config__.layout === 'tableLayout') {
+              showLeftOption[i][j] = true
               leftOptions[i][j] = item.columns.map(item => {
                 let name = item.label
                 let id = item.props
                 let key = item.key
                 return { name, id, key }
               })
-              showLeftOption[i][j] = true
             } else {
               leftOptions[i][j] = []
               showLeftOption[i][j] = false
@@ -124,6 +132,7 @@ export default {
           let right = data.right
           right.forEach((r, j) => {
             let form = this.formList.find(f => (f.id = r.formId))
+            rightFormOptions[i][j] = JSON.parse(JSON.stringify(this.selectedFormList))
             if (form) {
               let rightList = JSON.parse(form.componentProperties)
               rightFieldOptions[i][j] = rightList.map(item => {
@@ -132,8 +141,8 @@ export default {
                 let key = item.__config__.formId
                 return { name, id, key }
               })
-              if (r.value) {
-                let item = rightList.find(d => d.__vModel__ == r.field)
+              let item = rightList.find(d => d.__vModel__ == r.field)
+              if (item && item.__config__.layout === 'tableLayout') {
                 rightOptions[i][j] = item.columns.map(item => {
                   let name = item.label
                   let id = item.props
@@ -156,6 +165,7 @@ export default {
         this.leftOptions = leftOptions
         this.showLeftOption = showLeftOption
         this.rightOptions = rightOptions
+        this.rightFormOptions = rightFormOptions
         this.showRightOption = showRightOption
       },
       immediate: true
@@ -163,8 +173,6 @@ export default {
   },
   methods: {
     changeForm(val, rightIndex, index) {
-      console.log('x', val)
-      this.rightFieldOptions[index][rightIndex] = []
       this.dataConsistencyVal[index].right[rightIndex].formId = val
       this.dataConsistencyVal[index].right[rightIndex].field = ''
       this.dataConsistencyVal[index].right[rightIndex].value = ''
@@ -178,7 +186,7 @@ export default {
         })
         this.rightFieldOptions[index][rightIndex] = options
       }
-      console.log(this.dataConsistencyVal)
+      this.$forceUpdate()
       this.$emit('input', this.dataConsistencyVal)
     },
 
@@ -201,6 +209,7 @@ export default {
       this.showRightOption[index].push(false)
       this.rightFieldOptions[index].push([])
       this.rightOptions[index].push([])
+      this.rightFormOptions[index].push(JSON.parse(JSON.stringify(this.selectedFormList)))
       this.$emit('input', this.dataConsistencyVal)
     },
     delRight(rightIndex, index) {
@@ -208,6 +217,7 @@ export default {
       this.showRightOption[index].splice(rightIndex, 1)
       this.rightOptions[index].splice(rightIndex, 1)
       this.rightFieldOptions[index].splice[(rightIndex, 1)]
+      this.rightFormOptions[index].splice(rightIndex, 1)
       this.$emit('input', this.dataConsistencyVal)
     },
     del(index) {
@@ -233,7 +243,8 @@ export default {
       this.showRightOption.push([])
       this.leftOptions.push([])
       this.rightOptions.push([])
-      this.rightFieldOptions.push(JSON.parse(JSON.stringify(this.selectedFormList)))
+      this.rightFieldOptions.push([])
+      this.rightFormOptions.push([JSON.parse(JSON.stringify(this.selectedFormList))])
       this.$emit('input', this.dataConsistencyVal)
     },
 

@@ -27,6 +27,7 @@ const errorHandler = async error => {
         })
         break
       case 401:
+        console.log('401', isRefreshing)
         if (!isRefreshing) {
           const config = error.config
           isRefreshing = true
@@ -92,9 +93,9 @@ const installer = {
   }
 }
 
-async function refreshToken() {
+function refreshToken() {
   storage.set(ACCESS_TOKEN, storage.get(REFRESH_TOKEN))
-  return await request({ method: 'get', url: '/uc/api/auth/refreshtoken', headers: { Authorization: 'Bearer ' + storage.get(REFRESH_TOKEN) } })
+  return request({ method: 'get', url: '/uc/api/auth/refreshtoken', headers: { Authorization: 'Bearer ' + storage.get(REFRESH_TOKEN) } })
 }
 
 function showModal() {

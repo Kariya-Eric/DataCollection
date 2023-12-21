@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/request_new'
 import signMd5Utils from '@/utils/encryption/signMd5Util'
 
 //post

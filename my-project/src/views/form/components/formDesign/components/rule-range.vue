@@ -145,8 +145,8 @@ export default {
           showRightOption[i] = []
           showLeftOption[i] = []
           left.forEach((l, j) => {
-            if (l.value) {
-              let item = this.drawingList.find(d => d.__vModel__ == l.field)
+            let item = this.drawingList.find(d => d.__vModel__ == l.field)
+            if (item && item.__config__.layout === 'tableLayout') {
               leftOptions[i][j] = item.columns.map(item => {
                 let name = item.label
                 let id = item.props
@@ -161,8 +161,8 @@ export default {
           })
           let right = data.right
           right.forEach((r, j) => {
-            if (r.value) {
-              let item = this.drawingList.find(d => d.__vModel__ == r.field)
+            let item = this.drawingList.find(d => d.__vModel__ == r.field)
+            if (item && item.__config__.layout === 'tableLayout') {
               rightOptions[i][j] = item.columns.map(item => {
                 let name = item.label
                 let id = item.props

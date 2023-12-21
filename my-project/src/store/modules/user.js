@@ -37,7 +37,7 @@ const user = {
               storage.set(USER_INFO, { username, userId, account })
               commit('SET_TOKEN', data.access_token)
               commit('SET_USERINFO', { username, userId, account })
-              commit('REFRESH_TOKEN', data.refresh_token)
+              commit('SET_REFRESH_TOKEN', data.refresh_token)
               resolve()
             } else {
               reject('登录出错')

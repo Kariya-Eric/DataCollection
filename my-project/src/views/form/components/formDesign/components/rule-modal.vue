@@ -163,9 +163,9 @@ export default {
           this.$set(this.model, 'verificationFormulas', '')
         } else if (newVal == 'exclusivity') {
           let dataExclusivity = {
-            left: [{ operator: '', type: '', value: '', field: '', formId: '' }],
+            left: [{ operator: '', type: 'field', value: '', field: '', formId: 'current' }],
             operator: '',
-            right: [{ operator: '', type: '', value: '', field: '', formId: '' }],
+            right: [{ operator: '', type: 'field', value: '', field: '', formId: '' }],
             and_or: ''
           }
           this.$set(this.model, 'verificationFormulas', dataExclusivity)
