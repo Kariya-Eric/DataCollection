@@ -39,21 +39,25 @@
           <dc-status :name="caculateStatus(record.status).name" :color="caculateStatus(record.status).color" />
         </template>
         <template slot="action" slot-scope="text, record">
-          <a>查看</a>
+          <a @click="showDetails(record)">查看</a>
           <a-divider v-if="record.status != 2" type="vertical" />
           <a v-if="record.status != 2">催办</a>
         </template>
       </a-table>
     </a-spin>
+    <form-drawer ref="formDrawer" />
   </a-drawer>
 </template>
 
 <script>
 import { collaborationProgress } from '@/api/task'
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
+import { taskFormDetail } from '@/api/task'
+import FormDrawer from './form-drawer'
 export default {
   name: 'ProgressDrawer',
   mixins: [DataCollectionModalMixin],
+  components: { FormDrawer },
   data() {
     return {
       formInfo: {},
@@ -114,6 +118,18 @@ export default {
 
     close() {
       this.visible = false
+    },
+
+    showDetails(record) {
+      taskFormDetail(record.id).then(res => {
+        if (res.state) {
+          const formProperties = JSON.parse(res.value.formProperties)
+          const fields = JSON.parse(res.value.componentProperties)
+          const data = res.value.formData == null ? null : JSON.parse(res.value.formData)
+          let formData = { ...formProperties, fields, data }
+          this.$refs.formDrawer.show(formData, res.value.formName, res.value.id, res.value.status, record)
+        }
+      })
     }
   }
 }

@@ -82,13 +82,51 @@ request.interceptors.response.use(
               return request(config)
             },
             err => {
+              Modal.confirm({
+                title: '登录已过期',
+                content: '登陆信息已失效，请重新登录',
+                icon: 'exclamation-circle',
+                cancelButtonProps: { style: { display: 'none' } },
+                okText: '重新登录',
+                mask: false,
+                onOk: () => {
+                  store.dispatch('Logout').then(() => {
+                    try {
+                      let path = window.document.location.pathname
+                      if (path != '/' && path.indexOf('/user/login') == -1) {
+                        window.location.reload()
+                      }
+                    } catch (e) {
+                      window.location.reload()
+                    }
+                  })
+                }
+              })
               console.log('err', err)
-              showModal()
             }
           )
           .catch(res => {
+            Modal.confirm({
+              title: '登录已过期',
+              content: '登陆信息已失效，请重新登录',
+              icon: 'exclamation-circle',
+              cancelButtonProps: { style: { display: 'none' } },
+              okText: '重新登录',
+              mask: false,
+              onOk: () => {
+                store.dispatch('Logout').then(() => {
+                  try {
+                    let path = window.document.location.pathname
+                    if (path != '/' && path.indexOf('/user/login') == -1) {
+                      window.location.reload()
+                    }
+                  } catch (e) {
+                    window.location.reload()
+                  }
+                })
+              }
+            })
             console.error('refreshtoken error =>', res)
-            showModal()
           })
           .finally(() => {
             console.log('这边')
@@ -122,29 +160,6 @@ request.interceptors.response.use(
     return Promise.reject()
   }
 )
-
-function showModal() {
-  Modal.confirm({
-    title: '登录已过期',
-    content: '登陆信息已失效，请重新登录',
-    icon: 'exclamation-circle',
-    cancelButtonProps: { style: { display: 'none' } },
-    okText: '重新登录',
-    mask: false,
-    onOk: () => {
-      store.dispatch('Logout').then(() => {
-        try {
-          let path = window.document.location.pathname
-          if (path != '/' && path.indexOf('/user/login') == -1) {
-            window.location.reload()
-          }
-        } catch (e) {
-          window.location.reload()
-        }
-      })
-    }
-  })
-}
 
 export default request
 export { installer as VueAxios, request as axios }
