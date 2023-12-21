@@ -65,23 +65,48 @@ request.interceptors.response.use(
       const config = res.config
       if (!isRefreshing) {
         isRefreshing = true
-        return refreshToken()
-          .then(
-            res => {
-              const { access_token, refresh_token } = res.data
+        try {
+          return refreshToken()
+            .then(
+              res => {
+                const { access_token, refresh_token } = res.data
 
-              request.setToken(access_token, refresh_token)
-              config.headers['Authorization'] = `Bearer ${access_token}`
-              config.baseURL = process.env.VUE_APP_BASE_API
-              console.log('token过期刷新接口')
-              //  这里有个小问题  当在重试中 如果接口报错 就会直接跳转到登录页  需要后端配合
-              // 已经刷新了token，将所有队列中的请求进行重试
+                request.setToken(access_token, refresh_token)
+                config.headers['Authorization'] = `Bearer ${access_token}`
+                config.baseURL = process.env.VUE_APP_BASE_API
+                console.log('token过期刷新接口')
+                //  这里有个小问题  当在重试中 如果接口报错 就会直接跳转到登录页  需要后端配合
+                // 已经刷新了token，将所有队列中的请求进行重试
 
-              requests.forEach(cb => cb(access_token))
-              requests = []
-              return request(config)
-            },
-            err => {
+                requests.forEach(cb => cb(access_token))
+                requests = []
+                return request(config)
+              },
+              err => {
+                Modal.confirm({
+                  title: '登录已过期',
+                  content: '登陆信息已失效，请重新登录',
+                  icon: 'exclamation-circle',
+                  cancelButtonProps: { style: { display: 'none' } },
+                  okText: '重新登录',
+                  mask: false,
+                  onOk: () => {
+                    store.dispatch('Logout').then(() => {
+                      try {
+                        let path = window.document.location.pathname
+                        if (path != '/' && path.indexOf('/user/login') == -1) {
+                          window.location.reload()
+                        }
+                      } catch (e) {
+                        window.location.reload()
+                      }
+                    })
+                  }
+                })
+                console.log('err', err)
+              }
+            )
+            .catch(res => {
               Modal.confirm({
                 title: '登录已过期',
                 content: '登陆信息已失效，请重新登录',
@@ -102,37 +127,36 @@ request.interceptors.response.use(
                   })
                 }
               })
-              console.log('err', err)
-            }
-          )
-          .catch(res => {
-            Modal.confirm({
-              title: '登录已过期',
-              content: '登陆信息已失效，请重新登录',
-              icon: 'exclamation-circle',
-              cancelButtonProps: { style: { display: 'none' } },
-              okText: '重新登录',
-              mask: false,
-              onOk: () => {
-                store.dispatch('Logout').then(() => {
-                  try {
-                    let path = window.document.location.pathname
-                    if (path != '/' && path.indexOf('/user/login') == -1) {
-                      window.location.reload()
-                    }
-                  } catch (e) {
+              console.error('refreshtoken error =>', res)
+            })
+            .finally(() => {
+              console.log('这边')
+
+              isRefreshing = false
+            })
+        } catch (e) {
+          console.log('eee')
+          Modal.confirm({
+            title: '登录已过期',
+            content: '登陆信息已失效，请重新登录',
+            icon: 'exclamation-circle',
+            cancelButtonProps: { style: { display: 'none' } },
+            okText: '重新登录',
+            mask: false,
+            onOk: () => {
+              store.dispatch('Logout').then(() => {
+                try {
+                  let path = window.document.location.pathname
+                  if (path != '/' && path.indexOf('/user/login') == -1) {
                     window.location.reload()
                   }
-                })
-              }
-            })
-            console.error('refreshtoken error =>', res)
+                } catch (e) {
+                  window.location.reload()
+                }
+              })
+            }
           })
-          .finally(() => {
-            console.log('这边')
-
-            isRefreshing = false
-          })
+        }
       } else {
         // 正在刷新token，将返回一个未执行resolve的promise
         // 保存函数 等待执行
@@ -154,7 +178,7 @@ request.interceptors.response.use(
     } else {
       notification.error({
         message: '系统提示',
-        description: res.message || '系统提示'
+        description: res.data.message || res.data.shortMessage || '系统提示'
       })
     }
     return Promise.reject()

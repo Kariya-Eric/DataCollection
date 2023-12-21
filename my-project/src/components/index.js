@@ -22,7 +22,7 @@ VXETable.interceptor.add('event.clearActived', function ({ column, $event }) {
   for (let p of path) {
     let className = p.className || ''
     className = typeof className === 'string' ? className : className.toString()
-    if (className.includes('input-pop') || className.includes('del-action')) {
+    if (className.includes('input-pop') || className.includes('del-action')||className.includes('el-date-popover')) {
       return false
     }
   }
