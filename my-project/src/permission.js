@@ -45,6 +45,7 @@ router.beforeEach((to, from, next) => {
             })
           })
           .catch(() => {
+            console.log('ex')
             Modal.confirm({
               title: '登录已过期',
               content: '登陆信息已失效，请重新登录',

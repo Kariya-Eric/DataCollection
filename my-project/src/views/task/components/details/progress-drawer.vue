@@ -2,7 +2,7 @@
   <a-drawer v-if="visible" :visible="visible" :width="1000" :closable="false">
     <a-descriptions :column="1">
       <a-descriptions-item label="表单名称"> {{ formInfo.formName }}</a-descriptions-item>
-      <a-descriptions-item label="填报时间"> {{ formInfo.statisticsStartTime - formInfo.statisticsEndTime }} </a-descriptions-item>
+      <a-descriptions-item label="填报时间"> {{ fillTime }} </a-descriptions-item>
       <a-descriptions-item label="审核人"> {{ formInfo.responsibleUserName }} </a-descriptions-item>
       <a-descriptions-item label="整体提交进度"><a-progress style="width: 35%" :percent="progress.percent" :format="() => progress.name" /> </a-descriptions-item>
     </a-descriptions>
@@ -66,7 +66,7 @@ export default {
       columns: [
         { title: '部门', align: 'center', scopedSlots: { customRender: 'orgName' } },
         { title: '填报人', dataIndex: 'responsibleUserName', align: 'center' },
-        { title: '最新提交时间', dataIndex: 'updateTime', align: 'center' },
+        { title: '最新提交时间', dataIndex: 'submitTime', align: 'center' },
         { title: '审核状态', scopedSlots: { customRender: 'status' }, align: 'center' },
         { title: '操作', scopedSlots: { customRender: 'action' }, align: 'center' }
       ]
@@ -76,6 +76,9 @@ export default {
     progress() {
       let data = this.dataSource.filter(item => item.status == 2 || item.status == 1)
       return { percent: (data.length / this.dataSource.length) * 100, name: `${data.length}/${this.dataSource.length}` }
+    },
+    fillTime() {
+      return `${this.formInfo.statisticsStartTime} 至 ${this.formInfo.statisticsEndTime}`
     }
   },
   methods: {

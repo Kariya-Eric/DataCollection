@@ -73,6 +73,28 @@ export default {
         this.exclusiveVal = JSON.parse(JSON.stringify(newVal))
         let left = this.exclusiveVal.left
         let right = this.exclusiveVal.right
+        left.forEach((l, i) => {
+          let item = this.drawingList.find(d => d.__vModel__ == l.field)
+          if (item && item.__config__.layout === 'tableLayout') {
+            this.showLeftOption[i] = true
+            this.leftOptions[i] = item.columns.map(item => {
+              let name = item.label
+              let id = item.props
+              let key = item.key
+              return { name, id, key }
+            })
+          } else {
+            this.showLeftOption[i] = false
+            this.leftOptions[i] = []
+          }
+        })
+        right.forEach((r, j) => {
+          let form = this.formList.find(f => (f.id = r.formId))
+          rightFormOptions[j] = JSON.parse(JSON.stringify(this.formList))
+          if(form){
+            
+          }
+        })
       },
       immediate: true
     }

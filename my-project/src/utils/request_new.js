@@ -60,15 +60,16 @@ request.interceptors.response.use(
     return res
   },
   error => {
-    const res = error.response
-    if (res.status === 401) {
-      const config = res.config
+    const result = error.response
+    if (result.status === 401 && result.request.responseURL.indexOf('refreshtoken') == -1) {
+      const config = result.config
       if (!isRefreshing) {
         isRefreshing = true
         try {
           return refreshToken()
             .then(
               res => {
+                console.log('resT', res)
                 const { access_token, refresh_token } = res.data
 
                 request.setToken(access_token, refresh_token)
@@ -83,50 +84,10 @@ request.interceptors.response.use(
                 return request(config)
               },
               err => {
-                Modal.confirm({
-                  title: '登录已过期',
-                  content: '登陆信息已失效，请重新登录',
-                  icon: 'exclamation-circle',
-                  cancelButtonProps: { style: { display: 'none' } },
-                  okText: '重新登录',
-                  mask: false,
-                  onOk: () => {
-                    store.dispatch('Logout').then(() => {
-                      try {
-                        let path = window.document.location.pathname
-                        if (path != '/' && path.indexOf('/user/login') == -1) {
-                          window.location.reload()
-                        }
-                      } catch (e) {
-                        window.location.reload()
-                      }
-                    })
-                  }
-                })
-                console.log('err', err)
+                console.log('xerr')
               }
             )
             .catch(res => {
-              Modal.confirm({
-                title: '登录已过期',
-                content: '登陆信息已失效，请重新登录',
-                icon: 'exclamation-circle',
-                cancelButtonProps: { style: { display: 'none' } },
-                okText: '重新登录',
-                mask: false,
-                onOk: () => {
-                  store.dispatch('Logout').then(() => {
-                    try {
-                      let path = window.document.location.pathname
-                      if (path != '/' && path.indexOf('/user/login') == -1) {
-                        window.location.reload()
-                      }
-                    } catch (e) {
-                      window.location.reload()
-                    }
-                  })
-                }
-              })
               console.error('refreshtoken error =>', res)
             })
             .finally(() => {
@@ -136,26 +97,6 @@ request.interceptors.response.use(
             })
         } catch (e) {
           console.log('eee')
-          Modal.confirm({
-            title: '登录已过期',
-            content: '登陆信息已失效，请重新登录',
-            icon: 'exclamation-circle',
-            cancelButtonProps: { style: { display: 'none' } },
-            okText: '重新登录',
-            mask: false,
-            onOk: () => {
-              store.dispatch('Logout').then(() => {
-                try {
-                  let path = window.document.location.pathname
-                  if (path != '/' && path.indexOf('/user/login') == -1) {
-                    window.location.reload()
-                  }
-                } catch (e) {
-                  window.location.reload()
-                }
-              })
-            }
-          })
         }
       } else {
         // 正在刷新token，将返回一个未执行resolve的promise
@@ -170,15 +111,48 @@ request.interceptors.response.use(
           })
         })
       }
-    } else if (res.status === 404) {
+    } else if (result.status === 404) {
       notification.error({
         message: '系统提示',
         description: '很抱歉,资源未找到！'
       })
+    } else if (result.status === 401 && result.request.responseURL.indexOf('refreshtoken') != -1) {
+      Modal.confirm({
+        title: '登录已过期',
+        content: '登陆信息已失效，请重新登录',
+        okText: '重新登录',
+        mask: false,
+        icon: 'exclamation-circle',
+        cancelButtonProps: { style: { display: 'none' } },
+        onCancel: () => {
+          store.dispatch('Logout').then(() => {
+            try {
+              let path = window.document.location.pathname
+              if (path != '/' && path.indexOf('/user/login') == -1) {
+                window.location.reload()
+              }
+            } catch (e) {
+              window.location.reload()
+            }
+          })
+        },
+        onOk: () => {
+          store.dispatch('Logout').then(() => {
+            try {
+              let path = window.document.location.pathname
+              if (path != '/' && path.indexOf('/user/login') == -1) {
+                window.location.reload()
+              }
+            } catch (e) {
+              window.location.reload()
+            }
+          })
+        }
+      })
     } else {
       notification.error({
         message: '系统提示',
-        description: res.data.message || res.data.shortMessage || '系统提示'
+        description: result.data.message || result.data.shortMessage || '系统提示'
       })
     }
     return Promise.reject()
