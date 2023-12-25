@@ -42,7 +42,7 @@
     </div>
 
     <div class="container" v-if="activeTab === 1">
-      <rule-detail :drawingList="drawingList" :formId="info.id" :formList="formList" />
+      <rule-detail :drawingList="drawingList" :formId="info.id" />
     </div>
     <form-view-drawer ref="formViewDrawer" />
   </dc-modal>
@@ -54,7 +54,7 @@ import RuleDetail from './rule-detail.vue'
 import { updateForm } from '@/api/form'
 export default {
   name: 'FormGeneratorModal',
-  props: ['categories', 'formList'],
+  props: ['categories'],
   components: { FormViewDrawer, RuleDetail },
   data() {
     return {
@@ -62,7 +62,8 @@ export default {
       visible: false,
       drawingList: [],
       formConfig: null,
-      activeTab: 0
+      activeTab: 0,
+      formList: []
     }
   },
   methods: {

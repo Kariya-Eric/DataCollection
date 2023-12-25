@@ -1,7 +1,7 @@
 <template>
   <div class="typeDiv">
     <div class="innerDiv">
-      <a-row v-for="(left, leftIndex) in exclusiveVal.left" :key="'left' + leftIndex" :gutter="12">
+      <a-row v-for="(left, leftIndex) in exclusiveVal[0].left" :key="'left' + leftIndex" :gutter="12">
         <a-col :span="4">
           <span v-if="leftIndex == 0"> 当前表字段 </span>
         </a-col>
@@ -25,12 +25,12 @@
           </div>
         </a-col>
       </a-row>
-      <a-row v-for="(right, rightIndex) in exclusiveVal.right" :key="'right' + rightIndex" :gutter="12">
+      <a-row v-for="(right, rightIndex) in exclusiveVal[0].right" :key="'right' + rightIndex" :gutter="12">
         <a-col :span="4">
           <span v-if="rightIndex == 0"> 与关联表 </span>
         </a-col>
         <a-col :span="5">
-          <dc-select v-model="right.formId" :options="formList" placeholder="请选择关联表" @change="val => changeForm(val, rightIndex)"></dc-select>
+          <dc-select v-model="right.formId" :options="formOptions" placeholder="请选择关联表" @change="val => changeForm(val, rightIndex)"></dc-select>
         </a-col>
         <a-col :span="6">
           <dc-select v-model="right.field" @change="val => changeRightField(val, rightIndex)" :options="rightFieldOptions[rightIndex]" placeholder="请选择关联表字段"></dc-select>
@@ -52,27 +52,30 @@
 </template>
 
 <script>
+import { TEMP_FORM } from '@/store/mutation-types'
+import storage from 'store'
 //排他性校验
 export default {
   name: 'RuleExclusivity',
-  props: ['value', 'drawingList', 'formList'],
+  props: ['value', 'drawingList'],
   data() {
     return {
       exclusiveVal: JSON.parse(JSON.stringify(this.value)),
       showLeftOption: [],
       leftOptions: [],
-      rightFormOptions: [],
       rightFieldOptions: [],
       showRightOption: [],
-      rightOptions: []
+      rightOptions: [],
+      formOptions: storage.get(TEMP_FORM)
     }
   },
+
   watch: {
     value: {
       handler(newVal) {
         this.exclusiveVal = JSON.parse(JSON.stringify(newVal))
-        let left = this.exclusiveVal.left
-        let right = this.exclusiveVal.right
+        let left = this.exclusiveVal[0].left
+        let right = this.exclusiveVal[0].right
         left.forEach((l, i) => {
           let item = this.drawingList.find(d => d.__vModel__ == l.field)
           if (item && item.__config__.layout === 'tableLayout') {
@@ -89,10 +92,32 @@ export default {
           }
         })
         right.forEach((r, j) => {
-          let form = this.formList.find(f => (f.id = r.formId))
-          rightFormOptions[j] = JSON.parse(JSON.stringify(this.formList))
-          if(form){
-            
+          let form = storage.get(TEMP_FORM).find(f => (f.id = r.formId))
+          if (form) {
+            let rightList = JSON.parse(form.componentProperties)
+            this.rightFieldOptions[j] = rightList.map(item => {
+              let name = item.__config__.label
+              let id = item.__vModel__
+              let key = item.__config__.formId
+              return { name, id, key }
+            })
+            let item = rightList.find(d => d.__vModel__ == r.field)
+            if (item && item.__config__.layout === 'tableLayout') {
+              this.rightOptions[j] = item.columns.map(item => {
+                let name = item.label
+                let id = item.props
+                let key = item.key
+                return { name, id, key }
+              })
+              this.showRightOption[j] = true
+            } else {
+              this.rightOptions[j] = []
+              this.showRightOption[j] = false
+            }
+          } else {
+            this.rightFieldOptions[j] = []
+            this.rightOptions[j] = []
+            this.showRightOption[j] = false
           }
         })
       },
@@ -110,8 +135,8 @@ export default {
     },
 
     changeLeftField(val, leftIndex) {
-      this.exclusiveVal.left[leftIndex].field = val
-      this.exclusiveVal.left[leftIndex].value = ''
+      this.exclusiveVal[0].left[leftIndex].field = val
+      this.exclusiveVal[0].left[leftIndex].value = ''
       let item = this.drawingList.find(item => item.__vModel__ == val)
       if (val && item.__config__.layout === 'tableLayout') {
         this.showLeftOption[leftIndex] = true
@@ -129,23 +154,23 @@ export default {
     },
     addLeft() {
       let left = { operator: '', type: 'field', value: '', field: '', formId: 'current' }
-      this.exclusiveVal.left.push(left)
+      this.exclusiveVal[0].left.push(left)
       this.showLeftOption.push(false)
       this.leftOptions.push([])
       this.$emit('input', this.exclusiveVal)
     },
     delLeft(leftIndex) {
-      this.exclusiveVal.left.splice(leftIndex, 1)
+      this.exclusiveVal[0].left.splice(leftIndex, 1)
       this.showLeftOption.splice(leftIndex, 1)
       this.leftOptions.splice(leftIndex, 1)
       this.$emit('input', this.exclusiveVal)
     },
     changeForm(val, rightIndex) {
-      this.exclusiveVal.right[rightIndex].formId = val
-      this.exclusiveVal.right[rightIndex].field = ''
-      this.exclusiveVal.right[rightIndex].value = ''
+      this.exclusiveVal[0].right[rightIndex].formId = val
+      this.exclusiveVal[0].right[rightIndex].field = ''
+      this.exclusiveVal[0].right[rightIndex].value = ''
       if (val) {
-        let form = this.formList.find(f => (f.id = val))
+        let form = storage.get(TEMP_FORM).find(f => (f.id = val))
         let options = JSON.parse(form.componentProperties).map(item => {
           let name = item.__config__.label
           let id = item.__vModel__
@@ -162,20 +187,20 @@ export default {
     },
     addRight() {
       let right = { operator: '', type: 'field', value: '', field: '', formId: '' }
-      this.exclusiveVal.right.push(right)
+      this.exclusiveVal[0].right.push(right)
       this.showRightOption.push(false)
       this.rightOptions.push([])
       this.$emit('input', this.exclusiveVal)
     },
     delRight(rightIndex) {
-      this.exclusiveVal.right.splice(rightIndex, 1)
+      this.exclusiveVal[0].right.splice(rightIndex, 1)
       this.showLeftOption.splice(rightIndex, 1)
       this.leftOptions.splice(rightIndex, 1)
       this.$emit('input', this.exclusiveVal)
     },
     changeRightField(val, rightIndex) {
-      this.exclusiveVal.right[rightIndex].field = val
-      this.exclusiveVal.right[rightIndex].value = ''
+      this.exclusiveVal[0].right[rightIndex].field = val
+      this.exclusiveVal[0].right[rightIndex].value = ''
       let item = this.drawingList.find(item => item.__vModel__ == val)
       if (val && item.__config__.layout === 'tableLayout') {
         this.showRightOption[rightIndex] = true
@@ -194,25 +219,25 @@ export default {
 
     validate() {
       let flag = true
-      for (let j = 0; j < this.exclusiveVal.left.length; j++) {
-        if (this.exclusiveVal.left[j].field == '') {
+      for (let j = 0; j < this.exclusiveVal[0].left.length; j++) {
+        if (this.exclusiveVal[0].left[j].field == '') {
           flag = false
           break
         } else {
-          let item = this.drawingList.find(item => item.__vModel__ == this.exclusiveVal.left[j].field)
-          if (item && item.__config__.layout === 'tableLayout' && this.exclusiveVal.left[j].value == '') {
+          let item = this.drawingList.find(item => item.__vModel__ == this.exclusiveVal[0].left[j].field)
+          if (item && item.__config__.layout === 'tableLayout' && this.exclusiveVal[0].left[j].value == '') {
             flag = false
             break
           }
         }
       }
-      for (let j = 0; j < this.exclusiveVal.right.length; j++) {
-        if (this.exclusiveVal.right[j].field == '' || this.exclusiveVal.right[j].formId == '') {
+      for (let j = 0; j < this.exclusiveVal[0].right.length; j++) {
+        if (this.exclusiveVal[0].right[j].field == '' || this.exclusiveVal[0].right[j].formId == '') {
           flag = false
           break
-        } else if (this.exclusiveVal.right[j].field != '') {
-          let item = this.drawingList.find(item => item.__vModel__ == this.exclusiveVal.right[j].field)
-          if (item && item.__config__.layout === 'tableLayout' && this.exclusiveVal.right[j].value == '') {
+        } else if (this.exclusiveVal[0].right[j].field != '') {
+          let item = this.drawingList.find(item => item.__vModel__ == this.exclusiveVal[0].right[j].field)
+          if (item && item.__config__.layout === 'tableLayout' && this.exclusiveVal[0].right[j].value == '') {
             flag = false
             break
           }

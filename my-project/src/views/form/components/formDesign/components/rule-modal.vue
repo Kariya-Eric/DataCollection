@@ -8,7 +8,7 @@
     @ok="handleOk"
     :maskClosable="false"
     :keyboard="false"
-    width="45%"
+    width="60%"
     destroyOnClose
   >
     <a-spin :spinning="loading">
@@ -33,8 +33,11 @@
         <a-form-model-item label="启用">
           <dc-switch v-model="model.enabledFlag" />
         </a-form-model-item>
-        <a-form-model-item v-if="model.type == 'dataRange'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
+        <a-form-model-item v-if="model.type == 'dataRange' && model.verifyMode == 'current'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
           <rule-range ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+        </a-form-model-item>
+        <a-form-model-item v-if="model.type == 'dataRange' && model.verifyMode == 'other'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
+          <rule-datarange ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'unique'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
           <rule-unique ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
@@ -46,10 +49,10 @@
           <rule-other ref="verificationFormulas" v-model="model.verificationFormulas" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'exclusivity'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-exclusivity ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :formList="formList" />
+          <rule-exclusivity ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'consistency'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-consistency ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :formList="formList" />
+          <rule-consistency ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -64,11 +67,12 @@ import RuleUnique from './rule-unique'
 import RuleDate from './rule-date'
 import RuleExclusivity from './rule-exclusivity'
 import RuleConsistency from './rule-consistency'
+import RuleDatarange from './rule-datarange'
 import { addRule, updateRule } from '@/api/form'
 export default {
   name: 'RuleModal',
-  components: { RuleOther, RuleRange, RuleUnique, RuleDate, RuleExclusivity, RuleConsistency },
-  props: ['drawingList', 'formId', 'formList'],
+  components: { RuleOther, RuleRange, RuleUnique, RuleDate, RuleExclusivity, RuleConsistency, RuleDatarange },
+  props: ['drawingList', 'formId', 'form'],
   mixins: [DataCollectionModalMixin],
   data() {
     return {
@@ -126,7 +130,7 @@ export default {
         ]
       } else {
         this.typeList = [
-          { name: '数据范围校验', value: 'dataRangeOther' },
+          { name: '数据范围校验', value: 'dataRange' },
           { name: '排他性校验', value: 'exclusivity' },
           { name: '一致性校验', value: 'consistency' },
           { name: '自定义校验', value: 'other' }
@@ -136,7 +140,7 @@ export default {
     'model.type'(newVal) {
       if (this.$refs.form) {
         this.$refs.form.clearValidate('verificationFormulas')
-        if (newVal == 'dataRange') {
+        if (newVal == 'dataRange' && this.model.verifyMode == 'current') {
           let dataRange = [
             {
               left: [{ operator: '', type: '', value: '', field: '' }],
@@ -162,12 +166,14 @@ export default {
         } else if (newVal == 'other') {
           this.$set(this.model, 'verificationFormulas', '')
         } else if (newVal == 'exclusivity') {
-          let dataExclusivity = {
-            left: [{ operator: '', type: 'field', value: '', field: '', formId: 'current' }],
-            operator: '',
-            right: [{ operator: '', type: 'field', value: '', field: '', formId: '' }],
-            and_or: ''
-          }
+          let dataExclusivity = [
+            {
+              left: [{ operator: '', type: 'field', value: '', field: '', formId: 'current' }],
+              operator: '',
+              right: [{ operator: '', type: 'field', value: '', field: '', formId: '' }],
+              and_or: ''
+            }
+          ]
           this.$set(this.model, 'verificationFormulas', dataExclusivity)
         } else if (newVal == 'consistency') {
           let dataConsistency = [
@@ -179,6 +185,16 @@ export default {
             }
           ]
           this.$set(this.model, 'verificationFormulas', dataConsistency)
+        } else if (newVal == 'dataRange' && this.model.verifyMode == 'other') {
+          let dataRange = [
+            {
+              left: [{ operator: '', type: '', value: '', field: '', formId: '' }],
+              operator: '',
+              right: [{ operator: '', type: '', value: '', field: '', formId: '' }],
+              and_or: ''
+            }
+          ]
+          this.$set(this.model, 'verificationFormulas', dataRange)
         }
       }
     }

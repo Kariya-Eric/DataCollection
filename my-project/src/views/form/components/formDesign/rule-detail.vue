@@ -26,7 +26,7 @@
         </template>
       </a-table>
     </div>
-    <rule-modal ref="modalForm" :drawingList="drawingList" :formId="formId" @ok="refreshData" :formList="formList" />
+    <rule-modal ref="modalForm" :drawingList="drawingList" :formId="formId" @ok="refreshData" />
   </div>
 </template>
 
@@ -37,7 +37,7 @@ import RuleModal from './components/rule-modal.vue'
 export default {
   name: 'RuleDetail',
   mixins: [DataCollectionListMixin],
-  props: ['drawingList', 'formId', 'formList'],
+  props: ['drawingList', 'formId'],
   components: { RuleModal },
   data() {
     return {

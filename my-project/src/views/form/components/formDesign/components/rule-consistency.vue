@@ -41,12 +41,7 @@
             <span v-if="rightIndex == 0"> 与关联表 </span>
           </a-col>
           <a-col :span="5">
-            <dc-select
-              v-model="right.formId"
-              :options="rightFormOptions[index][rightIndex]"
-              placeholder="请选择关联表"
-              @change="val => changeForm(val, rightIndex, index)"
-            ></dc-select>
+            <dc-select v-model="right.formId" :options="formOptions" placeholder="请选择关联表" @change="val => changeForm(val, rightIndex, index)"></dc-select>
           </a-col>
           <a-col :span="6">
             <dc-select
@@ -74,9 +69,11 @@
 </template>
 
 <script>
+import { TEMP_FORM } from '@/store/mutation-types'
+import storage from 'store'
 export default {
   name: 'RuleConsistency',
-  props: ['value', 'drawingList', 'formList'],
+  props: ['value', 'drawingList'],
   data() {
     return {
       dataConsistencyVal: undefined,
@@ -85,15 +82,7 @@ export default {
       leftOptions: [[]],
       rightOptions: [[]],
       rightFieldOptions: [[]],
-      rightFormOptions: [[]]
-    }
-  },
-  computed: {
-    selectedFormList() {
-      return this.formList.map(item => {
-        const { name, id } = item
-        return { name, id }
-      })
+      formOptions: storage.get(TEMP_FORM)
     }
   },
   watch: {
@@ -105,7 +94,6 @@ export default {
         let leftOptions = []
         let rightOptions = []
         let rightFieldOptions = []
-        let rightFormOptions = []
         this.dataConsistencyVal.forEach((data, i) => {
           let left = data.left
           leftOptions[i] = []
@@ -113,7 +101,6 @@ export default {
           showRightOption[i] = []
           showLeftOption[i] = []
           rightFieldOptions[i] = []
-          rightFormOptions[i] = []
           left.forEach((l, j) => {
             let item = this.drawingList.find(d => d.__vModel__ == l.field)
             if (item && item.__config__.layout === 'tableLayout') {
@@ -131,8 +118,7 @@ export default {
           })
           let right = data.right
           right.forEach((r, j) => {
-            let form = this.formList.find(f => (f.id = r.formId))
-            rightFormOptions[i][j] = JSON.parse(JSON.stringify(this.selectedFormList))
+            let form = storage.get(TEMP_FORM).find(f => (f.id = r.formId))
             if (form) {
               let rightList = JSON.parse(form.componentProperties)
               rightFieldOptions[i][j] = rightList.map(item => {
@@ -165,7 +151,6 @@ export default {
         this.leftOptions = leftOptions
         this.showLeftOption = showLeftOption
         this.rightOptions = rightOptions
-        this.rightFormOptions = rightFormOptions
         this.showRightOption = showRightOption
       },
       immediate: true
@@ -177,7 +162,7 @@ export default {
       this.dataConsistencyVal[index].right[rightIndex].field = ''
       this.dataConsistencyVal[index].right[rightIndex].value = ''
       if (val) {
-        let form = this.formList.find(f => (f.id = val))
+        let form = storage.get(TEMP_FORM).find(f => (f.id = val))
         let options = JSON.parse(form.componentProperties).map(item => {
           let name = item.__config__.label
           let id = item.__vModel__
@@ -186,7 +171,6 @@ export default {
         })
         this.rightFieldOptions[index][rightIndex] = options
       }
-      this.$forceUpdate()
       this.$emit('input', this.dataConsistencyVal)
     },
 
@@ -209,7 +193,6 @@ export default {
       this.showRightOption[index].push(false)
       this.rightFieldOptions[index].push([])
       this.rightOptions[index].push([])
-      this.rightFormOptions[index].push(JSON.parse(JSON.stringify(this.selectedFormList)))
       this.$emit('input', this.dataConsistencyVal)
     },
     delRight(rightIndex, index) {
@@ -217,7 +200,6 @@ export default {
       this.showRightOption[index].splice(rightIndex, 1)
       this.rightOptions[index].splice(rightIndex, 1)
       this.rightFieldOptions[index].splice[(rightIndex, 1)]
-      this.rightFormOptions[index].splice(rightIndex, 1)
       this.$emit('input', this.dataConsistencyVal)
     },
     del(index) {
@@ -244,7 +226,6 @@ export default {
       this.leftOptions.push([])
       this.rightOptions.push([])
       this.rightFieldOptions.push([])
-      this.rightFormOptions.push([JSON.parse(JSON.stringify(this.selectedFormList))])
       this.$emit('input', this.dataConsistencyVal)
     },
 
@@ -279,7 +260,7 @@ export default {
     changeRightField(val, rightIndex, index) {
       this.dataConsistencyVal[index].right[rightIndex].field = val
       this.dataConsistencyVal[index].right[rightIndex].value = ''
-      let form = this.formList.find(f => (f.id = this.dataConsistencyVal[index].right[rightIndex].formId))
+      let form = storage.get(TEMP_FORM).find(f => (f.id = this.dataConsistencyVal[index].right[rightIndex].formId))
       let item = JSON.parse(form.componentProperties).find(item => item.__vModel__ == val)
       if (val && item.__config__.layout === 'tableLayout') {
         this.showRightOption[index][rightIndex] = true

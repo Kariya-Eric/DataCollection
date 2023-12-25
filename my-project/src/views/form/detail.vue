@@ -71,7 +71,7 @@
       </div>
     </a-card>
     <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
-    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" @refresh="refreshData" :formList="dataSource" />
+    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" @refresh="refreshData" />
     <form-copy-modal ref="formCopyModal" :formId="collectionDetail.id" @ok="refreshData" />
     <form-category-modal ref="formCategoryModal" @ok="refreshData" />
   </div>
@@ -85,6 +85,8 @@ import FormModal from './components/form/form-modal.vue'
 import FormGeneratorModal from './components/formDesign/form-generator-modal.vue'
 import FormCopyModal from './components/form/form-copy-modal.vue'
 import FormCategoryModal from './components/form/form-category-modal.vue'
+import { TEMP_FORM } from '@/store/mutation-types'
+import storage from 'store'
 export default {
   name: 'FormDetail',
   components: { FormModal, FormGeneratorModal, FormCopyModal, FormCategoryModal },
@@ -168,6 +170,8 @@ export default {
     },
 
     showForm(record) {
+      //此处用于传值给表单规则，props传值到最后会出现id丢失为空的奇怪情况，不知原因
+      storage.set(TEMP_FORM, this.dataSource)
       this.$refs.formGeneratorModal.show(record)
     }
   }
