@@ -96,13 +96,17 @@
               <a-col :span="4" v-if="right.fieldType == 'relate'">
                 <dc-select v-model="right.formId" :options="formOptions" placeholder="请选择关联表" @change="val => changeRightForm(val, rightIndex, index)"></dc-select>
               </a-col>
-              <a-col :span="4" v-else>
-                <a-input v-if="right.fieldType == 'fixed'" v-model="right.field" placeholder="请输入" @change="e => changeRightInputField(e, rightIndex, index)" />
-                <dc-select v-else v-model="right.field" @change="val => changeRightField(val, rightIndex, index)" :options="renderDrawingListOption(drawingList)"></dc-select>
+              <a-col :span="4" v-if="right.fieldType == 'fixed'">
+                <a-input v-model="right.field" placeholder="请输入" @change="e => changeRightInputField(e, rightIndex, index)" />
               </a-col>
-              <a-col :span="right.fieldType == 'relate' ? 4 : 8" v-if="showRightOption[index][rightIndex]">
-                <dc-select v-model="right.value" placeholder="请选择" :options="rightOptions[index][rightIndex]"></dc-select>
-              </a-col>
+              <template>
+                <a-col :span="4" v-if="right.fieldType != 'fixed'">
+                  <dc-select v-model="right.field" @change="val => changeRightField(val, rightIndex, index)" :options="renderDrawingListOption(drawingList)"></dc-select>
+                </a-col>
+                <a-col :span="right.fieldType == 'relate' ? 4 : 8" v-if="showRightOption[index][rightIndex]">
+                  <dc-select v-model="right.value" placeholder="请选择" :options="rightOptions[index][rightIndex]"></dc-select>
+                </a-col>
+              </template>
             </template>
             <a-col :span="2">
               <div class="rowIcon" v-if="rightIndex == 0">
@@ -295,7 +299,7 @@ export default {
     },
 
     changeRightForm(val, rightIndex, index) {
-      this.showLeftOption[index][leftIndex] = false
+      this.showRightOption[index][rightIndex] = false
       this.dataRangeVal[index].right[rightIndex].formId = val
       this.dataRangeVal[index].right[rightIndex].field = ''
       this.dataRangeVal[index].right[rightIndex].value = ''

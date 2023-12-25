@@ -27,6 +27,7 @@ const saveFormCategories = params => postAction('/uc/api/formCategories/saveList
 const updateGuide = params => putAction('/uc/api/formCollection/updateGuid', params)
 const addRule = params => postAction('/uc/api/formVerification/add', params)
 const updateRule = params => putAction('/uc/api/formVerification/update', params)
+const enableRule = params => putAction('/uc/api/formVerification/enable', params)
 export {
   addFormCollection,
   updateFormCollection,
@@ -43,5 +44,6 @@ export {
   saveFormCategories,
   updateGuide,
   addRule,
-  updateRule
+  updateRule,
+  enableRule
 }

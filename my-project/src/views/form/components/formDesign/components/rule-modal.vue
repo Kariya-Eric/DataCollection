@@ -226,7 +226,8 @@ export default {
           if (!this.model.formId) {
             handler = addRule({ ...this.model, formId: this.formId })
           } else {
-            handler = updateRule(this.model)
+            let updateModel = { ...this.model, verificationFormula: JSON.stringify(this.model.verificationFormulas) }
+            handler = updateRule(updateModel)
           }
           handler
             .then(res => {

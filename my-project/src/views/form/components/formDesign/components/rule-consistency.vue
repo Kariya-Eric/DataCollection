@@ -25,7 +25,7 @@
             ></dc-select>
           </a-col>
           <a-col :span="8" v-if="showLeftOption[index][leftIndex]">
-            <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]"></dc-select>
+            <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]" @change="val => changeLeftVal(val, leftIndex, index)"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="leftIndex == 0">
@@ -52,7 +52,7 @@
             ></dc-select>
           </a-col>
           <a-col :span="5" v-if="showRightOption[index][rightIndex]">
-            <dc-select v-model="right.value" :options="rightOptions[index][rightIndex]" placeholder="请选择"></dc-select>
+            <dc-select v-model="right.value" :options="rightOptions[index][rightIndex]" placeholder="请选择" @change="val => changeRightVal(val, rightIndex, index)"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="rightIndex == 0">
@@ -276,7 +276,14 @@ export default {
       }
       this.$emit('input', this.dataConsistencyVal)
     },
-
+    changeLeftVal(val, leftIndex, index) {
+      this.dataConsistencyVal[index].left[leftIndex].value = val
+      this.$emit('input', this.dataConsistencyVal)
+    },
+    changeRightVal(val, rightIndex, index) {
+      this.dataConsistencyVal[index].right[rightIndex].value = val
+      this.$emit('input', this.dataConsistencyVal)
+    },
     validate() {
       let flag = true
       outer: for (let i = 0; i < this.dataConsistencyVal.length; i++) {

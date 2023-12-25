@@ -15,7 +15,7 @@
           <span v-else>自定义校验</span>
         </template>
         <template slot="enabledFlag" slot-scope="text, record">
-          <dc-switch v-model="record.enabledFlag" />
+          <dc-switch v-model="record.enabledFlag" @change="val => enableRule(val, record)" />
         </template>
         <template slot="action" slot-scope="text, record">
           <a @click="handleEdit(record, '修改校验')">查看</a>
@@ -33,6 +33,7 @@
 <script>
 const listUrl = '/uc/api/formVerification/list/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
+import { enableRule } from '@/api/form'
 import RuleModal from './components/rule-modal.vue'
 export default {
   name: 'RuleDetail',
@@ -63,6 +64,20 @@ export default {
     refreshData(args) {
       this.url.list = listUrl + this.formId
       this.loadData(args)
+    },
+
+    enableRule(val, record) {
+      this.loading = true
+      enableRule(record)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.refreshData()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
     }
   }
 }

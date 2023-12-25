@@ -34,10 +34,35 @@
               :options="renderDateList(dateList)"
             >
             </dc-select>
-            <dc-date v-else v-model="item.left[0].field" style="width: 100%" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeLeftField(val, index)" />
+            <template v-else>
+              <dc-date
+                v-if="leftFormatList[index] == 'yyyy'"
+                mode="year"
+                v-model="item.left[0].field"
+                placeholder="请选择日期"
+                format="yyyy"
+                @change="val => changeLeftField(val, index)"
+              />
+              <dc-date
+                v-if="leftFormatList[index] == 'yyyy-MM'"
+                v-model="item.left[0].field"
+                mode="month"
+                placeholder="请选择日期"
+                format="yyyy-MM"
+                @change="val => changeLeftField(val, index)"
+              />
+              <dc-date
+                v-if="leftFormatList[index] == 'yyyyMM'"
+                v-model="item.left[0].field"
+                placeholder="请选择日期"
+                format="yyyyMM"
+                mode="month"
+                @change="val => changeLeftField(val, index)"
+              />
+            </template>
           </a-col>
           <a-col :span="6" v-if="item.left[0].type != '' && showLeftOption[index]">
-            <dc-select v-model="item.left[0].value" placeholder="请选择" :options="leftOptions[index]"></dc-select>
+            <dc-select v-model="item.left[0].value" placeholder="请选择" :options="leftOptions[index]" @change="val => changeLeftVal(val, index)"></dc-select>
           </a-col>
         </a-row>
 
@@ -71,10 +96,35 @@
               :options="renderDateList(dateList)"
             >
             </dc-select>
-            <dc-date v-else v-model="item.right[0].field" placeholder="请选择日期" format="yyyy-MM-dd" @change="val => changeRightField(val, index)" />
+            <template v-else>
+              <dc-date
+                v-if="rightFormatList[index] == 'yyyy'"
+                mode="year"
+                v-model="item.right[0].field"
+                placeholder="请选择日期"
+                format="yyyy"
+                @change="val => changeRightField(val, index)"
+              />
+              <dc-date
+                v-if="rightFormatList[index] == 'yyyy-MM'"
+                v-model="item.right[0].field"
+                placeholder="请选择日期"
+                format="yyyy-MM"
+                mode="month"
+                @change="val => changeRightField(val, index)"
+              />
+              <dc-date
+                v-if="rightFormatList[index] == 'yyyyMM'"
+                v-model="item.right[0].field"
+                placeholder="请选择日期"
+                format="yyyyMM"
+                mode="month"
+                @change="val => changeRightField(val, index)"
+              />
+            </template>
           </a-col>
           <a-col :span="6" v-if="item.right[0].type != '' && showRightOption[index]">
-            <dc-select v-model="item.right[0].value" placeholder="请选择" :options="rightOptions[index]"></dc-select>
+            <dc-select v-model="item.right[0].value" placeholder="请选择" :options="rightOptions[index]" @change="val => changeRightVal(val, index)"></dc-select>
           </a-col>
         </a-row>
       </div>
@@ -94,49 +144,79 @@ export default {
       leftOptions: [[]],
       showLeftOption: [false],
       showRightOption: [false],
-      rightOptions: [[]]
+      rightOptions: [[]],
+      leftFormatList: ['yyyy-MM'],
+      rightFormatList: ['yyyy-MM']
     }
   },
   watch: {
     value: {
       handler(newVal) {
-        this.dateRule = newVal
+        this.dateRule = JSON.parse(JSON.stringify(newVal))
         let leftOptions = []
         let showLeftOption = []
         let showRightOption = []
         let rightOptions = []
+        let leftFormatList = []
+        let rightFormatList = []
         this.dateRule.forEach(dr => {
           let left = dr.left[0]
           let right = dr.right[0]
           let leftItem = this.drawingList.find(item => item.__vModel__ == left.field)
           let rightItem = this.drawingList.find(item => item.__vModel__ == right.field)
           if (leftItem) {
-            showLeftOption.push(true)
-            let options = leftItem.columns
-              .filter(item => item.type.__config__.tag == 'dc-date')
-              .map(item => {
-                let name = item.label
-                let id = item.props
-                let key = item.key
-                return { name, id, key }
-              })
-            leftOptions.push(options)
+            if (leftItem.__config__.layout === 'tableLayout') {
+              showLeftOption.push(true)
+              let options = leftItem.columns
+                .filter(item => item.type.__config__.tag == 'dc-date')
+                .map(item => {
+                  let name = item.label
+                  let id = item.props
+                  let key = item.key
+                  return { name, id, key }
+                })
+              leftOptions.push(options)
+              let col = leftItem.columns.find(c => c.props == left.value)
+              if (col) {
+                rightFormatList.push(col.type.format)
+              } else {
+                rightFormatList.push('yyyy-MM')
+              }
+            } else {
+              rightFormatList.push(leftItem.format)
+              showLeftOption.push(false)
+              leftOptions.push([])
+            }
           } else {
+            rightFormatList.push('yyyy-MM')
             showLeftOption.push(false)
             leftOptions.push([])
           }
           if (rightItem) {
-            showRightOption.push(true)
-            let options = rightItem.columns
-              .filter(item => item.type.__config__.tag == 'dc-date')
-              .map(item => {
-                let name = item.label
-                let id = item.props
-                let key = item.key
-                return { name, id, key }
-              })
-            rightOptions.push(options)
+            if (rightItem.__config__.layout === 'tableLayout') {
+              showRightOption.push(true)
+              let options = rightItem.columns
+                .filter(item => item.type.__config__.tag == 'dc-date')
+                .map(item => {
+                  let name = item.label
+                  let id = item.props
+                  let key = item.key
+                  return { name, id, key }
+                })
+              rightOptions.push(options)
+              let col = rightItem.columns.find(c => c.props == right.value)
+              if (col) {
+                leftFormatList.push(col.type.format)
+              } else {
+                leftFormatList.push('yyyy-MM')
+              }
+            } else {
+              leftFormatList.push(rightItem.format)
+              showRightOption.push(false)
+              rightOptions.push([])
+            }
           } else {
+            leftFormatList.push('yyyy-MM')
             showRightOption.push(false)
             rightOptions.push([])
           }
@@ -145,6 +225,8 @@ export default {
         this.showRightOption = showRightOption
         this.leftOptions = leftOptions
         this.rightOptions = rightOptions
+        this.leftFormatList = leftFormatList
+        this.rightFormatList = rightFormatList
       },
       immediate: true
     }
@@ -205,6 +287,10 @@ export default {
     },
 
     changeLeftField(val, index) {
+      if (this.dateRule[index].right[0].type == 'fixed' && this.dateRule[index].right[0].field && this.dateRule[index].left[0].type != 'fixed') {
+        this.dateRule[index].right[0].field = ''
+        this.dateRule[index].right[0].value = ''
+      }
       this.dateRule[index].left[0].field = val
       this.dateRule[index].left[0].value = ''
       let item = this.drawingList.find(item => item.__vModel__ == val)
@@ -219,6 +305,9 @@ export default {
             return { name, id, key }
           })
       } else {
+        if (val && item) {
+          this.rightFormatList[index] = item.format
+        }
         this.showLeftOption[index] = false
         this.leftOptions[index] = []
       }
@@ -226,6 +315,10 @@ export default {
     },
 
     changeRightField(val, index) {
+      if (this.dateRule[index].left[0].type == 'fixed' && this.dateRule[index].left[0].field && this.dateRule[index].right[0].type != 'fixed') {
+        this.dateRule[index].left[0].field = ''
+        this.dateRule[index].left[0].value = ''
+      }
       this.dateRule[index].right[0].field = val
       this.dateRule[index].right[0].value = ''
       let item = this.drawingList.find(item => item.__vModel__ == val)
@@ -240,12 +333,40 @@ export default {
             return { name, id, key }
           })
       } else {
+        if (val && item) {
+          this.leftFormatList[index] = item.format
+        }
         this.showRightOption[index] = false
         this.rightOptions[index] = []
       }
       this.$emit('input', this.dateRule)
     },
-
+    changeLeftVal(val, index) {
+      if (this.dateRule[index].right[0].type == 'fixed' && this.dateRule[index].right[0].field) {
+        this.dateRule[index].right[0].field = ''
+        this.dateRule[index].right[0].value = ''
+      }
+      this.dateRule[index].left[0].value = val
+      let item = this.drawingList.find(item => item.__vModel__ == this.dateRule[index].left[0].field)
+      if (val) {
+        let col = item.columns.find(col => col.props == val)
+        this.rightFormatList[index] = col.type.format
+      }
+      this.$emit('input', this.dateRule)
+    },
+    changeRightVal(val, index) {
+      if (this.dateRule[index].left[0].type == 'fixed' && this.dateRule[index].left[0].field) {
+        this.dateRule[index].left[0].field = ''
+        this.dateRule[index].left[0].value = ''
+      }
+      this.dateRule[index].right[0].value = val
+      let item = this.drawingList.find(item => item.__vModel__ == this.dateRule[index].right[0].field)
+      if (val) {
+        let col = item.columns.find(c => c.props == val)
+        this.leftFormatList[index] = col.type.format
+      }
+      this.$emit('input', this.dateRule)
+    },
     validate() {
       let flag = true
       for (let i = 0; i < this.dateRule.length; i++) {

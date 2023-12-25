@@ -47,7 +47,7 @@
             <a-input v-else v-model="left.field" placeholder="请输入" @change="e => changeLeftInputField(e, leftIndex, index)" />
           </a-col>
           <a-col :span="8" v-if="left.type != '' && showLeftOption[index][leftIndex]">
-            <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]"></dc-select>
+            <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]" @change="val => changeLeftVal(val, leftIndex, index)"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="leftIndex == 0">
@@ -99,7 +99,7 @@
             <a-input v-else v-model="right.field" placeholder="请输入" @change="e => changeRightInputField(e, rightIndex, index)" />
           </a-col>
           <a-col :span="8" v-if="right.type != '' && showRightOption[index][rightIndex]">
-            <dc-select v-model="right.value" placeholder="请选择" :options="rightOptions[index][rightIndex]"></dc-select>
+            <dc-select v-model="right.value" placeholder="请选择" :options="rightOptions[index][rightIndex]" @change="val => changeRightVal(val, rightIndex, index)"></dc-select>
           </a-col>
           <a-col :span="2">
             <div class="rowIcon" v-if="rightIndex == 0">
@@ -330,7 +330,14 @@ export default {
       this.rightOptions[index].splice(rightIndex, 1)
       this.$emit('input', this.dataRangeVal)
     },
-
+    changeLeftVal(val, leftIndex, index) {
+      this.dataRangeVal[index].left[leftIndex].value = val
+      this.$emit('input', this.dataRangeVal)
+    },
+    changeRightVal(val, rightIndex, index) {
+      this.dataRangeVal[index].right[rightIndex].value = val
+      this.$emit('input', this.dataRangeVal)
+    },
     validate() {
       let flag = true
       outer: for (let i = 0; i < this.dataRangeVal.length; i++) {

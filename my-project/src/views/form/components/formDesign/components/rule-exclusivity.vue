@@ -14,7 +14,7 @@
           ></dc-select>
         </a-col>
         <a-col :span="8" v-if="showLeftOption[leftIndex]">
-          <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[leftIndex]"></dc-select>
+          <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[leftIndex]" @change="val => changeLeftValue(val, leftIndex)"></dc-select>
         </a-col>
         <a-col :span="2">
           <div class="rowIcon" v-if="leftIndex == 0">
@@ -36,7 +36,7 @@
           <dc-select v-model="right.field" @change="val => changeRightField(val, rightIndex)" :options="rightFieldOptions[rightIndex]" placeholder="请选择关联表字段"></dc-select>
         </a-col>
         <a-col :span="5" v-if="showRightOption[rightIndex]">
-          <dc-select v-model="right.value" :options="rightOptions[rightIndex]" placeholder="请选择"></dc-select>
+          <dc-select v-model="right.value" :options="rightOptions[rightIndex]" placeholder="请选择" @change="val => changeRightValue(val, rightIndex)"></dc-select>
         </a-col>
         <a-col :span="2">
           <div class="rowIcon" v-if="rightIndex == 0">
@@ -216,7 +216,14 @@ export default {
       }
       this.$emit('input', this.exclusiveVal)
     },
-
+    changeLeftValue(val, leftIndex) {
+      this.exclusiveVal[0].left[leftIndex].value = val
+      this.$emit('input', this.exclusiveVal)
+    },
+    changeRightValue(val, rightIndex) {
+      this.exclusiveVal[0].right[rightIndex].value = val
+      this.$emit('input', this.exclusiveVal)
+    },
     validate() {
       let flag = true
       for (let j = 0; j < this.exclusiveVal[0].left.length; j++) {
