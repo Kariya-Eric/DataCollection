@@ -43,11 +43,11 @@
                 <a-input v-model="left.field" placeholder="请输入" @change="e => changeLeftInputField(e, leftIndex, index)" />
               </a-col>
               <template>
-                <a-col :span="4" v-if="left.fieldType != 'fixed'">
-                  <dc-select v-model="left.field" @change="val => changeLeftField(val, leftIndex, index)" :options="renderDrawingListOption(drawingList)"></dc-select>
+                <a-col :span="4" v-if="left.fieldType != 'fixed' && showLeftFields[index][leftIndex]">
+                  <dc-select v-model="left.field" @change="val => changeLeftField(val, leftIndex, index)" :options="leftFields[index][leftIndex]"></dc-select>
                 </a-col>
                 <a-col :span="left.fieldType == 'relate' ? 4 : 8" v-if="showLeftOption[index][leftIndex]">
-                  <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]"></dc-select>
+                  <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]" @change="val => changeLeftVal(val, leftIndex, index)"></dc-select>
                 </a-col>
               </template>
             </template>
@@ -100,11 +100,16 @@
                 <a-input v-model="right.field" placeholder="请输入" @change="e => changeRightInputField(e, rightIndex, index)" />
               </a-col>
               <template>
-                <a-col :span="4" v-if="right.fieldType != 'fixed'">
-                  <dc-select v-model="right.field" @change="val => changeRightField(val, rightIndex, index)" :options="renderDrawingListOption(drawingList)"></dc-select>
+                <a-col :span="4" v-if="right.fieldType != 'fixed' && showRightFields[index][rightIndex]">
+                  <dc-select v-model="right.field" @change="val => changeRightField(val, rightIndex, index)" :options="rightFields[index][rightIndex]"></dc-select>
                 </a-col>
                 <a-col :span="right.fieldType == 'relate' ? 4 : 8" v-if="showRightOption[index][rightIndex]">
-                  <dc-select v-model="right.value" placeholder="请选择" :options="rightOptions[index][rightIndex]"></dc-select>
+                  <dc-select
+                    v-model="right.value"
+                    placeholder="请选择"
+                    :options="rightOptions[index][rightIndex]"
+                    @change="val => changeRightVal(val, rightIndex, index)"
+                  ></dc-select>
                 </a-col>
               </template>
             </template>
@@ -138,13 +143,155 @@ export default {
       showRightOption: [[]],
       leftOptions: [[]],
       rightOptions: [[]],
+      leftFields: [[]],
+      rightFields: [[]],
+      showRightFields: [[]],
+      showLeftFields: [[]],
       formOptions: storage.get(TEMP_FORM)
     }
   },
   watch: {
     value: {
       handler(newVal) {
-        console.log('dataran', newVal)
+        this.dataRangeVal = JSON.parse(JSON.stringify(newVal))
+        let showLeftOption = []
+        let showRightOption = []
+        let leftOptions = []
+        let rightOptions = []
+        let leftFields = []
+        let rightFields = []
+        let showRightFields = []
+        let showLeftFields = []
+        this.dataRangeVal.forEach((dr, i) => {
+          showLeftOption[i] = []
+          showRightOption[i] = []
+          leftOptions[i] = []
+          rightOptions[i] = []
+          leftFields[i] = []
+          rightFields[i] = []
+          showRightFields[i] = []
+          showLeftFields[i] = []
+          let left = dr.left
+          left.forEach((l, j) => {
+            if (l.formId == 'current') {
+              showLeftFields[i][j] = true
+              leftFields[i][j] = this.renderDrawingListOption(this.drawingList)
+              let item = this.drawingList.find(d => d.__vModel__ == l.field)
+              if (item && item.__config__.layout === 'tableLayout') {
+                leftOptions[i][j] = item.columns.map(item => {
+                  let name = item.label
+                  let id = item.props
+                  let key = item.key
+                  return { name, id, key }
+                })
+                showLeftOption[i][j] = true
+              } else {
+                leftOptions[i][j] = []
+                showLeftOption[i][j] = false
+              }
+            } else {
+              if (l.formId) {
+                showLeftFields[i][j] = true
+                let form = storage.get(TEMP_FORM).find(f => f.id == l.formId)
+                if (form) {
+                  let leftList = JSON.parse(form.componentProperties)
+                  leftFields[i][j] = leftList.map(item => {
+                    let name = item.__config__.label
+                    let id = item.__vModel__
+                    let key = item.__config__.formId
+                    return { name, id, key }
+                  })
+                  let item = leftList.find(d => d.__vModel__ == l.field)
+                  if (item && item.__config__.layout === 'tableLayout') {
+                    leftOptions[i][j] = item.columns.map(item => {
+                      let name = item.label
+                      let id = item.props
+                      let key = item.key
+                      return { name, id, key }
+                    })
+                    showLeftOption[i][j] = true
+                  } else {
+                    leftOptions[i][j] = []
+                    showLeftOption[i][j] = false
+                  }
+                } else {
+                  leftFields[i][j] = []
+                  leftOptions[i][j] = []
+                  showLeftOption[i][j] = false
+                }
+              } else {
+                showLeftFields[i][j] = false
+                leftFields[i][j] = []
+                leftOptions[i][j] = []
+                showLeftOption[i][j] = false
+              }
+            }
+          })
+          let right = dr.right
+          right.forEach((r, j) => {
+            if (r.formId == 'current') {
+              showRightFields[i][j] = true
+              rightFields[i][j] = this.renderDrawingListOption(this.drawingList)
+              let item = this.drawingList.find(d => d.__vModel__ == r.field)
+              if (item && item.__config__.layout === 'tableLayout') {
+                rightOptions[i][j] = item.columns.map(item => {
+                  let name = item.label
+                  let id = item.props
+                  let key = item.key
+                  return { name, id, key }
+                })
+                showRightOption[i][j] = true
+              } else {
+                rightOptions[i][j] = []
+                showRightOption[i][j] = false
+              }
+            } else {
+              if (r.formId) {
+                showRightFields[i][j] = true
+                let form = storage.get(TEMP_FORM).find(f => f.id == r.formId)
+                if (form) {
+                  let rightList = JSON.parse(form.componentProperties)
+                  rightFields[i][j] = rightList.map(item => {
+                    let name = item.__config__.label
+                    let id = item.__vModel__
+                    let key = item.__config__.formId
+                    return { name, id, key }
+                  })
+                  let item = rightList.find(d => d.__vModel__ == r.field)
+                  if (item && item.__config__.layout === 'tableLayout') {
+                    rightOptions[i][j] = item.columns.map(item => {
+                      let name = item.label
+                      let id = item.props
+                      let key = item.key
+                      return { name, id, key }
+                    })
+                    showRightOption[i][j] = true
+                  } else {
+                    rightOptions[i][j] = []
+                    showRightOption[i][j] = false
+                  }
+                } else {
+                  rightFields[i][j] = []
+                  rightOptions[i][j] = []
+                  showRightOption[i][j] = false
+                }
+              } else {
+                rightFields[i][j] = []
+                rightOptions[i][j] = []
+                showRightOption[i][j] = false
+                showRightFields[i][j] = false
+              }
+            }
+          })
+        })
+        this.showLeftOption = showLeftOption
+        this.showRightOption = showRightOption
+        this.leftOptions = leftOptions
+        this.rightOptions = rightOptions
+        this.leftFields = leftFields
+        this.rightFields = rightFields
+        this.showRightFields = showRightFields
+        this.showLeftFields = showLeftFields
       },
       immediate: true
     }
@@ -173,6 +320,10 @@ export default {
       this.showRightOption.splice(index, 1)
       this.leftOptions.splice(index, 1)
       this.rightOptions.splice(index, 1)
+      this.showLeftFields.splice(index, 1)
+      this.showRightFields.slice(index, 1)
+      this.leftFields.splice(index, 1)
+      this.rightFields.splice(index, 1)
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -188,6 +339,10 @@ export default {
       this.showRightOption.push([])
       this.leftOptions.push([])
       this.rightOptions.push([])
+      this.showLeftFields.push([])
+      this.showRightFields.push([])
+      this.leftFields.push([])
+      this.rightFields.push([])
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -196,6 +351,16 @@ export default {
       this.dataRangeVal[index].left[leftIndex].type = val === 'fixed' ? 'fixed' : 'field'
       this.dataRangeVal[index].left[leftIndex].field = ''
       this.dataRangeVal[index].left[leftIndex].value = ''
+      if (val === 'current') {
+        this.dataRangeVal[index].left[leftIndex].formId = 'current'
+        this.showLeftFields[index][leftIndex] = true
+        this.leftFields[index][leftIndex] = this.renderDrawingListOption(this.drawingList)
+      } else {
+        this.dataRangeVal[index].left[leftIndex].formId = ''
+        this.showLeftFields[index][leftIndex] = false
+        this.leftFields[index][leftIndex] = []
+      }
+      this.showLeftOption[index][leftIndex] = false
       this.$emit('input', this.dataRangeVal)
     },
     changeRightType(val, rightIndex, index) {
@@ -203,6 +368,16 @@ export default {
       this.dataRangeVal[index].right[rightIndex].type = val === 'fixed' ? 'fixed' : 'field'
       this.dataRangeVal[index].right[rightIndex].field = ''
       this.dataRangeVal[index].right[rightIndex].value = ''
+      if (val === 'current') {
+        this.dataRangeVal[index].right[rightIndex].formId = 'current'
+        this.showRightFields[index][rightIndex] = true
+        this.rightFields[index][rightIndex] = this.renderDrawingListOption(this.drawingList)
+      } else {
+        this.dataRangeVal[index].right[rightIndex].formId = ''
+        this.showRightFields[index][rightIndex] = false
+        this.rightFields[index][rightIndex] = []
+      }
+      this.showRightOption[index][rightIndex] = false
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -218,8 +393,14 @@ export default {
 
     changeLeftField(val, leftIndex, index) {
       this.dataRangeVal[index].left[leftIndex].field = val
+      let form = storage.get(TEMP_FORM).find(f => f.id == this.dataRangeVal[index].left[leftIndex].formId)
+      let item
+      if (form) {
+        item = JSON.parse(form.componentProperties).find(item => item.__vModel__ == val)
+      } else {
+        item = this.drawingList.find(item => item.__vModel__ == val)
+      }
       this.dataRangeVal[index].left[leftIndex].value = ''
-      let item = this.drawingList.find(item => item.__vModel__ == val)
       if (val && item.__config__.layout === 'tableLayout') {
         this.showLeftOption[index][leftIndex] = true
         this.leftOptions[index][leftIndex] = item.columns.map(item => {
@@ -232,12 +413,20 @@ export default {
         this.showLeftOption[index][leftIndex] = false
         this.leftOptions[index][leftIndex] = []
       }
+      this.$forceUpdate()
       this.$emit('input', this.dataRangeVal)
     },
+
     changeRightField(val, rightIndex, index) {
       this.dataRangeVal[index].right[rightIndex].field = val
+      let form = storage.get(TEMP_FORM).find(f => f.id == this.dataRangeVal[index].right[rightIndex].formId)
+      let item
+      if (form) {
+        item = JSON.parse(form.componentProperties).find(item => item.__vModel__ == val)
+      } else {
+        item = this.drawingList.find(item => item.__vModel__ == val)
+      }
       this.dataRangeVal[index].right[rightIndex].value = ''
-      let item = this.drawingList.find(item => item.__vModel__ == val)
       if (val && item.__config__.layout === 'tableLayout') {
         this.showRightOption[index][rightIndex] = true
         this.rightOptions[index][rightIndex] = item.columns.map(item => {
@@ -250,7 +439,7 @@ export default {
         this.showRightOption[index][rightIndex] = false
         this.rightOptions[index][rightIndex] = []
       }
-
+      this.$forceUpdate()
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -273,6 +462,8 @@ export default {
       this.dataRangeVal[index].left.push(left)
       this.showLeftOption[index].push(false)
       this.leftOptions[index].push([])
+      this.leftFields[index].push([])
+      this.showLeftFields[index].push(false)
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -281,6 +472,8 @@ export default {
       this.dataRangeVal[index].right.push(right)
       this.showRightOption[index].push(false)
       this.rightOptions[index].push([])
+      this.rightFields[index].push([])
+      this.showRightFields[index].push(false)
       this.$emit('input', this.dataRangeVal)
     },
 
@@ -304,16 +497,18 @@ export default {
       this.dataRangeVal[index].right[rightIndex].field = ''
       this.dataRangeVal[index].right[rightIndex].value = ''
       if (val) {
-        let form = storage.get(TEMP_FORM).find(f => (f.id = val))
+        let form = storage.get(TEMP_FORM).find(f => f.id == val)
         let options = JSON.parse(form.componentProperties).map(item => {
           let name = item.__config__.label
           let id = item.__vModel__
           let key = item.__config__.formId
           return { name, id, key }
         })
-        this.rightOptions[index][rightIndex] = options
+        this.showRightFields[index][rightIndex] = true
+        this.rightFields[index][rightIndex] = options
       } else {
-        this.rightOptions[index][rightIndex] = []
+        this.showRightFields[index][rightIndex] = false
+        this.rightFields[index][rightIndex] = []
       }
       this.$emit('input', this.dataRangeVal)
     },
@@ -324,20 +519,29 @@ export default {
       this.dataRangeVal[index].left[leftIndex].field = ''
       this.dataRangeVal[index].left[leftIndex].value = ''
       if (val) {
-        let form = storage.get(TEMP_FORM).find(f => (f.id = val))
+        let form = storage.get(TEMP_FORM).find(f => f.id == val)
         let options = JSON.parse(form.componentProperties).map(item => {
           let name = item.__config__.label
           let id = item.__vModel__
           let key = item.__config__.formId
           return { name, id, key }
         })
-        this.leftOptions[index][leftIndex] = options
+        this.showLeftFields[index][leftIndex] = true
+        this.leftFields[index][leftIndex] = options
       } else {
-        this.leftOptions[index][leftIndex] = []
+        this.showLeftFields[index][leftIndex] = false
+        this.leftFields[index][leftIndex] = []
       }
       this.$emit('input', this.dataRangeVal)
     },
-
+    changeRightVal(val, rightIndex, index) {
+      this.dataRangeVal[index].right[rightIndex].value = val
+      this.$emit('input', this.dataRangeVal)
+    },
+    changeLeftVal(val, leftIndex, index) {
+      this.dataRangeVal[index].left[leftIndex].value = val
+      this.$emit('input', this.dataRangeVal)
+    },
     validate() {
       let flag = true
       outer: for (let i = 0; i < this.dataRangeVal.length; i++) {

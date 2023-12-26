@@ -118,7 +118,7 @@ export default {
           })
           let right = data.right
           right.forEach((r, j) => {
-            let form = storage.get(TEMP_FORM).find(f => (f.id = r.formId))
+            let form = storage.get(TEMP_FORM).find(f => f.id == r.formId)
             if (form) {
               let rightList = JSON.parse(form.componentProperties)
               rightFieldOptions[i][j] = rightList.map(item => {
@@ -162,7 +162,7 @@ export default {
       this.dataConsistencyVal[index].right[rightIndex].field = ''
       this.dataConsistencyVal[index].right[rightIndex].value = ''
       if (val) {
-        let form = storage.get(TEMP_FORM).find(f => (f.id = val))
+        let form = storage.get(TEMP_FORM).find(f => f.id == val)
         let options = JSON.parse(form.componentProperties).map(item => {
           let name = item.__config__.label
           let id = item.__vModel__
@@ -260,7 +260,7 @@ export default {
     changeRightField(val, rightIndex, index) {
       this.dataConsistencyVal[index].right[rightIndex].field = val
       this.dataConsistencyVal[index].right[rightIndex].value = ''
-      let form = storage.get(TEMP_FORM).find(f => (f.id = this.dataConsistencyVal[index].right[rightIndex].formId))
+      let form = storage.get(TEMP_FORM).find(f => f.id == this.dataConsistencyVal[index].right[rightIndex].formId)
       let item = JSON.parse(form.componentProperties).find(item => item.__vModel__ == val)
       if (val && item.__config__.layout === 'tableLayout') {
         this.showRightOption[index][rightIndex] = true

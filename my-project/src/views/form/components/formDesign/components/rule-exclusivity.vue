@@ -92,7 +92,7 @@ export default {
           }
         })
         right.forEach((r, j) => {
-          let form = storage.get(TEMP_FORM).find(f => (f.id = r.formId))
+          let form = storage.get(TEMP_FORM).find(f => f.id == r.formId)
           if (form) {
             let rightList = JSON.parse(form.componentProperties)
             this.rightFieldOptions[j] = rightList.map(item => {
@@ -170,7 +170,7 @@ export default {
       this.exclusiveVal[0].right[rightIndex].field = ''
       this.exclusiveVal[0].right[rightIndex].value = ''
       if (val) {
-        let form = storage.get(TEMP_FORM).find(f => (f.id = val))
+        let form = storage.get(TEMP_FORM).find(f => f.id == val)
         let options = JSON.parse(form.componentProperties).map(item => {
           let name = item.__config__.label
           let id = item.__vModel__
@@ -201,7 +201,8 @@ export default {
     changeRightField(val, rightIndex) {
       this.exclusiveVal[0].right[rightIndex].field = val
       this.exclusiveVal[0].right[rightIndex].value = ''
-      let item = this.drawingList.find(item => item.__vModel__ == val)
+      let form = storage.get(TEMP_FORM).find(f => f.id == this.exclusiveVal[0].right[rightIndex].formId)
+      let item = JSON.parse(form.componentProperties).find(item => item.__vModel__ == val)
       if (val && item.__config__.layout === 'tableLayout') {
         this.showRightOption[rightIndex] = true
         this.rightOptions[rightIndex] = item.columns.map(item => {
