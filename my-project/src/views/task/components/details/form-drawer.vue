@@ -4,7 +4,7 @@
       <span>{{ formName }}</span>
       <div class="title-operator-button">
         <a-button type="primary" v-if="judgeImport(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_import" />导入</a-button>
-        <a-button type="primary" v-if="judgeExport(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_export" />导出</a-button>
+        <a-button type="primary" v-if="judgeExport(rowInfo, currentUser, roleList)" @click="exportForm"><dc-icon type="icon-dc_export" />导出</a-button>
         <a-button type="primary" v-if="judgeYears(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_export" />历年数据</a-button>
         <a-button type="primary" @click="$refs.formview.save()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_save" />保存</a-button>
         <a-button type="primary" @click="$refs.formview.submit()" v-if="judgeSave(rowInfo, currentUser, roleList)"><dc-icon type="icon-dc_submit" />提交</a-button>
@@ -198,6 +198,28 @@ export default {
           }
         })
         .finally(() => (this.loading = false))
+    },
+
+    exportForm() {
+      exportTaskForm(this.rowInfo.id).then(data => {
+        if (!data) {
+          this.$message.warning('文件下载失败！')
+          return
+        }
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(new Blob([data], { type: 'application/vnd.ms-excel' }), this.rowInfo.formName + '.xlsx')
+        } else {
+          let url = window.URL.createObjectURL(new Blob([data], { type: 'application/vnd.ms-excel' }))
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', this.rowInfo.formName + '.xlsx')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(url)
+        }
+      })
     }
   }
 }
