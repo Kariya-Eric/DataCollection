@@ -1,4 +1,4 @@
-import { getAction, putAction, postAction } from '../api'
+import { getAction, putAction, postAction, downFile } from '../api'
 //启用任务
 const enableTask = params => putAction('/uc/api/task/enable', params)
 //获取任务信息
@@ -26,7 +26,7 @@ const configAuthUser = params => putAction('/uc/api/taskFormDetail/configAuthUse
 //表单详情-保存表单
 const updateTaskFormDetail = params => putAction('/uc/api/taskFormDetail/update', params)
 const submitForm = params => putAction(`/uc/api/taskFormDetail/submit`, params)
-
+const exportTaskForm = params => downFile(`/uc/api/taskFormDetail/export/${params}`)
 export {
   configAuthority,
   enableTask,
@@ -45,5 +45,6 @@ export {
   getTask,
   configAuthUser,
   updateTaskFormDetail,
-  submitForm
+  submitForm,
+  exportTaskForm
 }
