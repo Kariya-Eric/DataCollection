@@ -122,6 +122,17 @@ function buildRules(scheme, ruleList) {
         rules.push(`{ pattern:  /^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/ , message : '请输入正确的手机号' , trigger : '${ruleTrigger[config.tag]}' }`)
       }
     }
+    if (config.tag === 'a-input-number') {
+      rules.push(`{validator:(rule,value,callback)=>{
+        if(${scheme.min}&&value<${scheme.min}){
+          callback(new Error("${config.label}的值不得小于${scheme.min}"))
+        }
+        if(${scheme.max}&&value>${scheme.max}){
+          callback(new Error("${config.label}的值不得大于${scheme.max}"))
+        }
+        callback();
+      }}`)
+    }
     if (config.tag === 'formMail') {
       rules.push(`{ type: 'email' , message : '请输入正确的邮箱' , trigger : '${ruleTrigger[config.tag]}' }`)
     }

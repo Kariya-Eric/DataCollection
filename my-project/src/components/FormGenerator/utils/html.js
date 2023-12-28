@@ -154,7 +154,7 @@ const tags = {
     const min = el.min ? `:min="${el.min}"` : ''
     const max = el.max ? `:max="${el.max}"` : ''
     const precision = `:precision="${el.precision}"`
-    return `<${tag} ${vModel} ${placeholder}  ${min} ${max} ${precision}  ${width} ${disabled}/>`
+    return `<${tag} ${vModel} ${placeholder}  ${precision}  ${width} ${disabled}/>`
   },
   'a-select': el => {
     const { tag, vModel, placeholder, width, disabled } = attrBuilder(el)
