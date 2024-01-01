@@ -65,7 +65,7 @@ export default {
       expandedKeys: [],
       columns: [
         { title: '部门', align: 'center', scopedSlots: { customRender: 'orgName' } },
-        { title: '填报人', dataIndex: 'responsibleUserName', align: 'center' },
+        { title: '填报人', dataIndex: 'fillUserName', align: 'center' },
         { title: '最新提交时间', dataIndex: 'submitTime', align: 'center' },
         { title: '审核状态', scopedSlots: { customRender: 'status' }, align: 'center' },
         { title: '操作', scopedSlots: { customRender: 'action' }, align: 'center' }
