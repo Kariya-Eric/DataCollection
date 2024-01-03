@@ -25,6 +25,11 @@
         <a-form-model-item v-if="activeData.__config__.tag == 'formDivider'" label="组件名">
           {{ activeData.__config__.label }}
         </a-form-model-item>
+
+        <a-form-model-item v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider'" label="字段名">
+          <a-input v-model="activeData.__vModel__" placeholder="请输入字段名" :disabled="disabled" />
+        </a-form-model-item>
+
         <a-form-model-item v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider'" label="标题">
           <a-input v-model="activeData.__config__.label" placeholder="请输入标题" :disabled="disabled" />
         </a-form-model-item>

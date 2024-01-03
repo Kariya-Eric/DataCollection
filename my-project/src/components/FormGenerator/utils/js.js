@@ -139,8 +139,10 @@ function buildRules(scheme, ruleList) {
     if (config.layout === 'tableLayout') {
       rules.push(`{ validator : async (rule,value,callback) => {
         let result=await this.$refs.table_${config.formId}.validate();
-        if(typeof result==='string'){
-            callback(new Error(result));
+        if(result.length>0){
+            this.$nextTick(()=>this.showTableValidate=true);
+            this.tableValidate['${config.label}']=result;
+            callback(new Error('${config.label}校验不通过'));
         }
         if(${config.required}&&result.length==0){
           callback(new Error("请至少输入一条数据！"));
@@ -166,6 +168,8 @@ function buildexport(conf, data, rules, selectOptions, methods) {
   const str = `${exportDefault}{
   data () {
     return {
+      tableValidate:{},
+      showTableValidate:false,
       ${conf.formModel}: {
         ${data}
       },

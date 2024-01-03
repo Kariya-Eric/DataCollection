@@ -14,6 +14,9 @@
         <a-form-model-item label="表单名称" prop="formName">
           <a-input v-model="model.formName" allowClear />
         </a-form-model-item>
+        <a-form-model-item label="物理表名" prop="formTableCode">
+          <a-input v-model="model.formTableCode" allowClear />
+        </a-form-model-item>
         <a-form-model-item label="表单大类">
           <a-select v-model="model.formCategories" allowClear :getPopupContainer="target => target.parentNode">
             <a-select-option v-for="cate in categories" :key="cate.id" :value="cate.id">{{ cate.name }}</a-select-option>
@@ -56,6 +59,7 @@ export default {
       wrapperCol: { style: 'width: calc(100% - 120px); display: inline-block;' },
       rules: {
         formName: [{ required: true, message: '请输入表单名称' }],
+        formTableCode: [{ required: true, message: '请输入表单物理名称' }],
         formType: [{ required: true, message: '请选择表单类型' }],
         sort: [{ required: true, message: '请输入排序' }],
         collectTimeType: [{ required: true, message: '请选择统计时间类型', trigger: 'change' }]

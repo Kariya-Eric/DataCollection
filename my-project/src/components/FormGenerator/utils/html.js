@@ -283,7 +283,8 @@ export function makeUpHtml(formConfig) {
   let temp = buildFormTemplate(formConfig, htmlStr)
   confGlobal = null
   const formAlert = formConfig.formAlert
+  const tableValidate = `<div v-if='showTableValidate'>123123</div>`
   const tooltip = formAlert === '' ? '' : `<form-tooltip description='${formAlert}'/>`
-  const str = `<div>${tooltip}${temp}</div>`
+  const str = `<div>${tooltip}${temp}${tableValidate}</div>`
   return str
 }

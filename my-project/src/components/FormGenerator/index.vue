@@ -156,6 +156,14 @@ export default {
         })
         return
       }
+      if (this.validateFields() != '') {
+        this.$notification['warning']({
+          message: '字段名校验失败',
+          description: this.validateFields(),
+          duration: 0
+        })
+        return
+      }
       if (this.validateComponents().length > 0) {
         this.$notification['warning']({
           message: '以下组件中选项值重复！',
@@ -193,7 +201,7 @@ export default {
       config.formId = ++this.idGlobal
       config.renderKey = `${config.formId}${+new Date()}` // 改变renderKey后可以实现强制更新组件
       if (config.layout === 'colFormItem' || config.layout === 'tableLayout') {
-        item.__vModel__ = `field${this.idGlobal}`
+        item.__vModel__ = ``
       }
       return item
     },
@@ -213,6 +221,14 @@ export default {
         this.$notification['warning']({
           message: '请勿重复添加组件!',
           description: '浮动表单无法重复添加组件',
+          duration: 0
+        })
+        return
+      }
+      if (this.validateFields() != '') {
+        this.$notification['warning']({
+          message: '字段名校验失败',
+          description: this.validateFields(),
           duration: 0
         })
         return
@@ -272,6 +288,14 @@ export default {
     },
 
     view() {
+      if (this.validateFields() != '') {
+        this.$notification['warning']({
+          message: '字段名校验失败',
+          description: this.validateFields(),
+          duration: 0
+        })
+        return
+      }
       if (this.validateComponents().length > 0) {
         this.$notification['warning']({
           message: '以下组件中选项值重复！',
@@ -288,6 +312,14 @@ export default {
     },
 
     save() {
+      if (this.validateFields() != '') {
+        this.$notification['warning']({
+          message: '字段名校验失败',
+          description: this.validateFields(),
+          duration: 0
+        })
+        return
+      }
       if (this.validateComponents().length > 0) {
         this.$notification['warning']({
           message: '以下组件中选项值重复！',
@@ -301,6 +333,35 @@ export default {
         ...this.formConf
       }
       this.$emit('save', formData)
+    },
+
+    validateFields() {
+      let valid = { empty: [], unique: [] }
+      let field = {}
+      this.drawingList.forEach(d => {
+        if (field[d.__vModel__]) {
+          field[d.__vModel__] = field[d.__vModel__] + 1
+        } else {
+          field[d.__vModel__] = 1
+        }
+      })
+      this.drawingList.forEach(drawingItem => {
+        if (!drawingItem.__vModel__) {
+          valid.empty.push(drawingItem.__config__.label)
+        }
+        if (field[drawingItem.__vModel__] > 1) {
+          valid.unique.push(drawingItem.__config__.label)
+        }
+      })
+      if (valid.empty.length == 0 && valid.unique.length == 0) {
+        return ''
+      } else if (valid.empty.length == 0 && valid.unique.length != 0) {
+        return `字段名重复：【${valid.unique.join(',')}】`
+      } else if (valid.empty.length != 0 && valid.unique.length == 0) {
+        return `字段名为空：【${valid.empty.join(',')}】`
+      } else {
+        return `字段名为空：【${valid.empty.join(',')}】;` + '\n' + `字段名重复:【${valid.unique.join(',')}】`
+      }
     },
 
     validateComponents() {

@@ -4,6 +4,7 @@
       <div class="title-operator" slot="title">
         <span>表单预览</span>
         <div class="title-operator-button">
+          <a-button @click="$refs.formView.submit()">校验</a-button>
           <a-button @click="close"><dc-icon type="icon-dc_back" />返回</a-button>
         </div>
       </div>

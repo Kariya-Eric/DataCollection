@@ -292,11 +292,11 @@ export default {
               return undefined
             })
             rules.forEach(rule => {
-              msgList.push(`第 ${rowIndex + 1} 行 ${column.title} ：${rule.message}`)
+              msgList.push(`${rowIndex + 1}!^${column.title}!^${rule.message}`)
             })
           })
         })
-        return msgList.join('\n')
+        return msgList
       } else {
         $table.clearEdit()
         this.$emit('input', $table.getTableData().tableData)
