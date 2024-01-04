@@ -179,10 +179,10 @@ const tags = {
   },
   // ============自定义组件=============================
   'dc-date': el => {
-    const { tag, vModel, placeholder, width, disabled } = attrBuilder(el)
+    const { vModel, placeholder, width, disabled } = attrBuilder(el)
     const format = `format="${el.format}"`
     const mode = `mode="${el.mode}"`
-    return `<${tag}  ${vModel} ${format} ${mode} ${placeholder} ${width} ${disabled} ></${tag}>`
+    return `<dc-date-ant  ${vModel} ${format} ${mode} ${placeholder} ${width} ${disabled} ></dc-date-ant>`
   },
   formDivider: el => {
     const title = `title="${el.title}"`
@@ -283,7 +283,9 @@ export function makeUpHtml(formConfig) {
   let temp = buildFormTemplate(formConfig, htmlStr)
   confGlobal = null
   const formAlert = formConfig.formAlert
-  const tableValidate = `<div v-if='showTableValidate'>123123</div>`
+  const tableValidate = `<div v-if='Object.keys(tableValidate).length>0'>
+  <a-divider style="margin-top:128px"/>
+  <dc-validate v-for="(value,key) in tableValidate" :key="key" :name="value.name" :message="value.valid"></dc-validate></div>`
   const tooltip = formAlert === '' ? '' : `<form-tooltip description='${formAlert}'/>`
   const str = `<div>${tooltip}${temp}${tableValidate}</div>`
   return str

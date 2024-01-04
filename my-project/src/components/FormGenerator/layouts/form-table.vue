@@ -1,5 +1,18 @@
 <template>
   <div>
+    <div class="seach-wrapper">
+      <a-row :gutter="12">
+        <a-col :md="3" :sm="12">
+          <dc-select v-model="searchParam.props" placeholder="全部" :options="columns" :fields="{ label: 'label', value: 'props' }"></dc-select>
+        </a-col>
+        <a-col :md="5" :sm="12">
+          <a-input v-model="searchParam.value" />
+        </a-col>
+        <a-col :md="3" :sm="12">
+          <a-button type="primary">搜索</a-button>
+        </a-col>
+      </a-row>
+    </div>
     <div style="margin-bottom: 8px" v-if="!disabled">
       <a-button type="primary" icon="plus" @click="insertEvent" style="margin-right: 12px">新增</a-button>
       <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0" okText="确定" cancelText="取消">
@@ -88,6 +101,7 @@ export default {
   props: ['columns', 'value', 'required', 'disabled'],
   data() {
     return {
+      searchParam: {},
       dataSource: this.value,
       selectedRows: [],
       importConfig: { types: ['xlsx'] },
@@ -279,7 +293,7 @@ export default {
       const errMap = await $table.fullValidate().catch(errMap => errMap)
       if (errMap) {
         $table.clearEdit()
-        const msgList = []
+        const msgList = {}
         Object.values(errMap).forEach(errList => {
           errList.forEach(params => {
             const { column, rules, row } = params
@@ -292,7 +306,10 @@ export default {
               return undefined
             })
             rules.forEach(rule => {
-              msgList.push(`${rowIndex + 1}!^${column.title}!^${rule.message}`)
+              if (!msgList[rowIndex + 1]) {
+                msgList[rowIndex + 1] = []
+              }
+              msgList[rowIndex + 1].push(`${column.title}!^${rule.message}`)
             })
           })
         })

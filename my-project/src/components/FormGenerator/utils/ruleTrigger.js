@@ -10,7 +10,7 @@ export default {
   formLink: 'change',
   fixedTable: 'change',
   floatTable: 'change',
-  dcDate: 'change',
+  'dc-date': 'change',
   'a-input': 'change',
   'a-textarea': 'change',
   'a-input-number': 'change',

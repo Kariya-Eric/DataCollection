@@ -4,6 +4,7 @@ import DcDateAnt from './DataCollection/DcDateAnt'
 import DcModal from './DataCollection/DcModal'
 import DcStatus from './DataCollection/DcStatus'
 import DcEndTime from './DataCollection/DcEndTime'
+import DcValidate from './DataCollection/DcValidate'
 import FormGenerator from './FormGenerator'
 import Tinymce from './Tinymce'
 import CustomComponents from './FormGenerator/layouts'
@@ -22,7 +23,7 @@ VXETable.interceptor.add('event.clearActived', function ({ column, $event }) {
   for (let p of path) {
     let className = p.className || ''
     className = typeof className === 'string' ? className : className.toString()
-    if (className.includes('input-pop') || className.includes('del-action')||className.includes('el-date-popover')) {
+    if (className.includes('input-pop') || className.includes('del-action') || className.includes('el-date-popover')) {
       return false
     }
   }
@@ -33,6 +34,7 @@ export default {
   install(Vue) {
     Vue.component('DcEndtime', DcEndTime)
     Vue.component('DcSwitch', DcSwitch)
+    Vue.component('DcValidate', DcValidate)
     Vue.component('DcDate', DcDate)
     Vue.component('DcDateAnt', DcDateAnt)
     Vue.component('DcModal', DcModal)

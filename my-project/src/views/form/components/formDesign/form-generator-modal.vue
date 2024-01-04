@@ -107,7 +107,6 @@ export default {
 
     saveForm(formData) {
       const { fields } = formData
-      console.log(fields)
       if (fields.length == 0) {
         this.$message.error('请至少给表单配置一个组件后再保存！')
         return

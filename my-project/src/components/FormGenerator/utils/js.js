@@ -139,9 +139,11 @@ function buildRules(scheme, ruleList) {
     if (config.layout === 'tableLayout') {
       rules.push(`{ validator : async (rule,value,callback) => {
         let result=await this.$refs.table_${config.formId}.validate();
-        if(result.length>0){
-            this.$nextTick(()=>this.showTableValidate=true);
-            this.tableValidate['${config.label}']=result;
+        if(Object.keys(result).length>0){
+             this.$nextTick(()=>{
+               this.tableValidate['${scheme.__vModel__}']={name:'${config.label}',valid:result};
+               this.tableValidate={...this.tableValidate}
+             })
             callback(new Error('${config.label}校验不通过'));
         }
         if(${config.required}&&result.length==0){
@@ -169,7 +171,6 @@ function buildexport(conf, data, rules, selectOptions, methods) {
   data () {
     return {
       tableValidate:{},
-      showTableValidate:false,
       ${conf.formModel}: {
         ${data}
       },
