@@ -1,12 +1,8 @@
 <template>
   <div class="tableDiv">
+    <div v-html="theader" class="header"></div>
     <table class="table">
-      <tbody class="table-body">
-        <tr class="table-list">
-          <th v-for="(col, index) in columns" :key="index">
-            {{ col.label }}
-          </th>
-        </tr>
+      <tbody class="table-body" id="tbody">
         <tr class="table-list">
           <td
             v-for="(col, index) in columns.length"
@@ -16,7 +12,7 @@
             }"
             @mousedown="handleCellMousedown(col)"
           >
-            <table-cell :column="columns[index]" :placeholder="columns[index].label" />
+            <table-cell :column="columns[index]" placeholder="请输入" />
           </td>
         </tr>
       </tbody>
@@ -29,7 +25,7 @@ import TableCell from './table-cell'
 // 浮动表单设计组件
 export default {
   name: 'FixedTable',
-  props: ['selectedCol', 'columns'],
+  props: ['selectedCol', 'columns', 'theader'],
   components: {
     TableCell
   },
@@ -69,7 +65,7 @@ export default {
     .table-list {
       height: 46px;
       line-height: 46px;
-      td {
+      > td {
         padding: 0 10px;
         border: 1px solid #dfe6ec;
         min-width: 220px;
@@ -77,7 +73,7 @@ export default {
           background: #d4e7f5;
         }
       }
-      th {
+      > th {
         text-align: center;
         padding: 0 10px;
         border: 1px solid #dfe6ec;
@@ -89,8 +85,30 @@ export default {
     }
   }
 }
-
 .tableDiv {
   overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/deep/ .header {
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+    .table-body {
+      cursor: pointer;
+      .table-list {
+        height: 46px;
+        line-height: 46px;
+        > th {
+          padding: 0 10px;
+          border: 1px solid #dfe6ec;
+          min-width: 220px;
+          &.selected {
+            background: #d4e7f5;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

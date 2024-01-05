@@ -209,7 +209,12 @@ const tags = {
     return `<form-address ${vModel} ${placeholder} ${type} ${width} ${disabled}/>`
   },
   floatTable: el => {
-    return `<div>123</div>`
+    const { vModel, disabled } = attrBuilder(el)
+    const ref = `ref='table_${el.__config__.formId}'`
+    const columns = `:columns='${JSON.stringify(el.columns)}'`
+    const required = `:required="${el.__config__.required}"`
+    const resetTable = `@resetTable="resetTable('${el.__vModel__}')"`
+    return `<form-table ${ref} ${columns} ${vModel} ${required} ${resetTable} ${disabled} :fixed="false"/>`
   },
   fixedTable: el => {
     const { vModel, disabled } = attrBuilder(el)
@@ -217,7 +222,7 @@ const tags = {
     const columns = `:columns='${JSON.stringify(el.columns)}'`
     const required = `:required="${el.__config__.required}"`
     const resetTable = `@resetTable="resetTable('${el.__vModel__}')"`
-    return `<form-table ${ref} ${columns} ${vModel} ${required} ${resetTable} ${disabled}/>`
+    return `<form-table ${ref} ${columns} ${vModel} ${required} ${resetTable} ${disabled} :fixed="true"/>`
   }
   // ============自定义组件=============================
 }

@@ -7,7 +7,7 @@ export const otherComponentsFloat = [
       tagIcon: 'icon-dc_table',
       layout: 'tableLayout',
       label: '表格',
-      tag: 'fixedTable',
+      tag: 'floatTable',
       showLabel: true,
       span: 24,
       labelCol: { span: 2 },

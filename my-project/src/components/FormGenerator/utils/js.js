@@ -124,6 +124,9 @@ function buildRules(scheme, ruleList) {
     }
     if (config.tag === 'a-input-number') {
       rules.push(`{validator:(rule,value,callback)=>{
+        if(typeof value!=='number'){
+          callback(new Error("${config.label}只允许输入数字"))
+        }
         if(${scheme.min}&&value<${scheme.min}){
           callback(new Error("${config.label}的值不得小于${scheme.min}"))
         }
@@ -139,12 +142,17 @@ function buildRules(scheme, ruleList) {
     if (config.layout === 'tableLayout') {
       rules.push(`{ validator : async (rule,value,callback) => {
         let result=await this.$refs.table_${config.formId}.validate();
-        if(Object.keys(result).length>0){
+        if(result.length==undefined&&Object.keys(result).length>0){
              this.$nextTick(()=>{
                this.tableValidate['${scheme.__vModel__}']={name:'${config.label}',valid:result};
                this.tableValidate={...this.tableValidate}
              })
             callback(new Error('${config.label}校验不通过'));
+        }else{
+          this.$nextTick(()=>{
+            delete this.tableValidate['${scheme.__vModel__}']
+            this.tableValidate={...this.tableValidate}
+          })
         }
         if(${config.required}&&result.length==0){
           callback(new Error("请至少输入一条数据！"));

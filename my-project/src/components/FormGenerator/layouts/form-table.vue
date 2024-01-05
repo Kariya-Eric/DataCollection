@@ -1,22 +1,25 @@
 <template>
   <div>
-    <div class="seach-wrapper">
+    <div class="seach-wrapper" v-if="!fixed">
       <a-row :gutter="12">
         <a-col :md="3" :sm="12">
           <dc-select v-model="searchParam.props" placeholder="全部" :options="columns" :fields="{ label: 'label', value: 'props' }"></dc-select>
         </a-col>
         <a-col :md="5" :sm="12">
-          <a-input v-model="searchParam.value" />
+          <a-input v-model="searchParam.value" placeholder="请输入" />
         </a-col>
         <a-col :md="3" :sm="12">
-          <a-button type="primary">搜索</a-button>
+          <a-button type="primary" @click="searchEvent">搜索</a-button>
         </a-col>
       </a-row>
     </div>
-    <div style="margin-bottom: 8px" v-if="!disabled">
-      <a-button type="primary" icon="plus" @click="insertEvent" style="margin-right: 12px">新增</a-button>
-      <a-popconfirm title="您确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0" okText="确定" cancelText="取消">
-        <a-button type="danger" class="del-action">删除</a-button>
+    <div style="margin-bottom: 8px" v-if="!disabled && fixed">
+      <a-button type="primary" icon="plus" @click="insertEvent" style="margin-right: 12px">添加</a-button>
+      <a-popconfirm title="确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0" okText="确定" cancelText="取消">
+        <a-button type="danger">删除</a-button>
+      </a-popconfirm>
+      <a-popconfirm title="确定要清空数据吗" @confirm="clearAll" overlayClassName="input-pop" okText="确定" cancelText="取消">
+        <a-button type="primary" style="margin-left: 12px">清空数据</a-button>
       </a-popconfirm>
       <!-- <div style="float: right">
         <a-dropdown placement="topCenter">
@@ -24,13 +27,25 @@
         </a-dropdown>
       </div> -->
     </div>
+    <div style="margin-bottom: 8px" v-if="!disabled && !fixed">
+      <span>总数 : {{ count }}</span>
+      <div style="float: right">
+        <a-button type="primary" icon="plus" @click="insertEvent" style="margin-right: 12px">添加</a-button>
+        <a-popconfirm title="确定要删除选中的数据" @confirm="removeChecked" overlayClassName="input-pop" v-if="selectedRows.length > 0" okText="确定" cancelText="取消">
+          <a-button type="danger">删除</a-button>
+        </a-popconfirm>
+        <a-popconfirm title="确定要清空数据吗" @confirm="clearAll" overlayClassName="input-pop" okText="确定" cancelText="取消">
+          <a-button type="primary" style="margin-left: 12px">清空数据</a-button>
+        </a-popconfirm>
+      </div>
+    </div>
     <vxe-table
       border
       auto-resize
       round
       show-overflow
       ref="xTable"
-      :data="dataSource"
+      :data="tempDatasource"
       :edit-config="{ trigger: disabled ? 'manual' : 'click', mode: 'cell', showIcon: false }"
       align="center"
       size="medium"
@@ -95,20 +110,32 @@
 </template>
 
 <script>
+import XEUtils from 'xe-utils'
 import { nanoid } from 'nanoid'
 export default {
   name: 'FormTable',
-  props: ['columns', 'value', 'required', 'disabled'],
+  props: ['columns', 'value', 'required', 'disabled', 'fixed'],
   data() {
     return {
       searchParam: {},
+      tempDatasource: [],
       dataSource: this.value,
       selectedRows: [],
       importConfig: { types: ['xlsx'] },
-      exportConfig: { types: ['xlsx'] }
+      exportConfig: { types: ['xlsx'] },
+      count: 0
     }
   },
-
+  watch: {
+    value: {
+      handler(newVal) {
+        this.count = newVal.length
+        this.dataSource = newVal
+        this.$nextTick(() => this.searchEvent())
+      },
+      immediate: true
+    }
+  },
   computed: {
     rules() {
       let rule = {}
@@ -231,12 +258,16 @@ export default {
         if (!value || value.length == 0) {
           return null
         } else {
-          return value
-            .map(val => {
-              const item = type.__slot__.options.find(item => item[valueProp] === val)
-              return item ? item[labelField] : null
-            })
-            .join(', ')
+          if (value instanceof Array) {
+            return value
+              .map(val => {
+                const item = type.__slot__.options.find(item => item[valueProp] === val)
+                return item ? item[labelField] : null
+              })
+              .join(',')
+          } else {
+            return value
+          }
         }
       }
     },
@@ -279,12 +310,44 @@ export default {
           newRecord[col.props] = undefined
         }
       })
-
       await $table.insertAt(newRecord, -1)
     },
 
     async editClosed() {
       this.$emit('resetTable')
+    },
+
+    async clearAll() {
+      const xTable = this.$refs.xTable
+      xTable.remove()
+      this.selectedRows = []
+      this.$emit('input', xTable.getTableData().tableData)
+    },
+
+    searchEvent() {
+      //全表搜索
+      const filterName = XEUtils.toValueString(this.searchParam.value).trim().toLowerCase()
+      if (filterName) {
+        const filterRE = new RegExp(filterName, 'gi')
+        const searchProps = this.searchParam.props ? [this.searchParam.props] : this.columns.map(col => col.props)
+        const rest = this.dataSource.filter(item =>
+          searchProps.some(
+            key =>
+              XEUtils.toValueString(item[key] instanceof Array ? item[key].join(',') : item[key])
+                .toLowerCase()
+                .indexOf(filterName) > -1
+          )
+        )
+        this.tempDatasource = rest.map(row => {
+          const item = Object.assign({}, row)
+          searchProps.forEach(key => {
+            item[key] = XEUtils.toValueString(item[key]).replace(filterRE, match => `${match}`)
+          })
+          return item
+        })
+      } else {
+        this.tempDatasource = this.dataSource
+      }
     },
 
     async validate() {
@@ -353,5 +416,9 @@ export default {
 .vxe-table--render-default .is--indeterminate.vxe-cell--checkbox,
 .vxe-table--render-default .is--indeterminate.vxe-cell--checkbox .vxe-checkbox--icon {
   color: #2f68bd !important;
+}
+.keyword-lighten {
+  color: #000;
+  background-color: #ffff00;
 }
 </style>
