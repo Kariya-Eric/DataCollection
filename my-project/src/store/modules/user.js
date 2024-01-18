@@ -31,11 +31,11 @@ const user = {
           .then(response => {
             if (response.success) {
               const data = response.data
-              storage.set(ACCESS_TOKEN, data.access_token)
+              storage.set(ACCESS_TOKEN, data.token)
               storage.set(REFRESH_TOKEN, data.refresh_token)
               const { username, userId, account } = data
               storage.set(USER_INFO, { username, userId, account })
-              commit('SET_TOKEN', data.access_token)
+              commit('SET_TOKEN', data.token)
               commit('SET_USERINFO', { username, userId, account })
               commit('SET_REFRESH_TOKEN', data.refresh_token)
               resolve()
