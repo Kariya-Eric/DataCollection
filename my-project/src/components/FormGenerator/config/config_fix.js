@@ -87,19 +87,19 @@ export const otherComponentsFix = [
       {
         key: 1,
         label: '列1',
-        props: 'col1',
+        props: '',
         type: input
       },
       {
         key: 2,
         label: '列2',
-        props: 'col2',
+        props: '',
         type: input
       },
       {
         key: 3,
         label: '列3',
-        props: 'col3',
+        props: '',
         type: input
       }
     ],

@@ -202,8 +202,8 @@ export default {
       config.renderKey = `${config.formId}${+new Date()}` // 改变renderKey后可以实现强制更新组件
       if (config.layout === 'colFormItem' && config.layout !== 'tableLayout') {
         item.__vModel__ = ``
-      }else{
-        item.__vModel__=`field${this.idGlobal}`
+      } else {
+        item.__vModel__ = `field${this.idGlobal}`
       }
       return item
     },
@@ -353,6 +353,31 @@ export default {
         }
         if (field[drawingItem.__vModel__] > 1) {
           valid.unique.push(drawingItem.__config__.label)
+        }
+        if (drawingItem.__config__.layout === 'tableLayout') {
+          let props = {}
+          drawingItem.columns.forEach(d => {
+            if (props[d.props]) {
+              props[d.props] = props[d.props] + 1
+            } else {
+              props[d.props] = 1
+            }
+          })
+          let emptyProps = drawingItem.columns.filter(item => item.props.trim() == '')
+          if (emptyProps.length > 0) {
+            let prefix = drawingItem.__config__.label ? drawingItem.__config__.label + ':' : drawingItem.__config__.label
+            valid.empty.push(prefix + emptyProps.map(col => col.label).join(','))
+          }
+          let propUnique = ''
+          drawingItem.columns.forEach(d => {
+            if (d.props && props[d.props] > 1) {
+              propUnique += d.label + ','
+            }
+          })
+          if (propUnique != '') {
+            propUnique = propUnique.substring(0, propUnique.length - 1)
+            valid.unique.push(propUnique)
+          }
         }
       })
       if (valid.empty.length == 0 && valid.unique.length == 0) {

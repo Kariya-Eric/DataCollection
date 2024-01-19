@@ -8,7 +8,8 @@
             <div class="select-line-icon option-drag">
               <a-icon type="unordered-list" style="font-size: 16px" />
             </div>
-            <a-input v-model="item.label" :disabled="disabled" />
+            <a-input v-model="item.label" :disabled="disabled" style="margin-right: 8px" />
+            <a-input v-model="item.props" :disabled="disabled" />
             <div class="close-btn select-line-icon" v-if="!disabled">
               <a-icon type="minus-circle" style="font-size: 16px" @click="delCol(item.key)" />
             </div>
@@ -191,7 +192,7 @@ export default {
       this.activeData.selectedCol = -1
       let key = this.activeData.columns[this.activeData.columns.length - 1].key + 1
       let label = '列' + key
-      let props = 'col' + key
+      let props = ''
       this.activeData.columns.push({
         key,
         label,
@@ -272,7 +273,7 @@ export default {
         value: '选项'
       })
     },
-    
+
     changeLabel(e, index) {
       let label = e.target.value
       this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__.options[index].value = label
