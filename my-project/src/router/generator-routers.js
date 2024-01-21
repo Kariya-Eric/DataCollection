@@ -1,12 +1,13 @@
-import { PageView } from '@/layouts'
+import { PageView, RepositoryView } from '@/layouts'
 //菜单item生成路由页面
 function loadView(item) {
   let flag = item.children.length > 0
+  let repositoryFlag = item.menuUrl === '/repository'
   return {
     path: item.menuUrl,
     name: item.alias,
     hidden: item.enableMenu == 0,
-    component: flag ? PageView : () => import(`@/views${item.templateUrl}`),
+    component: flag ? (repositoryFlag ? RepositoryView : PageView) : () => import(`@/views${item.templateUrl}`),
     redirect: item.load,
     meta: {
       title: item.name,
