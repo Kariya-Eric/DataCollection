@@ -125,9 +125,10 @@ export default {
       }
     },
     showDetail(record, tab) {
+      localStorage.setItem('repository_detail', JSON.stringify(record))
       this.$router.push({
         path: '/repository/detail',
-        query: { tab, repid: this.repid, year: this.year, formid: record.id, title: record.name }
+        query: { tab, repid: this.repid, year: this.year }
       })
     },
     // 上传

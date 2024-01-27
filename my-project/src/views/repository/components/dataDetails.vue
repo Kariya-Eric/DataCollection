@@ -13,7 +13,7 @@
           <a-col :md="5" :sm="8">
             <a-form-item>
               <a-select v-model="queryParam.field" placeholder="全部" allowClear>
-                <a-select-option v-for="(item, index) in optionList" :key="index" :value="item.dataIndex">{{ item.title }}</a-select-option>
+                <a-select-option v-for="(item, index) in optionList" :key="index" :value="item.field">{{ item.label }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -31,7 +31,7 @@
         </a-row>
       </a-form>
     </div>
-    <a-table rowKey="_id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
+    <a-table bordered rowKey="_id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
       <!-- <template slot="action" slot-scope="text, record">
         <a @click="showDetail(record)">数据来源</a>
       </template> -->
@@ -43,13 +43,17 @@
 import DataDetailsDrawer from './drawer/dataDetailsDrawer.vue'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import api from '@/api/repository'
-const yearColumn = [{ title: '年份', dataIndex: 'year' }]
+const yearColumn = [{ label: '年份', field: 'year' }]
 export default {
   name: 'DataDetails',
   mixins: [DataCollectionListMixin],
   components: { DataDetailsDrawer },
   props: {
     formName: {
+      type: String,
+      default: ''
+    },
+    formId: {
       type: String,
       default: ''
     }
@@ -64,33 +68,32 @@ export default {
   },
 
   mounted() {
+    if (!this.formId) return
     this.getYearList()
     this.loadData(1)
   },
 
   methods: {
     loadData(arg) {
-      const { formid } = this.$route.query
-      if (!formid) return
       if (arg === 1) {
         this.ipagination.current = 1
       }
       this.loading = true
       const params = this.getQueryParams()
       api
-        .getDataList(formid, params)
+        .getDataList(this.formId, params)
         .then(res => {
           if (res.state) {
-            const header = this.formatHeader(res.value.header)
-            this.optionList = this.flatArr(header)
-            this.columns = yearColumn.concat(header)
-            this.dataSource = this.formatTable(res.value.content.rows)
-            console.log(this.dataSource)
-            if (res.value.content.total) {
-              this.ipagination.total = res.value.content.total
-            } else {
-              this.ipagination.total = 0
+            if (res.value.content) {
+              this.dataSource = this.formatTable(res.value.content.rows)
+              if (res.value.content.total) {
+                this.ipagination.total = res.value.content.total
+              } else {
+                this.ipagination.total = 0
+              }
             }
+            this.columns = this.formatHeader(yearColumn.concat(res.value.header))
+            this.optionList = this.flatArr(res.value.header)
           } else {
             this.$message.warning(res.message)
           }
@@ -100,9 +103,11 @@ export default {
         })
     },
     // 查询条件-表头数据下拉选项
-    flatArr(arr) {
+    flatArr(arr, parent) {
       return arr.reduce((result, item) => {
-        return result.concat(item.children ? this.flatArr(item.children) : item)
+        return result.concat(
+          item.children ? this.flatArr(item.children, item) : parent ? { ...item, label: `${parent.label}.${item.label}`, field: `${parent.field}.${item.field}` } : item
+        )
       }, [])
     },
     // 表头数据处理
@@ -114,15 +119,17 @@ export default {
           dataIndex: item.field,
           children: this.formatHeader(item.children),
           customRender: (text, row, index) => {
-            console.log(text, row, index)
-            // if (row.rows) {
-            //   return {
-            //     children: text,
-            //     attrs: {
-            //       rowSpan: 3
-            //     }
-            //   }
-            // }
+            if (row.rows) {
+              if (text && text.type === 'single') {
+                return text.value
+              }
+              return {
+                children: text,
+                attrs: {
+                  rowSpan: row.rowIndex === 0 ? row.rows : 0
+                }
+              }
+            }
             return text
           }
         }
@@ -137,8 +144,15 @@ export default {
           if (Array.isArray(item[key])) {
             item[key].forEach((subitem, index) => {
               arrayFlag = true
-              console.log(subitem);
-              newArr.push({ ...item, ...subitem, rows: index === 0 ? item[key].length : 0 })
+              for (const subkey in subitem) {
+                if (subkey !== '_X_ROW_KEY') {
+                  subitem[subkey] = {
+                    type: 'single',
+                    value: subitem[subkey]
+                  }
+                }
+              }
+              newArr.push({ ...item, ...subitem, _id: subitem._X_ROW_KEY, rows: item[key].length, rowIndex: index })
             })
           }
         }
@@ -147,7 +161,7 @@ export default {
       return newArr
     },
     getYearList() {
-      api.getDataYearList(this.$route.query.formid).then(res => {
+      api.getDataYearList(this.formId).then(res => {
         this.yearList = res.value
       })
     },

@@ -21,6 +21,10 @@ export default {
     formName: {
       type: String,
       default: ''
+    },
+    formId: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -38,16 +42,15 @@ export default {
   },
 
   mounted() {
+    if(!this.formId) return
     this.loadData()
   },
 
   methods: {
     loadData() {
-      const { formid } = this.$route.query
-      if (!formid) return
       this.loading = true
       api
-        .getConfigList(formid)
+        .getConfigList(this.formId)
         .then(res => {
           if (res.state) {
             this.dataSource = res.value

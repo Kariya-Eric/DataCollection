@@ -266,15 +266,19 @@ export default {
       .ant-card-bordered {
         border: 0;
       }
-      .ant-table-thead > tr > th {
-        border: 0;
-      }
-      .ant-table-tbody > tr > td {
-        border-bottom: 1px solid #e5e5e5;
-      }
-      .ant-table-thead > tr > th,
-      .ant-table-tbody > tr > td {
-        padding: 15px 20px;
+      .ant-table {
+        &:not(.ant-table-bordered) {
+          .ant-table-thead > tr > th {
+            border: 0;
+          }
+          .ant-table-tbody > tr > td {
+            border-bottom: 1px solid #e5e5e5;
+          }
+        }
+        // .ant-table-thead > tr > th,
+        // .ant-table-tbody > tr > td {
+        //   padding: 15px 20px;
+        // }
       }
     }
   }
