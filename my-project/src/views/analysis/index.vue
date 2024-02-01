@@ -1,14 +1,12 @@
 <template>
   <div>
-    <a-list :grid="{ gutter: 12, column: 6 }" :data-source="reportList">
+    <a-list :grid="{ gutter: 20, xs: 1, sm: 2, md: 3 }" :data-source="reportList">
       <a-list-item slot="renderItem" slot-scope="item, index">
         <div class="list-item" @click="showDetail(item)">
-          <a-card>
-            <a-result :title="item">
-              <template #icon>
-                <a-icon type="file-search" />
-              </template>
-            </a-result>
+          <a-card :title="item.title">
+            <img class="list-icon" src="@/assets/analysis.png" alt="" />
+            <p class="list-desc">{{ item.desc }}</p>
+            <a-button type="primary">查看报告</a-button>
           </a-card>
         </div>
       </a-list-item>
@@ -21,14 +19,27 @@ export default {
   name: 'Analysis',
   data() {
     return {
-      reportList: ['本科教学状态数据分析报告', '本科教学质量报告']
+      reportList: [
+        {
+          title: '本科教学状态数据分析报告',
+          desc: '新一轮审核评估'
+        },
+        {
+          title: '师范类专业教学状态数据分析报告',
+          desc: '师范专业认证'
+        },
+        {
+          title: '本科教学质量报告',
+          desc: '常态监测'
+        }
+      ]
     }
   },
   methods: {
     showDetail(item) {
       this.$router.push({
         path: '/analysis/detail',
-        query: { type: item }
+        query: { type: item.title }
       })
     }
   }
@@ -36,18 +47,38 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/.ant-result {
-  padding: 12px 24px;
-}
-/deep/.ant-result-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-}
-/deep/.ant-result-icon > .anticon {
-  font-size: 48px;
-}
 .list-item {
   cursor: pointer;
+  background: linear-gradient(180deg, rgba(201, 223, 255, 1), rgba(237, 244, 255, 1));
+  border-radius: 8px;
+  padding: 1px;
+  .list-desc {
+    color: #666;
+    margin-bottom: 34px;
+  }
+  .list-icon {
+    position: absolute;
+    bottom: 13px;
+    right: 23px;
+    height: 55%;
+  }
+  /deep/.ant-card {
+    background: linear-gradient(180deg, #e6f0ff 0%, #ffffff 100%);
+    border: 0;
+    border-radius: 8px;
+    padding-top: 12px;
+    .ant-card-head {
+      border: 0;
+      font-size: 24px;
+      color: #2f68bd;
+    }
+    .ant-card-head-title {
+      padding: 11px 0;
+    }
+    .ant-card-body {
+      padding-top: 0;
+      padding-bottom: 32px;
+    }
+  }
 }
 </style>
