@@ -53,6 +53,7 @@ export default {
         if (res.state) {
           this.$message.success(res.message)
         } else {
+          this.enabledFlag = 0
           this.$message.error(res.message)
         }
       })

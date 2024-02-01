@@ -155,12 +155,14 @@ export default {
         .then(res => {
           if (res.state) {
             this.$message.success(res.message)
-            this.loadData()
           } else {
             this.$message.error(res.message)
           }
         })
-        .finally(() => (this.loading = false))
+        .finally(() => {
+          this.loadData()
+          this.loading = false
+        })
     },
 
     showTaskInfo(record) {
