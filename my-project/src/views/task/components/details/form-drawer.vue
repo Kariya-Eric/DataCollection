@@ -1,5 +1,5 @@
 <template>
-  <a-drawer v-if="visible" :visible="visible" :width="1200" :closable="false">
+  <a-drawer v-if="visible" :visible="visible" :width="1200" :closable="false" class="formDrawer">
     <div class="title-operator" slot="title">
       <span>{{ formName }}</span>
       <div class="title-operator-button">
@@ -18,7 +18,6 @@
         <a-button @click="close"><dc-icon type="icon-dc_back" />返回</a-button>
       </div>
     </div>
-
     <div :class="`showType_${type.class}`" v-if="type.title">
       <dc-icon v-if="type.class === 'redo'" type="icon-dc_reject" style="color: #e23322; font-size: 18px" />
       <dc-icon v-if="type.class === 'audit'" type="icon-dc_waiting_audit" style="color: #2f68bd; font-size: 18px" />
@@ -26,7 +25,6 @@
       <span style="margin-left: 12px">{{ type.title }}</span>
       <a @click="showReject(rowInfo.rejectReason, false)" v-if="type.class === 'redo'" style="margin-left: 36px; font-size: 12px; text-decoration: underline">查看驳回原因</a>
     </div>
-
     <a-spin :spinning="loading">
       <form-view :formConf="formConf" ref="formview" @save="saveForm" @submit="submitForm" />
     </a-spin>

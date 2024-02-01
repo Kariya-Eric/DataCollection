@@ -1,6 +1,6 @@
 <template>
-  <div style="height: 100vh">
-    <a-row style="height: 100vh; overflow: auto">
+  <div style="height: 82vh">
+    <a-row style="height: 82vh; overflow: auto">
       <a-col :md="24" :lg="24" class="right-preview">
         <a-spin :spinning="!isIframeLoaded"> </a-spin>
         <iframe v-show="isIframeLoaded" ref="previewPage" class="result-wrapper" frameborder="0" :src="previewURL" @load="iframeLoad" />
@@ -121,7 +121,7 @@ export default {
 .right-preview {
   height: 100%;
   .result-wrapper {
-    height: calc(100vh - 40px);
+    height: calc(82vh - 20px);
     width: 100%;
     overflow: auto;
     padding: 12px;
