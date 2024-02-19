@@ -93,7 +93,7 @@
         </vxe-table>
       </a-card>
     </a-col>
-    <category-modal ref="categoryModal" @refresh="getDictionaryTree(searchYear)" />
+    <category-modal ref="categoryModal" @refresh="getDictionaryTree(searchYear)" :treeData="treeData"/>
     <option-modal ref="optionModal" @refresh="getOptionData" />
     <optval-modal ref="optvalModal" :parentName="optSelectName" @refresh="getOptionValueData" />
     <option-batch-modal ref="optionBatchModal" @refresh="getOptionData" :year="searchYear" />

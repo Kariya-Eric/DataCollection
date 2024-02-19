@@ -35,7 +35,7 @@ export default {
       rules: {
         parentId: [{ required: true, message: '请选择类型' }],
         name: [{ required: true, message: '请输入目录名称' }]
-      },
+      }
     }
   },
   methods: {

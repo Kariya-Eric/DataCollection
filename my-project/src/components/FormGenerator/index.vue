@@ -348,35 +348,37 @@ export default {
         }
       })
       this.drawingList.forEach(drawingItem => {
-        if (!drawingItem.__vModel__) {
-          valid.empty.push(drawingItem.__config__.label)
-        }
-        if (field[drawingItem.__vModel__] > 1) {
-          valid.unique.push(drawingItem.__config__.label)
-        }
-        if (drawingItem.__config__.layout === 'tableLayout') {
-          let props = {}
-          drawingItem.columns.forEach(d => {
-            if (props[d.props]) {
-              props[d.props] = props[d.props] + 1
-            } else {
-              props[d.props] = 1
-            }
-          })
-          let emptyProps = drawingItem.columns.filter(item => item.props.trim() == '')
-          if (emptyProps.length > 0) {
-            let prefix = drawingItem.__config__.label ? drawingItem.__config__.label + ':' : drawingItem.__config__.label
-            valid.empty.push(prefix + emptyProps.map(col => col.label).join(','))
+        if (drawingItem.__config__.tag != 'formDivider') {
+          if (!drawingItem.__vModel__) {
+            valid.empty.push(drawingItem.__config__.label)
           }
-          let propUnique = ''
-          drawingItem.columns.forEach(d => {
-            if (d.props && props[d.props] > 1) {
-              propUnique += d.label + ','
+          if (field[drawingItem.__vModel__] > 1) {
+            valid.unique.push(drawingItem.__config__.label)
+          }
+          if (drawingItem.__config__.layout === 'tableLayout') {
+            let props = {}
+            drawingItem.columns.forEach(d => {
+              if (props[d.props]) {
+                props[d.props] = props[d.props] + 1
+              } else {
+                props[d.props] = 1
+              }
+            })
+            let emptyProps = drawingItem.columns.filter(item => item.props.trim() == '')
+            if (emptyProps.length > 0) {
+              let prefix = drawingItem.__config__.label ? drawingItem.__config__.label + ':' : drawingItem.__config__.label
+              valid.empty.push(prefix + emptyProps.map(col => col.label).join(','))
             }
-          })
-          if (propUnique != '') {
-            propUnique = propUnique.substring(0, propUnique.length - 1)
-            valid.unique.push(propUnique)
+            let propUnique = ''
+            drawingItem.columns.forEach(d => {
+              if (d.props && props[d.props] > 1) {
+                propUnique += d.label + ','
+              }
+            })
+            if (propUnique != '') {
+              propUnique = propUnique.substring(0, propUnique.length - 1)
+              valid.unique.push(propUnique)
+            }
           }
         }
       })
