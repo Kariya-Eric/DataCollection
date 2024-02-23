@@ -89,7 +89,7 @@
               :mode="columns[index].type.mode"
               :filterOption="(inputValue, option) => option.componentOptions.children[0].text.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0"
             >
-              <a-select-option v-for="(item, i) in columns[index].type.__slot__.options" :key="i" :value="item.value">{{ item.label }}</a-select-option>
+              <a-select-option v-for="(item, i) in columns[index].type.__slot__.options" :key="i" :value="item.label">{{ item.label }}</a-select-option>
             </a-select>
           </template>
           <template v-if="col.component == 'date'">
@@ -252,7 +252,7 @@ export default {
     // 处理多选择的回显
     getLabel(value, type, valueProp = 'value', labelField = 'label') {
       if (type.mode === 'default') {
-        const item = type.__slot__.options.find(item => item[valueProp] === value)
+        const item = type.__slot__.options.find(item => item[labelField] === value)
         return item ? item[labelField] : null
       } else {
         if (!value || value.length == 0) {
@@ -261,7 +261,7 @@ export default {
           if (value instanceof Array) {
             return value
               .map(val => {
-                const item = type.__slot__.options.find(item => item[valueProp] === val)
+                const item = type.__slot__.options.find(item => item[labelField] === val)
                 return item ? item[labelField] : null
               })
               .join(',')
