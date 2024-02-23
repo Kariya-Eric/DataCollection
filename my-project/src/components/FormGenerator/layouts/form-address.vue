@@ -26,7 +26,7 @@
     <template v-if="typeNum === 0">
       <a-cascader
         v-model="address0"
-        :options="pcTextArr"
+        :options="cpcTextArr"
         :placeholder="placeholder"
         @change="changeAreaCascader0"
         :showSearch="{ filter }"
@@ -49,12 +49,20 @@ export default {
       address0: [],
       address1: [],
       address2: [],
-      extraAddress: ''
+      extraAddress: '',
+      cpcTextArr: []
     }
   },
   computed: {
     typeNum() {
       if (this.type === '国/省（直辖市、自治区）/市') {
+        let pcArr = JSON.parse(JSON.stringify(this.pcTextArr))
+        pcArr.forEach(pc => {
+          if (pc.value == '北京市' || pc.value == '天津市' || pc.value == '上海市' || pc.value == '重庆市') {
+            delete pc.children
+          }
+        })
+        this.cpcTextArr = [{ label: '中国', value: '中国', children: pcArr }]
         return 0
       } else if (this.type === '省（直辖市、自治区）/市/区') {
         return 1

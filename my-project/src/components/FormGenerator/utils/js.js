@@ -54,6 +54,7 @@ function mixinMethod() {
               resolve(undefined)
             }else{
               resolve(this.${confGlobal.formModel})
+              console.log(this.${confGlobal.formModel})
             }
           })
         })
@@ -73,7 +74,7 @@ function mixinMethod() {
 
 // 构建data
 function buildData(scheme, dataList) {
-  if (scheme.__vModel__ === undefined) return
+  if (scheme.__vModel__ === undefined || scheme.__config__.tag == 'formDivider') return
   let vmodel
   if (confGlobal.data != null) {
     let field = Object.keys(confGlobal.data).find(key => key == scheme.__vModel__)
