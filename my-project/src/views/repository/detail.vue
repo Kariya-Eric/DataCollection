@@ -62,6 +62,10 @@ export default {
     },
     showView() {
       const fields = JSON.parse(this.detailData.componentProperties)
+      if (!fields) {
+        this.$message.warning('当前表单暂无数据')
+        return
+      }
       const formData = {
         ...JSON.parse(this.detailData.formProperties),
         fields

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>章节</title>
+    <defs>
+        <linearGradient x1="50%" y1="-2.41187448e-13%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#76A8F4" offset="0%"></stop>
+            <stop stop-color="#2F68BD" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="表单管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="报告详情" transform="translate(-56.000000, -223.000000)" fill="url(#linearGradient-1)">
+            <g id="编组-19" transform="translate(40.000000, 219.000000)">
+                <g id="章节" transform="translate(16.000000, 4.000000)">
+                    <path d="M0,6.99996807 L0.958686287,6.36094259 L7,9.51309151 L13.0413776,6.36094259 L14,6.99996807 L7,10.8181397 L0,6.99996807 Z M0,3.81823552 L7,0 L14,3.81823552 L7,7.63634332 L0,3.81823552 Z M7,12.6948241 L13.0413776,9.542739 L14,10.1817645 L7,14 L0,10.1817804 L0.958686287,9.542739 L7,12.6948241 Z" id="形状"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
