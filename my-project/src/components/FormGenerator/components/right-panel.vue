@@ -27,7 +27,7 @@
         </a-form-model-item>
 
         <a-form-model-item
-          v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider' && activeData.__config__.layout !== 'tableLayout'"
+          v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider' && activeData.__config__.tag !== 'floatTable'"
           label="字段名"
         >
           <a-input v-model="activeData.__vModel__" placeholder="请输入字段名" :disabled="disabled" />

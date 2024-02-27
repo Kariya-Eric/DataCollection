@@ -47,6 +47,9 @@
 
       <div>
         <a-table bordered rowKey="id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
+          <template slot="name" slot-scope="text, record">
+            <a @click="showForm(record)">{{ record.name }}</a>
+          </template>
           <template slot="required" slot-scope="text, record">
             {{ record.required ? `是` : `否` }}
           </template>

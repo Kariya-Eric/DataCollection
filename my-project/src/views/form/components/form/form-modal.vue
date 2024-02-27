@@ -12,18 +12,18 @@
           <a-input v-model="model.year" :disabled="true" />
         </a-form-model-item>
         <a-form-model-item label="表单名称" prop="formName">
-          <a-input v-model="model.formName" allowClear />
+          <a-input v-model="model.formName" allowClear :disabled="editFlag" />
         </a-form-model-item>
         <a-form-model-item label="物理表名" prop="formTableCode">
-          <a-input v-model="model.formTableCode" allowClear />
+          <a-input v-model="model.formTableCode" allowClear :disabled="editFlag" />
         </a-form-model-item>
         <a-form-model-item label="表单大类">
-          <a-select v-model="model.formCategories" allowClear :getPopupContainer="target => target.parentNode">
+          <a-select v-model="model.formCategories" allowClear :getPopupContainer="target => target.parentNode" :disabled="editFlag">
             <a-select-option v-for="cate in categories" :key="cate.id" :value="cate.id">{{ cate.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="统计时间类型" prop="collectTimeType" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-select v-model="model.collectTimeType" placeholer="请输入统计时间类型" allowClear :getPopupContainer="target => target.parentNode">
+          <a-select v-model="model.collectTimeType" placeholer="请输入统计时间类型" allowClear :getPopupContainer="target => target.parentNode" :disabled="editFlag">
             <a-select-option value="时点">时点</a-select-option>
             <a-select-option value="学年">学年</a-select-option>
             <a-select-option value="自然年">自然年</a-select-option>
@@ -64,7 +64,8 @@ export default {
         sort: [{ required: true, message: '请输入排序' }],
         collectTimeType: [{ required: true, message: '请选择统计时间类型', trigger: 'change' }]
       },
-      formTypeDisabled: false
+      formTypeDisabled: false,
+      editFlag: false
     }
   },
 
@@ -114,10 +115,12 @@ export default {
       this.title = title
       let collection = { ...this.collection }
       if (record.id) {
+        this.editFlag = record.enabledFlag == 1
         this.formTypeDisabled = true
         let form = { ...record, formName: record.name, formType: record.type }
         this.model = Object.assign({}, collection, form, { name: collection.name }, { type: collection.type })
       } else {
+        this.editFlag = false
         this.formTypeDisabled = false
         let form = { ...collection, formCollectionId: this.collection.id }
         this.model = Object.assign(form, record, { id: undefined })

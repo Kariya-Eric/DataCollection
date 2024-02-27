@@ -54,7 +54,7 @@
         @change="handleTableChange"
       >
         <template slot="name" slot-scope="text, record">
-          <a @click="showTaskInfo(record)">{{ record.name }}</a>
+          <a @click="showTaskDetail(record)">{{ record.name }}</a>
         </template>
         <template slot="percentage" slot-scope="text, record"> <a-progress :percent="record.percentage" size="small" /> </template>
         <template slot="status" slot-scope="text, record">
