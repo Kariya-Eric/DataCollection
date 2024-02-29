@@ -44,7 +44,7 @@
         </a-col>
         <a-col :gutter="20" :lg="18" :md="14">
           <a-card class="document-card" ref="documentCard" @scroll="handleDocumentScroll">
-            <component :is="reportComponent" @showDetail="showDetail"></component>
+            <component :is="reportComponent" :details="detailsData" @showDetail="showDetail"></component>
           </a-card>
         </a-col>
       </a-row>
@@ -79,32 +79,25 @@ export default {
       reportId: '',
       exportLoading: false,
       reportComponent: '',
+      detailsData: {},
       spinning: false
     }
   },
   watch: {
     'queryParam.type'(newVal) {
       // 更新报告组件
-      switch (newVal) {
-        case '1':
-          this.reportComponent = 'TeacherEducationStatus'
-          break
-        case '2':
-          this.reportComponent = 'UndergraduateQuality'
-          break
-        default:
-          this.reportComponent = 'UndergraduateStatus'
-          break
-      }
+      const reportComponents = ['UndergraduateStatus', 'TeacherEducationStatus', 'UndergraduateQuality']
+      this.reportComponent = reportComponents[newVal] || reportComponents[0]
+      this.queryParam.major = newVal === 1 ? this.majorList[0] : ''
       this.$nextTick(() => {
         this.getCategory()
       })
     }
   },
   async created() {
-    this.queryParam.type = this.$route.query.type || reportList[0].key
     await this.getYears()
     await this.getMajors()
+    this.queryParam.type = this.$route.query.type || reportList[0].key
     this.getReportData()
   },
   methods: {
@@ -120,7 +113,6 @@ export default {
     getMajors() {
       return new Promise((resolve, reject) => {
         this.majorList = ['专业1', '专业2']
-        this.queryParam.major = this.majorList[0]
         resolve()
       })
     },
@@ -151,6 +143,27 @@ export default {
       this.spinning = true
       setTimeout(() => {
         this.spinning = false
+        this.detailsData = {
+          value1: '江西师范大学',
+          value2: '江西省南昌市',
+          value3: '师范院校',
+          value4: [
+            {
+              type: '课程思政教学研究示范中心',
+              name: '江西师范大学课程思政教学示范中心',
+              level: '省部级',
+              year: '2022',
+              director: '黄恩华'
+            },
+            {
+              type: '课程思政教学研究示范中心2',
+              name: '江西师范大学课程思政教学示范中心',
+              level: '省部级',
+              year: '2021',
+              director: '黄恩华2'
+            }
+          ]
+        }
       }, 1000)
       // api.getReport(this.queryParam).then(res => {
       // if (res.state) {

@@ -5,7 +5,14 @@
 <script>
 export default {
   name: 'UndergraduateQuality',
-  props: {},
+  props: {
+    details: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
   data() {
     return {}
   },

@@ -5,9 +5,10 @@
       <div>
         <h2>1.学校基本情况</h2>
         <p>
-          <em>江西师范大学</em>地处<em>江西省</em
-          ><em>南昌市</em
-          >，是<em>师范院校</em>类院校，举办者为<em>省级教育部门</em>，于<em>1940</em>年开办本科。学校现有本科专业<em>87</em>个，其中招生专业<em>70</em>个，新专业<em>11</em>个。学校全日制在校生<em
+          <em>{{ details?.value1 }}</em
+          >地处<em>{{ details?.value2 }}</em
+          >，是<em>{{ details?.value3 }}</em
+          >类院校，举办者为<em>省级教育部门</em>，于<em>1940</em>年开办本科。学校现有本科专业<em>87</em>个，其中招生专业<em>70</em>个，新专业<em>11</em>个。学校全日制在校生<em
             class="knowmore"
             @click="showDetail('全日制在校生')"
             >35439</em
@@ -1392,26 +1393,28 @@
                       <p>负责人</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>课程思政教学研究示范中心</p>
-                    </td>
-                    <td>
-                      <p>江西师范大学课程思政教学示范中心</p>
-                    </td>
-                    <td>
-                      <p>省部级</p>
-                    </td>
-                    <td>
-                      <p>2022</p>
-                    </td>
-                    <td>
-                      <p>黄恩华</p>
-                    </td>
-                  </tr>
+                  <template v-if="details?.value4">
+                    <tr v-for="(item, index) in details.value4" :key="index">
+                      <td>
+                        <p>{{ index + 1 }}</p>
+                      </td>
+                      <td>
+                        <p>{{ item.type }}</p>
+                      </td>
+                      <td>
+                        <p>{{ item.name }}</p>
+                      </td>
+                      <td>
+                        <p>{{ item.level }}</p>
+                      </td>
+                      <td>
+                        <p>{{ item.year }}</p>
+                      </td>
+                      <td>
+                        <p>{{ item.director }}</p>
+                      </td>
+                    </tr>
+                  </template>
                 </tbody>
               </table>
             </div>
@@ -8834,7 +8837,14 @@
 <script>
 export default {
   name: 'UndergraduateStatus',
-  props: {},
+  props: {
+    details: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
   data() {
     return {}
   },

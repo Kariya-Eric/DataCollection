@@ -31,17 +31,7 @@
         </a-row>
       </a-form>
     </div>
-    <a-table
-      class="details-table"
-      bordered
-      rowKey="_id"
-      :dataSource="dataSource"
-      :scroll="{ x: true }"
-      :pagination="ipagination"
-      :loading="loading"
-      :columns="columns"
-      @change="handleTableChange"
-    >
+    <a-table bordered rowKey="_id" :dataSource="dataSource" :scroll="{ x: true }" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
       <!-- <template slot="action" slot-scope="text, record">
         <a @click="showDetail(record)">数据来源</a>
       </template> -->
@@ -124,6 +114,7 @@ export default {
           title: item.label,
           dataIndex: item.field,
           align: 'center',
+          ellipsis: true,
           children: this.formatHeader(item.children),
           customRender: (text, row, index) => {
             if (row.rows) {
@@ -179,13 +170,4 @@ export default {
   }
 }
 </script>
-<style scoped lang="less">
-.details-table {
-  /deep/.ant-table-body {
-    th,
-    td {
-      white-space: nowrap;
-    }
-  }
-}
-</style>
+<style scoped lang="less"></style>
