@@ -1,5 +1,5 @@
 <template>
-  <a-drawer v-if="visible" :visible="visible" :width="1000" :closable="false">
+  <a-drawer v-if="visible" :visible="visible" width="70%" :closable="false">
     <div class="title-operator" slot="title">
       <span>{{ formName }}</span>
       <div class="title-operator-button">
@@ -18,25 +18,6 @@ export default {
       formName: '',
       visible: false,
       spinning: false,
-      formInfo: [
-        [{ title: '表单名称', dataIndex: 'createTime' }],
-        [
-          { title: '填报时间', dataIndex: 'name' },
-          { title: '填报部门', dataIndex: 'collectTimeType' },
-          { title: '填报人', dataIndex: 'type' }
-        ],
-        [
-          { title: '审核时间', dataIndex: 'name' },
-          { title: '审核部门', dataIndex: 'collectTimeType' },
-          { title: '审核人', dataIndex: 'type' }
-        ]
-      ],
-      columns: [
-        { title: '统计时间', dataIndex: 'createTime' },
-        { title: '教学科研单位名称', dataIndex: 'name' },
-        { title: '单位号', dataIndex: 'collectTimeType' },
-        { title: '单位职能', dataIndex: 'type' }
-      ]
     }
   },
   methods: {
@@ -47,7 +28,6 @@ export default {
     },
 
     close() {
-      this.$emit('refresh')
       this.visible = false
     }
   }
@@ -66,24 +46,6 @@ export default {
     button {
       margin-left: 6px;
       margin-right: 6px;
-    }
-  }
-}
-.table-info-list {
-  padding-bottom: 20px;
-  margin-bottom: 30px;
-  border-bottom: 1px dashed #ccc;
-  margin-top: -10px;
-  .table-info-item {
-    display: flex;
-    flex-wrap: wrap;
-    span {
-      display: inline-block;
-      margin-right: 100px;
-      padding: 10px 0;
-      &:last-of-type {
-        margin-right: 0;
-      }
     }
   }
 }

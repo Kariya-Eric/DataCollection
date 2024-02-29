@@ -44,7 +44,7 @@
         </a-col>
         <a-col :gutter="20" :lg="18" :md="14">
           <a-card class="document-card" ref="documentCard" @scroll="handleDocumentScroll">
-            <component :is="reportComponent"></component>
+            <component :is="reportComponent" @showDetail="showDetail"></component>
           </a-card>
         </a-col>
       </a-row>
@@ -98,33 +98,31 @@ export default {
       }
       this.$nextTick(() => {
         this.getCategory()
-        // 下钻数据点击事件
-        const elements = document.querySelectorAll('.knowmore')
-        elements.forEach(element => {
-          element.addEventListener('click', () => {
-            this.$refs.detailDrawer.show()
-          })
-        })
       })
     }
   },
-  created() {
+  async created() {
     this.queryParam.type = this.$route.query.type || reportList[0].key
-    this.getYears()
-    this.getMajors()
-  },
-  mounted() {
+    await this.getYears()
+    await this.getMajors()
     this.getReportData()
   },
   methods: {
     // 获取报告年份
     getYears() {
-      this.yearList = [2023, 2022, 2021]
-      this.queryParam.year = this.yearList[0]
+      return new Promise((resolve, reject) => {
+        this.yearList = [2023, 2022, 2021]
+        this.queryParam.year = this.yearList[0]
+        resolve()
+      })
     },
     // 获取专业
     getMajors() {
-      this.majorList = ['专业1', '专业2']
+      return new Promise((resolve, reject) => {
+        this.majorList = ['专业1', '专业2']
+        this.queryParam.major = this.majorList[0]
+        resolve()
+      })
     },
     // 生成目录
     getCategory() {
@@ -175,11 +173,14 @@ export default {
       const cardTop = this.$refs.documentCard.$el.getBoundingClientRect().top
       const headContents = document.querySelectorAll('.section')
       headContents.forEach(item => {
-        console.log(item.id, item.getBoundingClientRect().top - cardTop)
         if (item.getBoundingClientRect().top - cardTop <= 1) {
           this.selectedKeys = [item.id]
         }
       })
+    },
+    // 数据下钻
+    showDetail(title) {
+      this.$refs.detailDrawer.show(title)
     },
     handleExport() {
       if (!this.reportId) {
