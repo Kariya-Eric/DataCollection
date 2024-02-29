@@ -7,12 +7,16 @@
         </a-select>
       </a-form-item>
       <a-spin :spinning="spinning">
-        <a-menu :selectedKeys="selectedKeys" :open-keys.sync="openKeys" mode="inline" :inlineIndent="20" @click="clickMenu">
-          <a-sub-menu v-for="item in menuData" :key="item.key">
-            <span slot="title"><dc-icon type="icon-dc_type" />{{ item.value }}</span>
-            <a-menu-item v-for="(subMenu, index) in item.children" :key="subMenu.id">{{ index + 1 }}.{{ subMenu.name }}</a-menu-item>
-          </a-sub-menu>
-        </a-menu>
+        <ul class="first-title">
+          <li v-for="item in menuData" :key="item.id">
+            <div :class="{ active: item.id === selectedKey }" :title="item.name" @click="clickMenu(item)"><dc-icon type="icon-dc_type" />{{ item.name }}</div>
+            <ul class="second-title">
+              <li v-for="(subMenu, index) in item.children" :key="subMenu.formCategories">
+                <div :class="{ active: subMenu.formCategories === selectedKey }" :title="subMenu.name" @click="clickMenu(subMenu)">{{ index + 1 }}.{{ subMenu.name }}</div>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </a-spin>
     </a-card>
     <page-header-wrapper
@@ -26,7 +30,7 @@
       }"
     >
       <keep-alive>
-        <router-view v-if="keepAlive" :repid="selectedKeys[0]" :year="searchYear" :type="searchType" />
+        <router-view v-if="keepAlive" />
       </keep-alive>
       <router-view v-if="!keepAlive" />
     </page-header-wrapper>
@@ -34,6 +38,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import api from '@/api/repository'
 const listPath = '/repository/list'
 export default {
@@ -42,17 +47,10 @@ export default {
     return {
       spinning: false,
       yearList: [],
+      searchType: '教学基本状态数据',
       searchYear: '',
-      searchType: '',
-      selectedKeys: [],
-      openKeys: ['0'],
-      menuData: [
-        {
-          key: '0',
-          value: '教学基本状态数据',
-          children: []
-        }
-      ]
+      selectedKey: '',
+      menuData: []
     }
   },
   computed: {
@@ -69,10 +67,13 @@ export default {
     },
     keepAlive() {
       return this.$route.path === listPath
-    }
+    },
+    ...mapState({
+      year: state => state.repository.repositorySelYear,
+      menu: state => state.repository.repositorySelMenu
+    })
   },
   created() {
-    this.searchType = this.menuData[0].value
     this.getYears()
   },
   methods: {
@@ -80,8 +81,12 @@ export default {
     getYears() {
       api.getYearList().then(res => {
         this.yearList = res.value
-        const queryYear = this.$route.query.year
-        this.searchYear = queryYear || res.value[0]
+        if (this.year) {
+          this.searchYear = this.year
+        } else {
+          this.searchYear = res.value[0]
+          this.$store.commit('SET_REPOSITORYSELYEAR', res.value[0])
+        }
         this.getMenu(true)
       })
     },
@@ -114,24 +119,24 @@ export default {
         .then(res => {
           if (res.state) {
             if (res.value.length > 0) {
-              const queryKey = this.$route.query.repid
-              if (isInit && queryKey) {
-                const [actMenu] = res.value.filter(item => item.id === queryKey)
-                if (actMenu) {
-                  this.selectedKeys = [queryKey]
-                }
-              } else {
-                this.selectedKeys = [res.value[0].id]
-              }
+              // 在详情页切换菜单回到列表页
               if (!isInit && this.$route.path !== listPath) {
-                this.$router.push({
+                this.$router.replace({
                   path: listPath
                 })
               }
+              if (this.menu && isInit) {
+                this.selectedKey = this.menu.formCategories || this.menu.id
+              } else {
+                const defaultMenu = res.value[0]
+                defaultMenu.type = this.searchType
+                this.selectedKey = defaultMenu.id
+                this.$store.commit('SET_REPOSITORYSELMENU', defaultMenu)
+              }
             }
-            this.menuData[0].children = res.value
+            this.menuData = res.value
           } else {
-            this.menuData[0].children = []
+            this.menuData = []
             this.$message.warning(res.message)
           }
         })
@@ -139,13 +144,14 @@ export default {
           this.spinning = false
         })
     },
-    changeYear(e) {
-      this.searchYear = e
+    changeYear(key) {
+      this.$store.commit('SET_REPOSITORYSELYEAR', key)
       this.getMenu()
     },
-    clickMenu(e) {
-      const activeKey = e.key
-      this.selectedKeys = [activeKey]
+    clickMenu(obj) {
+      this.selectedKey = obj.formCategories || obj.id
+      obj.type = this.searchType
+      this.$store.commit('SET_REPOSITORYSELMENU', obj)
       this.$router.push({
         path: listPath
       })
@@ -251,6 +257,59 @@ export default {
           }
         }
       }
+      .first-title {
+        padding: 0;
+        li {
+          font-size: 14px;
+          line-height: 46px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          cursor: pointer;
+          .anticon {
+            font-size: 14px !important;
+            margin-right: 10px;
+            color: #2f68bd;
+          }
+          > div {
+            padding: 0 20px;
+          }
+        }
+        > li > div {
+          transition: color 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+          &:hover,
+          &.active {
+            color: #2f68bd;
+          }
+          &.active {
+            background: #e6efff;
+          }
+        }
+      }
+      .second-title {
+        padding: 0;
+        li > div {
+          padding-left: 40px;
+          position: relative;
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 6px;
+            height: 0;
+            background: #2f68bd;
+          }
+          &:hover,
+          &.active {
+            background: linear-gradient(270deg, #7facee 0%, #245eb3 100%);
+            color: #fff;
+          }
+          &.active::after {
+            height: 100%;
+          }
+        }
+      }
     }
   }
   .ant-menu,
@@ -261,6 +320,7 @@ export default {
   }
   .right-content {
     flex: auto;
+    width: calc(100% - 192px);
     /deep/.ant-pro-page-header-wrap-children-content {
       margin: 0 20px;
       .ant-card-bordered {
