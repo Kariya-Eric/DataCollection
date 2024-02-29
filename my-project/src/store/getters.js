@@ -9,6 +9,9 @@ const getters = {
     return state.user.userInfo
   },
   permissionList: state => state.permission.permissionList,
-  roleList: state => state.permission.roleList
+  roleList: state => state.permission.roleList,
+  repositorySelYear: state => state.repository.repositorySelYear,
+  repositorySelMenu: state => state.repository.repositorySelMenu,
+  repositorySelForm: state => state.repository.repositorySelForm
 }
 export default getters

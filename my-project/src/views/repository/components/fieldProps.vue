@@ -12,20 +12,16 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import api from '@/api/repository'
 import FieldPropsDrawer from './drawer/fieldPropsDrawer.vue'
 export default {
   name: 'FieldProps',
   components: { FieldPropsDrawer },
-  props: {
-    formName: {
-      type: String,
-      default: ''
-    },
-    formId: {
-      type: String,
-      default: ''
-    }
+  computed: {
+    ...mapState({
+      form: state => state.repository.repositorySelForm
+    })
   },
   data() {
     return {
@@ -42,7 +38,7 @@ export default {
   },
 
   mounted() {
-    if(!this.formId) return
+    if (!this.form) return
     this.loadData()
   },
 
@@ -50,7 +46,7 @@ export default {
     loadData() {
       this.loading = true
       api
-        .getConfigList(this.formId)
+        .getConfigList(this.form.id)
         .then(res => {
           if (res.state) {
             this.dataSource = res.value
@@ -63,7 +59,7 @@ export default {
         })
     },
     showDetail(record) {
-      this.$refs.formDrawer.show(this.formName, record)
+      this.$refs.formDrawer.show(this.form?.name, record)
     }
   }
 }

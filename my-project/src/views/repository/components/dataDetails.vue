@@ -31,7 +31,7 @@
         </a-row>
       </a-form>
     </div>
-    <a-table bordered rowKey="_id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
+    <a-table bordered rowKey="_id" :dataSource="dataSource" :scroll="{ x: true }" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
       <!-- <template slot="action" slot-scope="text, record">
         <a @click="showDetail(record)">数据来源</a>
       </template> -->
@@ -40,6 +40,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import DataDetailsDrawer from './drawer/dataDetailsDrawer.vue'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import api from '@/api/repository'
@@ -48,15 +49,10 @@ export default {
   name: 'DataDetails',
   mixins: [DataCollectionListMixin],
   components: { DataDetailsDrawer },
-  props: {
-    formName: {
-      type: String,
-      default: ''
-    },
-    formId: {
-      type: String,
-      default: ''
-    }
+  computed: {
+    ...mapState({
+      form: state => state.repository.repositorySelForm
+    })
   },
   data() {
     return {
@@ -68,7 +64,7 @@ export default {
   },
 
   mounted() {
-    if (!this.formId) return
+    if (!this.form) return
     this.getYearList()
     this.loadData(1)
   },
@@ -81,7 +77,7 @@ export default {
       this.loading = true
       const params = this.getQueryParams()
       api
-        .getDataList(this.formId, params)
+        .getDataList(this.form.id, params)
         .then(res => {
           if (res.state) {
             if (res.value.content) {
@@ -117,6 +113,8 @@ export default {
         return {
           title: item.label,
           dataIndex: item.field,
+          align: 'center',
+          ellipsis: true,
           children: this.formatHeader(item.children),
           customRender: (text, row, index) => {
             if (row.rows) {
@@ -161,13 +159,13 @@ export default {
       return newArr
     },
     getYearList() {
-      api.getDataYearList(this.formId).then(res => {
+      api.getDataYearList(this.form?.id).then(res => {
         this.yearList = res.value
       })
     },
     // 查看数据来源
     showDetail(record) {
-      this.$refs.formDrawer.show(this.formName, record)
+      this.$refs.formDrawer.show(this.form?.name, record)
     }
   }
 }

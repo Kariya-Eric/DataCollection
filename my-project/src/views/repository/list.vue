@@ -45,7 +45,7 @@
         <a-input :value="year" disabled />
       </a-form-item>
       <a-form-item label="类型">
-        <a-input :value="type" disabled />
+        <a-input :value="menu?.type || ''" disabled />
       </a-form-item>
       <a-row :gutter="20">
         <a-col>
@@ -63,31 +63,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 const listApi = '/uc/api/dataWarehouse/getFormListById/'
 export default {
   name: 'RepositoryList',
   mixins: [DataCollectionListMixin],
-  props: {
-    year: {
-      type: String,
-      default: ''
-    },
-    type: {
-      type: String,
-      default: ''
-    },
-    repid: {
-      type: String,
-      default: ''
-    }
-  },
-  watch: {
-    repid: function (val) {
-      console.log('watch', val)
-      this.renderData(val)
-    }
-  },
   data() {
     return {
       url: {
@@ -108,14 +89,25 @@ export default {
       importResult: ''
     }
   },
+  computed: {
+    ...mapState({
+      menu: state => state.repository.repositorySelMenu,
+      year: state => state.repository.repositorySelYear
+    })
+  },
+  watch: {
+    menu() {
+      this.renderData()
+    }
+  },
   mounted() {
-    console.log('mounted', this.repid)
-    this.renderData(this.repid)
+    this.renderData()
   },
   methods: {
-    renderData(repid) {
-      if (repid) {
-        this.url.list = listApi + repid
+    renderData() {
+      if (this.menu) {
+        this.url.list = listApi + this.menu.id
+        this.queryParam.formCategories = this.menu.formCategories || ''
         this.loadData(1)
       } else {
         this.dataSource = []
@@ -125,10 +117,10 @@ export default {
       }
     },
     showDetail(record, tab) {
-      localStorage.setItem('repository_detail', JSON.stringify(record))
+      this.$store.commit('SET_REPOSITORYSELFORM', record)
       this.$router.push({
         path: '/repository/detail',
-        query: { tab, repid: this.repid, year: this.year }
+        query: { tab }
       })
     },
     // 上传
