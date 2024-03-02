@@ -107,15 +107,15 @@ export default {
       }, [])
     },
     // 表头数据处理
-    formatHeader(data) {
+    formatHeader(data, parentField) {
       if (!data) return null
       return data.map(item => {
         return {
           title: item.label,
-          dataIndex: item.field,
+          dataIndex: parentField ? `${parentField}.${item.field}` : item.field,
           align: 'center',
           ellipsis: true,
-          children: this.formatHeader(item.children),
+          children: this.formatHeader(item.children, item.field),
           customRender: (text, row, index) => {
             if (row.rows) {
               if (text && text.type === 'single') {
@@ -144,13 +144,15 @@ export default {
               arrayFlag = true
               for (const subkey in subitem) {
                 if (subkey !== '_X_ROW_KEY') {
-                  subitem[subkey] = {
+                  subitem[`${key}.${subkey}`] = {
                     type: 'single',
                     value: subitem[subkey]
                   }
+                  subitem['_id'] = `${item._id}_${index}`
+                  delete subitem[subkey]
                 }
               }
-              newArr.push({ ...item, ...subitem, _id: subitem._X_ROW_KEY, rows: item[key].length, rowIndex: index })
+              newArr.push({ ...item, ...subitem, rows: item[key].length, rowIndex: index })
             })
           }
         }
