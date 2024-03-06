@@ -69,7 +69,7 @@
         <template #edit="scope">
           <template v-if="col.component == 'input'"><a-input v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
           <template v-if="col.component == 'textarea'"> <form-textarea v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
-          <template v-if="col.component == 'address'"> <form-address-pop v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
+          <template v-if="col.component == 'address'"> <form-address-pop :type="columns[index].type.type" v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
           <template v-if="col.component == 'number'">
             <a-input-number
               v-model="scope.row[col.props]"
