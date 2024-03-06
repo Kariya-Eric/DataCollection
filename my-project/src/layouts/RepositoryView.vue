@@ -48,7 +48,6 @@ export default {
       spinning: false,
       yearList: [],
       searchType: '教学基本状态数据',
-      searchYear: '',
       selectedKey: '',
       menuData: []
     }
@@ -68,10 +67,22 @@ export default {
     keepAlive() {
       return this.$route.path === listPath
     },
-    ...mapState({
-      year: state => state.repository.repositorySelYear,
-      menu: state => state.repository.repositorySelMenu
-    })
+    searchYear: {
+      get() {
+        return this.$store.state.repository.repositorySelYear
+      },
+      set(val) {
+        this.$store.commit('SET_REPOSITORYSELYEAR', val)
+      }
+    },
+    menu: {
+      get() {
+        return this.$store.state.repository.repositorySelMenu
+      },
+      set(val) {
+        this.$store.commit('SET_REPOSITORYSELMENU', val)
+      }
+    }
   },
   created() {
     this.getYears()
@@ -81,12 +92,7 @@ export default {
     getYears() {
       api.getYearList().then(res => {
         this.yearList = res.value
-        if (this.year) {
-          this.searchYear = this.year
-        } else {
-          this.searchYear = res.value[0]
-          this.$store.commit('SET_REPOSITORYSELYEAR', res.value[0])
-        }
+        this.searchYear = this.searchYear || res.value[0]
         this.getMenu(true)
       })
     },
@@ -131,7 +137,7 @@ export default {
                 const defaultMenu = res.value[0]
                 defaultMenu.type = this.searchType
                 this.selectedKey = defaultMenu.id
-                this.$store.commit('SET_REPOSITORYSELMENU', defaultMenu)
+                this.menu = defaultMenu
               }
             }
             this.menuData = res.value
@@ -145,13 +151,12 @@ export default {
         })
     },
     changeYear(key) {
-      this.$store.commit('SET_REPOSITORYSELYEAR', key)
       this.getMenu()
     },
     clickMenu(obj) {
       this.selectedKey = obj.formCategories || obj.id
       obj.type = this.searchType
-      this.$store.commit('SET_REPOSITORYSELMENU', obj)
+      this.menu = obj
       this.$router.push({
         path: listPath
       })

@@ -5,15 +5,7 @@
       <div>
         <h2>1.学校基本情况</h2>
         <p>
-          <em>{{ details?.value1 }}</em
-          >地处<em>{{ details?.value2 }}</em
-          >，是<em>{{ details?.value3 }}</em
-          >类院校，举办者为<em>省级教育部门</em>，于<em>1940</em>年开办本科。学校现有本科专业<em>87</em>个，其中招生专业<em>70</em>个，新专业<em>11</em>个。学校全日制在校生<em
-            class="knowmore"
-            @click="showDetail('全日制在校生')"
-            >35439</em
-          >人，折合在校生<em class="knowmore" @click="showDetail('折合在校生')">41911.1</em
-          >人，其中本科生<em>26919</em>。全校教职工<em>2725</em>人，其中专任教师<em>1922</em>人。学校共有<em>3</em>个校区，其中<em>2</em>个为本地校区。学校有国家实验室<em>0</em>个，国家重点实验室<em>0</em>个，院士<em>3</em>人，国家级人才<em>29</em>人。
+          <em>{{ details.XXMC }}</em>地处<em>{{ details.XXWZ }}</em>，是<em>{{ details.XXXZ }}</em>类院校，举办者为<em>{{ details.JBZ }}</em>，于<em>{{ details.KBBKJYNF }}</em>年开办本科。学校现有本科专业<em>87</em>个，其中招生专业<em>70</em>个，新专业<em>11</em>个。学校全日制在校生<em class="knowmore" @click="showDetail('全日制在校生')">{{ details.QRZZXSS }}</em>人，折合在校生<em class="knowmore" @click="showDetail('折合在校生')">{{ details.ZHZXSS }}</em>人，其中本科生<em>{{ details.PTBKXSS }}</em>。全校教职工<em>{{ details.QXJZGTMS }}</em>人，其中专任教师<em>{{ details.ZRJSS }}</em>人。学校共有<em>{{ details.XQMCTMS }}</em>个校区，其中<em>2</em>个为本地校区。学校有国家实验室<em>{{ details.GJSYSTMS }}</em>个，国家重点实验室<em>{{ details.GJZDSYSTMS }}</em>个，院士<em>{{ details.YSTMS }}</em>人，国家级人才<em>29</em>人。
         </p>
         <p class="tips">※数据来源：1-1学校概况、1-4-1专业基本情况、1-5-1教职工基本情况、1-7-2科研基地、3-3-1高层次人才、4-1-1学科建设、6-1学生数量基本情况</p>
       </div>
@@ -47,19 +39,19 @@
                   <p>合计</p>
                 </td>
                 <td>
-                  <p>5</p>
+                  <p>{{ details.BSHLDZ }}</p>
                 </td>
                 <td>
-                  <p>12</p>
+                  <p>{{ details.BSXWSQYJGS }}</p>
                 </td>
                 <td>
-                  <p>0</p>
+                  <p>{{ details.BSXWSQEJGS }}</p>
                 </td>
                 <td>
-                  <p>31</p>
+                  <p>{{ details.SSXWSQYJGS }}</p>
                 </td>
                 <td>
-                  <p>0</p>
+                  <p>{{ details.SSXWSQEJGS }}</p>
                 </td>
               </tr>
             </tbody>
@@ -109,7 +101,7 @@
                   <p>国家一流专业数</p>
                 </td>
                 <td>
-                  <p>40</p>
+                  <p>{{ details.GJYLZYS }}</p>
                 </td>
               </tr>
               <tr>
@@ -117,7 +109,7 @@
                   <p>省级一流专业数</p>
                 </td>
                 <td>
-                  <p>21</p>
+                  <p>{{ details.SJYLZYJSD }}</p>
                 </td>
               </tr>
               <tr>
@@ -125,7 +117,7 @@
                   <p>专业大类数</p>
                 </td>
                 <td>
-                  <p>8</p>
+                  <p>{{ details.ZYDLS }}</p>
                 </td>
               </tr>
               <tr>
@@ -133,7 +125,7 @@
                   <p>本科专业覆盖学科门类数</p>
                 </td>
                 <td>
-                  <p>9</p>
+                  <p>{{ details.BKZYXKMLS }}</p>
                 </td>
               </tr>
               <tr>
@@ -141,7 +133,7 @@
                   <p>一流学科数</p>
                 </td>
                 <td>
-                  <p>5</p>
+                  <p>{{ details.YLXKS }}</p>
                 </td>
               </tr>
             </tbody>
@@ -1393,7 +1385,7 @@
                       <p>负责人</p>
                     </th>
                   </tr>
-                  <template v-if="details?.value4">
+                  <!-- <template v-if="details.value4">
                     <tr v-for="(item, index) in details.value4" :key="index">
                       <td>
                         <p>{{ index + 1 }}</p>
@@ -1414,7 +1406,7 @@
                         <p>{{ item.director }}</p>
                       </td>
                     </tr>
-                  </template>
+                  </template> -->
                 </tbody>
               </table>
             </div>
