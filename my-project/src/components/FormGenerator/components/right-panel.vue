@@ -247,7 +247,11 @@ export default {
       ]
     }
   },
-
+  mounted() {
+    if (this.baseInfo.type == '浮动表单') {
+      this.activeData.__config__.tag = 'floatTable'
+    }
+  },
   methods: {
     // start
     clearOption() {
