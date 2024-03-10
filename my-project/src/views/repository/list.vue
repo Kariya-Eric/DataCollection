@@ -20,7 +20,7 @@
             </span>
             <span>
               <a-button type="primary" @click="openImport = true"><dc-icon type="icon-dc_import" />导入</a-button>
-              <a-button type="primary" @click="handleExport(exportTableName)"><dc-icon type="icon-dc_export" />导出</a-button>
+              <a-button type="primary" @click="openExport = true"><dc-icon type="icon-dc_export" />导出</a-button>
             </span>
           </a-col>
         </a-row>
@@ -40,24 +40,69 @@
       </template>
     </a-table>
 
-    <a-modal class="import-modal" :visible="openImport" title="导入" :width="600" :confirm-loading="confirmImportLoading" @ok="handleImport" @cancel="handleCancelImport">
-      <a-form-item label="年份">
-        <a-input :value="year" disabled />
-      </a-form-item>
-      <a-form-item label="类型">
-        <a-input :value="menu?.type || ''" disabled />
-      </a-form-item>
-      <a-row :gutter="20">
-        <a-col>
-          <a-upload :customRequest="handleUpload">
-            <a-button type="primary">选择文件</a-button>
-          </a-upload>
-        </a-col>
-        <a-col>
-          <a-button @click="">下载导入模板</a-button>
-        </a-col>
-      </a-row>
-      <div class="import-result-list">{{ importResult }}</div>
+    <a-modal
+      class="import-modal"
+      :visible="openImport"
+      title="导入"
+      :width="600"
+      :maskClosable="false"
+      :confirm-loading="confirmImportLoading"
+      @ok="confirmImport"
+      @cancel="openImport = false"
+    >
+      <a-form>
+        <a-form-item label="年份">
+          <a-input :value="year" disabled />
+        </a-form-item>
+        <a-form-item label="类型">
+          <a-input :value="menu?.type || ''" disabled />
+        </a-form-item>
+        <a-row :gutter="20">
+          <a-col>
+            <a-upload accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :customRequest="handleUpload" :showUploadList="false">
+              <a-button type="primary">选择文件</a-button>
+            </a-upload>
+          </a-col>
+          <a-col>
+            <a-button @click="downloadTemplate">下载导入模板</a-button>
+          </a-col>
+        </a-row>
+        <div class="import-result-list">
+          <div v-for="item in importFileList" :key="item.uid" class="import-file-item">
+            <span>{{ item.name }}</span
+            ><a-icon type="delete" title="删除文件" @click="removeUpload"></a-icon>
+          </div>
+        </div>
+      </a-form>
+    </a-modal>
+
+    <a-modal
+      class="import-modal"
+      :visible="openExport"
+      title="导出"
+      :width="600"
+      :maskClosable="false"
+      :confirm-loading="confirmExportLoading"
+      @ok="confirmExport"
+      @cancel="openExport = false"
+    >
+      <a-form :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
+        <a-form-item label="年份">
+          <a-input :value="year" disabled />
+        </a-form-item>
+        <a-form-item label="类型">
+          <a-input :value="menu?.type || ''" disabled />
+        </a-form-item>
+        <a-form-item label="表单名称">
+          <a-select
+            v-model="exportForms"
+            mode="multiple"
+            style="width: 100%"
+            placeholder="默认全选，可多选"
+            :options="dataSource.map(item => ({ value: item.id, label: item.name }))"
+          ></a-select>
+        </a-form-item>
+      </a-form>
     </a-modal>
   </a-card>
 </template>
@@ -65,6 +110,7 @@
 <script>
 import { mapState } from 'vuex'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
+import api from '@/api/repository'
 const listApi = '/uc/api/dataWarehouse/getFormListById/'
 export default {
   name: 'RepositoryList',
@@ -72,8 +118,7 @@ export default {
   data() {
     return {
       url: {
-        list: '',
-        exportUrl: '/uc/api/user/export'
+        list: ''
       },
       columns: [
         // { title: '序号', width: 70, align: 'center', key: 'rowIndex', customRender: (t, r, index) => parseInt(index) + 1 },
@@ -84,9 +129,12 @@ export default {
         { title: '操作', scopedSlots: { customRender: 'action' } }
       ],
       exportTableName: '数据列表',
+      openExport: false,
+      confirmExportLoading: false,
+      exportForms: [],
       openImport: false,
       confirmImportLoading: false,
-      importResult: ''
+      importFileList: []
     }
   },
   computed: {
@@ -105,6 +153,9 @@ export default {
   },
   methods: {
     renderData() {
+      // 初始化导入导出表单
+      this.importFileList = []
+      this.exportForms = []
       if (this.menu) {
         this.url.list = listApi + this.menu.id
         this.queryParam.formCategories = this.menu.formCategories || ''
@@ -123,18 +174,80 @@ export default {
         query: { tab }
       })
     },
-    // 上传
-    handleUpload() {},
-    // 导入
-    handleImport() {
-      this.confirmImportLoading = true
-      setTimeout(() => {
-        // this.openImport = false
-        this.confirmImportLoading = false
-      }, 2000)
+    // 下载导入模板
+    downloadTemplate() {
+      api.downloadTemplate(this.menu.id).then(data => {
+        if (!data) {
+          this.$message.warning('导入模板下载失败！')
+          return
+        }
+        this.downFile(data, `${this.menu.name}导入模板`)
+      })
     },
-    handleCancelImport() {
-      this.openImport = false
+    // 选择文件
+    handleUpload(info) {
+      this.importFileList = [info.file]
+    },
+    // 删除选中文件
+    removeUpload() {
+      this.importFileList = []
+    },
+    // 导入
+    confirmImport() {
+      console.log(this.importFileList)
+      if (this.importFileList.length === 0) {
+        this.$message.warning('请先上传文件')
+        return
+      }
+      this.confirmImportLoading = true
+      const formData = new FormData()
+      formData.append('file', this.importFileList[0])
+      api
+        .importData(this.menu.id, formData)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+            this.openImport = false
+            this.importFileList = []
+            this.loadData(1)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.confirmImportLoading = false))
+    },
+    downFile(data, fileName) {
+      if (typeof window.navigator.msSaveBlob !== 'undefined') {
+        window.navigator.msSaveBlob(new Blob([data], { type: 'application/vnd.ms-excel' }), fileName + '.xlsx')
+      } else {
+        let url = window.URL.createObjectURL(new Blob([data], { type: 'appliaction/vnd.ms-excel' }))
+        let link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', fileName + '.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      }
+    },
+    // 导出
+    confirmExport() {
+      this.confirmExportLoading = true
+      api
+        .exportData(this.menu.id, { formIds: this.exportForms.join(',') })
+        .then(data => {
+          if (!data) {
+            this.$message.warning('导出失败！')
+            return
+          }
+          this.downFile(data, this.menu.name)
+          this.exportForms = []
+          this.openExport = false
+        })
+        .finally(() => {
+          this.confirmExportLoading = false
+        })
     }
   }
 }
@@ -186,7 +299,7 @@ export default {
       width: calc(100% - 20px);
       margin-top: 21px;
       padding: 0 10px;
-      max-height: 208px;
+      height: 208px;
       overflow-y: auto;
     }
   }
@@ -199,6 +312,27 @@ export default {
     background: #f4f8ff;
     border-radius: 4px;
     border: 1px dashed #bdceee;
+    padding: 10px;
+  }
+  .import-file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+    height: 30px;
+    transition: background-color 0.3s;
+    &:first-child {
+      margin-top: 0;
+    }
+    .anticon {
+      display: none;
+    }
+    &:hover {
+      background-color: #edf6fc;
+      .anticon {
+        display: block;
+      }
+    }
   }
 }
 </style>
