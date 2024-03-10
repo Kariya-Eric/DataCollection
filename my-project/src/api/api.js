@@ -94,3 +94,18 @@ export function putFormAction(url, parameter) {
     }
   })
 }
+
+/**
+ * 下载文件 用于报告导出querystring传参
+ * @param url
+ * @param parameter
+ * @returns {*}
+ */
+export function downFileString(url, parameter) {
+  return request({
+    url: url,
+    params: parameter,
+    method: 'post',
+    responseType: 'blob'
+  })
+}

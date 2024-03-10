@@ -287,7 +287,7 @@ export function makeUpHtml(formConfig) {
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr)
   confGlobal = null
-  const formAlert = formConfig.formAlert
+  const formAlert = formConfig.formAlert.replace(/'/g, '"')
   const tableValidate = `<div v-if='Object.keys(tableValidate).length>0'>
   <a-divider style="margin-top:128px"/>
   <dc-validate v-for="(value,key) in tableValidate" :key="key" :name="value.name" :message="value.valid"></dc-validate></div>`

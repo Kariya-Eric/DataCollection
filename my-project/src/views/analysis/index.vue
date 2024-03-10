@@ -2,7 +2,7 @@
   <div>
     <a-list :grid="{ gutter: 20, xs: 1, sm: 2, md: 3 }" :data-source="reportList">
       <a-list-item slot="renderItem" slot-scope="item, index">
-        <div class="list-item" @click="showDetail(item)">
+        <div class="list-item" @click="showDetail(index)">
           <a-card :title="item.title">
             <img class="list-icon" src="@/assets/analysis.png" alt="" />
             <p class="list-desc">{{ item.desc }}</p>
@@ -24,10 +24,10 @@ export default {
     }
   },
   methods: {
-    showDetail(item) {
+    showDetail(index) {
       this.$router.push({
         path: '/analysis/detail',
-        query: { type: item.key }
+        query: { type: index }
       })
     }
   }

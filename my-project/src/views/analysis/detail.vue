@@ -6,26 +6,26 @@
           <a-row :gutter="30">
             <a-col :xl="4" :lg="4" :md="6">
               <a-form-item label="年份">
-                <a-select v-model="queryParam.year" placeholder="请选择年份" @change="getReportData">
+                <a-select v-model="queryParam.year" placeholder="请选择年份" @change="searchData">
                   <a-select-option v-for="item in yearList" :key="item" :value="item">{{ item }}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="9">
               <a-form-item label="报告">
-                <a-select v-model="queryParam.type" placeholder="请选择报告" @change="getReportData">
-                  <a-select-option v-for="item in reportList" :key="item.key" :value="item.key">{{ item.title }}</a-select-option>
+                <a-select v-model="qeuryType" placeholder="请选择报告" @change="searchData">
+                  <a-select-option v-for="(item, index) in reportList" :key="index" :value="index">{{ item.title }}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="9">
-              <a-form-item v-if="queryParam.type == 1" label="专业">
-                <a-select v-model="queryParam.major" placeholder="请选择专业" @change="getReportData">
-                  <a-select-option v-for="item in majorList" :key="item" :value="item">{{ item }}</a-select-option>
+              <a-form-item label="专业" v-if="queryParam.subjectId">
+                <a-select v-model="queryParam.subjectId" placeholder="请选择专业" @change="searchData">
+                  <a-select-option v-for="item in subjectList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col :xl="8" :lg="24" style="text-align: right">
+            <a-col :xl="8" :lg="24" :md="24" style="text-align: right">
               <a-button type="primary" @click="handleExport" :loading="exportLoading"><dc-icon type="icon-dc_export" />导出报告</a-button>
               <a-button @click="$router.back(-1)"><dc-icon type="icon-dc_back" />返回</a-button>
             </a-col>
@@ -60,6 +60,8 @@ import UndergraduateStatus from './components/reports/UndergraduateStatus.vue'
 import TeacherEducationStatus from './components/reports/TeacherEducationStatus.vue'
 import UndergraduateQuality from './components/reports/UndergraduateQuality.vue'
 import api from '@/api/analysis'
+import repositoryApi from '@/api/repository'
+const reportComponents = ['UndergraduateStatus', 'TeacherEducationStatus', 'UndergraduateQuality']
 
 export default {
   name: 'MonitorDetail',
@@ -67,16 +69,16 @@ export default {
   data() {
     return {
       category: [],
+      qeuryType: '',
       queryParam: {
         year: '',
         type: '',
-        major: ''
+        subjectId: ''
       },
       reportList,
       yearList: [],
-      majorList: [],
+      subjectList: [],
       selectedKeys: [],
-      reportId: '',
       exportLoading: false,
       reportComponent: '',
       detailsData: {},
@@ -84,11 +86,11 @@ export default {
     }
   },
   watch: {
-    'queryParam.type'(newVal) {
+    qeuryType(newVal) {
       // 更新报告组件
-      const reportComponents = ['UndergraduateStatus', 'TeacherEducationStatus', 'UndergraduateQuality']
       this.reportComponent = reportComponents[newVal] || reportComponents[0]
-      this.queryParam.major = newVal === 1 ? this.majorList[0] : ''
+      this.queryParam.type = this.reportList[newVal]?.title
+      this.queryParam.subjectId = newVal === 1 ? this.subjectList[0]?.id : ''
       this.$nextTick(() => {
         this.getCategory()
       })
@@ -96,24 +98,27 @@ export default {
   },
   async created() {
     await this.getYears()
-    await this.getMajors()
-    this.queryParam.type = this.$route.query.type || reportList[0].key
+    await this.getSubjects()
+    this.qeuryType = this.$route.query.type * 1 || 0
     this.getReportData()
   },
   methods: {
     // 获取报告年份
     getYears() {
-      return new Promise((resolve, reject) => {
-        this.yearList = [2023, 2022, 2021]
+      return repositoryApi.getYearList().then(res => {
+        this.yearList = res.value
         this.queryParam.year = this.yearList[0]
-        resolve()
       })
     },
     // 获取专业
-    getMajors() {
-      return new Promise((resolve, reject) => {
-        this.majorList = ['专业1', '专业2']
-        resolve()
+    getSubjects() {
+      return api.getSubjects().then(res => {
+        this.subjectList = res.value
+      })
+    },
+    searchData() {
+      this.$nextTick(() => {
+        this.getReportData()
       })
     },
     // 生成目录
@@ -139,38 +144,24 @@ export default {
     },
     // 获取报告数据
     getReportData() {
-      console.log('报告详情', this.queryParam)
       this.spinning = true
-      setTimeout(() => {
-        this.spinning = false
-        this.detailsData = {
-          value1: '江西师范大学',
-          value2: '江西省南昌市',
-          value3: '师范院校',
-          value4: [
-            {
-              type: '课程思政教学研究示范中心',
-              name: '江西师范大学课程思政教学示范中心',
-              level: '省部级',
-              year: '2022',
-              director: '黄恩华'
-            },
-            {
-              type: '课程思政教学研究示范中心2',
-              name: '江西师范大学课程思政教学示范中心',
-              level: '省部级',
-              year: '2021',
-              director: '黄恩华2'
+      api
+        .getReport(this.queryParam)
+        .then(res => {
+          if (res.state) {
+            // null值处理
+            const newData = {}
+            for (const key in res.value) {
+              if (Object.hasOwnProperty.call(res.value, key)) {
+                newData[key] = res.value[key] === null ? '' : res.value[key]
+              }
             }
-          ]
-        }
-      }, 1000)
-      // api.getReport(this.queryParam).then(res => {
-      // if (res.state) {
-      // this.reportId = res.value.report.id
-      // this.spinning = false
-      // }
-      // })
+            this.detailsData = newData
+          }
+        })
+        .finally(() => {
+          this.spinning = false
+        })
     },
     // 点击目录节点，文档滚动到指定位置
     selectCategory(keys) {
@@ -196,32 +187,31 @@ export default {
       this.$refs.detailDrawer.show(title)
     },
     handleExport() {
-      if (!this.reportId) {
+      if (!(this.queryParam.type && this.queryParam.year)) {
         this.$message.warning('请稍后再试')
         return
       }
       this.exportLoading = true
       api
-        .exportFile(this.reportId)
+        .exportReport(this.queryParam)
         .then(data => {
           if (!data) {
-            this.$message.warning('文件下载失败！')
+            this.$message.warning('报告下载失败！')
             this.exportLoading = false
             return
           }
-          if (typeof window.navigator.msSaveBlob !== 'undefined') {
-            window.navigator.msSaveBlob(new Blob([data], { type: 'application/vnd.ms-excel' }), this.queryParam.type + '.xlsx')
-          } else {
-            const url = window.URL.createObjectURL(new Blob([data], { type: 'appliaction/vnd.ms-excel' }))
-            const link = document.createElement('a')
-            link.style.display = 'none'
-            link.href = url
-            link.setAttribute('download', this.queryParam.type + '.xlsx')
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            window.URL.revokeObjectURL(url)
-          }
+          const url = window.URL.createObjectURL(new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }))
+          const link = document.createElement('a')
+          link.style.display = 'none'
+          link.href = url
+          link.setAttribute('download', `${this.queryParam.type}_${this.queryParam.year}.doc`)
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(url)
+        })
+        .catch(() => {
+          this.$message.warning('报告下载失败！')
         })
         .finally(() => {
           this.exportLoading = false
