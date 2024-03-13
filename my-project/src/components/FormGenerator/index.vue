@@ -338,7 +338,7 @@ export default {
     },
 
     validateFields() {
-      let valid = { empty: [], unique: [] }
+      let valid = { empty: [], unique: [], illegal: [] }
       let field = {}
       this.drawingList.forEach(d => {
         if (field[d.__vModel__]) {
@@ -351,6 +351,8 @@ export default {
         if (drawingItem.__config__.tag != 'formDivider') {
           if (!drawingItem.__vModel__) {
             valid.empty.push(drawingItem.__config__.label)
+          } else if (!/^[$A-Z_][0-9A-Z_$]*$/i.test(drawingItem.__vModel__)) {
+            valid.illegal.push(drawingItem.__config__.label)
           }
           if (field[drawingItem.__vModel__] > 1) {
             valid.unique.push(drawingItem.__config__.label)
@@ -382,14 +384,29 @@ export default {
           }
         }
       })
-      if (valid.empty.length == 0 && valid.unique.length == 0) {
+      console.log(valid)
+      if (valid.empty.length == 0 && valid.unique.length == 0 && valid.illegal.length == 0) {
         return ''
-      } else if (valid.empty.length == 0 && valid.unique.length != 0) {
+      } else if (valid.empty.length == 0 && valid.unique.length != 0 && valid.illegal.length == 0) {
         return `字段名重复：【${valid.unique.join(',')}】`
-      } else if (valid.empty.length != 0 && valid.unique.length == 0) {
+      } else if (valid.empty.length != 0 && valid.unique.length == 0 && valid.illegal.length == 0) {
         return `字段名为空：【${valid.empty.join(',')}】`
-      } else {
+      } else if (valid.empty.length == 0 && valid.unique.length == 0 && valid.illegal.length != 0) {
+        return `字段名非法，请使用字母下划线数字的组合且数字不能在第一位：【${valid.illegal.join(',')}】`
+      } else if (valid.empty.length != 0 && valid.unique.length != 0 && valid.illegal.length == 0) {
         return `字段名为空：【${valid.empty.join(',')}】;` + '\n' + `字段名重复:【${valid.unique.join(',')}】`
+      } else if (valid.empty.length != 0 && valid.unique.length == 0 && valid.illegal.length != 0) {
+        return `字段名为空：【${valid.empty.join(',')}】;` + '\n' + `字段名非法，请使用字母下划线数字的组合且数字不能在第一位：【${valid.illegal.join(',')}】`
+      } else if (valid.empty.length == 0 && valid.unique.length != 0 && valid.illegal.length != 0) {
+        return `字段名重复:【${valid.unique.join(',')}】;` + '\n' + `字段名非法，请使用字母下划线数字的组合且数字不能在第一位：【${valid.illegal.join(',')}】`
+      } else {
+        return (
+          `字段名重复:【${valid.unique.join(',')}】;` +
+          '\n' +
+          `字段名为空：【${valid.empty.join(',')}】;` +
+          '\n' +
+          `字段名非法，请使用字母下划线数字的组合且数字不能在第一位：【${valid.illegal.join(',')}】`
+        )
       }
     },
 

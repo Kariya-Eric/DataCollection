@@ -1,5 +1,16 @@
 <template>
-  <a-modal title="复制表单" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
+  <a-modal
+    title="复制表单"
+    v-if="visible"
+    :visible="visible"
+    :confirmLoading="loading"
+    @cancel="handleCancel"
+    @ok="handleOk"
+    :maskClosable="false"
+    :keyboard="false"
+    width="30%"
+    destroyOnClose
+  >
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="合集名称" prop="formCollectionId">
@@ -74,6 +85,7 @@ export default {
     show() {
       this.getCollectionList()
       this.model = Object.assign({}, this.model)
+      console.log(this.model)
       this.visible = true
     },
 
@@ -90,6 +102,7 @@ export default {
     close() {
       this.$emit('close')
       this.visible = false
+      this.model = {}
       this.$refs.form.clearValidate()
     },
 
