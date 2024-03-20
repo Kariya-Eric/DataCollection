@@ -11,7 +11,7 @@ export default {
   // 根据表ID获取字段属性列表
   getConfigList: id => getAction(`/uc/api/dataWarehouse/getConfigList/${id}`),
   // 根据目录ID下载导入模板
-  downloadTemplate: id => postAction(`/uc/api/dataWarehouse/downloadTemplate/${id}`),
+  downloadTemplate: id => downFileString(`/uc/api/dataWarehouse/downloadTemplate/${id}`),
   // 数据导入
   importData: (id, params) => uploadAction(`/uc/api/dataWarehouse/importData/${id}`, params),
   // 数据导出
