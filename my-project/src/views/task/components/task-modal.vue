@@ -25,6 +25,7 @@ import TaskStepSecond from './step2/task-step-second'
 import TaskStepThird from './step3/task-step-third'
 import TaskStepFourth from './step4/task-step-fourth'
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
+import moment from 'moment'
 export default {
   name: 'TaskModal',
   props: ['years'],
@@ -43,7 +44,7 @@ export default {
 
     edit(record, title) {
       this.title = title
-      this.taskInfo = Object.assign({}, record)
+      this.taskInfo = { ...Object.assign({}, record), statisticsStartTime: moment().format('YYYY-MM-DD'), statisticsEndTime: moment().format('YYYY-MM-DD') }
       this.currentStep = 0
       this.visible = true
     },
@@ -52,6 +53,7 @@ export default {
       this.taskId = ''
       this.$emit('ok')
       this.visible = false
+      this.taskInfo = {}
     },
 
     changeStep(step) {

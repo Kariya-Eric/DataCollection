@@ -12,8 +12,8 @@
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="12">
-            <a-form-item label="学年">
-              <a-select v-model="queryParam.schoolYear" placeholder="请选择学年">
+            <a-form-item label="统计时间">
+              <a-select v-model="queryParam.schoolYear" placeholder="统计时间">
                 <a-select-option v-for="year in schoolYearList" :key="year" :value="year">{{ year }}</a-select-option>
               </a-select>
             </a-form-item>
@@ -38,6 +38,9 @@
       <div class="table-operator-button">
         <a-button v-action="'tasklist_download'">下载导入模板</a-button>
         <a-button v-action="'tasklist_import'" type="primary"><dc-icon type="icon-dc_import" />导入</a-button>
+        <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
+          <a-button type="danger"><dc-icon type="icon-dc_empty" />批量删除</a-button>
+        </a-popconfirm>
         <a-button v-action="'tasklist_add'" type="primary" @click="handleAdd('添加任务')"><dc-icon type="icon-dc_new" />添加任务</a-button>
       </div>
     </div>
@@ -93,6 +96,7 @@
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { enableTask } from '@/api/task'
 import TaskModal from './components/task-modal.vue'
+import { deleteAction } from '@/api/api'
 export default {
   name: 'TaskList',
   mixins: [DataCollectionListMixin],
@@ -118,12 +122,11 @@ export default {
   },
   computed: {
     schoolYearList() {
-      let startYear = 2018
+      let startYear = 2016
       let nowYear = new Date().getFullYear()
       let yearList = []
-      for (let i = nowYear - 1; i >= startYear; i--) {
-        let option = `${i}-${i + 1}`
-        yearList.push(option)
+      for (let i = nowYear; i >= startYear; i--) {
+        yearList.push(i)
       }
       return yearList
     },
@@ -190,6 +193,18 @@ export default {
         return { name: '完成', color: 'green' }
       }
       return { name: '启用中', color: 'blue' }
+    },
+
+    batchDel() {
+      this.loading = true
+      try {
+        this.selectedRowKeys.forEach(key => deleteAction(this.url.delete, { key }))
+        this.$message.success('批量删除成功！')
+      } catch {
+        this.$message.error('部分删除失败！')
+      } finally {
+        this.loading = false
+      }
     }
   }
 }

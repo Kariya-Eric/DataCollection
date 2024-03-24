@@ -2,7 +2,7 @@
   <div class="main-form">
     <a-form-model ref="taskForm" :model="taskForm" :rules="taskFormRules" :labelCol="labelCol" :wrapperCol="wrapperCol">
       <a-row>
-        <h2>学校基本信息</h2>
+        <h2>基础信息</h2>
       </a-row>
       <a-row>
         <a-col :span="12">
@@ -22,12 +22,30 @@
       <a-row>
         <a-col :span="12">
           <a-form-model-item label="填报开始时间" prop="statisticsStartTime">
-            <dc-date format="yyyy-MM-dd" v-model="taskForm.statisticsStartTime" placeholder="请选择填报开始时间" />
+            <dc-date
+              format="yyyy-MM-dd"
+              v-model="taskForm.statisticsStartTime"
+              placeholder="请选择填报开始时间"
+              :picker-options="{
+                disabledDate: time => {
+                  return time.getTime() < Date.now() - 3600 * 1000 * 24
+                }
+              }"
+            />
           </a-form-model-item>
         </a-col>
         <a-col :span="12">
           <a-form-model-item label="填报截止时间" prop="statisticsEndTime">
-            <dc-date format="yyyy-MM-dd" v-model="taskForm.statisticsEndTime" placeholder="请选择填报截止时间" />
+            <dc-date
+              format="yyyy-MM-dd"
+              v-model="taskForm.statisticsEndTime"
+              placeholder="请选择填报截止时间"
+              :picker-options="{
+                disabledDate: time => {
+                  return time.getTime() < Date.now() - 3600 * 1000 * 24
+                }
+              }"
+            />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -75,7 +93,6 @@
 <script>
 import { initTask, updateTask } from '@/api/task'
 import ExtraSwitch from './extra-switch'
-
 export default {
   name: 'TaskStepFirst',
   props: ['task', 'years'],
@@ -91,6 +108,7 @@ export default {
         name: [{ required: true, message: '请输入任务名称' }],
         year: [{ required: true, message: '请选择统计时间' }],
         statisticsStartTime: [
+          { required: true, message: '请选择填报开始时间' },
           {
             validator: (rule, value, callback) => {
               if (value) {
@@ -107,6 +125,7 @@ export default {
           }
         ],
         statisticsEndTime: [
+          { required: true, message: '请选择填报结束时间' },
           {
             validator: (rule, value, callback) => {
               if (value) {
