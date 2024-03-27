@@ -3,22 +3,23 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="30">
-          <a-col :xl="6" :lg="12">
+          <a-col :xs="24" :md="12" :xl="5" :xxl="6">
             <a-form-item label="业务表名">
               <a-input v-model="queryParam.name" allowClear />
             </a-form-item>
           </a-col>
-          <a-col :xl="6" :lg="12">
+          <a-col :xs="24" :md="12" :xl="5" :xxl="6">
             <a-form-item label="物理表名">
               <a-input v-model="queryParam.formTableCode" allowClear />
             </a-form-item>
           </a-col>
-          <a-col :xl="12" :lg="24" class="table-page-search-buttons">
+          <a-col :xs="24" :md="24" :xl="14" :xxl="12" class="table-page-search-buttons">
             <span>
               <a-button type="primary" @click="searchQuery">搜索</a-button>
               <a-button @click="searchReset">重置</a-button>
             </span>
             <span>
+              <a-button type="danger" @click="handleDelete"><dc-icon type="icon-dc_empty" />清空当年数据</a-button>
               <a-button type="primary" @click="openImport = true"><dc-icon type="icon-dc_import" />导入</a-button>
               <a-button type="primary" @click="openExport = true"><dc-icon type="icon-dc_export" />导出</a-button>
             </span>
@@ -248,6 +249,17 @@ export default {
         .finally(() => {
           this.confirmExportLoading = false
         })
+    },
+    // 清空当年数据
+    handleDelete() {
+      api.deleteData(this.menu.id).then(res => {
+        if (res.state) {
+          this.$message.success(res.message)
+          this.loadData(1)
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }
@@ -259,6 +271,10 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    margin-bottom: 0;
+    .ant-btn{
+      margin-bottom:24px;
+    }
   }
   /deep/.ant-card-body {
     padding: 20px;

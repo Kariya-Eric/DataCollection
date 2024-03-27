@@ -1,4 +1,4 @@
-import { getAction, postAction, uploadAction, downFileString } from '../api'
+import { getAction, postAction, uploadAction, downFileString, deleteAction } from '../api'
 export default {
   // 获取目录年份列表
   getYearList: () => getAction('/uc/api/dataWarehouse/getYearList'),
@@ -15,5 +15,7 @@ export default {
   // 数据导入
   importData: (id, params) => uploadAction(`/uc/api/dataWarehouse/importData/${id}`, params),
   // 数据导出
-  exportData: (id, params) => downFileString(`/uc/api/dataWarehouse/exportData/${id}`, params)
+  exportData: (id, params) => downFileString(`/uc/api/dataWarehouse/exportData/${id}`, params),
+  // 清空当年数据数据
+  deleteData: (id, params) => deleteAction(`/uc/api/dataWarehouse/deleteData/${id}`)
 }
