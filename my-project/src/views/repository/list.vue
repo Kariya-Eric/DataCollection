@@ -19,7 +19,9 @@
               <a-button @click="searchReset">重置</a-button>
             </span>
             <span>
-              <a-button type="danger" @click="handleDelete"><dc-icon type="icon-dc_empty" />清空当年数据</a-button>
+              <a-popconfirm title="确定要清空当年数据吗？" @confirm="handleDelete">
+                <a-button type="danger"><dc-icon type="icon-dc_empty" />清空当年数据</a-button>
+              </a-popconfirm>
               <a-button type="primary" @click="openImport = true"><dc-icon type="icon-dc_import" />导入</a-button>
               <a-button type="primary" @click="openExport = true"><dc-icon type="icon-dc_export" />导出</a-button>
             </span>
@@ -272,8 +274,8 @@ export default {
     justify-content: space-between;
     flex-wrap: wrap;
     margin-bottom: 0;
-    .ant-btn{
-      margin-bottom:24px;
+    .ant-btn {
+      margin-bottom: 24px;
     }
   }
   /deep/.ant-card-body {
