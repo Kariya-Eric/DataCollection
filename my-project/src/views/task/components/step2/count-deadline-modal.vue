@@ -8,8 +8,8 @@
             <a-select-option v-for="item in options" :key="item.formId" :value="item.formId">{{ item.formName }}</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="统计截止时间" prop="statisticsEndTime">
-          <dc-date v-model="model.statisticsEndTime" format="yyyy-MM-dd" placeholder="请选择统计截止时间" />
+        <a-form-model-item label="填报截止时间" prop="statisticsEndTime">
+          <dc-date v-model="model.statisticsEndTime" format="yyyy-MM-dd" placeholder="请选择填报截止时间" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
@@ -29,7 +29,7 @@ export default {
       wrapperCol: { style: 'width: calc(100% - 120px); display: inline-block;' },
       isBatch: false,
       rules: {
-        statisticsEndTime: [{ required: true, message: '请选择统计截止时间' }]
+        statisticsEndTime: [{ required: true, message: '请选择填报截止时间' }]
       }
     }
   },

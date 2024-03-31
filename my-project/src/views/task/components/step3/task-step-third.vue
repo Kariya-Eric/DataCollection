@@ -55,7 +55,13 @@
             :columns="columns"
           >
             <template slot="formName" slot-scope="text, record">
-              <dc-icon type="icon-dc_form_table" :style="{ color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
+              <a-popover placement="right">
+                <template slot="content">
+                  <div><dc-icon type="icon-dc_form_table" :style="{ color: '#2B9E77' }" /><span style="margin-left: 8px">固定表单</span></div>
+                  <div style="margin-top: 8px"><dc-icon type="icon-dc_form_table" :style="{ color: '#2F68BD' }" /><span style="margin-left: 8px">浮动表单</span></div>
+                </template>
+                <dc-icon type="icon-dc_form_table" :style="{ color: record.formType === '固定表单' ? '#2B9E77' : '#2F68BD' }" />
+              </a-popover>
               <span style="margin-left: 8px">{{ record.formName }}</span>
             </template>
             <template slot="configStatus" slot-scope="text, record">

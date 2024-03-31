@@ -1,5 +1,5 @@
 <template>
-  <a-switch :checked="checked" @change="onChange" v-bind="$attrs" />
+  <a-switch :checked="checked" @change="onChange" v-bind="$attrs" v-on="$listeners" />
 </template>
 
 <script>

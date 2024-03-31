@@ -7,7 +7,7 @@
           <a-select-option v-for="item in formCollectionList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
         </a-select>
         <a style="margin-left: 12px; color: red">{{ tips }}</a>
-        <a-button type="primary" style="float: right" @click="applyDeadlineBatch"> <dc-icon type="icon-dc_batch_config" />批量配置统计截止时间</a-button>
+        <a-button type="primary" style="float: right" @click="applyDeadlineBatch"> <dc-icon type="icon-dc_batch_config" />批量配置填报截止时间</a-button>
       </a-row>
     </div>
 
@@ -28,7 +28,7 @@
         <span v-if="record.isCanFill">{{ record.statisticsEndTime }}</span>
       </template>
       <template slot="action" slot-scope="text, record">
-        <a @click="applyDeadline(record)" v-if="record.isCanFill">配置统计截止时间</a>
+        <a @click="applyDeadline(record)" v-if="record.isCanFill">配置填报截止时间</a>
         <a-divider type="vertical" v-if="record.isCanFill && !record.formRequired" />
         <template v-if="!record.formRequired">
           <a @click="applyCanfill(record)" v-if="record.isCanFill">申请不可填报</a>
@@ -88,7 +88,7 @@ export default {
         { dataIndex: 'formName', title: '表单名称', align: 'center', ellipsis: true },
         { title: '是否可填报', align: 'center', scopedSlots: { customRender: 'isCanFill' } },
         { dataIndex: 'remark', title: '备注', ellipsis: true, align: 'center' },
-        { title: '统计截止日期', align: 'center', scopedSlots: { customRender: 'statisticsEndTime' } },
+        { title: '填报截止时间', align: 'center', scopedSlots: { customRender: 'statisticsEndTime' } },
         { title: '操作', align: 'center', scopedSlots: { customRender: 'action' }, width: '320px' }
       ]
     }

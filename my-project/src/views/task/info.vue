@@ -87,7 +87,7 @@ export default {
         { dataIndex: 'formName', title: '表单名称', align: 'center' },
         { dataIndex: 'responsibleOrgName', title: '负责部门', align: 'center' },
         { dataIndex: 'collaborateOrgName', title: '协作部门', align: 'center' },
-        { dataIndex: 'statisticsEndTime', title: '统计截止日期', align: 'center' }
+        { dataIndex: 'statisticsEndTime', title: '填报截止时间', align: 'center' }
       ],
       taskInfo: {}
     }

@@ -54,6 +54,7 @@
         </a-button-group>
         <div class="table-operator-button">
           <a-button type="primary"><dc-icon type="icon-dc_remind" />一键催办</a-button>
+          <a-button @click="$router.push({ path: '/task/list' })" style="margin-left: 12px">返回</a-button>
         </div>
       </div>
 

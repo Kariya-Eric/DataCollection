@@ -46,16 +46,7 @@
     </div>
 
     <div>
-      <a-table
-        bordered
-        rowKey="id"
-        :dataSource="dataSource"
-        :pagination="ipagination"
-        :loading="loading"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-        :columns="renderColumns"
-        @change="handleTableChange"
-      >
+      <a-table bordered rowKey="id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="renderColumns" @change="handleTableChange">
         <template slot="name" slot-scope="text, record">
           <a @click="showTaskDetail(record)">{{ record.name }}</a>
         </template>
@@ -68,11 +59,11 @@
         </template>
         <template slot="action" slot-scope="text, record">
           <a @click="showTaskInfo(record)">任务概览</a>
-          <a-divider type="vertical" />
+          <a-divider type="vertical" v-if="record.status === 1 || record.status === 2" />
           <a @click="showTaskDetail(record)" v-if="record.status === 1 || record.status === 2">任务详情</a>
           <a-divider type="vertical" />
-          <a-dropdown :trigger="['click']">
-            <a>更多<a-icon type="down" /></a>
+          <a-dropdown>
+            <a @click="e => e.preventDefault()">更多<a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item><a>指南下载</a></a-menu-item>
               <a-menu-item><a>模板下载</a></a-menu-item>
