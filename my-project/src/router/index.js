@@ -40,19 +40,19 @@ export const constantRouterMap = [
       }
     ]
   }
-  //   {
-  //     path: '/tk',
-  //     name: 'TaskSet',
-  //     component: BlankLayout,
-  //     hidden: true,
-  //     children: [
-  //       {
-  //         path: 'add',
-  //         name: 'taskAddUpdate',
-  //         component: () => import('@/views/task/components/task-add-update')
-  //       }
-  //     ]
-  //   }
+  // {
+  //   path: '/task',
+  //   name: 'TaskSet',
+  //   component: BlankLayout,
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: 'add',
+  //       name: 'taskAddUpdate',
+  //       component: () => import('@/views/task/components/task-view')
+  //     }
+  //   ]
+  // }
 ]
 
 export default new Router({

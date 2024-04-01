@@ -85,7 +85,9 @@
     <div class="footer">
       <a-button type="primary" @click="save" :loading="loading">保存</a-button>
       <a-button type="primary" @click="next" :loading="loading">下一步</a-button>
-      <a-button @click="back">返回</a-button>
+      <a-popconfirm title="当前页面信息有改动，是否确认返回？" :visible="confirmVisible" @visibleChange="handleVisibleChange" @confirm="back" @cancel="confirmVisible = false">
+        <a-button>返回</a-button>
+      </a-popconfirm>
     </div>
   </div>
 </template>
@@ -99,6 +101,7 @@ export default {
   components: { ExtraSwitch },
   data() {
     return {
+      confirmVisible: false,
       labelCol: { style: 'width: 125px; display: inline-block; vertical-align: inherit;' },
       wrapperCol: { style: 'width: calc(100% - 150px); display: inline-block;' },
       taskForm: JSON.parse(JSON.stringify(this.task)),
@@ -173,11 +176,27 @@ export default {
         await this.$refs.taskForm.validate()
         if (this.taskForm.id) {
           //保存
-          await this.updateTask()
+          this.loading = true
+          await updateTask(this.taskForm).then(res => {
+            if (res.state) {
+              this.$message.success(res.message)
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+          this.loading = false
         } else {
           //初始化
           await this.initTask()
-          await this.updateTask()
+          this.loading = true
+          await updateTask(this.taskForm).then(res => {
+            if (res.state) {
+              this.$message.success(res.message)
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+          this.loading = false
         }
       } catch (e) {
         return
@@ -209,7 +228,9 @@ export default {
       })
       this.loading = false
     },
-
+    
+    handleVisibleChange(){},
+    
     back() {
       this.$emit('back')
       this.taskForm = {}

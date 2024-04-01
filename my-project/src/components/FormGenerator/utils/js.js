@@ -118,7 +118,17 @@ function buildRules(scheme, ruleList) {
     }
     if (config.tag === 'formPhone') {
       if (scheme.isMobile) {
-        rules.push(`{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : '${ruleTrigger[config.tag]}' }`)
+        rules.push(`{validator:(rule,value,callback)=>{
+          const phoneReg=/^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/
+          const mobileReg=/^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/
+          console.log('正则',phoneReg.test(value),mobileReg.test(value))
+          if(phoneReg.test(value)||mobileReg.test(value)){
+            callback()
+          }else{
+            callback(new Error('请输入正确的电话号码'))
+          }
+        }}`)
+        // rules.push(`{ pattern: /^(\\+\\d{2}-)?0\\d{2,3}-\\d{7,8}$/ , message : '请输入正确的电话号码' , trigger : '${ruleTrigger[config.tag]}' }`)
       } else {
         rules.push(`{ pattern:  /^(\\+\\d{2}-)?(\\d{2,3}-)?([1][3,4,5,7,8][0-9]\\d{8})$/ , message : '请输入正确的手机号' , trigger : '${ruleTrigger[config.tag]}' }`)
       }

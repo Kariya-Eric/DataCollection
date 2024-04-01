@@ -38,10 +38,10 @@
       <div class="table-operator-button">
         <a-button v-action="'tasklist_download'">下载导入模板</a-button>
         <a-button v-action="'tasklist_import'" type="primary"><dc-icon type="icon-dc_import" />导入</a-button>
-        <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
+        <!-- <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
           <a-button type="danger"><dc-icon type="icon-dc_empty" />批量删除</a-button>
-        </a-popconfirm>
-        <a-button v-action="'tasklist_add'" type="primary" @click="handleAdd('添加任务')"><dc-icon type="icon-dc_new" />添加任务</a-button>
+        </a-popconfirm> -->
+        <a-button v-action="'tasklist_add'" type="primary" @click="addTask('添加任务')"><dc-icon type="icon-dc_new" />添加任务</a-button>
       </div>
     </div>
 
@@ -79,19 +79,16 @@
         </template>
       </a-table>
     </div>
-    <task-modal ref="modalForm" @ok="loadData" :years="schoolYearList" />
   </a-card>
 </template>
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { enableTask } from '@/api/task'
-import TaskModal from './components/task-modal.vue'
-import { deleteAction } from '@/api/api'
+// import { deleteAction } from '@/api/api'
 export default {
   name: 'TaskList',
   mixins: [DataCollectionListMixin],
-  components: { TaskModal },
   data() {
     return {
       url: {
@@ -130,6 +127,10 @@ export default {
           }
         } else if (col.title === '启用') {
           if (this.check('tasklist_enable')) {
+            columns.push(col)
+          }
+        } else if (col.title === '任务状态') {
+          if (this.check('tasklist_status')) {
             columns.push(col)
           }
         } else {
@@ -186,16 +187,23 @@ export default {
       return { name: '启用中', color: 'blue' }
     },
 
-    batchDel() {
-      this.loading = true
-      try {
-        this.selectedRowKeys.forEach(key => deleteAction(this.url.delete, { key }))
-        this.$message.success('批量删除成功！')
-      } catch {
-        this.$message.error('部分删除失败！')
-      } finally {
-        this.loading = false
-      }
+    // batchDel() {
+    //   this.loading = true
+    //   try {
+    //     this.selectedRowKeys.forEach(key => deleteAction(this.url.delete, { key }))
+    //     this.$message.success('批量删除成功！')
+    //   } catch {
+    //     this.$message.error('部分删除失败！')
+    //   } finally {
+    //     this.loading = false
+    //   }
+    // }
+
+    addTask(title) {
+      this.$router.push({
+        path: '/task/add',
+        query: { title }
+      })
     }
   }
 }

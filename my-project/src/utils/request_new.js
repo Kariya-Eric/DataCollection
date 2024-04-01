@@ -70,16 +70,16 @@ request.interceptors.response.use(
             .then(
               res => {
                 console.log('resT', res)
-                const { access_token, refresh_token } = res.data
+                const { token, refresh_token } = res.data
 
-                request.setToken(access_token, refresh_token)
-                config.headers['Authorization'] = `Bearer ${access_token}`
+                request.setToken(token, refresh_token)
+                config.headers['Authorization'] = `Bearer ${token}`
                 config.baseURL = process.env.VUE_APP_BASE_API
                 console.log('token过期刷新接口')
                 //  这里有个小问题  当在重试中 如果接口报错 就会直接跳转到登录页  需要后端配合
                 // 已经刷新了token，将所有队列中的请求进行重试
 
-                requests.forEach(cb => cb(access_token))
+                requests.forEach(cb => cb(token))
                 requests = []
                 return request(config)
               },

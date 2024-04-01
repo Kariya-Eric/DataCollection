@@ -4,13 +4,13 @@
       <a-descriptions-item label="表单名称"> {{ formInfo.formName }}</a-descriptions-item>
       <a-descriptions-item label="填报时间"> {{ fillTime }} </a-descriptions-item>
       <a-descriptions-item label="审核人"> {{ formInfo.responsibleUserName }} </a-descriptions-item>
-      <a-descriptions-item label="整体提交进度"><a-progress style="width: 35%" :percent="progress.percent" :format="() => progress.name" /> </a-descriptions-item>
+      <a-descriptions-item label="协作进度"><a-progress style="width: 35%" :percent="progress.percent" :format="() => progress.name" /> </a-descriptions-item>
     </a-descriptions>
     <div class="title-operator" slot="title">
       <span>协作进度</span>
       <div class="title-operator-button">
         <a-button type="primary"><dc-icon type="icon-dc_remind" />一键催办</a-button>
-        <a-button type="primary"><dc-icon type="icon-dc_form_table" />查看表单</a-button>
+        <a-button type="primary"><dc-icon type="icon-dc_form_table" />查看总表</a-button>
         <a-button @click="close"><dc-icon type="icon-dc_back" />返回</a-button>
       </div>
     </div>
@@ -67,7 +67,7 @@ export default {
         { title: '部门', align: 'center', scopedSlots: { customRender: 'orgName' } },
         { title: '填报人', dataIndex: 'fillUserName', align: 'center' },
         { title: '最新提交时间', dataIndex: 'submitTime', align: 'center' },
-        { title: '审核状态', scopedSlots: { customRender: 'status' }, align: 'center' },
+        { title: '状态', scopedSlots: { customRender: 'status' }, align: 'center' },
         { title: '操作', scopedSlots: { customRender: 'action' }, align: 'center' }
       ]
     }
