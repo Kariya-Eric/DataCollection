@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import api from '@/api/repository'
 const listPath = '/repository/list'
 export default {
@@ -47,7 +46,7 @@ export default {
     return {
       spinning: false,
       yearList: [],
-      searchType: '教学基本状态数据',
+      searchType: '',
       selectedKey: '',
       menuData: []
     }
@@ -85,15 +84,27 @@ export default {
     }
   },
   created() {
+    this.searchType = this.$route.query.type || '教学基本状态数据'
     this.getYears()
+  },
+  destroyed() {
+    this.$store.commit('SET_REPOSITORYSELYEAR', '')
+    this.$store.commit('SET_REPOSITORYSELMENU', null)
+    this.$store.commit('SET_REPOSITORYSELFORM', null)
   },
   methods: {
     // 获取年份列表
     getYears() {
       api.getYearList().then(res => {
         this.yearList = res.value
-        this.searchYear = this.searchYear || res.value[0]
-        this.getMenu(true)
+        const { year } = this.$route.query
+        if (year) {
+          this.searchYear = year
+          this.getMenu()
+        } else {
+          this.searchYear = this.searchYear || res.value[0]
+          this.getMenu(true)
+        }
       })
     },
     defaultItemRender(_ref) {
@@ -139,6 +150,8 @@ export default {
                 this.selectedKey = defaultMenu.id
                 this.menu = defaultMenu
               }
+            } else {
+              this.menu = null
             }
             this.menuData = res.value
           } else {
@@ -157,9 +170,11 @@ export default {
       this.selectedKey = obj.formCategories || obj.id
       obj.type = this.searchType
       this.menu = obj
-      this.$router.push({
-        path: listPath
-      })
+      if (this.$route.path !== listPath) {
+        this.$router.push({
+          path: listPath
+        })
+      }
     }
   }
 }

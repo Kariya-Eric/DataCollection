@@ -4,7 +4,7 @@
       <a-button @click="$router.back(-1)"><dc-icon type="icon-dc_back" />返回</a-button>
     </div>
     <div class="title-name">
-      {{ detailData?.name || '' }}<span v-if="detailData.collectTimeType">（{{ detailData.collectTimeType }}）</span>
+      {{ detailData?.name || '' }}<span v-if="detailData?.collectTimeType">（{{ detailData.collectTimeType }}）</span>
     </div>
     <a-card style="width: 100%" :tab-list="detailTitle" :active-tab-key="titleKey" @tabChange="key => onTabChange(key)">
       <template v-if="titleKey === '1'">
