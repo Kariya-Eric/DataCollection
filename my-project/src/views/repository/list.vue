@@ -137,7 +137,8 @@ export default {
       exportForms: [],
       openImport: false,
       confirmImportLoading: false,
-      importFileList: []
+      importFileList: [],
+      loading: false
     }
   },
   computed: {
@@ -150,9 +151,6 @@ export default {
     menu() {
       this.renderData()
     }
-  },
-  mounted() {
-    this.renderData()
   },
   methods: {
     renderData() {
