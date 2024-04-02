@@ -11,7 +11,6 @@ import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import storage from 'store'
 import store from './store'
-import notification from 'ant-design-vue/es/notification'
 import { Modal } from 'ant-design-vue'
 
 export default {

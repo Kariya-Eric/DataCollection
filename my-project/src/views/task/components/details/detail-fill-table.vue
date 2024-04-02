@@ -72,13 +72,13 @@ export default {
       },
       expandedKeys: [],
       columns: [
-        { title: '表单名称', scopedSlots: { customRender: 'name' }, align: 'center' },
-        { dataIndex: 'type', title: '类型', align: 'center' },
-        { dataIndex: 'responsibleOrgName', title: '负责部门', align: 'center' },
-        { dataIndex: 'responsibleUserName', title: '审核人', align: 'center' },
-        { title: '状态', align: 'center', scopedSlots: { customRender: 'status' } },
-        { title: '填报截止倒计时', align: 'center', scopedSlots: { customRender: 'statisticsEndTime' } },
-        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '表单名称', scopedSlots: { customRender: 'name' }, align: 'center', width: 260 },
+        { dataIndex: 'type', title: '类型', align: 'center', width: 80 },
+        { dataIndex: 'responsibleOrgName', title: '负责部门', align: 'center', ellipsis: true },
+        { dataIndex: 'responsibleUserName', title: '审核人', align: 'center', ellipsis: true },
+        { title: '状态', align: 'center', scopedSlots: { customRender: 'status' }, width: 120 },
+        { title: '填报截止倒计时', align: 'center', scopedSlots: { customRender: 'statisticsEndTime' }, width: 260 },
+        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' }, width: 260 }
       ]
     }
   },

@@ -62,7 +62,7 @@
             <dc-switch v-model="record.enabledFlag" @change="val => enableForm(val, record.id)" />
           </template>
           <template slot="action" slot-scope="text, record">
-            <a @click="showForm(record)">表单详情</a>
+            <a @click="showForm(record)">表单设计</a>
             <a-divider type="vertical" />
             <a @click="handleEdit(record, '表单属性')">表单属性</a>
             <a-divider type="vertical" />

@@ -30,7 +30,7 @@
           v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider' && activeData.__config__.tag !== 'floatTable'"
           label="字段名"
         >
-          <a-input v-model="activeData.__vModel__" placeholder="请输入字段名" :disabled="disabled" />
+          <a-input v-model="activeData.__vModel__" placeholder="字段名只能包含数字字母和汉字" :disabled="disabled" />
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.__config__.label !== undefined && activeData.__config__.tag !== 'formDivider'" label="标题">
@@ -77,9 +77,9 @@
 
         <a-form-model-item v-if="activeData.format !== undefined" label="时间格式">
           <a-select v-model="activeData.format" @change="changeTimeFormat" :getPopupContainer="target => target.parentNode" :disabled="disabled">
-            <a-select-option value="yyyy">年（yyyy）</a-select-option>
-            <a-select-option value="yyyy-MM">年-月（yyyy-MM）</a-select-option>
-            <a-select-option value="yyyyMM">年月（yyyyMM）</a-select-option>
+            <a-select-option value="yyyy">年（YYYY）</a-select-option>
+            <a-select-option value="yyyy-MM">年-月（YYYY-MM）</a-select-option>
+            <a-select-option value="yyyyMM">年月（YYYYMM）</a-select-option>
           </a-select>
         </a-form-model-item>
 
@@ -97,7 +97,7 @@
             </div>
           </draggable>
           <div style="margin-top: 8px">
-            <a-button :disabled="disabled" style="padding-bottom: 0" icon="plus-circle" type="link" @click="addSelectItem"> 添加选项 </a-button>
+            <a-button v-if="!activeData.source" :disabled="disabled" style="padding-bottom: 0" icon="plus-circle" type="link" @click="addSelectItem"> 添加选项 </a-button>
             <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show()"> 设置选项来源 </a-button>
             <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left" v-if="!disabled">
               <a-button style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>

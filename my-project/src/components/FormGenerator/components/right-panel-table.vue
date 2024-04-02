@@ -77,9 +77,9 @@
           :getPopupContainer="target => target.parentNode"
           :disabled="disabled"
         >
-          <a-select-option value="yyyy">年（yyyy）</a-select-option>
-          <a-select-option value="yyyy-MM">年-月（yyyy-MM）</a-select-option>
-          <a-select-option value="yyyyMM">年月（yyyyMM）</a-select-option>
+          <a-select-option value="yyyy">年（YYYY）</a-select-option>
+          <a-select-option value="yyyy-MM">年-月（YYYY-MM）</a-select-option>
+          <a-select-option value="yyyyMM">年月（YYYYMM）</a-select-option>
         </a-select>
       </a-form-model-item>
 

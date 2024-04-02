@@ -80,4 +80,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="less" scoped>
+/deep/.ant-form-item {
+  margin-bottom: 0px;
+}
+</style>

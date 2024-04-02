@@ -12,7 +12,18 @@
             </a-col>
             <a-col :span="12">
               <div style="float: right">
-                <a-button type="primary" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag" @click="editTask"><dc-icon type="icon-dc_edit" />编辑</a-button>
+                <a-button
+                  type="primary"
+                  v-action="'taskInfo_edit'"
+                  v-if="!taskInfo.enabledFlag"
+                  @click="
+                    $router.push({
+                      path: '/task/add',
+                      query: { taskInfo, fromPath: '/task/info' }
+                    })
+                  "
+                  ><dc-icon type="icon-dc_edit" />编辑</a-button
+                >
                 <a-button @click="$router.push({ path: '/task/list' })" style="margin-left: 12px"><dc-icon type="icon-dc_back" />返回</a-button>
               </div>
             </a-col>
@@ -50,16 +61,16 @@
       </template>
     </a-descriptions>
     <a-table bordered rowKey="formId" :dataSource="dataSource" :pagination="false" :loading="tableLoading" :columns="columns"></a-table>
-    <task-modal ref="modalForm" @ok="getTaskInfo" />
+    <!-- <task-modal ref="modalForm" @ok="getTaskInfo" /> -->
   </a-card>
 </template>
 
 <script>
-import TaskModal from './components/task-modal.vue'
+// import TaskModal from './components/task-modal.vue'
 import { getTaskFormList, getTaskInfo } from '@/api/task'
 export default {
   name: 'TaskInfo',
-  components: { TaskModal },
+  // components: { TaskModal },
   data() {
     return {
       taskId: '',
@@ -131,9 +142,9 @@ export default {
       return rowSpan
     },
 
-    editTask() {
-      this.$refs.modalForm.edit(this.taskInfo, '编辑任务')
-    },
+    // editTask() {
+    //   //this.$refs.modalForm.edit(this.taskInfo, '编辑任务')
+    // },
 
     getTaskInfo() {
       this.infoLoading = true

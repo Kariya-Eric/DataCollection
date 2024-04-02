@@ -1,16 +1,5 @@
 <template>
-  <a-modal
-    title="指南管理"
-    v-if="visible"
-    :visible="visible"
-    :confirmLoading="loading"
-    @cancel="handleCancel"
-    @ok="handleOk"
-    :maskClosable="false"
-    :keyboard="false"
-    width="35%"
-    destroyOnClose
-  >
+  <a-modal title="指南管理" v-if="visible" :visible="visible" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-alert message="可以一次选择多个文件,但是单个文件请勿超过15MB" type="info" show-icon style="margin-bottom: 12px"> </a-alert>
       <a-upload :show-upload-list="false" :multiple="true" @change="onchange" :customRequest="() => {}">

@@ -2,38 +2,40 @@
   <div class="main-form">
     <a-row :gutter="24">
       <a-col :span="6">
-        <a-form-item label="部门名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-search placeholder="请输入部门名称搜索" allowClear @change="searchDepart" />
-        </a-form-item>
-        <a-tree
-          :tree-data="treeData"
-          :expanded-keys="expandedKeys"
-          :replace-fields="replaceFields"
-          blockNode
-          :auto-expand-parent="autoExpandParent"
-          @expand="onExpand"
-          @select="onSelect"
-          :selected-keys="selectedKeys"
-        >
-          <template slot="title" slot-scope="item">
-            <div class="img-div">
-              <img src="@/assets/icons/depart.svg" />
-              <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
-                {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
-                <span style="color: #f50">{{ searchValue }}</span>
-                {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
-              </span>
-              <span v-else style="margin-left: 8px">{{ item.name }}</span>
-            </div>
-          </template>
-        </a-tree>
+        <div :style="{ maxHeight: screenHeight - 300 + 'px', overflow: 'auto', paddingRight: '8px' }">
+          <a-form-item label="部门名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-input-search placeholder="请输入部门名称搜索" allowClear @change="searchDepart" />
+          </a-form-item>
+          <a-tree
+            :tree-data="treeData"
+            :expanded-keys="expandedKeys"
+            :replace-fields="replaceFields"
+            blockNode
+            :auto-expand-parent="autoExpandParent"
+            @expand="onExpand"
+            @select="onSelect"
+            :selected-keys="selectedKeys"
+          >
+            <template slot="title" slot-scope="item">
+              <div class="img-div">
+                <img src="@/assets/icons/depart.svg" />
+                <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
+                  {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
+                  <span style="color: #f50">{{ searchValue }}</span>
+                  {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
+                </span>
+                <span v-else style="margin-left: 8px">{{ item.name }}</span>
+              </div>
+            </template>
+          </a-tree>
+        </div>
       </a-col>
       <a-col :span="18">
         <div class="right-side">
           <div class="header">
             <a-row>
               <span style="margin-right: 12px">权限配置状态</span>
-              <a-select v-model="statusOptions" @change="changeStatus" style="width: 15%">
+              <a-select v-model="statusOptions" @change="changeStatus" style="width: 25%">
                 <a-select-option :value="0">全部</a-select-option>
                 <a-select-option :value="1">已配置</a-select-option>
                 <a-select-option :value="2">未配置</a-select-option>
@@ -53,6 +55,7 @@
             :loading="loading"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
             :columns="columns"
+            :scroll="{ y: screenHeight - 430 }"
           >
             <template slot="formName" slot-scope="text, record">
               <a-popover placement="right">
@@ -113,6 +116,7 @@ export default {
   props: ['task'],
   data() {
     return {
+      screenHeight: window.innerHeight,
       labelCol: { style: 'width: 80px; display: inline-block; vertical-align: inherit;' },
       wrapperCol: { style: 'width: calc(100% - 80px); display: inline-block;' },
       searchValue: '',
@@ -133,11 +137,11 @@ export default {
       loading: false,
       selectedRowKeys: [],
       columns: [
-        { title: '表单名称', align: 'center', scopedSlots: { customRender: 'formName' } },
-        { title: '权限配置状态', align: 'center', scopedSlots: { customRender: 'configStatus' } },
-        { dataIndex: 'responsibleOrgName', title: '负责部门', align: 'center' },
-        { dataIndex: 'collaborateOrgName', title: '协作部门', align: 'center' },
-        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' } }
+        { title: '表单名称', align: 'center', scopedSlots: { customRender: 'formName' }, width: 240, ellipsis: true },
+        { title: '权限配置状态', align: 'center', scopedSlots: { customRender: 'configStatus' }, width: 120 },
+        { dataIndex: 'responsibleOrgName', title: '负责部门', align: 'center', ellipsis: true },
+        { dataIndex: 'collaborateOrgName', title: '协作部门', align: 'center', ellipsis: true },
+        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' }, width: 120 }
       ]
     }
   },

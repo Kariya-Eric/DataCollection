@@ -1,5 +1,5 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
+  <a-modal :title="title" :visible="visible" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="所属合集">
@@ -12,18 +12,18 @@
           <a-input v-model="model.year" :disabled="true" />
         </a-form-model-item>
         <a-form-model-item label="表单名称" prop="formName">
-          <a-input v-model="model.formName" allowClear :disabled="editFlag" />
+          <a-input v-model="model.formName" allowClear :disabled="editFlag" placeholder="请输入表单名称" />
         </a-form-model-item>
         <a-form-model-item label="物理表名" prop="formTableCode">
-          <a-input v-model="model.formTableCode" allowClear :disabled="editFlag" />
+          <a-input v-model="model.formTableCode" allowClear :disabled="editFlag" placeholder="请输入物理表名" />
         </a-form-model-item>
         <a-form-model-item label="表单大类">
-          <a-select v-model="model.formCategories" allowClear :getPopupContainer="target => target.parentNode" :disabled="editFlag">
+          <a-select v-model="model.formCategories" allowClear :getPopupContainer="target => target.parentNode" :disabled="editFlag" placeholder="请选择表单大类">
             <a-select-option v-for="cate in categories" :key="cate.id" :value="cate.id">{{ cate.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="统计时间类型" prop="collectTimeType" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-select v-model="model.collectTimeType" placeholer="请输入统计时间类型" allowClear :getPopupContainer="target => target.parentNode" :disabled="editFlag">
+          <a-select v-model="model.collectTimeType" placeholder="请选择时间类型" allowClear :getPopupContainer="target => target.parentNode" :disabled="editFlag">
             <a-select-option value="时点">时点</a-select-option>
             <a-select-option value="学年">学年</a-select-option>
             <a-select-option value="自然年">自然年</a-select-option>

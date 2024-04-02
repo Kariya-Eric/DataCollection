@@ -1,15 +1,5 @@
 <template>
-  <a-modal
-    title="配置表单大类"
-    :visible="visible"
-    :confirmLoading="loading"
-    @cancel="handleCancel"
-    @ok="handleOk"
-    :maskClosable="false"
-    :keyboard="false"
-    width="35%"
-    destroyOnClose
-  >
+  <a-modal title="配置表单大类" :visible="visible" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model :model="categoryForm" v-bind="layout">
         <a-form-model-item label="所属合集">

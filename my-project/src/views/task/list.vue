@@ -41,7 +41,17 @@
         <!-- <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
           <a-button type="danger"><dc-icon type="icon-dc_empty" />批量删除</a-button>
         </a-popconfirm> -->
-        <a-button v-action="'tasklist_add'" type="primary" @click="addTask('添加任务')"><dc-icon type="icon-dc_new" />添加任务</a-button>
+        <a-button
+          v-action="'tasklist_add'"
+          type="primary"
+          @click="
+            $router.push({
+              path: '/task/add',
+              query: { taskInfo: null, fromPath: '/task/list' }
+            })
+          "
+          ><dc-icon type="icon-dc_new" />添加任务</a-button
+        >
       </div>
     </div>
 
@@ -185,7 +195,7 @@ export default {
         return { name: '完成', color: 'green' }
       }
       return { name: '启用中', color: 'blue' }
-    },
+    }
 
     // batchDel() {
     //   this.loading = true
@@ -198,13 +208,6 @@ export default {
     //     this.loading = false
     //   }
     // }
-
-    addTask(title) {
-      this.$router.push({
-        path: '/task/add',
-        query: { title }
-      })
-    }
   }
 }
 </script>

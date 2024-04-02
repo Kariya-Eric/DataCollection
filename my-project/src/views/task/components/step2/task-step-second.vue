@@ -3,7 +3,7 @@
     <div class="header">
       <a-row>
         <span style="margin-right: 12px">表单集合</span>
-        <a-select v-model="selectFormCollection" allowClear :disabled="task.type == '教学基本状态数据'" style="width: 15%" placeholder="请选择表单合集">
+        <a-select v-model="selectFormCollection" allowClear :disabled="task.type == '教学基本状态数据'" style="width: 30%" placeholder="请选择表单合集">
           <a-select-option v-for="item in formCollectionList" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
         </a-select>
         <a style="margin-left: 12px; color: red">{{ tips }}</a>
@@ -12,13 +12,13 @@
     </div>
 
     <a-table
-      bordered
       rowKey="formId"
       :dataSource="formList"
       :pagination="false"
       :loading="loading"
       :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :columns="columns"
+      :scroll="{ y: screenHeight - 430 }"
     >
       <template slot="isCanFill" slot-scope="text, record">
         <dc-status v-if="record.isCanFill" color="green" name="可填报" />
@@ -40,7 +40,17 @@
     </a-table>
 
     <div class="footer">
-      <a-button type="primary" @click="frontStep" :loading="loading">上一步</a-button>
+      <a-button type="primary" @click="frontStep">上一步</a-button>
+      <a-popconfirm
+        title="所有表单的截止时间相同，是否确认？"
+        :visible="confirmSaveVisible"
+        placement="bottom"
+        @confirm="save"
+        @cancel="confirmSaveVisible = !confirmSaveVisible"
+        cancelText="返回"
+      >
+        <a-button type="primary" @click="showSaveConfirm">保存</a-button>
+      </a-popconfirm>
       <a-popconfirm
         title="所有表单的截止时间相同，是否确认？"
         :visible="confirmVisible"
@@ -49,7 +59,7 @@
         @cancel="confirmVisible = !confirmVisible"
         cancelText="返回"
       >
-        <a-button type="primary" @click="showConfirm" :loading="loading">下一步</a-button>
+        <a-button type="primary" @click="showConfirm">下一步</a-button>
       </a-popconfirm>
       <a-button @click="back">返回</a-button>
     </div>
@@ -76,6 +86,7 @@ export default {
   name: 'TaskStepSecond',
   data() {
     return {
+      screenHeight: window.innerHeight,
       tips: '',
       selectedRowKeys: [],
       selectFormCollection: '',
@@ -84,12 +95,13 @@ export default {
       loading: false,
       taskInfo: this.task,
       confirmVisible: false,
+      confirmSaveVisible: false,
       columns: [
-        { dataIndex: 'formName', title: '表单名称', align: 'center', ellipsis: true },
-        { title: '是否可填报', align: 'center', scopedSlots: { customRender: 'isCanFill' } },
+        { dataIndex: 'formName', title: '表单名称', align: 'center', ellipsis: true, width: 220 },
+        { title: '是否可填报', align: 'center', scopedSlots: { customRender: 'isCanFill' }, width: 120 },
         { dataIndex: 'remark', title: '备注', ellipsis: true, align: 'center' },
-        { title: '填报截止时间', align: 'center', scopedSlots: { customRender: 'statisticsEndTime' } },
-        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' }, width: '320px' }
+        { title: '填报截止时间', align: 'center', scopedSlots: { customRender: 'statisticsEndTime' }, width: 120 },
+        { title: '操作', align: 'center', scopedSlots: { customRender: 'action' }, width: 250 }
       ]
     }
   },
@@ -200,6 +212,20 @@ export default {
       this.nextStep()
     },
 
+    showSaveConfirm() {
+      if (this.selectFormCollection == '' || !this.selectFormCollection) {
+        this.$message.error('请选择表单合集！')
+        return
+      }
+      if (this.formList.length > 1) {
+        let endTime = this.formList[0].statisticsEndTime
+        if (this.formList.every(e => e.statisticsEndTime == endTime)) {
+          this.confirmSaveVisible = true
+          return
+        }
+      }
+    },
+
     refreshDeadLine(deadlineForm) {
       this.selectedRowKeys = []
       this.formList.forEach(form => {
@@ -225,6 +251,9 @@ export default {
         .then(res => {
           if (res.state) {
             this.$emit('change', 2)
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
           }
         })
         .finally(() => (this.loading = false))
@@ -238,11 +267,34 @@ export default {
             this.formCollectionList = res.value.rows.filter(item => item.enabledFlag == 1)
           }
         })
-        .finally(() => (this.loading = false))
+        .finally(() => {
+          this.loading = false
+          this.confirmVisible = false
+        })
     },
 
     back() {
       this.$emit('back')
+    },
+
+    save() {
+      let params = {
+        ...this.taskInfo,
+        formCollectionId: this.selectFormCollection
+      }
+      this.loading = true
+      updateTask(params)
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => {
+          this.loading = false
+          this.confirmSaveVisible = false
+        })
     },
 
     redoCanfill(row) {

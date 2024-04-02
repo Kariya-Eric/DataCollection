@@ -36,6 +36,7 @@ export default {
   watch: {
     value(val) {
       if (!val) {
+        console.log(val, this.format)
         this.momVal = null
       } else {
         this.momVal = moment(val, this.format)

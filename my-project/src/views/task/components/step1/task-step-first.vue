@@ -1,94 +1,96 @@
 <template>
   <div class="main-form">
-    <a-form-model ref="taskForm" :model="taskForm" :rules="taskFormRules" :labelCol="labelCol" :wrapperCol="wrapperCol">
-      <a-row>
-        <h2>基础信息</h2>
-      </a-row>
-      <a-row>
-        <a-col :span="12">
-          <a-form-model-item label="任务类型" prop="type">
-            <a-select v-model="taskForm.type" allowClear placeholder="请选择任务类型">
-              <a-select-option value="教学基本状态数据">教学基本状态数据</a-select-option>
-              <a-select-option value="其他数据">其他数据</a-select-option>
-            </a-select>
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-model-item label="任务名称" prop="name">
-            <a-input v-model="taskForm.name" placeholder="请输入任务名称" allowClear />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="12">
-          <a-form-model-item label="填报开始时间" prop="statisticsStartTime">
-            <dc-date
-              format="yyyy-MM-dd"
-              v-model="taskForm.statisticsStartTime"
-              placeholder="请选择填报开始时间"
-              :picker-options="{
-                disabledDate: time => {
-                  return time.getTime() < Date.now() - 3600 * 1000 * 24
-                }
-              }"
-            />
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-model-item label="填报截止时间" prop="statisticsEndTime">
-            <dc-date
-              format="yyyy-MM-dd"
-              v-model="taskForm.statisticsEndTime"
-              placeholder="请选择填报截止时间"
-              :picker-options="{
-                disabledDate: time => {
-                  return time.getTime() < Date.now() - 3600 * 1000 * 24
-                }
-              }"
-            />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="12">
-          <a-form-model-item label="统计时间" prop="year">
-            <dc-date format="yyyy" mode="year" v-model="taskForm.year" placeholder="请选择统计时间" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="12">
-          <a-form-model-item label="学年">
-            <a-input v-model="taskForm.schoolYear" disabled />
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-model-item label="自然年">
-            <a-input v-model="taskForm.year" disabled />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <template v-if="taskForm.type == '教学基本状态数据'">
+    <a-spin :spinning="loading">
+      <a-form-model ref="taskForm" :model="taskForm" :rules="taskFormRules" :labelCol="labelCol" :wrapperCol="wrapperCol">
         <a-row>
-          <h2>学校专业类别信息</h2>
+          <h2>基础信息</h2>
         </a-row>
         <a-row>
-          <a-alert show-icon type="warning" message="为配合专业类国家三级认证工作，请确认本校是否包含以下专业类（2022年仅对师范类、医学、工科类专业进行确认）。" />
+          <a-col :span="12">
+            <a-form-model-item label="任务类型" prop="type">
+              <a-select v-model="taskForm.type" allowClear placeholder="请选择任务类型">
+                <a-select-option value="教学基本状态数据">教学基本状态数据</a-select-option>
+                <a-select-option value="其他数据">其他数据</a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="任务名称" prop="name">
+              <a-input v-model="taskForm.name" placeholder="请输入任务名称" allowClear />
+            </a-form-model-item>
+          </a-col>
         </a-row>
         <a-row>
-          <a-form-model-item prop="professionalCategory">
-            <extra-switch v-model="taskForm.professionalCategory" />
-          </a-form-model-item>
+          <a-col :span="12">
+            <a-form-model-item label="填报开始时间" prop="statisticsStartTime">
+              <dc-date
+                format="yyyy-MM-dd"
+                v-model="taskForm.statisticsStartTime"
+                placeholder="请选择填报开始时间"
+                :picker-options="{
+                  disabledDate: time => {
+                    return time.getTime() < Date.now() - 3600 * 1000 * 24
+                  }
+                }"
+              />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="填报截止时间" prop="statisticsEndTime">
+              <dc-date
+                format="yyyy-MM-dd"
+                v-model="taskForm.statisticsEndTime"
+                placeholder="请选择填报截止时间"
+                :picker-options="{
+                  disabledDate: time => {
+                    return time.getTime() < Date.now() - 3600 * 1000 * 24
+                  }
+                }"
+              />
+            </a-form-model-item>
+          </a-col>
         </a-row>
-      </template>
-    </a-form-model>
-    <div class="footer">
-      <a-button type="primary" @click="save" :loading="loading">保存</a-button>
-      <a-button type="primary" @click="next" :loading="loading">下一步</a-button>
-      <a-popconfirm title="当前页面信息有改动，是否确认返回？" :visible="confirmVisible" @visibleChange="handleVisibleChange" @confirm="back" @cancel="confirmVisible = false">
-        <a-button>返回</a-button>
-      </a-popconfirm>
-    </div>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="统计时间" prop="year">
+              <dc-date format="yyyy" mode="year" v-model="taskForm.year" placeholder="请选择统计时间" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="学年">
+              <a-input v-model="taskForm.schoolYear" disabled />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="自然年">
+              <a-input v-model="taskForm.year" disabled />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <template v-if="taskForm.type == '教学基本状态数据'">
+          <a-row>
+            <h2>学校专业类别信息</h2>
+          </a-row>
+          <a-row>
+            <a-alert show-icon type="warning" message="为配合专业类国家三级认证工作，请确认本校是否包含以下专业类（2022年仅对师范类、医学、工科类专业进行确认）。" />
+          </a-row>
+          <a-row>
+            <a-form-model-item prop="professionalCategory">
+              <extra-switch v-model="taskForm.professionalCategory" />
+            </a-form-model-item>
+          </a-row>
+        </template>
+      </a-form-model>
+      <div class="footer">
+        <a-button type="primary" @click="save">保存</a-button>
+        <a-button type="primary" @click="next">下一步</a-button>
+        <a-popconfirm title="当前页面信息有改动，是否确认返回？" :visible="confirmVisible" @visibleChange="handleVisibleChange" @confirm="back" @cancel="confirmVisible = false">
+          <a-button>返回</a-button>
+        </a-popconfirm>
+      </div>
+    </a-spin>
   </div>
 </template>
 
@@ -104,6 +106,7 @@ export default {
       confirmVisible: false,
       labelCol: { style: 'width: 125px; display: inline-block; vertical-align: inherit;' },
       wrapperCol: { style: 'width: calc(100% - 150px); display: inline-block;' },
+      tempTaskForm: JSON.parse(JSON.stringify(this.task)),
       taskForm: JSON.parse(JSON.stringify(this.task)),
       loading: false,
       taskFormRules: {
@@ -165,7 +168,21 @@ export default {
     async next() {
       try {
         await this.$refs.taskForm.validate()
-        await this.save()
+        if (this.judgeEdit()) {
+          this.$emit('change', 1)
+        } else {
+          this.loading = true
+          await updateTask(this.taskForm).then(res => {
+            if (res.state) {
+              this.$message.success(res.message)
+              this.tempTaskForm = { ...this.taskForm }
+              this.$emit('change', 1)
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+          this.loading = false
+        }
       } catch (e) {
         return
       }
@@ -180,6 +197,7 @@ export default {
           await updateTask(this.taskForm).then(res => {
             if (res.state) {
               this.$message.success(res.message)
+              this.tempTaskForm = { ...this.taskForm }
             } else {
               this.$message.error(res.message)
             }
@@ -192,6 +210,7 @@ export default {
           await updateTask(this.taskForm).then(res => {
             if (res.state) {
               this.$message.success(res.message)
+              this.tempTaskForm = { ...this.taskForm }
             } else {
               this.$message.error(res.message)
             }
@@ -209,6 +228,7 @@ export default {
         if (res.state) {
           this.taskForm.id = res.value
           this.$emit('initTask', this.taskForm.id)
+          this.tempTaskForm = { ...this.taskForm }
         } else {
           this.$message.error(res.message)
         }
@@ -216,25 +236,32 @@ export default {
       this.loading = false
     },
 
-    async updateTask() {
-      this.loading = true
-      await updateTask(this.taskForm).then(res => {
-        if (res.state) {
-          this.$message.success(res.message)
-          this.$emit('change', 1)
-        } else {
-          this.$message.error(res.message)
-        }
-      })
-      this.loading = false
+    handleVisibleChange(visible) {
+      if (!visible) {
+        this.confirmVisible = false
+        return
+      }
+      if (this.judgeEdit()) {
+        this.back()
+      } else {
+        this.confirmVisible = true
+      }
     },
-    
-    handleVisibleChange(){},
-    
+
     back() {
       this.$emit('back')
       this.taskForm = {}
       this.$refs.taskForm.clearValidate()
+    },
+
+    judgeEdit() {
+      let task = { ...this.taskForm }
+      Object.keys(task).forEach(key => {
+        if (task[key] === '') {
+          delete task[key]
+        }
+      })
+      return JSON.stringify(this.tempTaskForm) == JSON.stringify(task)
     }
   }
 }
@@ -242,12 +269,12 @@ export default {
 
 <style lang="less" scoped>
 .main-form {
-  width: 50%;
+  width: 55%;
   margin: auto;
   overflow-y: auto;
 }
 .footer {
-  margin-top: 36px;
+  margin-top: 12px;
   text-align: center;
   .ant-btn {
     margin-left: 24px;
