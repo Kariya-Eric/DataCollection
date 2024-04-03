@@ -98,7 +98,9 @@
           </draggable>
           <div style="margin-top: 8px">
             <a-button v-if="!activeData.source" :disabled="disabled" style="padding-bottom: 0" icon="plus-circle" type="link" @click="addSelectItem"> 添加选项 </a-button>
-            <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show()"> 设置选项来源 </a-button>
+            <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show(activeData.__config__.formId)">
+              设置选项来源
+            </a-button>
             <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left" v-if="!disabled">
               <a-button style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>
             </a-popconfirm>
@@ -206,6 +208,8 @@ import LogicModal from './logic-modal.vue'
 import { inputComponentsFix, selectComponentsFix } from '../config/config_fix'
 import RightPanelTable from './right-panel-table.vue'
 import OptionModal from './option-modal.vue'
+import { FORM_OPTIONS } from '@/store/mutation-types'
+import storage from 'store'
 export default {
   name: 'RightPanel',
   components: {
@@ -266,6 +270,11 @@ export default {
         }
       ])
       this.activeData.source = false
+      let formOptions = storage.get(FORM_OPTIONS)
+      if (formOption) {
+        let newVal = formOptions.filter(opt => opt.formId != this.activeData.__config__.formId)
+        storage.set(FORM_OPTIONS, newVal)
+      }
     },
 
     setOption(options) {

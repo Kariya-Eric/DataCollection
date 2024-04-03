@@ -56,7 +56,7 @@
         </template>
         <template slot="guidFiles" slot-scope="text, record">
           <div v-for="(guidFile, index) in JSON.parse(record.guidFiles)" :key="index">
-            <a @click="downloadGuid(guidFile)" :title="guidFile.fileName">{{ guidFile.fileName }}</a>
+            <a :download="guidFile.fileName" :href="guidFile.filePath" :title="guidFile.fileName">{{ guidFile.fileName }}</a>
           </div>
         </template>
         <template slot="enabledFlag" slot-scope="text, record">
@@ -116,16 +116,16 @@ export default {
     }
   },
   methods: {
-    downloadGuid(file) {
-      let link = document.createElement('a')
-      link.style.display = 'none'
-      link.download = decodeURI(file.fileName)
-      link.href = file.filePath
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(file.filePath)
-    },
+    // downloadGuid(file) {
+    //   let link = document.createElement('a')
+    //   link.style.display = 'none'
+    //   link.download = decodeURI(file.fileName)
+    //   link.href = file.filePath
+    //   document.body.appendChild(link)
+    //   link.click()
+    //   document.body.removeChild(link)
+    //   window.URL.revokeObjectURL(file.filePath)
+    // },
 
     showCollection(record) {
       this.handleEdit(record, '合集属性')

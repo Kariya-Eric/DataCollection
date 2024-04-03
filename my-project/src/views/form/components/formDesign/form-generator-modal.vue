@@ -52,6 +52,8 @@
 import FormViewDrawer from './form-view-drawer.vue'
 import RuleDetail from './rule-detail.vue'
 import { updateForm } from '@/api/form'
+import { FORM_OPTIONS } from '@/store/mutation-types'
+import storage from 'store'
 export default {
   name: 'FormGeneratorModal',
   props: ['categories'],
@@ -72,6 +74,7 @@ export default {
       this.formConfig = null
       this.drawingList = []
       this.visible = false
+      storage.remove(FORM_OPTIONS)
     },
 
     show(formInfo) {
