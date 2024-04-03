@@ -3,8 +3,8 @@
     <a-row :gutter="24">
       <a-col :span="6">
         <div :style="{ maxHeight: screenHeight - 300 + 'px', overflow: 'auto', paddingRight: '8px' }">
-          <a-form-item label="部门名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input-search placeholder="请输入部门名称搜索" allowClear @change="searchDepart" />
+          <a-form-item label="负责部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-input-search placeholder="输入部门名称搜索" allowClear @change="searchDepart" />
           </a-form-item>
           <a-tree
             :tree-data="treeData"
@@ -48,7 +48,6 @@
           </div>
 
           <a-table
-            bordered
             rowKey="formId"
             :dataSource="configFormList"
             :pagination="false"
@@ -80,6 +79,7 @@
     </a-row>
     <div class="footer">
       <a-button type="primary" @click="frontStep">上一步</a-button>
+      <a-button type="primary" @click="save">保存</a-button>
       <a-button type="primary" @click="nextStep">下一步</a-button>
       <a-button @click="back">返回</a-button>
     </div>
@@ -325,6 +325,17 @@ export default {
 
     back() {
       this.$emit('back')
+    },
+
+    save() {
+      let forms = this.formList.filter(form => !form.responsibleOrgName)
+      if (forms.length > 0) {
+        this.$message.error('存在表单尚未配置负责部门，请检查!')
+        return
+      } else {
+        //安慰剂弹框
+        this.$message.success('保存成功!')
+      }
     }
   }
 }
@@ -338,7 +349,7 @@ export default {
   }
 }
 .main-form {
-  width: 70%;
+  width: 80%;
   margin: auto;
 }
 .right-side {

@@ -1,12 +1,12 @@
 <template>
-  <div class="count-content">
-    <span class="num">{{ dayString }}</span>
+  <div class="count-content" :style="{ color: blueFlag ? '#2f68bd' : '#c45c57' }">
+    <span class="num" :style="{ backgroundColor: blueFlag ? '#e1edff' : '#ffe4e7' }">{{ dayString }}</span>
     <span class="word">天</span>
-    <span class="num">{{ hourString }}</span>
+    <span class="num" :style="{ backgroundColor: blueFlag ? '#e1edff' : '#ffe4e7' }">{{ hourString }}</span>
     <span class="word">:</span>
-    <span class="num">{{ minuteString }}</span>
-    <span class="word">:</span>
-    <span class="num">{{ secondString }}</span>
+    <span class="num" :style="{ backgroundColor: blueFlag ? '#e1edff' : '#ffe4e7' }">{{ minuteString }}</span>
+    <!-- <span class="word">:</span>
+    <span class="num" :style="{ backgroundColor: blueFlag ? '#e1edff' : '#ffe4e7' }">{{ secondString }}</span> -->
   </div>
 </template>
 
@@ -40,6 +40,9 @@ export default {
     },
     dayString() {
       return this.formatNum(this.day, false)
+    },
+    blueFlag() {
+      return this.remainTime >= 24 * 3600
     }
   },
   mounted() {
@@ -127,12 +130,10 @@ export default {
 <style scoped lang="less">
 .count-content {
   font-weight: bold;
-  color: #2f68bd;
   .num {
     display: inline-block;
     padding: 0px 8px;
     height: 30px;
-    background-color: #e1edff;
     font-size: 20px;
     margin: 0px 8px;
   }

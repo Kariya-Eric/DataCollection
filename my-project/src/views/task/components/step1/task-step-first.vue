@@ -70,17 +70,19 @@
           </a-col>
         </a-row>
         <template v-if="taskForm.type == '教学基本状态数据'">
-          <a-row>
-            <h2>学校专业类别信息</h2>
-          </a-row>
-          <a-row>
-            <a-alert show-icon type="warning" message="为配合专业类国家三级认证工作，请确认本校是否包含以下专业类（2022年仅对师范类、医学、工科类专业进行确认）。" />
-          </a-row>
-          <a-row>
-            <a-form-model-item prop="professionalCategory">
-              <extra-switch v-model="taskForm.professionalCategory" />
-            </a-form-model-item>
-          </a-row>
+          <div>
+            <a-row>
+              <h2>学校专业类别信息</h2>
+            </a-row>
+            <a-row>
+              <a-alert show-icon type="warning" message="为配合专业类国家三级认证工作，请确认本校是否包含以下专业类（2022年仅对师范类、医学、工科类专业进行确认）。" />
+            </a-row>
+            <a-row>
+              <a-form-model-item prop="professionalCategory">
+                <extra-switch v-model="taskForm.professionalCategory" />
+              </a-form-model-item>
+            </a-row>
+          </div>
         </template>
       </a-form-model>
       <div class="footer">
@@ -171,17 +173,34 @@ export default {
         if (this.judgeEdit()) {
           this.$emit('change', 1)
         } else {
-          this.loading = true
-          await updateTask(this.taskForm).then(res => {
-            if (res.state) {
-              this.$message.success(res.message)
-              this.tempTaskForm = { ...this.taskForm }
-              this.$emit('change', 1)
-            } else {
-              this.$message.error(res.message)
-            }
-          })
-          this.loading = false
+          if (this.taskForm.id) {
+            //保存
+            this.loading = true
+            await updateTask(this.taskForm).then(res => {
+              if (res.state) {
+                this.$message.success(res.message)
+                this.tempTaskForm = { ...this.taskForm }
+                this.$emit('change', 1)
+              } else {
+                this.$message.error(res.message)
+              }
+            })
+            this.loading = false
+          } else {
+            //初始化
+            await this.initTask()
+            this.loading = true
+            await updateTask(this.taskForm).then(res => {
+              if (res.state) {
+                this.$message.success(res.message)
+                this.tempTaskForm = { ...this.taskForm }
+                this.$emit('change', 1)
+              } else {
+                this.$message.error(res.message)
+              }
+            })
+            this.loading = false
+          }
         }
       } catch (e) {
         return

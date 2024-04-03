@@ -65,22 +65,25 @@
           <dc-status :name="caculateStatus(record).name" :color="caculateStatus(record).color" />
         </template>
         <template slot="enabled" slot-scope="text, record">
-          <dc-switch v-model="record.enabledFlag" @change="val => enableTask(record, val)" />
+          <a-popconfirm v-if="record.enabledFlag == 1" title="任务已开启，停用后相关数据可能会丢失，是否确认停用？" @confirm="enableTask(record, 0)">
+            <a-switch :checked="record.enabledFlag == 1" />
+          </a-popconfirm>
+          <dc-switch v-else :checked="record.enabledFlag == 1" @change="val => enableTask(record, val ? 1 : 0)" />
         </template>
-        <template slot="action" slot-scope="text, record">
+        <template slot="action" slot-scope="text, record, index">
           <a @click="showTaskInfo(record)">任务概览</a>
           <a-divider type="vertical" v-if="record.status === 1 || record.status === 2" />
           <a @click="showTaskDetail(record)" v-if="record.status === 1 || record.status === 2">任务详情</a>
           <a-divider type="vertical" />
-          <a-dropdown>
+          <a-dropdown v-model="menuVisble[index]" :trigger="['click']">
             <a @click="e => e.preventDefault()">更多<a-icon type="down" /></a>
-            <a-menu slot="overlay">
-              <a-menu-item><a>指南下载</a></a-menu-item>
-              <a-menu-item><a>模板下载</a></a-menu-item>
-              <a-menu-item><a>预览报告</a></a-menu-item>
-              <a-menu-item><a>导出数据</a></a-menu-item>
-              <a-menu-item>
-                <a-popconfirm title="确认删除任务吗？" @confirm="handleDelete(record.id)">
+            <a-menu slot="overlay" @click="e => handleMenuClick(e, index)">
+              <a-menu-item key="1"><a>指南下载</a></a-menu-item>
+              <a-menu-item key="2"><a>模板下载</a></a-menu-item>
+              <a-menu-item key="3"><a>预览报告</a></a-menu-item>
+              <a-menu-item key="4"><a>导出数据</a></a-menu-item>
+              <a-menu-item key="5">
+                <a-popconfirm title="确认删除任务吗？" @confirm="handleDel(record.id, index)" placement="leftBottom" @cancel="() => handleCancel(index)">
                   <a><span style="color: #e23322">删除任务</span></a>
                 </a-popconfirm>
               </a-menu-item>
@@ -101,6 +104,7 @@ export default {
   mixins: [DataCollectionListMixin],
   data() {
     return {
+      menuVisble: [],
       url: {
         list: '/uc/api/task/list',
         delete: '/uc/api/task/delete'
@@ -116,6 +120,11 @@ export default {
         { title: '启用', align: 'center', scopedSlots: { customRender: 'enabled' } },
         { title: '操作', width: 290, align: 'center', scopedSlots: { customRender: 'action' } }
       ]
+    }
+  },
+  watch: {
+    dataSource(newVal) {
+      this.menuVisble = newVal.map(item => false)
     }
   },
   computed: {
@@ -195,6 +204,27 @@ export default {
         return { name: '完成', color: 'green' }
       }
       return { name: '启用中', color: 'blue' }
+    },
+
+    handleMenuClick(e, index) {
+      if (e.key != 5) {
+        this.menuVisble[index] = false
+        this.menuVisble = { ...this.menuVisble }
+      } else {
+        this.menuVisble[index] = true
+        this.menuVisble = { ...this.menuVisble }
+      }
+    },
+
+    handleCancel(index) {
+      this.menuVisble[index] = false
+      this.menuVisble = { ...this.menuVisble }
+    },
+
+    handleDel(id, index) {
+      this.handleDelete(id)
+      this.menuVisble[index] = false
+      this.menuVisble = { ...this.menuVisble }
     }
 
     // batchDel() {

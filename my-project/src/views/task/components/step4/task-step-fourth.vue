@@ -1,19 +1,21 @@
 <template>
   <div class="main-form">
-    <a-result title="任务配置完成!">
-      <template #icon>
-        <img src="@/assets/icons/finish.svg" />
-      </template>
-      <div class="desc" style="text-align: center">
-        <p style="font-size: 16px">
-          <strong>任务名称：{{ taskName }}</strong>
-        </p>
-        <p>是否启用任务：&nbsp;&nbsp;<dc-switch v-model="enabledFlag" @change="enableTask" /></p>
+    <a-spin :spinning="loading">
+      <a-result title="任务配置完成!">
+        <template #icon>
+          <img src="@/assets/icons/finish.svg" />
+        </template>
+        <div class="desc" style="text-align: center">
+          <p style="font-size: 16px">
+            <strong>任务名称：{{ taskName }}</strong>
+          </p>
+          <p>是否启用任务：&nbsp;&nbsp;<dc-switch v-model="enabledFlag" @change="enableTask" /></p>
+        </div>
+      </a-result>
+      <div class="footer">
+        <a-button @click="back">查看任务概览</a-button>
       </div>
-    </a-result>
-    <div class="footer">
-      <a-button @click="back">查看任务概览</a-button>
-    </div>
+    </a-spin>
   </div>
 </template>
 
@@ -25,19 +27,23 @@ export default {
   data() {
     return {
       enabledFlag: 0,
-      taskName: ''
+      taskName: '',
+      loading: false
     }
   },
   watch: {
     taskId: {
       handler(newVal) {
         if (newVal !== undefined) {
-          getTask(newVal).then(res => {
-            if (res.state) {
-              this.taskName = res.value.name
-              this.enabledFlag = res.value.enabledFlag
-            }
-          })
+          this.loading = true
+          getTask(newVal)
+            .then(res => {
+              if (res.state) {
+                this.taskName = res.value.name
+                this.enabledFlag = res.value.enabledFlag
+              }
+            })
+            .finally(() => (this.loading = false))
         }
       },
       immediate: true
@@ -49,14 +55,17 @@ export default {
     },
 
     enableTask(val) {
-      enableTask({ id: this.taskId, enabledFlag: val }).then(res => {
-        if (res.state) {
-          this.$message.success(res.message)
-        } else {
-          this.enabledFlag = 0
-          this.$message.error(res.message)
-        }
-      })
+      this.loading = true
+      enableTask({ id: this.taskId, enabledFlag: val })
+        .then(res => {
+          if (res.state) {
+            this.$message.success(res.message)
+          } else {
+            this.enabledFlag = 0
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
     }
   }
 }

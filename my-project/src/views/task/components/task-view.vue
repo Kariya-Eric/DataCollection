@@ -74,7 +74,7 @@ export default {
   methods: {
     add(title) {
       this.title = title
-      this.taskInfo = { statisticsStartTime: moment().format('YYYY-MM-DD'), statisticsEndTime: moment().format('YYYY-MM-DD') }
+      this.taskInfo = { statisticsStartTime: moment().format('YYYY-MM-DD'), statisticsEndTime: moment().format('YYYY-MM-DD'), professionalCategory: '' }
       this.currentStep = 0
     },
 
