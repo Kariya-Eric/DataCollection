@@ -80,13 +80,7 @@ export default {
     show(formInfo) {
       this.info = { ...formInfo, listCategories: this.categories }
       let formConfig = JSON.parse(formInfo.formProperties)
-      let drawingList = JSON.parse(formInfo.componentProperties).map(item => {
-        if (item.__vModel__) {
-          return { ...item, __vModel__: item.__vModel__.substring(3, item.__vModel__.length) }
-        } else {
-          return item
-        }
-      })
+      let drawingList = JSON.parse(formInfo.componentProperties)
       if (formConfig != null) {
         this.formConfig = formConfig
       }

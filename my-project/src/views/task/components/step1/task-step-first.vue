@@ -279,6 +279,9 @@ export default {
         if (task[key] === '') {
           delete task[key]
         }
+        if (task.type == '其他数据') {
+          task.professionalCategory = ''
+        }
       })
       return JSON.stringify(this.tempTaskForm) == JSON.stringify(task)
     }

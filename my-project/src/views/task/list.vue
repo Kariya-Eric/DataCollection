@@ -77,7 +77,7 @@
           <a-divider type="vertical" />
           <a-dropdown v-model="menuVisble[index]" :trigger="['click']">
             <a @click="e => e.preventDefault()">更多<a-icon type="down" /></a>
-            <a-menu slot="overlay" @click="e => handleMenuClick(e, index)">
+            <a-menu slot="overlay" @click="e => handleMenuClick(e, index, record)">
               <a-menu-item key="1"><a>指南下载</a></a-menu-item>
               <a-menu-item key="2"><a>模板下载</a></a-menu-item>
               <a-menu-item key="3"><a>预览报告</a></a-menu-item>
@@ -97,7 +97,7 @@
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
-import { enableTask } from '@/api/task'
+import { enableTask, downloadTemp } from '@/api/task'
 // import { deleteAction } from '@/api/api'
 export default {
   name: 'TaskList',
@@ -206,10 +206,34 @@ export default {
       return { name: '启用中', color: 'blue' }
     },
 
-    handleMenuClick(e, index) {
+    handleMenuClick(e, index, record) {
       if (e.key != 5) {
         this.menuVisble[index] = false
         this.menuVisble = { ...this.menuVisble }
+        if (e.key == 3) {
+          this.$router.push({ path: `/repository/list?year=${record.formCollectionYear}&type=${record.type}` })
+        }
+        if (e.key == 2) {
+          downloadTemp(record.id).then(res => {
+            if (!res) {
+              this.$message.warning('导入数据下载失败！')
+              return
+            }
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+              window.navigator.msSaveBlob(new Blob([res], { type: 'application/vnd.ms-excel' }), record.name + '.xlsx')
+            } else {
+              let url = window.URL.createObjectURL(new Blob([res], { type: 'appliaction/vnd.ms-excel' }))
+              let link = document.createElement('a')
+              link.style.display = 'none'
+              link.href = url
+              link.setAttribute('download', record.name + '.xlsx')
+              document.body.appendChild(link)
+              link.click()
+              document.body.removeChild(link)
+              window.URL.revokeObjectURL(url)
+            }
+          })
+        }
       } else {
         this.menuVisble[index] = true
         this.menuVisble = { ...this.menuVisble }

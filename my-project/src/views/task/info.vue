@@ -12,18 +12,7 @@
             </a-col>
             <a-col :span="12">
               <div style="float: right">
-                <a-button
-                  type="primary"
-                  v-action="'taskInfo_edit'"
-                  v-if="!taskInfo.enabledFlag"
-                  @click="
-                    $router.push({
-                      path: '/task/add',
-                      query: { taskInfo, fromPath: '/task/info' }
-                    })
-                  "
-                  ><dc-icon type="icon-dc_edit" />编辑</a-button
-                >
+                <a-button type="primary" v-action="'taskInfo_edit'" v-if="!taskInfo.enabledFlag" @click="handleEdit"><dc-icon type="icon-dc_edit" />编辑</a-button>
                 <a-button @click="$router.push({ path: '/task/list' })" style="margin-left: 12px"><dc-icon type="icon-dc_back" />返回</a-button>
               </div>
             </a-col>
@@ -68,6 +57,8 @@
 <script>
 // import TaskModal from './components/task-modal.vue'
 import { getTaskFormList, getTaskInfo } from '@/api/task'
+import { TEMP_TASK } from '@/store/mutation-types'
+import storage from 'store'
 export default {
   name: 'TaskInfo',
   // components: { TaskModal },
@@ -189,6 +180,14 @@ export default {
         return { name: '完成', color: 'green' }
       }
       return { name: '启用中', color: 'blue' }
+    },
+
+    handleEdit() {
+      this.$router.push({
+        path: '/task/add',
+        query: { taskInfo: this.taskInfo, fromPath: '/task/info' }
+      })
+      storage.set(TEMP_TASK, { ...this.taskInfo, current: 0 })
     }
   }
 }

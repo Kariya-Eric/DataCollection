@@ -27,6 +27,8 @@ const configAuthUser = params => putAction('/uc/api/taskFormDetail/configAuthUse
 const updateTaskFormDetail = params => putAction('/uc/api/taskFormDetail/update', params)
 const submitForm = params => putAction(`/uc/api/taskFormDetail/submit`, params)
 const exportTaskForm = params => downFile(`/uc/api/taskFormDetail/export/${params}`)
+const downloadTemp = params => downFile(`/uc/api/task/downloadTemplate/${params}`)
+
 export {
   configAuthority,
   enableTask,
@@ -46,5 +48,6 @@ export {
   configAuthUser,
   updateTaskFormDetail,
   submitForm,
-  exportTaskForm
+  exportTaskForm,
+  downloadTemp
 }
