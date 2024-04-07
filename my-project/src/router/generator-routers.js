@@ -36,7 +36,7 @@ function loadFullscreenView(item) {
           icon: item.menuIcon ? item.menuIcon : undefined,
           keepAlive: true
         },
-        component: () => import('@/views/task/components/task-view')
+        component: () => import(`@/views${item.templateUrl}`)
       }
     ]
   }
@@ -51,7 +51,7 @@ function menuRecrusive(menus, routers) {
       const children = menu.children
       menuRecrusive(children, route.children)
     } else {
-      if (menu.menuUrl === '/task/add') {
+      if (menu.menuUrl === '/task/add' || menu.menuUrl === '/form/design') {
         const route = loadFullscreenView(menu)
         constantRouterMap.push(route)
       } else {

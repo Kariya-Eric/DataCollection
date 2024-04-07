@@ -1,7 +1,7 @@
 <template>
   <a-modal
     :title="updateFlag ? '添加显隐规则' : '修改显隐规则'"
-    width="35%"
+    width="45%"
     :visible="visible"
     v-if="visible"
     @cancel="close"

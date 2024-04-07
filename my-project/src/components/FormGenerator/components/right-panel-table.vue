@@ -111,7 +111,7 @@
           :animation="340"
           group="selectItem"
           handle=".option-drag"
-          :disabled="disabled || activeData.columns[activeData.selectedCol - 1].type.source"
+          :disabled="disabled || (activeData.columns[activeData.selectedCol - 1].type.source != undefined && activeData.columns[activeData.selectedCol - 1].type.source != false)"
         >
           <div v-for="(item, index) in activeData.columns[activeData.selectedCol - 1].type.__slot__.options" :key="index" class="select-item">
             <div class="select-line-icon option-drag">
@@ -120,7 +120,9 @@
             <a-input
               v-model="item.label"
               placeholder="选项名"
-              :disabled="disabled || activeData.columns[activeData.selectedCol - 1].type.source"
+              :disabled="
+                disabled || (activeData.columns[activeData.selectedCol - 1].type.source != undefined && activeData.columns[activeData.selectedCol - 1].type.source != false)
+              "
               @change="e => changeLabel(e, index)"
             />
             <div class="close-btn select-line-icon" v-if="!activeData.columns[activeData.selectedCol - 1].type.source && !disabled">
@@ -129,8 +131,24 @@
           </div>
         </draggable>
         <div style="margin-top: 8px">
-          <a-button :disabled="disabled" style="padding-bottom: 0" icon="plus-circle" type="link" @click="addOption"> 添加选项 </a-button>
-          <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show()"> 设置选项来源 </a-button>
+          <a-button
+            v-if="activeData.columns[activeData.selectedCol - 1].type.source == undefined || activeData.columns[activeData.selectedCol - 1].type.source == false"
+            :disabled="disabled"
+            style="padding-bottom: 0"
+            icon="plus-circle"
+            type="link"
+            @click="addOption"
+          >
+            添加选项
+          </a-button>
+          <a-button
+            :disabled="disabled"
+            style="padding-bottom: 0; font-size: 11px"
+            type="link"
+            @click="$refs.optionModal.show(activeData.columns[activeData.selectedCol - 1].type)"
+          >
+            设置选项来源
+          </a-button>
           <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left" v-if="!disabled">
             <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>
           </a-popconfirm>
@@ -170,9 +188,9 @@ export default {
           value: 2
         }
       ])
-      this.activeData.columns[this.activeData.selectedCol - 1].type.source = false
+      this.activeData.columns[this.activeData.selectedCol - 1].type.source = undefined
     },
-    setOption(options) {
+    setOption(options, optionInfo) {
       this.$set(
         this.activeData.columns[this.activeData.selectedCol - 1].type.__slot__,
         'options',
@@ -181,7 +199,7 @@ export default {
           return { label: name, value: id }
         })
       )
-      this.activeData.columns[this.activeData.selectedCol - 1].type.source = true
+      this.activeData.columns[this.activeData.selectedCol - 1].type.source = JSON.parse(JSON.stringify(optionInfo))
     },
 
     changeMultiple(val) {

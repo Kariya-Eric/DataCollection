@@ -31,8 +31,6 @@
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
 import { getDictionaryTree, listAll } from '@/api/system/option'
-import { FORM_OPTIONS } from '@/store/mutation-types'
-import storage from 'store'
 export default {
   name: 'OptionModal',
   mixins: [DataCollectionModalMixin],
@@ -85,18 +83,13 @@ export default {
   },
 
   methods: {
-    show(formId) {
-      this.formId = formId
-      let formOption = storage.get(FORM_OPTIONS)
-      if (formOption) {
-        let currentInfo = formOption.find(opt => opt.formId == this.formId)
-        if (currentInfo) {
-          this.model = { ...currentInfo.info.model }
-          this.formData = JSON.parse(JSON.stringify(currentInfo.info.formData))
-          this.optionData = JSON.parse(JSON.stringify(currentInfo.info.optionData))
-          this.tempFormData = JSON.parse(JSON.stringify(currentInfo.info.tempFormData))
-          this.optionValueData = JSON.parse(JSON.stringify(currentInfo.info.optionValueData))
-        }
+    show(activeData) {
+      if (activeData.source) {
+        this.model = { ...activeData.source.model }
+        this.formData = JSON.parse(JSON.stringify(activeData.source.formData))
+        this.optionData = JSON.parse(JSON.stringify(activeData.source.optionData))
+        this.tempFormData = JSON.parse(JSON.stringify(activeData.source.tempFormData))
+        this.optionValueData = JSON.parse(JSON.stringify(activeData.source.optionValueData))
       }
       this.visible = true
     },
@@ -189,24 +182,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           let value = { model: this.model, formData: this.formData, optionData: this.optionData, optionValueData: this.optionValueData, tempFormData: this.tempFormData }
-          let formOption = storage.get(FORM_OPTIONS)
-          if (formOption) {
-            let newVal
-            if (formOption.find(opt => opt.formId == this.formId)) {
-              newVal = formOption.map(opt => {
-                if (opt.formId == this.formId) {
-                  return { ...opt, info: value }
-                }
-                return opt
-              })
-            } else {
-              newVal = formOption.push({ formId: this.formId, info: value })
-            }
-            storage.set(FORM_OPTIONS, newVal)
-          } else {
-            storage.set(FORM_OPTIONS, [{ formId: this.formId, info: value }])
-          }
-          this.$emit('setOption', this.optionValueData)
+          this.$emit('setOption', this.optionValueData, value)
           this.close()
         } else {
           return

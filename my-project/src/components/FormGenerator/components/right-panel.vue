@@ -61,10 +61,10 @@
           <a-input-number :disabled="disabled" v-model="activeData.precision" :min="0" placeholder="小数位数" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最小值">
-          <a-input-number :disabled="disabled" v-model="activeData.min" placeholder="最小值" />
+          <a-input-number :disabled="disabled" :value="activeData.min" placeholder="最小值" @change="changeMin" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最大值">
-          <a-input-number :disabled="disabled" v-model="activeData.max" placeholder="最大值" />
+          <a-input-number :disabled="disabled" :value="activeData.max" placeholder="最大值" @change="changeMax" />
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式">
@@ -85,22 +85,40 @@
 
         <template v-if="['a-checkbox-group', 'a-radio-group', 'a-select'].indexOf(activeData.__config__.tag) > -1">
           <a-divider>选项</a-divider>
-          <draggable :list="activeData.__slot__.options" :animation="340" group="selectItem" handle=".option-drag" :disabled="disabled || activeData.source">
+          <draggable
+            :list="activeData.__slot__.options"
+            :animation="340"
+            group="selectItem"
+            handle=".option-drag"
+            :disabled="disabled || (activeData.source != undefined && activeData.source != false)"
+          >
             <div v-for="(item, index) in activeData.__slot__.options" :key="index" class="select-item">
               <div class="select-line-icon option-drag">
                 <a-icon type="unordered-list" style="font-size: 16px" />
               </div>
-              <a-input v-model="item.label" placeholder="选项名" :disabled="disabled || activeData.source" @change="e => changeOptionLabel(e, index)" />
+              <a-input
+                v-model="item.label"
+                placeholder="选项名"
+                :disabled="disabled || (activeData.source != undefined && activeData.source != false)"
+                @change="e => changeOptionLabel(e, index)"
+              />
               <div class="close-btn select-line-icon" @click="delSelectItem(index)" v-if="!activeData.source && !disabled">
                 <a-icon type="minus-circle" style="font-size: 16px" />
               </div>
             </div>
           </draggable>
           <div style="margin-top: 8px">
-            <a-button v-if="!activeData.source" :disabled="disabled" style="padding-bottom: 0" icon="plus-circle" type="link" @click="addSelectItem"> 添加选项 </a-button>
-            <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show(activeData.__config__.formId)">
-              设置选项来源
+            <a-button
+              v-if="activeData.source == undefined || activeData.source == false"
+              :disabled="disabled"
+              style="padding-bottom: 0"
+              icon="plus-circle"
+              type="link"
+              @click="addSelectItem"
+            >
+              添加选项
             </a-button>
+            <a-button :disabled="disabled" style="padding-bottom: 0; font-size: 11px" type="link" @click="$refs.optionModal.show(activeData)"> 设置选项来源 </a-button>
             <a-popconfirm title="确认要清除选项来源吗？" @confirm="clearOption" placement="left" v-if="!disabled">
               <a-button style="padding-bottom: 0; font-size: 11px; color: red" type="link"> 清空选项来源 </a-button>
             </a-popconfirm>
@@ -158,7 +176,7 @@
           <a-input v-model="baseInfo.name" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item label="表单大类">
-          <a-select v-model="baseInfo.formCategories" :disabled="disabled">
+          <a-select v-model="baseInfo.formCategories" :disabled="disabled" placeholder="请选择表单大类">
             <a-select-option v-for="item in baseInfo.listCategories" :key="item.id" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
         </a-form-model-item>
@@ -208,8 +226,6 @@ import LogicModal from './logic-modal.vue'
 import { inputComponentsFix, selectComponentsFix } from '../config/config_fix'
 import RightPanelTable from './right-panel-table.vue'
 import OptionModal from './option-modal.vue'
-import { FORM_OPTIONS } from '@/store/mutation-types'
-import storage from 'store'
 export default {
   name: 'RightPanel',
   components: {
@@ -269,15 +285,10 @@ export default {
           value: '选项二'
         }
       ])
-      this.activeData.source = false
-      let formOptions = storage.get(FORM_OPTIONS)
-      if (formOption) {
-        let newVal = formOptions.filter(opt => opt.formId != this.activeData.__config__.formId)
-        storage.set(FORM_OPTIONS, newVal)
-      }
+      this.activeData.source = undefined
     },
 
-    setOption(options) {
+    setOption(options, optionInfo) {
       this.$set(
         this.activeData.__slot__,
         'options',
@@ -286,7 +297,7 @@ export default {
           return { label: name, value: id }
         })
       )
-      this.activeData.source = true
+      this.activeData.source = JSON.parse(JSON.stringify(optionInfo))
     },
 
     changeTimeFormat(val) {
@@ -326,6 +337,30 @@ export default {
       this.activeData.__slot__.options[index].value = label
     },
 
+    changeMin(value) {
+      if (typeof value == 'number' && this.activeData.max != undefined && this.activeData.max < value) {
+        this.$notification['warning']({
+          message: '请检查',
+          description: '组件最小值不能大于组件最大值',
+          duration: 0
+        })
+      } else {
+        this.activeData.min = value
+      }
+    },
+
+    changeMax(value) {
+      console.log(typeof value, this.activeData.max)
+      if (typeof value == 'number' && this.activeData.min != undefined && this.activeData.min > value) {
+        this.$notification['warning']({
+          message: '请检查',
+          description: '组件最大值不能小于组件最小值',
+          duration: 0
+        })
+      } else {
+        this.activeData.max = value
+      }
+    },
     // end
     addSelectItem() {
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {

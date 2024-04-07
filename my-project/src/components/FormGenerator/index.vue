@@ -78,7 +78,7 @@ import { otherComponentsFloat } from './config/config_float'
 import { formConf } from './config/default'
 import DragItem from './components/drag-item.vue'
 import RightPanel from './components/right-panel.vue'
-import { USER_INFO, FORM_CACHE } from '@/store/mutation-types'
+import { USER_INFO, FORM_CACHE, FORM_INFO } from '@/store/mutation-types'
 import storage from 'store'
 import { deepClone } from './utils'
 
@@ -132,6 +132,23 @@ export default {
           }
         ]
       }
+    }
+  },
+  watch: {
+    formConf: {
+      handler(newVal) {
+        console.log('change')
+        let newInfo = { ...storage.get(FORM_INFO), formProperties: JSON.stringify(newVal) }
+        storage.set(FORM_INFO, newInfo)
+      },
+      deep: true
+    },
+    drawingList: {
+      handler(newVal) {
+        let newInfo = { ...storage.get(FORM_INFO), componentProperties: JSON.stringify(newVal) }
+        storage.set(FORM_INFO, newInfo)
+      },
+      deep: true
     }
   },
   mounted() {

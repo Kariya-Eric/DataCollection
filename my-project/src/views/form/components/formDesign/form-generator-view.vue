@@ -1,6 +1,6 @@
 <template>
-  <dc-modal :visible="visible">
-    <template slot="title">
+  <div>
+    <div class="title">
       <a-row type="flex" class="title-row" justify="space-between">
         <a-col class="left">
           <a-tag color="orange">{{ info.type }}</a-tag>
@@ -25,11 +25,9 @@
           <a-button @click="handleCancel"><dc-icon type="icon-dc_back" /> 返回</a-button>
         </a-col>
       </a-row>
-    </template>
-
+    </div>
     <div v-show="activeTab === 0">
       <form-generator
-        v-if="visible"
         :disabled="info.enabledFlag == 1"
         :formInfo="info"
         :drawingList="drawingList"
@@ -45,33 +43,50 @@
       <rule-detail :drawingList="drawingList" :formId="info.id" />
     </div>
     <form-view-drawer ref="formViewDrawer" />
-  </dc-modal>
+  </div>
 </template>
 
 <script>
 import FormViewDrawer from './form-view-drawer.vue'
 import RuleDetail from './rule-detail.vue'
 import { updateForm } from '@/api/form'
+import { FORM_INFO, FORM_CATES } from '@/store/mutation-types'
+import storage from 'store'
 export default {
   name: 'FormGeneratorModal',
-  props: ['categories'],
   components: { FormViewDrawer, RuleDetail },
   data() {
     return {
       info: {},
-      visible: false,
       drawingList: [],
       formConfig: null,
       activeTab: 0,
-      formList: []
+      formList: [],
+      categories: storage.get(FORM_CATES),
+      collectionDetail: {}
     }
   },
+
+  watch: {
+    $route: {
+      handler(newRoute) {
+        if (newRoute.name == 'formDesign') {
+          this.collectionDetail = JSON.parse(newRoute.query.collectionInfo)
+          let formInfo = storage.get(FORM_INFO)
+          this.show(formInfo)
+        }
+      },
+      immediate: true
+    }
+  },
+
   methods: {
     handleCancel() {
       this.info = {}
       this.formConfig = null
       this.drawingList = []
-      this.visible = false
+      storage.remove(FORM_INFO)
+      this.$router.push({ path: '/form/detail', query: { collectionInfo: JSON.stringify(this.collectionDetail) } })
     },
 
     show(formInfo) {
@@ -87,7 +102,6 @@ export default {
         this.drawingList = []
       }
       this.activeTab = 0
-      this.visible = true
     },
 
     view() {
@@ -141,29 +155,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/.ant-modal {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  top: 0 !important;
-  padding: 0 !important;
-}
-/deep/.ant-modal-body {
-  height: calc(100vh - 55px) !important;
-  max-height: calc(100vh - 55px) !important;
-  padding-top: 8px !important;
-  overflow: auto;
-}
-/deep/.ant-modal-header {
-  border-radius: 0 !important;
-}
-/deep/.ant-modal-title {
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  line-height: 26px !important;
-}
-/deep/.ant-modal-content {
-  height: 100vh !important;
-  border-radius: 0 !important;
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 16px;
+  color: black;
 }
 .title-row {
   .left {

@@ -7,6 +7,7 @@ import FixedTable from './fixed-table'
 import FormTextarea from './form-textarea'
 import FormAddress from './form-address'
 import FormAddressPop from './form-address-pop'
+import FormAddressPopTable from './form-address-pop-table'
 import FormView from './form-view'
 import FormTable from './form-table'
 import FormTooltip from './form-tooltip.vue'
@@ -23,6 +24,7 @@ export default {
     Vue.component('formView', FormView)
     Vue.component('formTable', FormTable)
     Vue.component('formAddressPop', FormAddressPop)
+    Vue.component('formAddressPopTable', FormAddressPopTable)
     Vue.component('formTooltip', FormTooltip)
   }
 }

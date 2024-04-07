@@ -3,7 +3,7 @@
     <div class="title">
       <span class="title-icon">&nbsp;&nbsp;{{ collectionDetail.year }}</span>
       <span class="title-name"> {{ collectionDetail.name }}</span>
-      <a-button style="float: right" @click="$router.back(-1)"><dc-icon type="icon-dc_back" />返回</a-button>
+      <a-button style="float: right" @click="$router.push({ path: '/form/list' })"><dc-icon type="icon-dc_back" />返回</a-button>
     </div>
     <a-card>
       <div class="table-page-search-wrapper">
@@ -74,7 +74,6 @@
       </div>
     </a-card>
     <form-modal ref="modalForm" :collection="collectionDetail" :categories="listCategories" @ok="refreshData" />
-    <form-generator-modal ref="formGeneratorModal" :categories="listCategories" @refresh="refreshData" />
     <form-copy-modal ref="formCopyModal" :formId="collectionDetail.id" @ok="refreshData" />
     <form-category-modal ref="formCategoryModal" @ok="refreshData" />
   </div>
@@ -85,14 +84,13 @@ const listUrl = '/uc/api/form/listByCollection/'
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { listFormCategories, enableForm } from '@/api/form'
 import FormModal from './components/form/form-modal.vue'
-import FormGeneratorModal from './components/formDesign/form-generator-modal.vue'
 import FormCopyModal from './components/form/form-copy-modal.vue'
 import FormCategoryModal from './components/form/form-category-modal.vue'
-import { TEMP_FORM } from '@/store/mutation-types'
+import { TEMP_FORM, FORM_INFO, FORM_CATES } from '@/store/mutation-types'
 import storage from 'store'
 export default {
   name: 'FormDetail',
-  components: { FormModal, FormGeneratorModal, FormCopyModal, FormCategoryModal },
+  components: { FormModal, FormCopyModal, FormCategoryModal },
   mixins: [DataCollectionListMixin],
   data() {
     return {
@@ -151,6 +149,7 @@ export default {
               ...item,
               name: item.sort + 1 + '.' + item.name
             }))
+          storage.set(FORM_CATES, this.listCategories)
         }
       })
     },
@@ -175,7 +174,8 @@ export default {
     showForm(record) {
       //此处用于传值给表单规则，props传值到最后会出现id丢失为空的奇怪情况，不知原因
       storage.set(TEMP_FORM, this.dataSource)
-      this.$refs.formGeneratorModal.show(record)
+      storage.set(FORM_INFO, record)
+      this.$router.push({ path: '/form/design', query: { collectionInfo: JSON.stringify(this.collectionDetail) } })
     }
   }
 }
