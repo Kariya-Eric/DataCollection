@@ -61,10 +61,10 @@
           <a-input-number :disabled="disabled" v-model="activeData.precision" :min="0" placeholder="小数位数" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最小值">
-          <a-input-number :disabled="disabled" v-model="activeData.min" placeholder="最小值" @change="changeMin" />
+          <a-input-number :disabled="disabled" v-model="activeData.min" placeholder="最小值" @change="handleChangeMin" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最大值">
-          <a-input-number :disabled="disabled" v-model="activeData.max" placeholder="最大值" @change="changeMax" />
+          <a-input-number :disabled="disabled" v-model="activeData.max" placeholder="最大值" @change="handleChangeMax" />
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式">
@@ -226,6 +226,7 @@ import LogicModal from './logic-modal.vue'
 import { inputComponentsFix, selectComponentsFix } from '../config/config_fix'
 import RightPanelTable from './right-panel-table.vue'
 import OptionModal from './option-modal.vue'
+import debounce from 'lodash/debounce'
 export default {
   name: 'RightPanel',
   components: {
@@ -239,7 +240,9 @@ export default {
     return {
       currentTab: 'field',
       labelCol: { style: 'width: 80px; display: inline-block;vertical-align: inherit;' },
-      wrapperCol: { style: 'width: calc(100% - 80px); display: inline-block;' }
+      wrapperCol: { style: 'width: calc(100% - 80px); display: inline-block;' },
+      debounceChangeMax: debounce(this.changeMax, 500),
+      debounceChangeMin: debounce(this.changeMin, 500)
     }
   },
   computed: {
@@ -337,7 +340,16 @@ export default {
       this.activeData.__slot__.options[index].value = label
     },
 
-    changeMin(value) {
+    handleChangeMax(value) {
+      this.activeData.max = value
+      this.debounceChangeMax(this.activeData.max)
+    },
+    handleChangeMin(value) {
+      this.activeData.min = value
+      this.debounceChangeMin(this.activeData.min)
+    },
+
+    changeMin: debounce(function (value) {
       if (typeof value == 'number' && this.activeData.max != undefined && this.activeData.max < value) {
         this.$notification['warning']({
           message: '请检查',
@@ -350,9 +362,9 @@ export default {
       } else {
         this.activeData.min = value
       }
-    },
+    }),
 
-    changeMax(value) {
+    changeMax: debounce(function (value) {
       if (typeof value == 'number' && this.activeData.min != undefined && this.activeData.min > value) {
         this.$notification['warning']({
           message: '请检查',
@@ -365,7 +377,7 @@ export default {
       } else {
         this.activeData.max = value
       }
-    },
+    }),
     // end
     addSelectItem() {
       for (let i = 0; i < this.activeData.__slot__.options.length; i++) {

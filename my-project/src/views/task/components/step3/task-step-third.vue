@@ -2,7 +2,7 @@
   <div class="main-form">
     <a-row :gutter="24">
       <a-col :span="6">
-        <div :style="{ maxHeight: screenHeight - 300 + 'px', overflow: 'auto', paddingRight: '8px' }">
+        <div :style="{ maxHeight: screenHeight - 480 + 'px', overflow: 'auto', paddingRight: '8px' }">
           <a-form-item label="负责部门" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input-search placeholder="输入部门名称搜索" allowClear @change="searchDepart" />
           </a-form-item>
@@ -54,7 +54,7 @@
             :loading="loading"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
             :columns="columns"
-            :scroll="{ y: screenHeight - 430 }"
+            :scroll="{ y: screenHeight - 600 }"
           >
             <template slot="formName" slot-scope="text, record">
               <a-popover placement="right">

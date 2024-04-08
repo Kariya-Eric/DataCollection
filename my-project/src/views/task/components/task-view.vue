@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <div class="title">{{ title }}</div>
+  <div class="view">
     <div class="steps">
       <a-steps :current="currentStep">
         <a-step title="基础信息"> </a-step>
@@ -85,9 +84,7 @@ export default {
     },
 
     close() {
-      if (this.fromPath == '/task/list') {
-        this.$router.push({ path: this.fromPath })
-      } else {
+      if (this.fromPath == '/task/info') {
         this.$router.push({
           path: this.fromPath,
           query: {
@@ -95,6 +92,8 @@ export default {
             taskYear: this.taskInfo.year
           }
         })
+      } else {
+        this.$router.push({ path: '/task/list' })
       }
       storage.remove(TEMP_TASK)
     },
@@ -141,5 +140,10 @@ export default {
   border-bottom: 1px solid #e8e8e8;
   padding: 16px;
   color: black;
+}
+.view {
+  min-height: 620px;
+  padding: 8px 12px 36px 12px;
+  background-color: white;
 }
 </style>

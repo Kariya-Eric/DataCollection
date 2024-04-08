@@ -18,7 +18,7 @@
       :loading="loading"
       :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :columns="columns"
-      :scroll="{ y: screenHeight - 430 }"
+      :scroll="{ y: screenHeight - 560 }"
     >
       <template slot="isCanFill" slot-scope="text, record">
         <dc-status v-if="record.isCanFill" color="green" name="可填报" />
@@ -44,7 +44,7 @@
       <a-popconfirm
         title="所有表单的截止时间相同，是否确认？"
         :visible="confirmSaveVisible"
-        placement="bottom"
+        placement="top"
         @confirm="save"
         @cancel="confirmSaveVisible = !confirmSaveVisible"
         cancelText="返回"
@@ -54,7 +54,7 @@
       <a-popconfirm
         title="所有表单的截止时间相同，是否确认？"
         :visible="confirmVisible"
-        placement="bottom"
+        placement="top"
         @confirm="nextStep"
         @cancel="confirmVisible = !confirmVisible"
         cancelText="返回"

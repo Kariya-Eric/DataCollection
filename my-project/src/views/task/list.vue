@@ -5,7 +5,7 @@
         <a-row :gutter="24">
           <a-col :md="4" :sm="12">
             <a-form-item label="任务类型">
-              <a-select v-model="queryParam.type" placeholder="请选择任务类型">
+              <a-select v-model="queryParam.type" placeholder="请选择任务类型" allowClear>
                 <a-select-option value="教学基本状态数据">教学基本状态数据</a-select-option>
                 <a-select-option value="其他数据">其他数据</a-select-option>
               </a-select>
@@ -13,14 +13,14 @@
           </a-col>
           <a-col :md="4" :sm="12">
             <a-form-item label="统计时间">
-              <a-select v-model="queryParam.schoolYear" placeholder="统计时间">
+              <a-select v-model="queryParam.schoolYear" placeholder="统计时间" allowClear>
                 <a-select-option v-for="year in schoolYearList" :key="year" :value="year">{{ year }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="4" :sm="12">
             <a-form-item label="任务名称">
-              <a-input v-model="queryParam.name" placeholder="请输入任务名称"></a-input>
+              <a-input v-model="queryParam.name" placeholder="请输入任务名称" allowClear></a-input>
             </a-form-item>
           </a-col>
           <a-col :md="3" :sm="12">

@@ -51,7 +51,7 @@ function menuRecrusive(menus, routers) {
       const children = menu.children
       menuRecrusive(children, route.children)
     } else {
-      if (menu.menuUrl === '/task/add' || menu.menuUrl === '/form/design') {
+      if (menu.menuUrl === '/form/design') {
         const route = loadFullscreenView(menu)
         constantRouterMap.push(route)
       } else {

@@ -88,7 +88,14 @@
       <div class="footer">
         <a-button type="primary" @click="save">保存</a-button>
         <a-button type="primary" @click="next">下一步</a-button>
-        <a-popconfirm title="当前页面信息有改动，是否确认返回？" :visible="confirmVisible" @visibleChange="handleVisibleChange" @confirm="back" @cancel="confirmVisible = false">
+        <a-popconfirm
+          title="当前页面信息有改动，是否确认返回？"
+          placement="top"
+          :visible="confirmVisible"
+          @visibleChange="handleVisibleChange"
+          @confirm="back"
+          @cancel="confirmVisible = false"
+        >
           <a-button>返回</a-button>
         </a-popconfirm>
       </div>
@@ -120,8 +127,8 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (value) {
-                if (new Date(value) < new Date()) {
-                  callback(new Error('填报开始时间需大于当前时间'))
+                if (new Date(value) <= new Date(new Date().getTime() - 24 * 60 * 60 * 1000)) {
+                  callback(new Error('填报开始时间需大于或等于当前时间'))
                 }
                 if (value > this.taskForm.statisticsEndTime) {
                   callback(new Error('开始时间不能大于结束时间'))
