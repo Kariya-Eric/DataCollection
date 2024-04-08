@@ -69,15 +69,11 @@
         <template #edit="scope">
           <template v-if="col.component == 'input'"><a-input v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
           <template v-if="col.component == 'textarea'"> <form-textarea v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
-          <template v-if="col.component == 'address'"> <form-address-pop :type="columns[index].type.type" v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
+          <template v-if="col.component == 'address'">
+            <form-address-pop :type="columns[index].type.type" v-model="scope.row[col.props]" :placeholder="col.placeholder"
+          /></template>
           <template v-if="col.component == 'number'">
-            <a-input-number
-              v-model="scope.row[col.props]"
-              :placeholder="col.placeholder"
-              :min="columns[index].type.min"
-              :max="columns[index].type.max"
-              :precision="columns[index].type.precision"
-            />
+            <a-input-number v-model="scope.row[col.props]" :placeholder="col.placeholder" :precision="columns[index].type.precision" />
           </template>
           <template v-if="col.component == 'link'"><form-link v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
           <template v-if="col.component == 'mail'"> <form-mail v-model="scope.row[col.props]" :placeholder="col.placeholder" /></template>
@@ -96,7 +92,7 @@
             <dc-date v-model="scope.row[col.props]" :placeholder="col.placeholder" :format="columns[index].type.format" :mode="columns[index].type.mode" />
           </template>
         </template>
-        <template #default="{ row }" v-if="col.component == 'select'">{{ getLabel(row[col.props], columns[index].type) }}</template>
+        <template #default="{ row }" v-if="col.component == 'select' || col.component == 'number'">{{ getLabel(row[col.props], columns[index].type, col.component) }}</template>
       </vxe-column>
       <vxe-column title="操作" width="120" v-if="!disabled">
         <template #default="{ row }">
@@ -156,6 +152,22 @@ export default {
               trigger: 'change'
             })
           }
+        } else if (column.type.__config__.tag == 'a-input-number') {
+          ruleList.push({
+            validator: ({ cellValue, rule, rules, row, rowIndex, column, columnIndex }) => {
+              console.log(column, cellValue)
+              if (typeof cellValue !== 'number') {
+                callback(new Error(`${column.label}只允许输入数字`))
+              }
+              if (column.type.min && cellValue < column.type.min) {
+                callback(new Error(`${config.label}的值不得小于${column.type.min}`))
+              }
+              if (column.type.max && cellValue > column.type.max) {
+                callback(new Error(`${config.label}的值不得小于${column.type.max}`))
+              }
+              callback()
+            }
+          })
         } else if (column.type.__config__.tag == 'formLink') {
           ruleList.push({
             pattern: /^[^\u4E00-\u9FA5]+$/,
@@ -250,23 +262,44 @@ export default {
     },
 
     // 处理多选择的回显
-    getLabel(value, type, valueProp = 'value', labelField = 'label') {
-      if (type.mode === 'default') {
-        const item = type.__slot__.options.find(item => item[labelField] === value)
-        return item ? item[labelField] : null
-      } else {
-        if (!value || value.length == 0) {
+    getLabel(value, type, col, valueProp = 'value', labelField = 'label') {
+      if (col == 'number') {
+        if (typeof value !== 'number') {
           return null
         } else {
-          if (value instanceof Array) {
-            return value
-              .map(val => {
-                const item = type.__slot__.options.find(item => item[labelField] === val)
-                return item ? item[labelField] : null
-              })
-              .join(',')
+          const splitVal = value.toString().split('.')[1]
+          if (splitVal == undefined) {
+            let newval = value.toString() + (type.precision > 0 ? '.' : '')
+            for (let i = 0; i < type.precision; i++) {
+              newval += '0'
+            }
+            return newval
           } else {
-            return value
+            let newval = value.toString()
+            for (let i = splitVal.length; i < type.precision; i++) {
+              newval += '0'
+            }
+            return newval
+          }
+        }
+      } else {
+        if (type.mode === 'default') {
+          const item = type.__slot__.options.find(item => item[labelField] === value)
+          return item ? item[labelField] : null
+        } else {
+          if (!value || value.length == 0) {
+            return null
+          } else {
+            if (value instanceof Array) {
+              return value
+                .map(val => {
+                  const item = type.__slot__.options.find(item => item[labelField] === val)
+                  return item ? item[labelField] : null
+                })
+                .join(',')
+            } else {
+              return value
+            }
           }
         }
       }

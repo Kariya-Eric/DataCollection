@@ -56,10 +56,10 @@
         <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.precision" :min="0" placeholder="小数位数" :disabled="disabled" />
       </a-form-model-item>
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="最小值">
-        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" :disabled="disabled" />
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.min" placeholder="最小值" :disabled="disabled" @change="handleChangeMin" />
       </a-form-model-item>
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'a-input-number'" label="最大值">
-        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" :disabled="disabled" />
+        <a-input-number v-model="activeData.columns[activeData.selectedCol - 1].type.max" placeholder="最大值" :disabled="disabled" @change="handleChangeMax" />
       </a-form-model-item>
 
       <a-form-model-item v-if="activeData.columns[activeData.selectedCol - 1].type.__config__.tag === 'formAddress'" label="地址格式">
@@ -164,6 +164,7 @@
 import draggable from 'vuedraggable'
 import { input, textarea, number, link, mail, phone, select, date, address } from '../config/config_common'
 import OptionModal from './option-modal.vue'
+import debounce from 'lodash/debounce'
 export default {
   name: 'RightPanelTable',
   props: ['activeData', 'disabled'],
@@ -173,7 +174,9 @@ export default {
   },
   data() {
     return {
-      cols: this.activeData.columns.length
+      cols: this.activeData.columns.length,
+      debounceChangeMax: debounce(this.changeMax, 500),
+      debounceChangeMin: debounce(this.changeMin, 500)
     }
   },
   methods: {
@@ -305,7 +308,52 @@ export default {
       } else {
         this.$set(column, 'mode', 'year')
       }
-    }
+    },
+    handleChangeMax(value) {
+      this.activeData.columns[this.activeData.selectedCol - 1].type.max = value
+      this.debounceChangeMax(this.activeData.columns[this.activeData.selectedCol - 1].type.max)
+    },
+    handleChangeMin(value) {
+      this.activeData.columns[this.activeData.selectedCol - 1].type.min = value
+      this.debounceChangeMin(this.activeData.columns[this.activeData.selectedCol - 1].type.min)
+    },
+    changeMin: debounce(function (value) {
+      if (
+        typeof value == 'number' &&
+        this.activeData.columns[this.activeData.selectedCol - 1].type.max != undefined &&
+        this.activeData.columns[this.activeData.selectedCol - 1].type.max < value
+      ) {
+        this.$notification['warning']({
+          message: '请检查',
+          description: '组件最小值不能大于组件最大值',
+          duration: 0,
+          onClose: () => {
+            this.activeData.columns[this.activeData.selectedCol - 1].type.min = undefined
+          }
+        })
+      } else {
+        this.activeData.columns[this.activeData.selectedCol - 1].type.min = value
+      }
+    }, 500),
+
+    changeMax: debounce(function (value) {
+      if (
+        typeof value == 'number' &&
+        this.activeData.columns[this.activeData.selectedCol - 1].type.min != undefined &&
+        this.activeData.columns[this.activeData.selectedCol - 1].type.min > value
+      ) {
+        this.$notification['warning']({
+          message: '请检查',
+          description: '组件最大值不能小于组件最小值',
+          duration: 0,
+          onClose: () => {
+            this.activeData.columns[this.activeData.selectedCol - 1].type.max = undefined
+          }
+        })
+      } else {
+        this.activeData.columns[this.activeData.selectedCol - 1].type.max = value
+      }
+    }, 500)
   }
 }
 </script>

@@ -61,10 +61,10 @@
           <a-input-number :disabled="disabled" v-model="activeData.precision" :min="0" placeholder="小数位数" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最小值">
-          <a-input-number :disabled="disabled" :value="activeData.min" placeholder="最小值" @change="changeMin" />
+          <a-input-number :disabled="disabled" v-model="activeData.min" placeholder="最小值" @change="changeMin" />
         </a-form-model-item>
         <a-form-model-item v-if="activeData.__config__.tag === 'a-input-number'" label="最大值">
-          <a-input-number :disabled="disabled" :value="activeData.max" placeholder="最大值" @change="changeMax" />
+          <a-input-number :disabled="disabled" v-model="activeData.max" placeholder="最大值" @change="changeMax" />
         </a-form-model-item>
 
         <a-form-model-item v-if="activeData.__config__.tag === 'formAddress'" label="地址格式">
@@ -342,7 +342,10 @@ export default {
         this.$notification['warning']({
           message: '请检查',
           description: '组件最小值不能大于组件最大值',
-          duration: 0
+          duration: 0,
+          onClose: () => {
+            this.activeData.min = undefined
+          }
         })
       } else {
         this.activeData.min = value
@@ -350,12 +353,14 @@ export default {
     },
 
     changeMax(value) {
-      console.log(typeof value, this.activeData.max)
       if (typeof value == 'number' && this.activeData.min != undefined && this.activeData.min > value) {
         this.$notification['warning']({
           message: '请检查',
           description: '组件最大值不能小于组件最小值',
-          duration: 0
+          duration: 0,
+          onClose: () => {
+            this.activeData.max = undefined
+          }
         })
       } else {
         this.activeData.max = value
