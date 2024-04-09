@@ -182,7 +182,7 @@ const tags = {
     const { vModel, placeholder, width, disabled } = attrBuilder(el)
     const format = `format="${el.format}"`
     const mode = `mode="${el.mode}"`
-    return `<dc-date-ant  ${vModel} ${format} ${mode} ${placeholder} ${width} ${disabled} ></dc-date-ant>`
+    return `<dc-date  ${vModel} ${format} ${mode} ${placeholder} ${width} ${disabled} ></dc-date>`
   },
   formDivider: el => {
     const title = `title="${el.title}"`

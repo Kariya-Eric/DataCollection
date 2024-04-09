@@ -286,7 +286,7 @@ export default {
         if (task[key] === '') {
           delete task[key]
         }
-        if (task.type == '其他数据') {
+        if (!task.type || task.type == '其他数据') {
           task.professionalCategory = ''
         }
       })

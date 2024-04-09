@@ -9,7 +9,7 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="部门名称" prop="name">
-          <a-input v-model="model.name" placeholder="请输入部门名称" allowClear :disabled="!isEdit" />
+          <a-input v-model="model.name" placeholder="请输入部门名称" allowClear :disabled="!isEdit || !authFlag" />
         </a-form-model-item>
         <a-form-model-item label="部门编码">
           <a-input v-model="model.code" :disabled="true" />
@@ -25,10 +25,10 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="排序" prop="orderNo">
-          <a-input-number v-model="model.orderNo" :min="0" :precision="0" placeholder="请输入排序" allowClear style="width: 15%" :disabled="!isEdit" />
+          <a-input-number v-model="model.orderNo" :min="0" :precision="0" placeholder="请输入排序" allowClear style="width: 15%" :disabled="!isEdit || !authFlag" />
         </a-form-model-item>
         <a-form-model-item label="状态">
-          <dc-switch v-model="model.status" :disabled="!isEdit" @change="changeStatus" />
+          <dc-switch v-model="model.status" :disabled="!isEdit || !authFlag" @change="changeStatus" />
         </a-form-model-item>
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }" v-if="isEdit">
           <a-button type="primary" @click="handleSubmit"> 保存 </a-button>
@@ -42,6 +42,8 @@
 <script>
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
 import { getOrg, updateOrg } from '@/api/system/depart'
+import { ROLE_LIST } from '@/store/mutation-types'
+import storage from 'store'
 export default {
   name: 'DepartInfo',
   props: ['isEdit', 'users', 'orgId'],
@@ -83,7 +85,8 @@ export default {
       layouts: {
         labelCol: { style: 'width: 144px; display: inline-block; vertical-align: inherit;' },
         wrapperCol: { style: 'width: calc(100% - 168px); display: inline-block;' }
-      }
+      },
+      authFlag: storage.get(ROLE_LIST).indexOf('superAdmin') > -1 || storage.get(ROLE_LIST).indexOf('admin') > -1
     }
   },
   watch: {

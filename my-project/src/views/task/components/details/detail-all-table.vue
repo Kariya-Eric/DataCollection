@@ -48,7 +48,7 @@
       </template>
     </a-table>
     <form-drawer ref="formDrawer" @refresh="refreshData" />
-    <progress-drawer ref="progressDrawer" />
+    <progress-drawer ref="progressDrawer" :taskId="taskId" />
     <config-user-modal ref="configUserModal" @refresh="refreshData" />
   </div>
 </template>

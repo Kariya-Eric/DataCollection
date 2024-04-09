@@ -1,11 +1,12 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
+  <a-modal :title="title" :visible="visible" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="选项名称" prop="name">
           <a-input placeholder="请输入选项名称" v-model="model.name" allowClear />
-        </a-form-model-item> </a-form-model
-    ></a-spin>
+        </a-form-model-item>
+      </a-form-model>
+    </a-spin>
   </a-modal>
 </template>
 

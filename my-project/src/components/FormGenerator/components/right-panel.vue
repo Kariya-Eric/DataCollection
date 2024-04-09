@@ -447,10 +447,10 @@ export default {
   padding: 0px;
 }
 .right-main {
-  height: calc(100vh - 180px);
+  height: 640px;
+  margin: 10px 4px 0 0;
+  padding: 4px 8px 4px 4px;
   overflow-y: auto;
-  margin: 10px 10px 0;
-  padding: 4px 8px 4px 8px;
 }
 .select-item {
   display: flex;

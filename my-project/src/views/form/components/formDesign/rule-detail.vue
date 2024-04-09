@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 24px 12px">
+  <div style="padding: 24px 12px; backgroundColor: white">
     <a-button type="primary" style="float: right; margin-bottom: 16px" @click="handleAdd('添加校验')"><dc-icon type="icon-dc_new" />添加校验</a-button>
     <div style="clear: both">
       <a-table bordered rowKey="id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">

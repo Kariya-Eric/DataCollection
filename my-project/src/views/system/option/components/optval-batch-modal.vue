@@ -1,15 +1,5 @@
 <template>
-  <a-modal
-    title="批量编辑选项值"
-    :visible="visible"
-    :confirmLoading="loading"
-    @cancel="handleCancel"
-    @ok="handleOk"
-    :maskClosable="false"
-    :keyboard="false"
-    width="30%"
-    destroyOnClose
-  >
+  <a-modal title="批量编辑选项值" :visible="visible" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="30%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-alert message="选项值与选项值之间用换行分隔" type="info" style="margin-bottom: 8px" show-icon> </a-alert>
       <a-textarea placeholder="请输入选项值名称" v-model="options" :rows="6" />
@@ -43,10 +33,19 @@ export default {
     },
 
     handleOk() {
-      let opts = this.options.split('\n').map((item, index) => {
-        let opt = { parentId: this.parentId, name: item, sort: index + 1, year: this.year }
-        return opt
-      })
+      let opts = this.options
+        .trim()
+        .split('\n')
+        .map((item, index) => {
+          let opt = { parentId: this.parentId, name: item, sort: index + 1, year: this.year }
+          return opt
+        })
+      for (let i = 0; i < opts.length; i++) {
+        if (!opts[i].name || opts[i].name == '') {
+          this.$message.warning('选项值中存在空行，请修改！')
+          return
+        }
+      }
       this.loading = true
       saveList({ data: opts, id: this.parentId })
         .then(res => {

@@ -44,7 +44,18 @@
         <a-empty v-if="selectedKeys.length == 0">
           <span slot="description">请先选择一行选项！</span>
         </a-empty>
-        <vxe-table v-else border align="center" :loading="optLoading" ref="optTable" :data="optDataSource" :radio-config="{ highlight: true }" @radio-change="radioChangeEvent">
+        <vxe-table
+          v-else
+          border
+          align="center"
+          :loading="optLoading"
+          ref="optTable"
+          :data="optDataSource"
+          :radio-config="{ highlight: true }"
+          @radio-change="radioChangeEvent"
+          :row-config="{ isCurrent: true, isHover: true }"
+          @current-change="currentChangeEvent"
+        >
           <vxe-column type="radio" width="60"> </vxe-column>
           <vxe-column type="seq" width="60"></vxe-column>
           <vxe-column field="name" title="选项名称" :edit-render="{ autofocus: '.ant-input' }">
@@ -93,7 +104,7 @@
         </vxe-table>
       </a-card>
     </a-col>
-    <category-modal ref="categoryModal" @refresh="getDictionaryTree(searchYear)" :treeData="treeData"/>
+    <category-modal ref="categoryModal" @refresh="getDictionaryTree(searchYear)" :treeData="treeData" />
     <option-modal ref="optionModal" @refresh="getOptionData" />
     <optval-modal ref="optvalModal" :parentName="optSelectName" @refresh="getOptionValueData" />
     <option-batch-modal ref="optionBatchModal" @refresh="getOptionData" :year="searchYear" />
@@ -176,6 +187,18 @@ export default {
         this.optSelectName = row.name
         this.getOptionValueData()
       } else {
+        this.onOptClearSelected()
+      }
+    },
+
+    currentChangeEvent({ row }) {
+      if (row.id) {
+        this.$refs.optTable.setRadioRow(row)
+        this.optSelectedRowKeys = [row.id]
+        this.optSelectName = row.name
+        this.getOptionValueData()
+      } else {
+        this.$refs.optTable.clearRadioRow()
         this.onOptClearSelected()
       }
     },

@@ -2,7 +2,7 @@
   <a-row :gutter="10">
     <a-col :md="8" :sm="24">
       <a-card title="组织架构" class="dc-card">
-        <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-dc_new" />添加组织</a-button>
+        <a-button v-action="'depart_add'" type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-dc_new" />添加组织</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="部门名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input-search placeholder="请输入部门名称搜索" allowClear @change="searchDepart" />
@@ -62,7 +62,7 @@
           <a-empty v-if="selectedKeys.length == 0">
             <span slot="description"> 请先选择一个部门! </span>
           </a-empty>
-          <depart-user v-else :isEdit="editFlag" :roles="roleList" :orgId="selectedKeys[0]" @refresh="refreshUser" :departs="treeData" />
+          <depart-user v-else :roles="roleList" :orgId="selectedKeys[0]" @refresh="refreshUser" :departs="treeData" />
         </div>
       </a-card>
     </a-col>
@@ -126,7 +126,6 @@ export default {
     this.initUserList()
     this.initRoleList()
   },
-
   methods: {
     handleAdd() {
       this.$refs.modalForm.add()

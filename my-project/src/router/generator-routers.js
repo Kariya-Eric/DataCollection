@@ -51,13 +51,15 @@ function menuRecrusive(menus, routers) {
       const children = menu.children
       menuRecrusive(children, route.children)
     } else {
-      if (menu.menuUrl === '/form/design') {
-        const route = loadFullscreenView(menu)
-        constantRouterMap.push(route)
-      } else {
-        const route = loadPageView(menu)
-        routers.push(route)
-      }
+      const route = loadPageView(menu)
+      routers.push(route)
+      // if (menu.menuUrl === '/form/design') {
+      //   const route = loadFullscreenView(menu)
+      //   constantRouterMap.push(route)
+      // } else {
+      //   const route = loadPageView(menu)
+      //   routers.push(route)
+      // }
     }
   })
 }

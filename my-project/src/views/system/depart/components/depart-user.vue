@@ -27,7 +27,7 @@
 
     <div class="table-operator">
       <span>人员列表</span>
-      <div class="table-operator-button" v-if="isEdit">
+      <div class="table-operator-button">
         <a-popconfirm title="确认删除吗？" @confirm="batchDel" v-if="selectedRowKeys.length > 0">
           <a-button type="danger"><dc-icon type="icon-dc_empty" />批量删除</a-button>
         </a-popconfirm>
@@ -52,10 +52,10 @@
         </template>
         <template slot="action" slot-scope="text, record">
           <a @click="handleDetail(record, '用户详情')">查看</a>
-          <a-divider type="vertical" v-if="isEdit" />
-          <a v-if="isEdit" @click="handleEdit(record, '编辑用户')">编辑</a>
-          <a-divider type="vertical" v-if="isEdit" />
-          <a-popconfirm title="确认删除吗？" @confirm="handleDelete(record.id)" v-if="isEdit"> <a>删除</a></a-popconfirm>
+          <a-divider type="vertical" />
+          <a @click="handleEdit(record, '编辑用户')">编辑</a>
+          <a-divider type="vertical" />
+          <a-popconfirm title="确认删除吗？" @confirm="handleDelete(record.id)"> <a style="color: red">删除</a></a-popconfirm>
         </template>
       </a-table>
     </div>
@@ -74,7 +74,7 @@ export default {
   name: 'DepartUser',
   mixins: [DataCollectionListMixin],
   components: { UserModal },
-  props: ['roles', 'orgId', 'isEdit', 'departs'],
+  props: ['roles', 'orgId', 'departs'],
   data() {
     return {
       subjectList: [],

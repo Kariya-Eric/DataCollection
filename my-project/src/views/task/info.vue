@@ -50,18 +50,15 @@
       </template>
     </a-descriptions>
     <a-table bordered rowKey="formId" :dataSource="dataSource" :pagination="false" :loading="tableLoading" :columns="columns"></a-table>
-    <!-- <task-modal ref="modalForm" @ok="getTaskInfo" /> -->
   </a-card>
 </template>
 
 <script>
-// import TaskModal from './components/task-modal.vue'
 import { getTaskFormList, getTaskInfo } from '@/api/task'
 import { TEMP_TASK } from '@/store/mutation-types'
 import storage from 'store'
 export default {
   name: 'TaskInfo',
-  // components: { TaskModal },
   data() {
     return {
       taskId: '',

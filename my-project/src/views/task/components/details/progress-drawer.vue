@@ -9,7 +9,7 @@
     <div class="title-operator" slot="title">
       <span>协作进度</span>
       <div class="title-operator-button">
-        <a-button type="primary"><dc-icon type="icon-dc_remind" />一键催办</a-button>
+        <a-button type="primary" @click="remind"><dc-icon type="icon-dc_remind" />一键催办</a-button>
         <a-button type="primary"><dc-icon type="icon-dc_form_table" />查看总表</a-button>
         <a-button @click="close"><dc-icon type="icon-dc_back" />返回</a-button>
       </div>
@@ -50,16 +50,21 @@
 </template>
 
 <script>
-import { collaborationProgress } from '@/api/task'
+import { collaborationProgress, taskFormDetail } from '@/api/task'
 import { DataCollectionModalMixin } from '@/mixins/DataCollectionModalMixin'
-import { taskFormDetail } from '@/api/task'
+import { pushNotice } from '@/api/notice'
 import FormDrawer from './form-drawer'
+import { USER_INFO } from '@/store/mutation-types'
+import storage from 'store'
+
 export default {
   name: 'ProgressDrawer',
   mixins: [DataCollectionModalMixin],
   components: { FormDrawer },
+  props: ['taskId'],
   data() {
     return {
+      currentUser: storage.get(USER_INFO),
       formInfo: {},
       dataSource: [],
       expandedKeys: [],
@@ -82,6 +87,23 @@ export default {
     }
   },
   methods: {
+    remind() {
+      let userId = this.currentUser.userId
+      let param = {
+        messageType: 'PC',
+        content: `您有一个数据采集任务 “${this.formInfo.formName}” 待完成`,
+        userId,
+        targetLink: `/task/detail?taskId=${this.taskId}`
+      }
+      pushNotice(param).then(res => {
+        if (res.state) {
+          this.$message.success(res.message)
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+
     show(info) {
       this.loading = true
       this.formInfo = info

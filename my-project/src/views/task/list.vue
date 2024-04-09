@@ -80,7 +80,7 @@
             <a-menu slot="overlay" @click="e => handleMenuClick(e, index, record)">
               <a-menu-item key="1"><a>指南下载</a></a-menu-item>
               <a-menu-item key="2"><a>模板下载</a></a-menu-item>
-              <a-menu-item key="3"><a>预览报告</a></a-menu-item>
+              <a-menu-item key="3" v-action="'tasklist_viewreport'" v-if="record.type == '教学基本状态数据' && record.enabledFlag == 1"><a>预览报告</a></a-menu-item>
               <a-menu-item key="4"><a>导出数据</a></a-menu-item>
               <a-menu-item key="5">
                 <a-popconfirm title="确认删除任务吗？" @confirm="handleDel(record.id, index)" placement="leftBottom" @cancel="() => handleCancel(index)">
@@ -92,16 +92,18 @@
         </template>
       </a-table>
     </div>
+    <task-export-modal ref="taskExportModal" />
   </a-card>
 </template>
 
 <script>
 import { DataCollectionListMixin } from '@/mixins/DataCollectionListMixin'
 import { enableTask, downloadTemp } from '@/api/task'
-// import { deleteAction } from '@/api/api'
+import TaskExportModal from './components/task-export-modal.vue'
 export default {
   name: 'TaskList',
   mixins: [DataCollectionListMixin],
+  components: { TaskExportModal },
   data() {
     return {
       menuVisble: [],
@@ -216,7 +218,7 @@ export default {
         if (e.key == 2) {
           downloadTemp(record.id).then(res => {
             if (!res) {
-              this.$message.warning('导入数据下载失败！')
+              this.$message.warning('导入模板下载失败！')
               return
             }
             if (typeof window.navigator.msSaveBlob !== 'undefined') {
@@ -233,6 +235,9 @@ export default {
               window.URL.revokeObjectURL(url)
             }
           })
+        }
+        if (e.key == 4) {
+          this.$refs.taskExportModal.show(record)
         }
       } else {
         this.menuVisble[index] = true

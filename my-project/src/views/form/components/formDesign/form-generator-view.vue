@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="totalView">
     <div class="title">
       <a-row type="flex" class="title-row" justify="space-between">
         <a-col class="left">
           <a-tag color="orange">{{ info.type }}</a-tag>
           <span>{{ info.name }}（{{ info.collectTimeType }}）</span>
         </a-col>
-        <a-col class="center">
+        <a-col>
           <a-tabs v-model="activeTab">
             <a-tab-pane :key="0">
               <span slot="tab" style="font-size: 20px"> 表单设计 </span>
@@ -155,24 +155,33 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.totalView {
+  min-height: 620px;
+  margin-top: -24px;
+}
 .title {
   font-size: 20px;
   font-weight: 600;
   line-height: 26px;
   border-bottom: 1px solid #e8e8e8;
-  padding: 16px;
+  padding: 0px 16px 0px 16px;
   color: black;
+  background-color: white;
+  margin-bottom: 12px;
 }
 .title-row {
+  /deep/.ant-tabs {
+    margin-left: -48px;
+  }
+  /deep/.ant-tabs-bar {
+    margin: 0 0 8px 0;
+  }
   .left {
     width: 25%;
-  }
-  .center {
-    position: absolute;
-    left: 40%;
-    top: 12px;
+    line-height: 64px;
   }
   .right {
+    line-height: 64px;
     .ant-btn {
       margin-left: 12px;
     }

@@ -170,11 +170,18 @@ export default {
       let userInfo = storage.get(USER_INFO)
       initDeptTree(userInfo.userId).then(res => {
         if (res.state) {
+          let depts = []
           let functional = res.value[0].children.find(item => item.name == '职能部门')
           let teaching = res.value[0].children.find(item => item.name == '教学部门')
-          functional.children = functional.children.filter(item => item.status === 1)
-          teaching.children = teaching.children.filter(item => item.status === 1)
-          this.departList = this.renderDepart([functional, teaching])
+          if (functional) {
+            functional.children = functional.children.filter(item => item.status === 1)
+            depts.push(functional)
+          }
+          if (teaching) {
+            teaching.children = teaching.children.filter(item => item.status === 1)
+            depts.push(teaching)
+          }
+          this.departList = this.renderDepart(depts)
         }
       })
     },
