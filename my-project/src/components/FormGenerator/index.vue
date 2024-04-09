@@ -1,6 +1,6 @@
 <template>
   <a-layout id="components-layout-demo-fixed-sider">
-    <a-layout-sider :width="265" theme="light" :style="{ maxHeight: '720px', left: 12 }">
+    <a-layout-sider :width="265" theme="light" :style="{ maxHeight: '960px', left: 12 }">
       <div class="left-main">
         <div v-for="(item, listIndex) in leftComponents" :key="listIndex">
           <a-divider orientation="left">
@@ -55,7 +55,7 @@
         </a-layout-content>
       </div>
     </a-layout>
-    <a-layout-sider :width="330" theme="light" :style="{ maxHeight: '720px', right: 12 }">
+    <a-layout-sider :width="330" theme="light" :style="{ maxHeight: '960px', right: 12 }">
       <right-panel
         id="right-panel"
         :active-data="activeData"
@@ -520,8 +520,6 @@ export default {
 
 <style lang="less">
 @import './styles/home';
-#components-layout-demo-fixed-sider {
-}
 .tinymce-div {
   h4 {
     font-weight: 600;
