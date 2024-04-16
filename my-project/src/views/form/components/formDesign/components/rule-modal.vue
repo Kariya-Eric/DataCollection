@@ -5,57 +5,61 @@
     :visible="visible"
     :confirmLoading="loading"
     @cancel="handleCancel"
-    @ok="handleOk"
     :maskClosable="false"
     :keyboard="false"
     width="60%"
     destroyOnClose
+    :dialogStyle="{ top: '50px' }"
   >
     <a-spin :spinning="loading">
       <a-form-model :model="model" ref="form" v-bind="layout" :rules="rules">
         <a-form-model-item label="校验名称" prop="name">
-          <a-input v-model="model.name" placeholder="请输入校验名称" />
+          <a-input v-model="model.name" placeholder="请输入校验名称" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item label="校验模式" prop="verifyMode">
-          <a-radio-group v-model="model.verifyMode">
+          <a-radio-group v-model="model.verifyMode" :disabled="disabled">
             <a-radio value="current">表内校验</a-radio>
             <a-radio value="other">表间校验</a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="校验类型" prop="type">
-          <a-radio-group v-model="model.type">
+        <a-form-model-item label="校验类型" prop="type" v-if="model.verifyMode">
+          <a-radio-group v-model="model.type" :disabled="disabled">
             <a-radio v-for="item in typeList" :key="item.value" :value="item.value">{{ item.name }}</a-radio>
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="校验失败提示" prop="message" :labelCol="labelColForSix" :wrapperCol="wrapperColForSix">
-          <a-textarea :rows="4" v-model="model.message" placeholder="请输入校验失败提示"></a-textarea>
+          <a-textarea :rows="4" v-model="model.message" placeholder="请输入校验失败提示" :disabled="disabled"></a-textarea>
         </a-form-model-item>
         <a-form-model-item label="启用">
-          <dc-switch v-model="model.enabledFlag" />
+          <dc-switch v-model="model.enabledFlag" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'dataRange' && model.verifyMode == 'current'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-range ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+          <rule-range ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'dataRange' && model.verifyMode == 'other'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-datarange ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+          <rule-datarange ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'unique'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-unique ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+          <rule-unique ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :disabled="disabled" />
         </a-form-model-item>
-        <a-form-model-item v-if="model.type == 'dateTime'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-date ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+        <a-form-model-item v-if="model.type == 'date'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
+          <rule-date ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'other'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-other ref="verificationFormulas" v-model="model.verificationFormulas" />
+          <rule-other ref="verificationFormulas" v-model="model.verificationFormulas" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'exclusivity'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-exclusivity ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+          <rule-exclusivity ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :disabled="disabled" />
         </a-form-model-item>
         <a-form-model-item v-if="model.type == 'consistency'" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="verificationFormulas">
-          <rule-consistency ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" />
+          <rule-consistency ref="verificationFormulas" v-model="model.verificationFormulas" :drawingList="drawingList" :disabled="disabled" />
         </a-form-model-item>
       </a-form-model>
     </a-spin>
+    <template slot="footer">
+      <a-button @click="handleCancel">取消</a-button>
+      <a-button type="primary" @click="handleOk" v-if="!disabled">确定</a-button>
+    </template>
   </a-modal>
 </template>
 
@@ -76,6 +80,7 @@ export default {
   mixins: [DataCollectionModalMixin],
   data() {
     return {
+      disabled: false,
       labelCol: { style: 'width: 0px; display: inline-block; vertical-align: inherit;' },
       wrapperCol: { style: 'width: calc(100%); display: inline-block;' },
       labelColForSix: { style: 'width: 110px; display: inline-block; vertical-align: inherit;' },
@@ -100,7 +105,7 @@ export default {
       typeList: [
         { name: '数据范围校验', value: 'dataRange' },
         { name: '唯一性校验', value: 'unique' },
-        { name: '时间日期校验', value: 'dateTime' },
+        { name: '时间日期校验', value: 'date' },
         { name: '自定义校验', value: 'other' }
       ]
     }
@@ -125,7 +130,7 @@ export default {
         this.typeList = [
           { name: '数据范围校验', value: 'dataRange' },
           { name: '唯一性校验', value: 'unique' },
-          { name: '时间日期校验', value: 'dateTime' },
+          { name: '时间日期校验', value: 'date' },
           { name: '自定义校验', value: 'other' }
         ]
       } else {
@@ -153,8 +158,8 @@ export default {
         } else if (newVal == 'unique') {
           let unique = [{ table: '', fields: [] }]
           this.$set(this.model, 'verificationFormulas', unique)
-        } else if (newVal == 'dateTime') {
-          let dateTime = [
+        } else if (newVal == 'date') {
+          let date = [
             {
               left: [{ operator: '', type: '', value: '', field: '' }],
               operator: '',
@@ -162,7 +167,7 @@ export default {
               and_or: ''
             }
           ]
-          this.$set(this.model, 'verificationFormulas', dateTime)
+          this.$set(this.model, 'verificationFormulas', date)
         } else if (newVal == 'other') {
           this.$set(this.model, 'verificationFormulas', '')
         } else if (newVal == 'exclusivity') {
@@ -201,11 +206,15 @@ export default {
   },
   methods: {
     add(title) {
-      this.edit({ enabledFlag: 1 }, title)
+      this.model = Object.assign({}, { enabledFlag: 1 })
+      this.disabled = false
+      this.title = title
+      this.visible = true
     },
 
     edit(record, title) {
       this.model = Object.assign({}, record)
+      this.$nextTick(() => (this.disabled = record.enabledFlag == 1))
       this.title = title
       this.visible = true
     },

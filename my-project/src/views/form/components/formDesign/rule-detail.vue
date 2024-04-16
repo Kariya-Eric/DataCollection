@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 24px 12px; backgroundColor: white">
+  <div class="rule">
     <a-button type="primary" style="float: right; margin-bottom: 16px" @click="handleAdd('添加校验')"><dc-icon type="icon-dc_new" />添加校验</a-button>
     <div style="clear: both">
       <a-table bordered rowKey="id" :dataSource="dataSource" :pagination="ipagination" :loading="loading" :columns="columns" @change="handleTableChange">
@@ -11,14 +11,14 @@
           <span v-else-if="record.type == 'unique'">唯一性校验</span>
           <span v-else-if="record.type == 'exclusivity'">排他性校验</span>
           <span v-else-if="record.type == 'consistency'">一致性校验</span>
-          <span v-else-if="record.type == 'dateTime'">时间日期校验</span>
+          <span v-else-if="record.type == 'date'">时间日期校验</span>
           <span v-else>自定义校验</span>
         </template>
         <template slot="enabledFlag" slot-scope="text, record">
           <dc-switch v-model="record.enabledFlag" @change="val => enableRule(val, record)" />
         </template>
         <template slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record, '修改校验')">查看</a>
+          <a @click="handleEdit(record, '修改校验')">编辑</a>
           <a-divider type="vertical" />
           <a-popconfirm title="确认删除该校验规则吗？" @confirm="handleDelete(record.id)">
             <a><span style="color: red">删除</span></a>
@@ -47,7 +47,7 @@ export default {
         delete: '/uc/api/formVerification/delete'
       },
       columns: [
-        { dataIndex: 'name', title: '校验名称', align: 'center' },
+        { dataIndex: 'name', title: '校验名称', align: 'center', ellipsis: true },
         { title: '校验模式', align: 'center', scopedSlots: { customRender: 'verifyMode' } },
         { title: '前置表单', align: 'center', dataIndex: 'preFormNames' },
         { title: '校验类型', align: 'center', scopedSlots: { customRender: 'type' } },
@@ -83,4 +83,9 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.rule {
+  background-color: white;
+  padding: 24px;
+}
+</style>

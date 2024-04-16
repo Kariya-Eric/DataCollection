@@ -154,18 +154,17 @@ export default {
           }
         } else if (column.type.__config__.tag == 'a-input-number') {
           ruleList.push({
-            validator: ({ cellValue, rule, rules, row, rowIndex, column, columnIndex }) => {
+            validator: ({ cellValue }) => {
               console.log(column, cellValue)
-              if (typeof cellValue !== 'number') {
-                callback(new Error(`${column.label}只允许输入数字`))
+              if (cellValue != undefined && typeof cellValue !== 'number') {
+                return new Error(`${column.label}只允许输入数字`)
               }
               if (column.type.min && cellValue < column.type.min) {
-                callback(new Error(`${config.label}的值不得小于${column.type.min}`))
+                return new Error(`${column.label}的值不得小于${column.type.min}`)
               }
               if (column.type.max && cellValue > column.type.max) {
-                callback(new Error(`${config.label}的值不得小于${column.type.max}`))
+                return new Error(`${column.label}的值不得大于${column.type.max}`)
               }
-              callback()
             }
           })
         } else if (column.type.__config__.tag == 'formLink') {
@@ -409,6 +408,7 @@ export default {
             })
           })
         })
+        console.log(msgList)
         return msgList
       } else {
         $table.clearEdit()

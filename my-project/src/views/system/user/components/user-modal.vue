@@ -1,5 +1,5 @@
 <template>
-  <a-modal :title="title" :visible="visible" :confirmLoading="loading" @cancel="handleCancel" @ok="handleOk" :maskClosable="false" :keyboard="false" width="35%" destroyOnClose>
+  <a-modal :title="title" :visible="visible" @cancel="handleCancel" :maskClosable="false" :keyboard="false" width="35%" destroyOnClose>
     <a-spin :spinning="loading">
       <a-form-model ref="form" v-bind="layout" :model="model" :rules="rules">
         <a-form-model-item label="账号" prop="account">
@@ -48,6 +48,10 @@
         </a-form-model-item>
       </a-form-model>
     </a-spin>
+    <template slot="footer">
+      <a-button @click="handleCancel">取消</a-button>
+      <a-button type="primary" @click="handleOk" v-if="showFlag">确定</a-button>
+    </template>
   </a-modal>
 </template>
 
@@ -60,6 +64,7 @@ export default {
   props: ['depart', 'role', 'subjects', 'departs'],
   data() {
     return {
+      showFlag: true, //显示脚部按钮
       subjectList: [],
       replaceFields: {
         title: 'name',
@@ -72,8 +77,8 @@ export default {
         name: [{ required: true, message: '请输入姓名' }],
         orgId: [{ required: true, message: '请选择部门', trigger: 'change' }],
         roleIds: [{ required: true, message: '请选择角色', trigger: 'change' }],
-        email: [{ pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/, message: '请输入合法的邮箱' }],
-        mobile: [{ pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[2567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, message: '请输入合法的手机' }]
+        email: [{ pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/, message: '请输入正确的邮箱' }],
+        mobile: [{ pattern: /^1(3\d|4[5-9]|5[0-35-9]|6[2567]|7[0-8]|8\d|9[0-35-9])\d{8}$/, message: '请输入正确的手机' }]
       },
       showDepart: true,
       accountDisabled: true
@@ -128,6 +133,7 @@ export default {
 
     edit(record, title) {
       this.title = title
+      this.showFlag = title != '用户详情'
       this.model = Object.assign({}, { roleId: [] })
       if (record.id) {
         this.loading = true

@@ -1,28 +1,34 @@
 <template>
   <div class="totalView">
     <div class="title">
-      <a-row type="flex" class="title-row" justify="space-between">
-        <a-col class="left">
-          <a-tag color="orange">{{ info.type }}</a-tag>
-          <span>{{ info.name }}（{{ info.collectTimeType }}）</span>
+      <a-row class="title-row">
+        <a-col :span="8">
+          <div class="left">
+            <a-tag color="orange">{{ info.type }}</a-tag>
+            <span>{{ info.name }}（{{ info.collectTimeType }}）</span>
+          </div>
         </a-col>
-        <a-col>
-          <a-tabs v-model="activeTab">
-            <a-tab-pane :key="0">
-              <span slot="tab" style="font-size: 20px"> 表单设计 </span>
-            </a-tab-pane>
-            <a-tab-pane :key="1">
-              <span slot="tab" style="font-size: 20px"> 校验规则 </span>
-            </a-tab-pane>
-          </a-tabs>
+        <a-col :span="8">
+          <div class="middle">
+            <a-tabs v-model="activeTab">
+              <a-tab-pane :key="0">
+                <span slot="tab" style="font-size: 20px"> 表单设计 </span>
+              </a-tab-pane>
+              <a-tab-pane :key="1">
+                <span slot="tab" style="font-size: 20px"> 校验规则 </span>
+              </a-tab-pane>
+            </a-tabs>
+          </div>
         </a-col>
-        <a-col class="right">
-          <a-popconfirm title="确认清空所有组件吗？" @confirm="empty" placement="bottom" v-if="info.enabledFlag != 1">
-            <a-button type="danger"><dc-icon type="icon-dc_empty" />清空</a-button>
-          </a-popconfirm>
-          <a-button type="primary" @click="view" id="form-view"><dc-icon type="icon-dc_view" /> 预览</a-button>
-          <a-button type="primary" @click="save" v-if="info.enabledFlag != 1"><dc-icon type="icon-dc_save" /> 保存</a-button>
-          <a-button @click="handleCancel"><dc-icon type="icon-dc_back" /> 返回</a-button>
+        <a-col :span="8">
+          <div class="right">
+            <a-popconfirm title="确认清空所有组件吗？" @confirm="empty" placement="bottom" v-if="info.enabledFlag != 1">
+              <a-button type="danger" v-if="activeTab == 0"><dc-icon type="icon-dc_empty" />清空</a-button>
+            </a-popconfirm>
+            <a-button type="primary" @click="view" id="form-view"><dc-icon type="icon-dc_view" /> 预览</a-button>
+            <a-button type="primary" @click="save" v-if="activeTab == 0 && info.enabledFlag != 1"><dc-icon type="icon-dc_save" /> 保存</a-button>
+            <a-button @click="handleCancel" v-if="activeTab == 0"><dc-icon type="icon-dc_back" /> 返回</a-button>
+          </div>
         </a-col>
       </a-row>
     </div>
@@ -170,18 +176,28 @@ export default {
   margin-bottom: 12px;
 }
 .title-row {
-  /deep/.ant-tabs {
-    margin-left: -48px;
+  // /deep/.ant-tabs {
+  //   margin-left: -96px;
+  // }
+  // /deep/.ant-tabs-bar {
+  //   margin: 0 0 8px -12px;
+  // }
+  /deep/.ant-tabs-nav-wrap {
+    text-align: center;
   }
   /deep/.ant-tabs-bar {
-    margin: 0 0 8px 0;
+    border-bottom: none;
+    margin-top: 4px;
   }
   .left {
-    width: 25%;
     line-height: 64px;
+  }
+  .middle {
+    margin: auto;
   }
   .right {
     line-height: 64px;
+    float: right;
     .ant-btn {
       margin-left: 12px;
     }

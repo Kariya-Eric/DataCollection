@@ -1,8 +1,8 @@
 <template>
   <div class="typeDiv">
     <div class="buttonDiv">
-      <a-button icon="plus-circle" type="link" @click="add(0)"> 且条件 </a-button>
-      <a-button icon="plus-circle" type="link" @click="add(1)"> 或条件 </a-button>
+      <a-button icon="plus-circle" type="link" @click="add(0)" :disabled="disabled"> 且条件 </a-button>
+      <a-button icon="plus-circle" type="link" @click="add(1)" :disabled="disabled"> 或条件 </a-button>
     </div>
     <div v-for="(consistency, index) in dataConsistencyVal" :key="index">
       <div v-if="consistency.and_or != ''" style="margin-left: 24px">
@@ -27,7 +27,7 @@
           <a-col :span="8" v-if="showLeftOption[index][leftIndex]">
             <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[index][leftIndex]" @change="val => changeLeftVal(val, leftIndex, index)"></dc-select>
           </a-col>
-          <a-col :span="2">
+          <a-col :span="1">
             <div class="rowIcon" v-if="leftIndex == 0">
               <a-icon type="plus-circle" @click="addLeft(index)" />
             </div>
@@ -73,7 +73,7 @@ import { TEMP_FORM } from '@/store/mutation-types'
 import storage from 'store'
 export default {
   name: 'RuleConsistency',
-  props: ['value', 'drawingList'],
+  props: ['value', 'drawingList', 'disabled'],
   data() {
     return {
       dataConsistencyVal: undefined,

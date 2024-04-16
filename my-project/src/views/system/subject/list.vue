@@ -1,53 +1,55 @@
 <template>
   <a-row :gutter="10">
-    <a-col :md="8" :sm="24">
-      <a-card title="专业架构" class="dc-card">
+    <a-col :md="7" :sm="24">
+      <a-card title="专业架构">
         <a-button type="primary" slot="extra" @click="handleAdd"><dc-icon type="icon-dc_new" />添加专业</a-button>
         <a-spin :spinning="loading">
           <a-form-item label="专业名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input-search placeholder="请输入专业名称搜索" allowClear @change="searchSubject" />
           </a-form-item>
-          <a-tree
-            :tree-data="treeData"
-            :expanded-keys="expandedKeys"
-            :replace-fields="replaceFields"
-            blockNode
-            :auto-expand-parent="autoExpandParent"
-            @expand="onExpand"
-            @select="onSelect"
-            :selected-keys="selectedKeys"
-          >
-            <template slot="parent" slot-scope="item">
-              <div class="img-div">
-                <img src="@/assets/icons/depart.svg" />
-                <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
+          <div class="dept-tree">
+            <a-tree
+              :tree-data="treeData"
+              :expanded-keys="expandedKeys"
+              :replace-fields="replaceFields"
+              blockNode
+              :auto-expand-parent="autoExpandParent"
+              @expand="onExpand"
+              @select="onSelect"
+              :selected-keys="selectedKeys"
+            >
+              <template slot="parent" slot-scope="item">
+                <div class="img-div">
+                  <img src="@/assets/icons/depart.svg" />
+                  <span v-if="item.name.indexOf(searchValue) > -1" style="margin-left: 8px">
+                    {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
+                    <span style="color: #f50">{{ searchValue }}</span>
+                    {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
+                  </span>
+                  <span v-else>{{ item.name }}</span>
+                </div>
+              </template>
+              <template slot="custom" slot-scope="item">
+                <span v-if="item.name.indexOf(searchValue) > -1">
                   {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
                   <span style="color: #f50">{{ searchValue }}</span>
                   {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
                 </span>
                 <span v-else>{{ item.name }}</span>
-              </div>
-            </template>
-            <template slot="custom" slot-scope="item">
-              <span v-if="item.name.indexOf(searchValue) > -1">
-                {{ item.name.substr(0, item.name.indexOf(searchValue)) }}
-                <span style="color: #f50">{{ searchValue }}</span>
-                {{ item.name.substr(item.name.indexOf(searchValue) + searchValue.length) }}
-              </span>
-              <span v-else>{{ item.name }}</span>
-              <span class="custom-tree-node">
-                <dc-icon type="icon-dc_edit_empty" @click.stop="editSubject(item)" style="color: #2f68bd" />
-                <a-popconfirm title="确认删除吗？" @confirm="delSubject(item)">
-                  <dc-icon type="icon-dc_empty" @click.stop style="color: #e23322" />
-                </a-popconfirm>
-              </span>
-            </template>
-          </a-tree>
+                <span class="custom-tree-node">
+                  <dc-icon type="icon-dc_edit_empty" @click.stop="editSubject(item)" style="color: #2f68bd" />
+                  <a-popconfirm title="确认删除吗？" @confirm="delSubject(item)">
+                    <dc-icon type="icon-dc_empty" @click.stop style="color: #e23322" />
+                  </a-popconfirm>
+                </span>
+              </template>
+            </a-tree>
+          </div>
         </a-spin>
         <subject-modal ref="modalForm" :orgs="departList" @refresh="initSubject" />
       </a-card>
     </a-col>
-    <a-col :md="16" :sm="24">
+    <a-col :md="17" :sm="24">
       <a-card :tab-list="tabList" :active-tab-key="activeKey" @tabChange="key => (activeKey = key)">
         <div v-if="activeKey === '1'">
           <a-empty v-if="selectedKeys.length == 0">
@@ -244,6 +246,7 @@ export default {
 
     editSubject(item) {
       this.initUserList({})
+      this.activeKey = '1'
       this.subjectInfo = item
       this.selectedKeys = [item.id]
       this.editFlag = true
@@ -268,6 +271,10 @@ export default {
 </script>
 
 <style scoped lang="less">
+.dept-tree {
+  max-height: 55vh;
+  overflow-y: auto;
+}
 .custom-tree-node {
   float: right;
   .anticon {

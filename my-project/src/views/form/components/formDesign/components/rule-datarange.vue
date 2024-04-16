@@ -1,8 +1,8 @@
 <template>
   <div class="typeDiv">
     <div class="buttonDiv">
-      <a-button icon="plus-circle" type="link" @click="add(0)"> 且条件 </a-button>
-      <a-button icon="plus-circle" type="link" @click="add(1)"> 或条件 </a-button>
+      <a-button icon="plus-circle" type="link" @click="add(0)" :disabled="disabled"> 且条件 </a-button>
+      <a-button icon="plus-circle" type="link" @click="add(1)" :disabled="disabled"> 或条件 </a-button>
       <div v-for="(range, index) in dataRangeVal" :key="index">
         <div v-if="range.and_or != ''" style="margin-left: 24px">
           {{ range.and_or == 'and' ? '并且' : '或者' }}
@@ -51,7 +51,7 @@
                 </a-col>
               </template>
             </template>
-            <a-col :span="2">
+            <a-col :span="1">
               <div class="rowIcon" v-if="leftIndex == 0">
                 <a-icon type="plus-circle" @click="addLeft(index)" />
               </div>
@@ -133,7 +133,7 @@ import { TEMP_FORM } from '@/store/mutation-types'
 import storage from 'store'
 export default {
   name: 'RuleDatarange',
-  props: ['value', 'drawingList'],
+  props: ['value', 'drawingList', 'disabled'],
   data() {
     return {
       dataRangeVal: JSON.parse(JSON.stringify(this.value)),

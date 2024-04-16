@@ -75,6 +75,15 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.el-popper[x-placement^='bottom'] {
+  margin-top: 0px;
+}
+.el-popper[x-placement^='top'] {
+  margin-bottom: 0px;
+}
+</style>
+
 <style lang="less" scoped>
 /deep/.el-input__suffix {
   line-height: 32px !important;

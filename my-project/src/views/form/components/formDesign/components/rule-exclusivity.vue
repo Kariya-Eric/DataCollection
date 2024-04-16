@@ -16,7 +16,7 @@
         <a-col :span="8" v-if="showLeftOption[leftIndex]">
           <dc-select v-model="left.value" placeholder="请选择" :options="leftOptions[leftIndex]" @change="val => changeLeftValue(val, leftIndex)"></dc-select>
         </a-col>
-        <a-col :span="2">
+        <a-col :span="1">
           <div class="rowIcon" v-if="leftIndex == 0">
             <a-icon type="plus-circle" @click="addLeft" />
           </div>

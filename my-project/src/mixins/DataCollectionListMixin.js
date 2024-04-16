@@ -153,19 +153,19 @@ export const DataCollectionListMixin = {
     },
 
     handleDetail(record, title) {
-      this.$refs.modalForm.edit(record)
+      this.$refs.modalForm.edit(record, title)
       this.$refs.modalForm.title = title
       this.$refs.modalForm.disabled = true
     },
 
     handleEdit(record, title) {
-      this.$refs.modalForm.edit(record)
+      this.$refs.modalForm.edit(record, title)
       this.$refs.modalForm.title = title
       this.$refs.modalForm.disabled = false
     },
 
     handleAdd(title) {
-      this.$refs.modalForm.add()
+      this.$refs.modalForm.add(title)
       this.$refs.modalForm.title = title
       this.$refs.modalForm.disabled = false
     },

@@ -179,6 +179,10 @@ export default {
     },
 
     handleOk() {
+      if (this.optionValueData.length == 0) {
+        this.$message.error('该选项未配置选项值，请检查')
+        return
+      }
       this.$refs.form.validate(valid => {
         if (valid) {
           let value = { model: this.model, formData: this.formData, optionData: this.optionData, optionValueData: this.optionValueData, tempFormData: this.tempFormData }
