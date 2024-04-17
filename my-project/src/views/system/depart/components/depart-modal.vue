@@ -66,7 +66,7 @@ export default {
             .then(res => {
               if (res.state) {
                 that.$message.success(res.message)
-                this.$emit('ok')
+                this.$emit('ok', res.value.id)
                 that.close()
               } else {
                 that.$message.error(res.message)

@@ -49,7 +49,7 @@
             </a-tree>
           </div>
         </a-spin>
-        <depart-modal ref="modalForm" @ok="initDepart" :departs="treeData" />
+        <depart-modal ref="modalForm" @ok="departOk" :departs="treeData" />
       </a-card>
     </a-col>
     <a-col :md="17" :sm="24">
@@ -129,6 +129,23 @@ export default {
     this.initRoleList()
   },
   methods: {
+    departOk(id) {
+      this.loading = true
+      initDeptTree(storage.get(USER_INFO).userId)
+        .then(res => {
+          if (res.state) {
+            this.expandedKeys = res.value[0].children.map(ele => ele.id)
+            this.expandedKeys.push(res.value[0].id)
+            this.treeData = this.renderDepart(res.value)
+            this.selectedKeys = [id]
+            this.activeKey = '1'
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+        .finally(() => (this.loading = false))
+    },
+
     handleAdd() {
       this.$refs.modalForm.add()
     },
