@@ -5,7 +5,21 @@
       <div>
         <h2>1.学校基本情况</h2>
         <p>
-          <em>{{ details.XXMC }}</em>地处<em>{{ details.XXWZ }}</em>，是<em>{{ details.XXXZ }}</em>类院校，举办者为<em>{{ details.JBZ }}</em>，于<em>{{ details.KBBKJYNF }}</em>年开办本科。学校现有本科专业<em>87</em>个，其中招生专业<em>70</em>个，新专业<em>11</em>个。学校全日制在校生<em class="knowmore" @click="showDetail('全日制在校生')">{{ details.QRZZXSS }}</em>人，折合在校生<em class="knowmore" @click="showDetail('折合在校生')">{{ details.ZHZXSS }}</em>人，其中本科生<em>{{ details.PTBKXSS }}</em>。全校教职工<em>{{ details.QXJZGTMS }}</em>人，其中专任教师<em>{{ details.ZRJSS }}</em>人。学校共有<em>{{ details.XQMCTMS }}</em>个校区，其中<em>2</em>个为本地校区。学校有国家实验室<em>{{ details.GJSYSTMS }}</em>个，国家重点实验室<em>{{ details.GJZDSYSTMS }}</em>个，院士<em>{{ details.YSTMS }}</em>人，国家级人才<em>29</em>人。
+          <em>{{ details.XXMC }}</em
+          >地处<em>{{ details.XXWZ }}</em
+          >，是<em>{{ details.XXXZ }}</em
+          >类院校，举办者为<em>{{ details.JBZ }}</em
+          >，于<em>{{ details.KBBKJYNF }}</em
+          >年开办本科。学校现有本科专业<em>87</em>个，其中招生专业<em>70</em>个，新专业<em>11</em>个。学校全日制在校生<em>{{ details.QRZZXSS }}</em
+          >人，折合在校生<em>{{ details.ZHZXSS }}</em
+          >人，其中本科生<em>{{ details.PTBKXSS }}</em
+          >。全校教职工<em>{{ details.QXJZGTMS }}</em
+          >人，其中专任教师<em>{{ details.ZRJSS }}</em
+          >人。学校共有<em>{{ details.XQMCTMS }}</em
+          >个校区，其中<em>2</em>个为本地校区。学校有国家实验室<em>{{ details.GJSYSTMS }}</em
+          >个，国家重点实验室<em>{{ details.GJZDSYSTMS }}</em
+          >个，院士<em>{{ details.YSTMS }}</em
+          >人，国家级人才<em>29</em>人。
         </p>
         <p class="tips">※数据来源：1-1学校概况、1-4-1专业基本情况、1-5-1教职工基本情况、1-7-2科研基地、3-3-1高层次人才、4-1-1学科建设、6-1学生数量基本情况</p>
       </div>
@@ -166,7 +180,7 @@
                 <p>思政课专任教师与折合在校生比≥1:350</p>
               </td>
               <td>
-                <p>1:306</p>
+                <p class="knowmore" @click="showDetail('思政课专任教师与折合在校生比≥1:350')">1:306</p>
               </td>
             </tr>
             <tr>
@@ -177,7 +191,7 @@
                 <p>思政课专任教师与全日制在校生比例≥1:350</p>
               </td>
               <td>
-                <p>1:259</p>
+                <p class="knowmore" @click="showDetail('思政课专任教师与全日制在校生比例≥1:350')">1:259</p>
               </td>
             </tr>
             <tr>
@@ -188,7 +202,7 @@
                 <p>专职党务工作人员和思想政治工作人员总数与全校师生人数比例≥1:100</p>
               </td>
               <td>
-                <p>1:158</p>
+                <p class="knowmore" @click="showDetail('专职党务工作人员和思想政治工作人员总数与全校师生人数比例≥1:100')">1:259</p>
               </td>
             </tr>
             <tr>
@@ -769,8 +783,8 @@
           <div>
             <h4>⑴校领导人员结构</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.XLDRYJG">
+                <template slot="title">
                   <tr>
                     <th rowspan="2">
                       <p></p>
@@ -814,86 +828,16 @@
                       <p>56岁及以上</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>数量</p>
-                    </td>
-                    <td>
-                      <p>12</p>
-                    </td>
-                    <td>
-                      <p>10</p>
-                    </td>
-                    <td>
-                      <p>7</p>
-                    </td>
-                    <td>
-                      <p>2</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>6</p>
-                    </td>
-                    <td>
-                      <p>6</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>比例（%)</p>
-                    </td>
-                    <td>
-                      <p>/</p>
-                    </td>
-                    <td>
-                      <p>83.33</p>
-                    </td>
-                    <td>
-                      <p>58.33</p>
-                    </td>
-                    <td>
-                      <p>16.67</p>
-                    </td>
-                    <td>
-                      <p>25</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>50</p>
-                    </td>
-                    <td>
-                      <p>50</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-5-1教职工基本情况、3-1校领导基本信息</p>
           </div>
           <div>
             <h4>⑵校级教学管理人员结构</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.XJGLRY">
+                <template slot="title">
                   <tr>
                     <th rowspan="2">
                       <p></p>
@@ -955,116 +899,16 @@
                       <p>56岁及以上</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>数量</p>
-                    </td>
-                    <td>
-                      <p>33</p>
-                    </td>
-                    <td>
-                      <p>24</p>
-                    </td>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>2</p>
-                    </td>
-                    <td>
-                      <p>19</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>8</p>
-                    </td>
-                    <td>
-                      <p>2</p>
-                    </td>
-                    <td>
-                      <p>18</p>
-                    </td>
-                    <td>
-                      <p>9</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>7</p>
-                    </td>
-                    <td>
-                      <p>13</p>
-                    </td>
-                    <td>
-                      <p>11</p>
-                    </td>
-                    <td>
-                      <p>2</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>比例（%)</p>
-                    </td>
-                    <td>
-                      <p>/</p>
-                    </td>
-                    <td>
-                      <p>72.73</p>
-                    </td>
-                    <td>
-                      <p>3.03</p>
-                    </td>
-                    <td>
-                      <p>6.06</p>
-                    </td>
-                    <td>
-                      <p>57.58</p>
-                    </td>
-                    <td>
-                      <p>9.09</p>
-                    </td>
-                    <td>
-                      <p>24.2</p>
-                    </td>
-                    <td>
-                      <p>6.06</p>
-                    </td>
-                    <td>
-                      <p>54.55</p>
-                    </td>
-                    <td>
-                      <p>27.27</p>
-                    </td>
-                    <td>
-                      <p>12.12</p>
-                    </td>
-                    <td>
-                      <p>21.21</p>
-                    </td>
-                    <td>
-                      <p>39.39</p>
-                    </td>
-                    <td>
-                      <p>33.33</p>
-                    </td>
-                    <td>
-                      <p>6.06</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-5-1教职工基本情况、3-2相关管理人员基本信息</p>
           </div>
           <div>
             <h4>⑶师生党员人数及发展情况</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.SSDYJFZQK">
+                <template slot="title">
                   <tr>
                     <th rowspan="3">
                       <p>学年</p>
@@ -1104,86 +948,8 @@
                       <p>占比</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>2022-2023</p>
-                    </td>
-                    <td>
-                      <p>1613</p>
-                    </td>
-                    <td>
-                      <p>59.19</p>
-                    </td>
-                    <td>
-                      <p>1094</p>
-                    </td>
-                    <td>
-                      <p>56.92</p>
-                    </td>
-                    <td>
-                      <p>208</p>
-                    </td>
-                    <td>
-                      <p>64.6</p>
-                    </td>
-                    <td>
-                      <p>？</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>2021-2022</p>
-                    </td>
-                    <td>
-                      <p>1576</p>
-                    </td>
-                    <td>
-                      <p>58.5</p>
-                    </td>
-                    <td>
-                      <p>976</p>
-                    </td>
-                    <td>
-                      <p>55.58</p>
-                    </td>
-                    <td>
-                      <p>138</p>
-                    </td>
-                    <td>
-                      <p>65.09</p>
-                    </td>
-                    <td>
-                      <p>？</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>2020-2021</p>
-                    </td>
-                    <td>
-                      <p>1521</p>
-                    </td>
-                    <td>
-                      <p>57.53</p>
-                    </td>
-                    <td>
-                      <p>942</p>
-                    </td>
-                    <td>
-                      <p>54.86</p>
-                    </td>
-                    <td>
-                      <p>136</p>
-                    </td>
-                    <td>
-                      <p>63.85</p>
-                    </td>
-                    <td>
-                      <p>？</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-5-1教职工基本情况、3-3-1高层次人才</p>
           </div>
@@ -1236,8 +1002,8 @@
           <div>
             <h4>⑴思政课教师队伍</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.SZKJSDW">
+                <template slot="title">
                   <tr>
                     <th colspan="7">
                       <p>思政课专任教师</p>
@@ -1280,42 +1046,16 @@
                       <p>比例(%)</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>137</p>
-                    </td>
-                    <td>
-                      <p>77</p>
-                    </td>
-                    <td>
-                      <p>56.2</p>
-                    </td>
-                    <td>
-                      <p>82</p>
-                    </td>
-                    <td>
-                      <p>59.85</p>
-                    </td>
-                    <td>
-                      <p>45</p>
-                    </td>
-                    <td>
-                      <p>32.85</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-5-1教职工基本情况、3-3-3思政课教师情况</p>
           </div>
           <div>
             <h4>⑵课程思政示范课</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.SZKSFK">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -1336,35 +1076,15 @@
                       <p>课程负责人</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>课程思政示范课程</p>
-                    </td>
-                    <td>
-                      <p>数据结构</p>
-                    </td>
-                    <td>
-                      <p>省部级</p>
-                    </td>
-                    <td>
-                      <p>2022</p>
-                    </td>
-                    <td>
-                      <p>揭安全</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
           </div>
           <div>
             <h4>⑶思政课和课程思政教学团队、教学研究示范中心</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.SZJXTDJXSFZX">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -1385,30 +1105,8 @@
                       <p>负责人</p>
                     </th>
                   </tr>
-                  <!-- <template v-if="details.value4">
-                    <tr v-for="(item, index) in details.value4" :key="index">
-                      <td>
-                        <p>{{ index + 1 }}</p>
-                      </td>
-                      <td>
-                        <p>{{ item.type }}</p>
-                      </td>
-                      <td>
-                        <p>{{ item.name }}</p>
-                      </td>
-                      <td>
-                        <p>{{ item.level }}</p>
-                      </td>
-                      <td>
-                        <p>{{ item.year }}</p>
-                      </td>
-                      <td>
-                        <p>{{ item.director }}</p>
-                      </td>
-                    </tr>
-                  </template> -->
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
           </div>
         </div>
@@ -1475,7 +1173,7 @@
                       <p>学校教育经费总额（万元）</p>
                     </td>
                     <td>
-                      <p>157003.05</p>
+                      <p>{{ details.XXJYZCZE }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1483,7 +1181,7 @@
                       <p>教学经费总额（万元）</p>
                     </td>
                     <td>
-                      <p>14752.24</p>
+                      <p>{{ details.JXJFZE }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1491,7 +1189,7 @@
                       <p>学校年度教学改革与建设专项经费（万元）</p>
                     </td>
                     <td>
-                      <p>6156.95</p>
+                      <p>{{ details.NDJXGGJSJF }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1502,7 +1200,7 @@
                       <p>经常性预算内教育事业费收入（万元）</p>
                     </td>
                     <td>
-                      <p>46168.84</p>
+                      <p>{{ details.YSNJYSYFSR }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1513,7 +1211,7 @@
                       <p>其中：国家（万元）</p>
                     </td>
                     <td>
-                      <p>0</p>
+                      <p>{{ details.BKSJBKGJZE }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1521,7 +1219,7 @@
                       <p>地方（万元）</p>
                     </td>
                     <td>
-                      <p>33516.4</p>
+                      <p>{{ details.BKSJBKDFZE }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1529,7 +1227,7 @@
                       <p>本科学费收入（万元）</p>
                     </td>
                     <td>
-                      <p>18134</p>
+                      <p>{{ details.BJSXFSR }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1540,7 +1238,7 @@
                       <p>其中：国家（万元）</p>
                     </td>
                     <td>
-                      <p>0</p>
+                      <p>{{ details.JGZXGJBK }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1548,7 +1246,7 @@
                       <p>地方（万元）</p>
                     </td>
                     <td>
-                      <p>0</p>
+                      <p>{{ details.JGZXDFBK }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1559,7 +1257,7 @@
                       <p>总额（万元）</p>
                     </td>
                     <td>
-                      <p>8595.29</p>
+                      <p>{{ details.JXRCYXZCZE }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1567,7 +1265,7 @@
                       <p>教学日常支出占经常性预算内教育事业费拨款与本专科生学费收入之和的比例（%)</p>
                     </td>
                     <td>
-                      <p>13.37</p>
+                      <p>{{ details.JXRCYXZCBL }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1575,7 +1273,7 @@
                       <p>生均教学日常运行支出（元）</p>
                     </td>
                     <td>
-                      <p>2050.84</p>
+                      <p>{{ details.SJJXRCYXZC }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1583,7 +1281,7 @@
                       <p>教学改革支出（万元）</p>
                     </td>
                     <td>
-                      <p>231.02</p>
+                      <p>{{ details.JXGGZC }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1591,7 +1289,7 @@
                       <p>专业建设支出（万元）</p>
                     </td>
                     <td>
-                      <p>857.19</p>
+                      <p>{{ details.ZYJSZC }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1599,7 +1297,7 @@
                       <p>实践教学支出（万元）</p>
                     </td>
                     <td>
-                      <p>2974.39</p>
+                      <p>{{ details.SJJXZC }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1607,7 +1305,7 @@
                       <p>生均实践教学经费（元）</p>
                     </td>
                     <td>
-                      <p>1104.94</p>
+                      <p>{{ details.SJSJJXJF }}</p>
                     </td>
                   </tr>
                 </tbody>
@@ -1636,7 +1334,7 @@
                       <p>资产总值（万元）</p>
                     </td>
                     <td>
-                      <p>63200.44</p>
+                      <p>{{ details.YQSBZCZZ }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1644,7 +1342,7 @@
                       <p>生均（万元）</p>
                     </td>
                     <td>
-                      <p>1.51</p>
+                      <p>{{ details.YQSBZCSJ }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1652,7 +1350,7 @@
                       <p>当年新增（万元）</p>
                     </td>
                     <td>
-                      <p>6397.79</p>
+                      <p>{{ details.JQSBZCDNXZ }}</p>
                     </td>
                   </tr>
                   <tr>
@@ -1660,7 +1358,7 @@
                       <p>当年新增所占比例（％）</p>
                     </td>
                     <td>
-                      <p>11.26</p>
+                      <p>{{ details.JQSBZCDNZB }}</p>
                     </td>
                   </tr>
                 </tbody>
@@ -1723,8 +1421,8 @@
           <div>
             <h4>⑴专业培养方案学分结构</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.ZYPYFAXFJG">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -1763,46 +1461,8 @@
                       <p>实践教学学分比例（%）</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>人工智能</p>
-                    </td>
-                    <td>
-                      <p>工学</p>
-                    </td>
-                    <td>
-                      <p>2944</p>
-                    </td>
-                    <td>
-                      <p>160</p>
-                    </td>
-                    <td>
-                      <p>128</p>
-                    </td>
-                    <td>
-                      <p>31</p>
-                    </td>
-                    <td>
-                      <p>10</p>
-                    </td>
-                    <td>
-                      <p>115</p>
-                    </td>
-                    <td>
-                      <p>30</p>
-                    </td>
-                    <td>
-                      <p>5</p>
-                    </td>
-                    <td>
-                      <p>25</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-4-1专业基本情况、4-2专业培养计划表</p>
           </div>
@@ -1866,8 +1526,8 @@
           <div>
             <h4>⑴专业设置情况一览</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.ZYSZQKYL">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -1885,351 +1545,23 @@
                       <p>停招时间</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>020102</p>
-                    </td>
-                    <td>
-                      <p>经济统计学</p>
-                    </td>
-                    <td>
-                      <p>2012</p>
-                    </td>
-                    <td>
-                      <p>2020</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-4-1专业基本情况</p>
           </div>
           <div>
             <h4>⑵专业布局概览</h4>
             <div>
-              <table>
-                <tbody>
-                  <tr>
-                    <th>
-                      <p>学科门类</p>
-                    </th>
-                    <th>
-                      <p>哲学</p>
-                    </th>
-                    <th>
-                      <p>经济学</p>
-                    </th>
-                    <th>
-                      <p>法学</p>
-                    </th>
-                    <th>
-                      <p>教育学</p>
-                    </th>
-                    <th>
-                      <p>文学</p>
-                    </th>
-                    <th>
-                      <p>历史学</p>
-                    </th>
-                    <th>
-                      <p>理学</p>
-                    </th>
-                    <th>
-                      <p>工学</p>
-                    </th>
-                    <th>
-                      <p>农学</p>
-                    </th>
-                    <th>
-                      <p>医学</p>
-                    </th>
-                    <th>
-                      <p>管理学</p>
-                    </th>
-                    <th>
-                      <p>艺术学</p>
-                    </th>
-                    <th>
-                      <p>总计</p>
-                    </th>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>所含本科专业数</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>8</p>
-                    </td>
-                    <td>
-                      <p>12</p>
-                    </td>
-                    <td>
-                      <p>2</p>
-                    </td>
-                    <td>
-                      <p>13</p>
-                    </td>
-                    <td>
-                      <p>18</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>12</p>
-                    </td>
-                    <td>
-                      <p>14</p>
-                    </td>
-                    <td>
-                      <p>87</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>比例(%)</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>4.6</p>
-                    </td>
-                    <td>
-                      <p>4.6</p>
-                    </td>
-                    <td>
-                      <p>9.2</p>
-                    </td>
-                    <td>
-                      <p>13.79</p>
-                    </td>
-                    <td>
-                      <p>2.3</p>
-                    </td>
-                    <td>
-                      <p>14.94</p>
-                    </td>
-                    <td>
-                      <p>20.69</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>13.79</p>
-                    </td>
-                    <td>
-                      <p>16.09</p>
-                    </td>
-                    <td>
-                      <p>/</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>国家级一流专业建设点数</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>6</p>
-                    </td>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>7</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>8</p>
-                    </td>
-                    <td>
-                      <p>40</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>比例</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>7.5</p>
-                    </td>
-                    <td>
-                      <p>7.5</p>
-                    </td>
-                    <td>
-                      <p>10</p>
-                    </td>
-                    <td>
-                      <p>15</p>
-                    </td>
-                    <td>
-                      <p>2.5</p>
-                    </td>
-                    <td>
-                      <p>17.5</p>
-                    </td>
-                    <td>
-                      <p>10</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>10</p>
-                    </td>
-                    <td>
-                      <p>20</p>
-                    </td>
-                    <td>
-                      <p>/</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>省级一流专业建设点数</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>6</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>21</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>比例</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>14.29</p>
-                    </td>
-                    <td>
-                      <p>4.76</p>
-                    </td>
-                    <td>
-                      <p>4.76</p>
-                    </td>
-                    <td>
-                      <p>19.05</p>
-                    </td>
-                    <td>
-                      <p>28.57</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>14.29</p>
-                    </td>
-                    <td>
-                      <p>14.29</p>
-                    </td>
-                    <td>
-                      <p>/</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <report-table :title="details.ZYBJGL?.title" :content="details.ZYBJGL?.content"></report-table>
             </div>
             <p class="tips">※数据来源：1-4-1专业基本情况、4-3优势(一流)专业情况</p>
           </div>
           <div>
             <h4>⑶教学单位学科专业概览</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.JXDWXKZYGL">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -2253,31 +1585,8 @@
                       <p>硕士学位授权二级学科点（不含一级覆盖点）</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>美术学院</p>
-                    </td>
-                    <td>
-                      <p>7</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p>注1.此表中本科专业数按照《普通高等学校本科专业目录（2022版）》。</p>
             <p class="tips">※数据来源：1-4-1专业基本情况、4-1-2博士点、硕士点、4-3优势(一流)专业情况</p>
@@ -2285,8 +1594,8 @@
           <div>
             <h4>⑷本科生辅修、双学位情况</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.BKSFXSXWQK">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>年度</p>
@@ -2307,28 +1616,8 @@
                       <p>占比（%）</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>2022-2023年度</p>
-                    </td>
-                    <td>
-                      <p>020301K,030101K,050101,050201,050207,060101,071101,120203K,120402</p>
-                    </td>
-                    <td>
-                      <p>会计学,历史学,心理学,日语,汉语言文学,法学,英语,行政管理,金融学</p>
-                    </td>
-                    <td>
-                      <p>双学位</p>
-                    </td>
-                    <td>
-                      <p>1392</p>
-                    </td>
-                    <td>
-                      <p>100.00</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p>注：学习类型：辅修/双学位</p>
           </div>
@@ -2392,8 +1681,8 @@
           <div>
             <h4>⑴各专业实践教学情况</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.GZYSJJXQK">
+                <template slot="title">
                   <tr>
                     <th rowspan="2">
                       <p>序号</p>
@@ -2428,42 +1717,16 @@
                       <p>独立开设实验课程门数</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>经济学</p>
-                    </td>
-                    <td>
-                      <p>经济学</p>
-                    </td>
-                    <td>
-                      <p>26</p>
-                    </td>
-                    <td>
-                      <p>17.33</p>
-                    </td>
-                    <td>
-                      <p>16</p>
-                    </td>
-                    <td>
-                      <p>10.67</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-4-1专业基本情况、4-2专业培养计划表、5-1-1开课情况、5-1-3分专业（大类）专业实验课情况</p>
           </div>
           <div>
             <h4>⑵本科校内实验、实习、实训场所及设备情况</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.BJXNSYSXSXCS">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>项目</p>
@@ -2484,116 +1747,16 @@
                       <p>设备值（万元）</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>专业实验室</p>
-                    </td>
-                    <td>
-                      <p>56</p>
-                    </td>
-                    <td>
-                      <p>127</p>
-                    </td>
-                    <td>
-                      <p>18317</p>
-                    </td>
-                    <td>
-                      <p>8525</p>
-                    </td>
-                    <td>
-                      <p>8614.21</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>基础实验室</p>
-                    </td>
-                    <td>
-                      <p>20</p>
-                    </td>
-                    <td>
-                      <p>329</p>
-                    </td>
-                    <td>
-                      <p>16661</p>
-                    </td>
-                    <td>
-                      <p>7663</p>
-                    </td>
-                    <td>
-                      <p>5833.87</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>实习场所</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>实训场所</p>
-                    </td>
-                    <td>
-                      <p>59</p>
-                    </td>
-                    <td>
-                      <p>282</p>
-                    </td>
-                    <td>
-                      <p>17905</p>
-                    </td>
-                    <td>
-                      <p>4391</p>
-                    </td>
-                    <td>
-                      <p>4465.45</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>其他</p>
-                    </td>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>2</p>
-                    </td>
-                    <td>
-                      <p>216</p>
-                    </td>
-                    <td>
-                      <p>19</p>
-                    </td>
-                    <td>
-                      <p>18.22</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-7-1本科实验场所、2-6本科实验设备情况、5-1-3分专业（大类）专业实验课情况</p>
           </div>
           <div>
             <h4>⑶实验教学中心（实验室）、虚拟仿真实验教学中心建设情况</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.SYJXZXXNFZZX">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -2623,37 +1786,8 @@
                       <p>年对外开放人时数</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>化学实验教学中心</p>
-                    </td>
-                    <td>
-                      <p>实验教学示范中心</p>
-                    </td>
-                    <td>
-                      <p>国家级</p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                    <td>
-                      <p>2015</p>
-                    </td>
-                    <td>
-                      <p>54</p>
-                    </td>
-                    <td>
-                      <p>3200</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p>注1.类型分为实验教学中心、虚拟仿真实验教学中心、临床教学培训中心</p>
             <p class="tips">※数据来源：2-7-1实验教学示范中心、虚拟仿真实验示范中心、7-2-3省级及以上本科教学项目建设情况</p>
@@ -2661,8 +1795,8 @@
           <div>
             <h4>⑷实践教学基地</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.SYJXJD">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -2683,36 +1817,16 @@
                       <p>年接受学生人次数</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>万宁市后安中学</p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                    <td>
-                      <p>2020</p>
-                    </td>
-                    <td>
-                      <p>1</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：2-4校内外实习、实践、实训基地，7-2-3省级及以上本科教学工程项目情况</p>
           </div>
           <div>
             <h4>⑸与科研院所、行业企业共建的实践基地</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.KYYSQYGJ">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -2733,36 +1847,16 @@
                       <p>年接受学生人次数</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>上海伯顿医疗设备有限公司实践基地</p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                    <td>
-                      <p>2018</p>
-                    </td>
-                    <td>
-                      <p>劳动与社会保障,行政管理</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：2-4校内外实习、实践、实训基地，7-2-3省级及以上本科教学工程项目情况</p>
           </div>
           <div>
             <h4>⑹与行业企业共建实验教学中心</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.HYGJSYJXZX">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -2780,16 +1874,16 @@
                       <p>年接受学生人时数</p>
                     </th>
                   </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：2-7-1实验教学示范中心、虚拟仿真实验示范中心</p>
           </div>
           <div>
             <h4>⑺毕业论文(设计)</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.BYLWSJ">
+                <template slot="title">
                   <tr>
                     <th rowspan="3">
                       <p>序号</p>
@@ -2826,34 +1920,8 @@
                       <p>外聘教师</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>软件工程</p>
-                    </td>
-                    <td>
-                      <p>492</p>
-                    </td>
-                    <td>
-                      <p>377</p>
-                    </td>
-                    <td>
-                      <p>76.63</p>
-                    </td>
-                    <td>
-                      <p>62</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>8</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-4-1专业基本情况、1-5-1教职工基本情况、1-6本科生基本情况、5-2学生毕业综合训练情况</p>
           </div>
@@ -2901,8 +1969,8 @@
           <div>
             <h4>⑴全校课程规模情况</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.XXKCGMQK">
+                <template slot="title">
                   <tr>
                     <th rowspan="2">
                       <p>课程类别</p>
@@ -2949,112 +2017,16 @@
                       <p>占比</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>专业课</p>
-                    </td>
-                    <td>
-                      <p>7526</p>
-                    </td>
-                    <td>
-                      <p>3758</p>
-                    </td>
-                    <td>
-                      <p>49.93</p>
-                    </td>
-                    <td>
-                      <p>3031</p>
-                    </td>
-                    <td>
-                      <p>40.27</p>
-                    </td>
-                    <td>
-                      <p>628</p>
-                    </td>
-                    <td>
-                      <p>8.34</p>
-                    </td>
-                    <td>
-                      <p>109</p>
-                    </td>
-                    <td>
-                      <p>1.45</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>公共必修课</p>
-                    </td>
-                    <td>
-                      <p>2270</p>
-                    </td>
-                    <td>
-                      <p>538</p>
-                    </td>
-                    <td>
-                      <p>23.7</p>
-                    </td>
-                    <td>
-                      <p>1081</p>
-                    </td>
-                    <td>
-                      <p>47.62</p>
-                    </td>
-                    <td>
-                      <p>344</p>
-                    </td>
-                    <td>
-                      <p>15.15</p>
-                    </td>
-                    <td>
-                      <p>307</p>
-                    </td>
-                    <td>
-                      <p>13.52</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>公共选修课</p>
-                    </td>
-                    <td>
-                      <p>812</p>
-                    </td>
-                    <td>
-                      <p>196</p>
-                    </td>
-                    <td>
-                      <p>24.14</p>
-                    </td>
-                    <td>
-                      <p>398</p>
-                    </td>
-                    <td>
-                      <p>49.01</p>
-                    </td>
-                    <td>
-                      <p>112</p>
-                    </td>
-                    <td>
-                      <p>13.79</p>
-                    </td>
-                    <td>
-                      <p>106</p>
-                    </td>
-                    <td>
-                      <p>13.05</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：5-1-1开课情况</p>
           </div>
           <div>
             <h4>⑵课程结构</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.KCJG">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>课程类别</p>
@@ -3078,176 +2050,21 @@
                       <p>平均班规模（人）</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>专业课</p>
-                    </td>
-                    <td>
-                      <p>2312</p>
-                    </td>
-                    <td>
-                      <p>68</p>
-                    </td>
-                    <td>
-                      <p>7526</p>
-                    </td>
-                    <td>
-                      <p>26</p>
-                    </td>
-                    <td>
-                      <p>47.2</p>
-                    </td>
-                    <td>
-                      <p>33.61</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>公共必修课</p>
-                    </td>
-                    <td>
-                      <p>71</p>
-                    </td>
-                    <td>
-                      <p>62</p>
-                    </td>
-                    <td>
-                      <p>2270</p>
-                    </td>
-                    <td>
-                      <p>3</p>
-                    </td>
-                    <td>
-                      <p>39.17</p>
-                    </td>
-                    <td>
-                      <p>56.37</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>公共选修课</p>
-                    </td>
-                    <td>
-                      <p>336</p>
-                    </td>
-                    <td>
-                      <p>59</p>
-                    </td>
-                    <td>
-                      <p>812</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                    <td>
-                      <p>36.81</p>
-                    </td>
-                    <td>
-                      <p>60.74</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-5-1教职工基本信息、1-5-3外聘和兼职教师基本信息、1-5-4附属医院师资情况、5-1-1开课情况</p>
           </div>
           <div>
             <h4>⑶近五年马工程教材使用覆盖率</h4>
             <div>
-              <table>
-                <tbody>
-                  <tr>
-                    <th>
-                      <p>年度</p>
-                    </th>
-                    <th>
-                      <p>2023</p>
-                    </th>
-                    <th>
-                      <p>2022</p>
-                    </th>
-                    <th>
-                      <p>2021</p>
-                    </th>
-                    <th>
-                      <p>2020</p>
-                    </th>
-                    <th>
-                      <p>2019</p>
-                    </th>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>使用覆盖率（%）</p>
-                    </td>
-                    <td>
-                      <p>95.35</p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                    <td>
-                      <p></p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <report-table :title="details.JWNJCSYFGL?.title" :content="details.JWNJCSYFGL?.content"></report-table>
             </div>
           </div>
           <div>
             <h4>⑷近五年教材出版数</h4>
             <div>
-              <table>
-                <tbody>
-                  <tr>
-                    <th>
-                      <p>年度</p>
-                    </th>
-                    <th>
-                      <p>2023</p>
-                    </th>
-                    <th>
-                      <p>2022</p>
-                    </th>
-                    <th>
-                      <p>2021</p>
-                    </th>
-                    <th>
-                      <p>2020</p>
-                    </th>
-                    <th>
-                      <p>2019</p>
-                    </th>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>出版总册数</p>
-                    </td>
-                    <td>
-                      <p>16</p>
-                    </td>
-                    <td>
-                      <p>19</p>
-                    </td>
-                    <td>
-                      <p>16</p>
-                    </td>
-                    <td>
-                      <p>4</p>
-                    </td>
-                    <td>
-                      <p>0</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <report-table :title="details.JWNJCCBS?.title" :content="details.JWNJCCBS?.content"></report-table>
             </div>
             <p class="tips">※数据来源：3-5-1教师出版专著和主编教材情况</p>
           </div>
@@ -3318,41 +2135,7 @@
           <div>
             <h4>⑴六卓越一拔尖人才培养计划及强基计划<sup>注1</sup></h4>
             <div>
-              <table>
-                <tbody>
-                  <tr>
-                    <th rowspan="2">
-                      <p>序号</p>
-                    </th>
-                    <th rowspan="2">
-                      <p>专业名称</p>
-                    </th>
-                    <th rowspan="2">
-                      <p>人才培养计划类型</p>
-                    </th>
-                    <th rowspan="2">
-                      <p>实施（批准）时间</p>
-                    </th>
-                    <th colspan="4">
-                      <p>受益学生数</p>
-                    </th>
-                  </tr>
-                  <tr>
-                    <th>
-                      <p>总数</p>
-                    </th>
-                    <th>
-                      <p>2023</p>
-                    </th>
-                    <th>
-                      <p>2022</p>
-                    </th>
-                    <th>
-                      <p>2021</p>
-                    </th>
-                  </tr>
-                </tbody>
-              </table>
+              <report-table :title="details.BJRCPYJHJQJJH?.title" :content="details.BJRCPYJHJQJJH?.content"></report-table>
             </div>
             <p>
               注1.人才培养类型：专指教育部批复的卓越工程师教育培养计划、卓越医生教育培养计划、卓越农林人才教育培养计划、卓越教师培养计划、卓越法治人才教育培养计划、卓越新闻传播人才教育培养计划、基础学科拔尖学生培养计划、强基计划。
@@ -3362,8 +2145,8 @@
           <div>
             <h4>⑵一流课程建设</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.JLKCJS">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -3384,36 +2167,16 @@
                       <p>课程负责人</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>社会实践一流课程</p>
-                    </td>
-                    <td>
-                      <p>矫正社会工作</p>
-                    </td>
-                    <td>
-                      <p>国家级</p>
-                    </td>
-                    <td>
-                      <p>2022</p>
-                    </td>
-                    <td>
-                      <p>林欢欢</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：7-2-3省级及以上本科教学项目建设情况</p>
           </div>
           <div>
             <h4>⑶省部级以上教学改革和质量工程项目</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.SBJYSJXGGZLGCXM">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -3434,36 +2197,16 @@
                       <p>项目负责人</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>教学改革项目</p>
-                    </td>
-                    <td>
-                      <p>《影视动漫中的化学奥秘》通识课程影视资源库的建设与实践</p>
-                    </td>
-                    <td>
-                      <p>省部级</p>
-                    </td>
-                    <td>
-                      <p>2022</p>
-                    </td>
-                    <td>
-                      <p>陈水亮</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：7-2-1教育教学研究与改革项目、7-2-3省级及以上本科教学项目建设情况</p>
           </div>
           <div>
             <h4>⑷一流专业建设</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.YLZYJS">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -3481,33 +2224,16 @@
                       <p>当年毕业生人数</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>经济学</p>
-                    </td>
-                    <td>
-                      <p>国家级</p>
-                    </td>
-                    <td>
-                      <p>2021</p>
-                    </td>
-                    <td>
-                      <p>73</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-4-1专业基本情况、1-6本科生基本情况、4-3优势(一流)专业情况</p>
           </div>
           <div>
             <h4>⑸通过专业认证情况</h4>
             <div>
-              <table>
-                <tbody>
+              <report-table :content="details.TGZYRZQK">
+                <template slot="title">
                   <tr>
                     <th>
                       <p>序号</p>
@@ -3522,22 +2248,8 @@
                       <p>获批/通过时间</p>
                     </th>
                   </tr>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p>082802</p>
-                    </td>
-                    <td>
-                      <p>城乡规划</p>
-                    </td>
-                    <td>
-                      <p>2021</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                </template>
+              </report-table>
             </div>
             <p class="tips">※数据来源：1-4-1专业基本情况、4-3优势(一流)专业情况</p>
           </div>
@@ -8827,8 +7539,10 @@
 </template>
 
 <script>
+import ReportTable from '../ReportTable.vue'
 export default {
   name: 'UndergraduateStatus',
+  components: { ReportTable },
   props: {
     details: {
       type: Object,
@@ -8838,7 +7552,8 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+    }
   },
   methods: {
     showDetail(title) {
